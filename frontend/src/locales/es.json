@@ -48,5 +48,7 @@
   "reinaVictoriaTitulo": "Restaurante Reina Victoria",
   "reinaVictoriaDescripcion": "Disfruta de la mejor gastronomía en nuestro restaurante en Reina Victoria.",
   "arenalTitulo": "Restaurante Arenal",
-  "arenalDescripcion": "Vive una experiencia gastronómica excepcional en nuestro restaurante en Arenal."
+  "arenalDescripcion": "Vive una experiencia gastronómica excepcional en nuestro restaurante en Arenal.",
+  "footerText": "Gracias por visitar Paraíso de Jamón.",
+  "footerRights": "Todos los derechos reservados {year}"
 }

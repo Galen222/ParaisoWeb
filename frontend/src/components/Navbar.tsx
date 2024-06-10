@@ -5,9 +5,10 @@ import styles from "../styles/Navbar.module.css";
 
 interface NavbarProps {
   onLocaleChange: (locale: string) => void;
+  currentLocale: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onLocaleChange }) => {
+const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale }) => {
   const intl = useIntl();
   const [showRestaurants, setShowRestaurants] = useState(false);
 
@@ -35,7 +36,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange }) => {
         <Link href="/blog">{intl.formatMessage({ id: "blog" })}</Link>
         <Link href="/contacto">{intl.formatMessage({ id: "contacto" })}</Link>
       </div>
-      <select onChange={(e) => onLocaleChange(e.target.value)} className={styles.languageSelector}>
+      <select onChange={(e) => onLocaleChange(e.target.value)} value={currentLocale} className={styles.languageSelector}>
         <option value="es">ES</option>
         <option value="en">EN</option>
       </select>
