@@ -6,7 +6,7 @@ const CartaPage = () => {
   const intl = useIntl();
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <h1>{intl.formatMessage({ id: "cartaTitulo" })}</h1>
       <p>{intl.formatMessage({ id: "cartaDescripcion" })}</p>
     </div>

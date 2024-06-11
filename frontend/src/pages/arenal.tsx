@@ -6,7 +6,7 @@ const ArenalPage = () => {
   const intl = useIntl();
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <h1>{intl.formatMessage({ id: "arenalTitulo" })}</h1>
       <p>{intl.formatMessage({ id: "arenalDescripcion" })}</p>
     </div>

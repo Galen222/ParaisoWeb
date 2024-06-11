@@ -6,7 +6,7 @@ const ReservasPage = () => {
   const intl = useIntl();
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <h1>{intl.formatMessage({ id: "reservasTitulo" })}</h1>
       <p>{intl.formatMessage({ id: "reservasDescripcion" })}</p>
     </div>

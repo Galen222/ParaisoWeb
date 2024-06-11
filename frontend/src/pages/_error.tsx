@@ -11,7 +11,7 @@ const ErrorPage = ({ statusCode }: ErrorPageProps) => {
   const message = statusCode === 404 ? intl.formatMessage({ id: "error404" }) : intl.formatMessage({ id: "error500" });
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <h1>{statusCode}</h1>
       <p>{message}</p>
     </div>

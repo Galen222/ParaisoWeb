@@ -6,7 +6,7 @@ const CharcuteriaPage = () => {
   const intl = useIntl();
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <h1>{intl.formatMessage({ id: "charcuteriaTitulo" })}</h1>
       <p>{intl.formatMessage({ id: "charcuteriaDescripcion" })}</p>
     </div>

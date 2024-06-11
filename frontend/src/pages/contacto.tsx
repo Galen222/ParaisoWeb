@@ -39,7 +39,7 @@ const ContactPage = () => {
   };
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <form onSubmit={handleSubmit}>
         <label htmlFor="name">{intl.formatMessage({ id: "nombre" })}</label>
         <input type="text" id="name" name="name" value={formData.name} onChange={handleInputChange} required />

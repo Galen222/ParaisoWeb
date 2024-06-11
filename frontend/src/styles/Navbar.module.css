@@ -1,29 +1,80 @@
+/* Estilos generales del navbar */
 .navbar {
   width: 100%;
-  background-color: brown;
+  background-color: #4a403a; /* Un tono de marrón más elegante */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 50px;
+  padding: 20px 50px;
   box-sizing: border-box;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
+/* Estilización del logo */
 .logo {
-  height: 50px;
+  height: 60px; /* Ajusta el tamaño según tus necesidades */
+  cursor: pointer;
 }
 
+/* Estilo para el contenedor de enlaces, incluyendo 'Restaurantes' */
 .links {
   display: flex;
   gap: 20px;
-  flex-grow: 1;
-  justify-content: center;
+  align-items: center;
+  position: relative; /* Posición relativa para el contenedor de enlaces */
 }
 
+/* Estilo de los enlaces */
+.links a {
+  color: #fff; /* Color blanco para una mejor visibilidad */
+  text-decoration: none; /* Elimina el subrayado */
+  font-weight: bold; /* Texto en negrita para mayor enfasis */
+  transition: color 0.3s ease-in-out; /* Suaviza la transición de color */
+}
+
+.links a:hover {
+  color: #f5f5f5; /* Un cambio sutil de color al pasar el ratón */
+}
+
+/* Estilización del selector de idioma */
 .languageSelector {
-  margin-left: auto;
-  padding: 5px;
-  background-color: white;
-  color: black;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  margin-left: 20px;
+  padding: 8px 12px;
+  background-color: #5e5548; /* Un marrón que complementa el fondo */
+  color: #ffffff; /* Texto en blanco para contraste */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  outline: none;
+}
+
+/* Estilos del menú desplegable para restaurantes */
+.dropdown {
+  display: none; /* Inicialmente oculto */
+  position: absolute;
+  background-color: #5e5548; /* Fondo oscuro para el dropdown */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para dar profundidad */
+  border-radius: 8px; /* Bordes redondeados */
+  padding: 10px;
+  top: 100%; /* Posiciona el dropdown justo debajo del contenedor de 'Restaurantes' */
+  left: 0; /* Alinea el dropdown al inicio del contenedor de 'Restaurantes' */
+  z-index: 100; /* Asegura que el menú esté sobre otros elementos */
+  width: 200px; /* Establece un ancho específico para el dropdown */
+}
+
+.dropdown.show {
+  display: flex; /* Muestra el dropdown */
+  flex-direction: column; /* Alinea los items verticalmente */
+}
+
+/* Estilo de los enlaces dentro del dropdown */
+.dropdown a {
+  display: block;
+  padding: 10px;
+  color: #ffffff; /* Texto en blanco para contrastar con el fondo */
+  text-align: left; /* Alineación del texto a la izquierda */
+}
+
+.dropdown a:hover {
+  background-color: #4a403a; /* Un cambio de fondo al pasar el ratón */
 }

@@ -6,7 +6,7 @@ const BlogPage = () => {
   const intl = useIntl();
 
   return (
-    <div className={styles.container}>
+    <div className="container">
       <h1>{intl.formatMessage({ id: "blogTitulo" })}</h1>
       <p>{intl.formatMessage({ id: "blogDescripcion" })}</p>
     </div>
