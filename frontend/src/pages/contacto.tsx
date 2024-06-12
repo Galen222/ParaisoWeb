@@ -1,9 +1,9 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import { useIntl } from "react-intl";
-import styles from "../styles/contacto.module.css";
+import { useIntl } from "react-intl"; // Para internacionalización
+import styles from "../styles/contacto.module.css"; // Estilos específicos para esta página
 
 const ContactPage = () => {
-  const intl = useIntl();
+  const intl = useIntl(); // Hook para utilizar la internacionalización
   const [formData, setFormData] = useState({
     name: "",
     reason: "",
@@ -11,44 +11,49 @@ const ContactPage = () => {
     message: "",
     file: null as File | null,
   });
-  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [isValidEmail, setIsValidEmail] = useState(true); // Estado para la validez del email
 
+  // Maneja la validación del nombre, permitiendo solo letras y espacios
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (/^[a-zA-Z\s]*$/.test(value)) {
-      // Solo permite letras y espacios
+      // Regex para verificar la entrada
       setFormData({ ...formData, [name]: value });
     }
   };
 
+  // Maneja la validación del email según un patrón específico
   const handleValidateEmail = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // Actualizado para exigir al menos dos caracteres después del punto
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; // Regex para validar el email
     const isValid = emailRegex.test(value);
     setIsValidEmail(isValid);
     setFormData({ ...formData, [name]: value });
   };
 
+  // Maneja cambios en los selectores de razones
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // Actualiza el estado del mensaje conforme se edita
   const handleValidateMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // Maneja el cambio de archivo, asegurando que sea una imagen JPEG y no exceda 1MB
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       if (file.type !== "image/jpeg") {
+        // Verifica el tipo de archivo
         alert(intl.formatMessage({ id: "contacto_ArchivoNoJPG" }));
         return;
       }
       if (file.size > 1048576) {
-        // 1MB en bytes
+        // Verifica el tamaño del archivo
         alert(intl.formatMessage({ id: "contacto_ArchivoGrande" }));
         return;
       }
@@ -58,13 +63,14 @@ const ContactPage = () => {
     }
   };
 
+  // Procesa el envío del formulario
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     alert(intl.formatMessage({ id: "contacto_Formulario" }));
   };
 
+  // Verifica que los campos requeridos no esten vacios y sea un email valido
   const CheckFormComplete = () => {
-    // Verifica que los campos requeridos no esten vacios y sea un email valido
     return formData.name.trim() !== "" && formData.email.trim() !== "" && formData.message.trim() !== "" && isValidEmail;
   };
 
@@ -72,6 +78,8 @@ const ContactPage = () => {
     <div className="container">
       <div className={`mt-30p ${styles.recuadro}`}>
         <form onSubmit={handleSubmit} className={styles.form}>
+          {/* Entradas de formulario con validaciones específicas para cada campo */}
+          {/* Inputs y selectores con etiquetas internacionalizadas */}
           <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
           <input type="text" id="name" name="name" value={formData.name} onChange={handleValidateName} required className={styles.input} />
           <label htmlFor="reason">{intl.formatMessage({ id: "contacto_Motivo" })}</label>
@@ -90,7 +98,7 @@ const ContactPage = () => {
             value={formData.email}
             onChange={handleValidateEmail}
             required
-            style={{ color: isValidEmail ? "black" : "red" }}
+            style={{ color: isValidEmail ? "black" : "red" }} // Cambia de color si el email no es válido
           />
           <label htmlFor="message">{intl.formatMessage({ id: "contacto_Mensaje" })}</label>
           <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
