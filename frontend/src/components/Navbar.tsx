@@ -20,7 +20,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale }) => {
   return (
     <div className={styles.navbar}>
       {/* Imagen del logo con texto alternativo internacionalizado */}
-      <img src="/images/logo.jpg" alt="Logo Paraiso Del Jamón" className={styles.logo} />
+      <img src="/images/imagenLogo.png" alt="Logo Paraiso Del Jamón" className={styles.logo} />
       <div className={styles.links}>
         {/* Enlaces de navegación con textos internacionalizados */}
         <Link href="/">{intl.formatMessage({ id: "Navbar_inicio" })}</Link>

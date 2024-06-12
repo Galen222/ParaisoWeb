@@ -39,7 +39,7 @@ class MyDocument extends Document {
           {/* Meta etiqueta para configurar la vista en dispositivos móviles */}
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           {/* Enlace al icono de la página*/}
-          <link rel="icon" href="/images/favicon.ico" />
+          <link rel="icon" href="/images/iconoLogo.ico" />
         </Head>
         <body>
           <Main /> {/* Renderiza la aplicación principal de Next.js */}

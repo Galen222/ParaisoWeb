@@ -1,1 +1,68 @@
+/* contacto.module.css */
+.recuadro {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form label {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.form input,
+.form select,
+.form textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+.form textarea {
+  resize: none;
+  height: 100px;
+}
+
+.form input[type="file"] {
+  padding: 3px;
+}
+
+.submitButton {
+  --bs-btn-bg: #4a403a;
+  --bs-btn-border-color: #4a403a;
+  --bs-btn-hover-bg: #0b5ed7;
+  --bs-btn-hover-border-color: #0a58ca;
+  --bs-btn-active-bg: #0a58ca;
+  --bs-btn-active-border-color: #0a53be;
+  --bs-btn-disabled-bg: #4a403a;
+  --bs-btn-disabled-border-color: #4a403a;
+}
+
+.fileUploadContainer {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.fileNameBox {
+  flex-grow: 1;
+  margin-left: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f8f8f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}

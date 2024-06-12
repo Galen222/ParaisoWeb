@@ -1,5 +1,6 @@
 import Head from "next/head"; // Importa el componente Head de Next.js para manejar la cabecera del documento
 import "@/styles/globals.css"; // Importa los estilos globales
+import "bootstrap/dist/css/bootstrap.min.css"; // Importa estilos bootstrap
 import type { AppProps } from "next/app"; // Importa el tipo AppProps de Next.js
 import { useState, useEffect } from "react"; // Importa useState y useEffect de React
 import { IntlProvider } from "react-intl"; // Importa IntlProvider de react-intl para la internacionalización
