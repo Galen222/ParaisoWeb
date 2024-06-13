@@ -9,7 +9,7 @@
   "Navbar_blog": "Blog",
   "Navbar_contacto": "Kontakt",
 
-  "inicio_Titulo": "Willkommen im Paradies des Schinkens",
+  "inicio_Titulo": "Willkommen im El Paraíso del Jamón",
   "inicio_Descripcion": "Entdecken Sie die besten Geschmacksrichtungen unserer Gerichte und Wurstwaren.",
 
   "sanBernardo_Titulo": "Restaurant San Bernardo",
@@ -71,5 +71,13 @@
   "error_Error504": "Gateway-Zeitüberschreitung. Bitte versuchen Sie es später erneut.",
   "error_Other": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
 
-  "Footer_Rights": "{year}. Alle Rechte vorbehalten."
+  "Footer_Rights": "Alle Rechte vorbehalten © {year}",
+  "Footer_AvisoLegal": "Impressum",
+  "Footer_PoliticaPrivacidad": "Datenschutzrichtlinie",
+
+  "avisoLegal_Titulo": "Impressum",
+  "avisoLegal_Descripcion": "Dies ist die Seite des Impressums. Hier finden Sie Informationen zu unseren Richtlinien und Dienstleistungsbedingungen.",
+
+  "politicaPrivacidad_Titulo": "Datenschutzrichtlinie",
+  "politicaPrivacidad_Descripcion": "Dies ist die Seite der Datenschutzrichtlinie. Hier finden Sie Informationen darüber, wie wir Ihre persönlichen Daten verwalten."
 }

@@ -69,8 +69,12 @@ const ContactPage = () => {
     alert(intl.formatMessage({ id: "contacto_Formulario" }));
   };
 
-  // Verifica que los campos requeridos no esten vacios y sea un email valido
+  // Verifica que los campos requeridos no estén vacíos y sea un email válido
   const CheckFormComplete = () => {
+    // Si el motivo es solicitar factura es necesario que se suba una imagen de la factura
+    if (formData.reason === "invoice") {
+      return formData.name.trim() !== "" && formData.email.trim() !== "" && formData.message.trim() !== "" && isValidEmail && formData.file !== null;
+    }
     return formData.name.trim() !== "" && formData.email.trim() !== "" && formData.message.trim() !== "" && isValidEmail;
   };
 
@@ -105,7 +109,7 @@ const ContactPage = () => {
           <label>{intl.formatMessage({ id: "contacto_SubirImagen" })}</label>
           <div className={styles.fileUploadContainer}>
             <input type="file" id="imageUpload" name="imageUpload" accept="image/jpeg" className="d-none" onChange={handleFileChange} />
-            <button type="button" className="btn btn-outline-secondary" onClick={() => document.getElementById("imageUpload")?.click()}>
+            <button type="button" className="btn btn-outline-secondary w-200p" onClick={() => document.getElementById("imageUpload")?.click()}>
               {intl.formatMessage({ id: "contacto_BotonSubirImagen" })}
             </button>
             <div className={styles.fileNameBox}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>

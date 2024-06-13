@@ -1,6 +1,6 @@
 .footer {
   width: 100%;
-  background-color: brown;
+  background-color: #4a403a;
   color: white;
   text-align: center;
   padding: 20px 0;
@@ -8,10 +8,14 @@
   bottom: 0;
   left: 0;
   z-index: 1000;
-  font-family: Arial, sans-serif;
 }
 
 .footer p {
   margin: 0;
   font-size: 14px;
+}
+
+.footer a:link {
+  color: white;
+  text-decoration: none;
 }

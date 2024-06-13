@@ -71,5 +71,13 @@
   "error_Error504": "Gateway timeout. Please try again later.",
   "error_Other": "An error has occurred. Please try again later.",
 
-  "Footer_Rights": "{year}. All rights reserved"
+  "Footer_Rights": "All rights reserved © {year}",
+  "Footer_AvisoLegal": "Legal Notice",
+  "Footer_PoliticaPrivacidad": "Privacy Policy",
+
+  "avisoLegal_Titulo": "Legal Notice",
+  "avisoLegal_Descripcion": "This is the Legal Notice page. Here you can find information about our policies and terms of service.",
+
+  "politicaPrivacidad_Titulo": "Privacy Policy",
+  "politicaPrivacidad_Descripcion": "This is the Privacy Policy page. Here you can find information about how we handle your personal data."
 }

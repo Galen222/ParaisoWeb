@@ -71,5 +71,13 @@
   "error_Error504": "Tiempo de espera de puerta de enlace agotado. Por favor, inténtalo de nuevo más tarde.",
   "error_Other": "Ha ocurrido un error. Por favor, inténtalo de nuevo más tarde.",
 
-  "Footer_Rights": "{year}. Todos los derechos reservados"
+  "Footer_Rights": "Todos los derechos reservados © {year}",
+  "Footer_AvisoLegal": "Aviso Legal",
+  "Footer_PoliticaPrivacidad": "Política de Privacidad",
+
+  "avisoLegal_Titulo": "Aviso Legal",
+  "avisoLegal_Descripcion": "Esta es la página de Aviso Legal. Aquí puedes encontrar información sobre nuestras políticas y términos de servicio.",
+
+  "politicaPrivacidad_Titulo": "Política de Privacidad",
+  "politicaPrivacidad_Descripcion": "Esta es la página de Política de Privacidad. Aquí puedes encontrar información sobre cómo manejamos tus datos personales."
 }
