@@ -26,7 +26,12 @@ export default function App({ Component, pageProps }: AppProps) {
   });
 
   // Carga los mensajes de localización correspondientes al idioma seleccionado
-  const messages = require(`../locales/${locale}.json`);
+  try {
+    var messages = require(`../locales/${locale}.json`);
+  } catch (e) {
+    // Si no encuentra los mensajes para el idioma actual, carga los mensajes en español como predeterminado
+    messages = require(`../locales/es.json`);
+  }
 
   // Efecto que se ejecuta cuando cambia el idioma
   useEffect(() => {

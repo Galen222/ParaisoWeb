@@ -1,0 +1,75 @@
+{
+  "Navbar_inicio": "Start",
+  "Navbar_restaurantes": "Restaurants",
+  "Navbar_reservas": "Reservierungen",
+  "Navbar_menu": "Tagesmenü",
+  "Navbar_carta": "Speisekarte",
+  "Navbar_charcuteria": "Wurstwaren",
+  "Navbar_about": "Über uns",
+  "Navbar_blog": "Blog",
+  "Navbar_contacto": "Kontakt",
+
+  "inicio_Titulo": "Willkommen im Paradies des Schinkens",
+  "inicio_Descripcion": "Entdecken Sie die besten Geschmacksrichtungen unserer Gerichte und Wurstwaren.",
+
+  "sanBernardo_Titulo": "Restaurant San Bernardo",
+  "sanBernardo_Descripcion": "Im Zentrum von Madrid, genießen Sie unser Essen.",
+
+  "bravoMurillo_Titulo": "Restaurant Bravo Murillo",
+  "bravoMurillo_Descripcion": "Der perfekte Ort, um in Bravo Murillo ein einzigartiges kulinarisches Erlebnis zu genießen.",
+
+  "reinaVictoria_Titulo": "Restaurant Reina Victoria",
+  "reinaVictoria_Descripcion": "Genießen Sie die beste Gastronomie in unserem Restaurant in Reina Victoria.",
+
+  "arenal_Titulo": "Restaurant Arenal",
+  "arenal_Descripcion": "Erleben Sie ein außergewöhnliches gastronomisches Erlebnis in unserem Restaurant in Arenal.",
+
+  "reservas_Titulo": "Eine Reservierung machen",
+  "reservas_Descripcion": "Reservieren Sie einen Tisch, um unsere köstlichen Gerichte und Wurstwaren zu genießen.",
+
+  "menu_Titulo": "Unser Menü",
+  "menu_Descripcion": "Erkunden Sie die Vielfalt unserer Gerichte und finden Sie Ihre Favoriten.",
+
+  "carta_Titulo": "Restaurant Speisekarte",
+  "carta_Descripcion": "Erkunden Sie unsere Speisekarte, um alle angebotenen Gerichte zu sehen.",
+
+  "charcuteria_Titulo": "Unsere Wurstwaren",
+  "charcuteria_Descripcion": "Entdecken Sie die besten ausgewählten Wurstwaren und Schinken.",
+
+  "about_Titulo": "Über Uns",
+  "about_Descripcion": "Erfahren Sie mehr über die Geschichte und die Philosophie des Schinkenparadieses.",
+
+  "blog_Titulo": "Paradies des Schinkens Blog",
+  "blog_Descripcion": "Lesen Sie die neuesten Nachrichten und Artikel über unsere Produkte und Veranstaltungen.",
+
+  "contacto_Nombre": "Name",
+  "contacto_Motivo": "Grund",
+  "contacto_MotivoInfo": "Information",
+  "contacto_MotivoBug": "Fehler melden",
+  "contacto_MotivoComercial": "Geschäftlich",
+  "contacto_MotivoFactura": "Rechnung anfordern",
+  "contacto_MotivoOtro": "Anderer",
+  "contacto_Email": "E-Mail",
+  "contacto_Mensaje": "Nachricht",
+  "contacto_SubirImagen": "Bild hochladen (nur JPG, maximale Größe 1MB)",
+  "contacto_BotonSubirImagen": "Datei auswählen",
+  "contacto_Archivo": "Keine Datei ausgewählt",
+  "contacto_BotonEnviar": "Senden",
+  "contacto_ArchivoNoJPG": "Bitte laden Sie ein Bild im JPG-Format hoch.",
+  "contacto_ArchivoGrande": "Bitte laden Sie ein Bild mit maximal 1MB hoch",
+  "contacto_Formulario": "Formular erfolgreich gesendet.",
+
+  "error_Error400": "Ungültige Anforderung. Bitte überprüfen Sie die eingegebenen Daten und versuchen Sie es erneut.",
+  "error_Error401": "Nicht autorisiert. Bitte loggen Sie sich ein und versuchen Sie es erneut.",
+  "error_Error403": "Zugriff verboten. Sie haben keine Berechtigung, auf diese Ressource zuzugreifen.",
+  "error_Error404": "Seite nicht gefunden. Bitte überprüfen Sie die URL und versuchen Sie es erneut.",
+  "error_Error408": "Zeitüberschreitung. Bitte versuchen Sie es später erneut.",
+  "error_Error500": "Interner Serverfehler. Bitte versuchen Sie es später erneut.",
+  "error_Error501": "Methode nicht implementiert. Bitte überprüfen Sie die Anforderung und versuchen Sie es erneut.",
+  "error_Error502": "Gateway-Fehler. Bitte versuchen Sie es später erneut.",
+  "error_Error503": "Dienst nicht verfügbar. Bitte versuchen Sie es später erneut.",
+  "error_Error504": "Gateway-Zeitüberschreitung. Bitte versuchen Sie es später erneut.",
+  "error_Other": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
+
+  "Footer_Rights": "{year}. Alle Rechte vorbehalten."
+}

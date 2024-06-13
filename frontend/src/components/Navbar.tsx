@@ -1,60 +1,59 @@
-import React, { useState } from "react"; // Importa React y el hook useState
-import Link from "next/link"; // Importa el componente Link de Next.js para la navegación
-import { useIntl } from "react-intl"; // Importa el hook useIntl de react-intl para la internacionalización
-import styles from "../styles/Navbar.module.css"; // Importa los estilos específicos del módulo
+import React, { useState } from "react";
+import Link from "next/link";
+import { useIntl } from "react-intl";
+import styles from "../styles/Navbar.module.css";
 
-// Define la interfaz para las props del componente Navbar
 interface NavbarProps {
-  onLocaleChange: (locale: string) => void; // Función para manejar el cambio de idioma
-  currentLocale: string; // El idioma actual
+  onLocaleChange: (locale: string) => void;
+  currentLocale: string;
 }
 
-// Define el componente funcional Navbar como un componente React funcional (React.FC)
 const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale }) => {
-  // Obtiene el objeto intl usando el hook useIntl para manejar la internacionalización
   const intl = useIntl();
-
-  // Define un estado para manejar la visibilidad del menú desplegable de restaurantes
-  const [showRestaurants, setShowRestaurants] = useState(false);
+  const [showRestaurants, setShowRestaurants] = useState(false); // Estado para controlar la visibilidad del menú desplegable
 
   return (
     <div className={styles.navbar}>
-      {/* Imagen del logo con texto alternativo internacionalizado */}
-      <img src="/images/imagenLogo.png" alt="Logo Paraiso Del Jamón" className={styles.logo} />
-      <div className={styles.links}>
-        {/* Enlaces de navegación con textos internacionalizados */}
-        <Link href="/">{intl.formatMessage({ id: "Navbar_inicio" })}</Link>
-
-        {/* Enlace con menú desplegable para los restaurantes */}
-        <div onMouseEnter={() => setShowRestaurants(true)} onMouseLeave={() => setShowRestaurants(false)}>
-          <Link href="/restaurantes">{intl.formatMessage({ id: "Navbar_restaurantes" })}</Link>
-          {/* Menú desplegable que se muestra al pasar el ratón */}
-          <div className={`${styles.dropdown} ${showRestaurants ? styles.show : ""}`}>
-            <Link href="/san-bernardo">San Bernardo</Link>
-            <Link href="/bravo-murillo">Bravo Murillo</Link>
-            <Link href="/reina-victoria">Reina Victoria</Link>
-            <Link href="/arenal">Arenal</Link>
-          </div>
+      <div className={styles.navbarTop}>
+        <div className="w-25">
+          <Link href="/">
+            <a>
+              <img src="/images/navbar/imagenLogo.png" alt="Logo Paraiso Del Jamón" className={styles.logo} />
+            </a>
+          </Link>
         </div>
-
-        {/* Otros enlaces de navegación con textos internacionalizados */}
-        <Link href="/reservas">{intl.formatMessage({ id: "Navbar_reservas" })}</Link>
-        <Link href="/menu">{intl.formatMessage({ id: "Navbar_menu" })}</Link>
-        <Link href="/carta">{intl.formatMessage({ id: "Navbar_carta" })}</Link>
-        <Link href="/charcuteria">{intl.formatMessage({ id: "Navbar_charcuteria" })}</Link>
-        <Link href="/about">{intl.formatMessage({ id: "Navbar_about" })}</Link>
-        <Link href="/blog">{intl.formatMessage({ id: "Navbar_blog" })}</Link>
-        <Link href="/contacto">{intl.formatMessage({ id: "Navbar_contacto" })}</Link>
+        <div className="w-50">
+          <img src="/images/navbar/textoLogo.png" alt="El Paraíso del Jamón" className={styles.textLogo} />
+        </div>
+        <div className="w-25 d-flex justify-content-center">
+          <img src="/images/flags/es.png" alt="Español" className={styles.flag} onClick={() => onLocaleChange("es")} />
+          <img src="/images/flags/en.png" alt="English" className={styles.flag} onClick={() => onLocaleChange("en")} />
+          <img src="/images/flags/de.png" alt="Deutsch" className={styles.flag} onClick={() => onLocaleChange("de")} />
+        </div>
       </div>
-
-      {/* Selector de idioma */}
-      <select onChange={(e) => onLocaleChange(e.target.value)} value={currentLocale} className={styles.languageSelector}>
-        <option value="es">ES</option>
-        <option value="en">EN</option>
-      </select>
+      <div className={styles.links}>
+        <div className={styles.menuContainer}>
+          <Link href="/">{intl.formatMessage({ id: "Navbar_inicio" })}</Link>
+          <div className={styles.linksWithDropdown} onMouseEnter={() => setShowRestaurants(true)} onMouseLeave={() => setShowRestaurants(false)}>
+            <span className={styles.noLink}>{intl.formatMessage({ id: "Navbar_restaurantes" })}</span>
+            <div className={`${styles.dropdown} ${showRestaurants ? styles.show : ""}`}>
+              <Link href="/san-bernardo">San Bernardo</Link>
+              <Link href="/bravo-murillo">Bravo Murillo</Link>
+              <Link href="/reina-victoria">Reina Victoria</Link>
+              <Link href="/arenal">Arenal</Link>
+            </div>
+          </div>
+          <Link href="/reservas">{intl.formatMessage({ id: "Navbar_reservas" })}</Link>
+          <Link href="/menu">{intl.formatMessage({ id: "Navbar_menu" })}</Link>
+          <Link href="/carta">{intl.formatMessage({ id: "Navbar_carta" })}</Link>
+          <Link href="/charcuteria">{intl.formatMessage({ id: "Navbar_charcuteria" })}</Link>
+          <Link href="/about">{intl.formatMessage({ id: "Navbar_about" })}</Link>
+          <Link href="/blog">{intl.formatMessage({ id: "Navbar_blog" })}</Link>
+          <Link href="/contacto">{intl.formatMessage({ id: "Navbar_contacto" })}</Link>
+        </div>
+      </div>
     </div>
   );
 };
 
-// Exporta el componente Navbar como el componente por defecto del módulo
 export default Navbar;

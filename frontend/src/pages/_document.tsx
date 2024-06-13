@@ -20,8 +20,8 @@ class MyDocument extends Document {
     } else if (ctx.req?.headers["accept-language"]) {
       // Si no existe la cookie, intenta obtener el idioma del navegador
       const browserLang = ctx.req.headers["accept-language"].split(",")[0].slice(0, 2);
-      // Establece el idioma en español o inglés si está disponible, de lo contrario, usa español
-      locale = ["es", "en"].includes(browserLang) ? browserLang : "es";
+      // Establece el idioma en español, inglés o alemán si está disponible, de lo contrario, usa español
+      locale = ["es", "en", "de"].includes(browserLang) ? browserLang : "es";
     }
 
     // Retorna las propiedades iniciales junto con el idioma seleccionado
