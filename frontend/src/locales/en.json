@@ -57,6 +57,8 @@
   "contacto_BotonEnviar": "Send",
   "contacto_ArchivoNoJPG": "Please upload an image in JPG format.",
   "contacto_ArchivoGrande": "Please upload an image max size 1MB",
+  "contacto_PoliticaPrivacidad_1": "I have read and accept the",
+  "contacto_PoliticaPrivacidad_2": "privacy policy",
   "contacto_Formulario": "Form submitted successfully.",
 
   "error_Error400": "Bad request. Please check the data sent and try again.",

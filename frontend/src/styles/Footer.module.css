@@ -15,7 +15,11 @@
   font-size: 14px;
 }
 
-.footer a:link {
-  color: white;
-  text-decoration: none;
+.link {
+  color: #fff; /* Color del texto de los enlaces */
+  text-decoration: none; /* Opcional: eliminar el subrayado de los enlaces */
+}
+
+.link:hover {
+  text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
 }

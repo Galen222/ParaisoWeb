@@ -11,12 +11,12 @@ const Footer: React.FC = () => {
       <p>
         {intl.formatMessage({ id: "Footer_Rights" }, { year: new Date().getFullYear() })}
         {" | "}
-        <Link href="/aviso-legal">
-          <a className={styles.link}>{intl.formatMessage({ id: "Footer_AvisoLegal" })}</a>
+        <Link href="/aviso-legal" className={styles.link}>
+          {intl.formatMessage({ id: "Footer_AvisoLegal" })}
         </Link>
         {" | "}
-        <Link href="/politica-privacidad">
-          <a className={styles.link}>{intl.formatMessage({ id: "Footer_PoliticaPrivacidad" })}</a>
+        <Link href="/politica-privacidad" className={styles.link}>
+          {intl.formatMessage({ id: "Footer_PoliticaPrivacidad" })}
         </Link>
       </p>
     </footer>

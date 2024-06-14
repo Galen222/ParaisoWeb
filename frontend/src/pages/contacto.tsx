@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl"; // Para internacionalización
+import Link from "next/link";
 import styles from "../styles/contacto.module.css"; // Estilos específicos para esta página
 
 const ContactPage = () => {
@@ -12,6 +13,11 @@ const ContactPage = () => {
     file: null as File | null,
   });
   const [isValidEmail, setIsValidEmail] = useState(true); // Estado para la validez del email
+  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false); // Estado para el checkbox de privacidad
+
+  const handlePrivacyCheck = (e: ChangeEvent<HTMLInputElement>) => {
+    setIsPrivacyChecked(e.target.checked);
+  };
 
   // Maneja la validación del nombre, permitiendo solo letras y espacios
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +37,7 @@ const ContactPage = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  // Maneja cambios en los selectores de razones
+  // Maneja cambios en el selector de motivo
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -73,19 +79,33 @@ const ContactPage = () => {
   const CheckFormComplete = () => {
     // Si el motivo es solicitar factura es necesario que se suba una imagen de la factura
     if (formData.reason === "invoice") {
-      return formData.name.trim() !== "" && formData.email.trim() !== "" && formData.message.trim() !== "" && isValidEmail && formData.file !== null;
+      return (
+        formData.name.trim() !== "" &&
+        formData.email.trim() !== "" &&
+        formData.message.trim() !== "" &&
+        isValidEmail &&
+        formData.file !== null &&
+        isPrivacyChecked
+      );
     }
-    return formData.name.trim() !== "" && formData.email.trim() !== "" && formData.message.trim() !== "" && isValidEmail;
+    return formData.name.trim() !== "" && formData.email.trim() !== "" && formData.message.trim() !== "" && isValidEmail && isPrivacyChecked;
   };
 
   return (
     <div className="container">
       <div className={`mt-30p ${styles.recuadro}`}>
         <form onSubmit={handleSubmit} className={styles.form}>
-          {/* Entradas de formulario con validaciones específicas para cada campo */}
-          {/* Inputs y selectores con etiquetas internacionalizadas */}
           <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
-          <input type="text" id="name" name="name" value={formData.name} onChange={handleValidateName} required className={styles.input} />
+          <input
+            type="text"
+            autoComplete="given-name"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleValidateName}
+            required
+            className={styles.input}
+          />
           <label htmlFor="reason">{intl.formatMessage({ id: "contacto_Motivo" })}</label>
           <select id="reason" name="reason" value={formData.reason} onChange={handleSelect} required>
             <option value="info">{intl.formatMessage({ id: "contacto_MotivoInfo" })}</option>
@@ -97,22 +117,39 @@ const ContactPage = () => {
           <label htmlFor="email">{intl.formatMessage({ id: "contacto_Email" })}</label>
           <input
             type="email"
+            autoComplete="email"
             id="email"
             name="email"
             value={formData.email}
             onChange={handleValidateEmail}
             required
-            style={{ color: isValidEmail ? "black" : "red" }} // Cambia de color si el email no es válido
+            className={`${styles.input} ${isValidEmail ? styles.emailValid : styles.emailInvalid}`} // Cambia de color si el email no es válido
           />
           <label htmlFor="message">{intl.formatMessage({ id: "contacto_Mensaje" })}</label>
           <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
-          <label>{intl.formatMessage({ id: "contacto_SubirImagen" })}</label>
+          <span className={styles.archiveText}>{intl.formatMessage({ id: "contacto_SubirImagen" })}</span>
           <div className={styles.fileUploadContainer}>
             <input type="file" id="imageUpload" name="imageUpload" accept="image/jpeg" className="d-none" onChange={handleFileChange} />
             <button type="button" className="btn btn-outline-secondary w-200p" onClick={() => document.getElementById("imageUpload")?.click()}>
               {intl.formatMessage({ id: "contacto_BotonSubirImagen" })}
             </button>
             <div className={styles.fileNameBox}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
+          </div>
+          <div className={styles.customCheckbox}>
+            <input type="checkbox" id="privacyCheck" checked={isPrivacyChecked} onChange={handlePrivacyCheck} className={styles.hiddenCheckbox} />
+            <span className={styles.checkboxControl} onClick={() => setIsPrivacyChecked(!isPrivacyChecked)}>
+              {isPrivacyChecked && (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M2 8L6 12L14 4" stroke="green" strokeWidth="3" />
+                </svg>
+              )}
+            </span>
+            <span className={styles.checkText}>
+              {intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}{" "}
+              <Link href="/politica-privacidad" className={styles.link}>
+                <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
+              </Link>
+            </span>
           </div>
           <button type="submit" className={`btn btn-primary w-200p mt-20p mx-auto ${styles.submitButton}`} disabled={!CheckFormComplete()}>
             {intl.formatMessage({ id: "contacto_BotonEnviar" })}

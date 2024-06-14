@@ -17,15 +17,13 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale }) => {
       <div className={styles.navbarTop}>
         <div className="w-25">
           <Link href="/">
-            <a>
-              <img src="/images/navbar/imagenLogo.png" alt="Logo Paraiso Del Jamón" className={styles.logo} />
-            </a>
+            <img src="/images/navbar/imagenLogo.png" alt="Logo Paraiso Del Jamón" className={styles.logo} />
           </Link>
         </div>
-        <div className="w-50">
-          <img src="/images/navbar/textoLogo.png" alt="El Paraíso del Jamón" className={styles.textLogo} />
+        <div className="w-50 text-center">
+          <img src="/images/navbar/textoLogo.png" alt="Paraíso del Jamón" className={styles.textLogo} />
         </div>
-        <div className="w-25 d-flex justify-content-center">
+        <div className="w-25 d-flex justify-content-end">
           <img src="/images/flags/es.png" alt="Español" className={styles.flag} onClick={() => onLocaleChange("es")} />
           <img src="/images/flags/en.png" alt="English" className={styles.flag} onClick={() => onLocaleChange("en")} />
           <img src="/images/flags/de.png" alt="Deutsch" className={styles.flag} onClick={() => onLocaleChange("de")} />

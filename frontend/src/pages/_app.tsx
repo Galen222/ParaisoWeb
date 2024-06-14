@@ -2,7 +2,7 @@ import Head from "next/head"; // Importa el componente Head de Next.js para mane
 import "@/styles/globals.css"; // Importa los estilos globales
 import "bootstrap/dist/css/bootstrap.min.css"; // Importa estilos bootstrap
 import type { AppProps } from "next/app"; // Importa el tipo AppProps de Next.js
-import { useState, useEffect } from "react"; // Importa useState y useEffect de React
+import React, { useState, useEffect } from "react"; // Importa React, useState y useEffect de React
 import { IntlProvider } from "react-intl"; // Importa IntlProvider de react-intl para la internacionalización
 import Navbar from "../components/Navbar"; // Importa el componente Navbar
 import Footer from "../components/Footer"; // Importa el componente Footer
@@ -25,14 +25,6 @@ export default function App({ Component, pageProps }: AppProps) {
     return "es";
   });
 
-  // Carga los mensajes de localización correspondientes al idioma seleccionado
-  try {
-    var messages = require(`../locales/${locale}.json`);
-  } catch (e) {
-    // Si no encuentra los mensajes para el idioma actual, carga los mensajes en español como predeterminado
-    messages = require(`../locales/es.json`);
-  }
-
   // Efecto que se ejecuta cuando cambia el idioma
   useEffect(() => {
     // Establece el atributo lang del documento HTML
@@ -47,18 +39,27 @@ export default function App({ Component, pageProps }: AppProps) {
     document.cookie = `Idioma=${newLocale}; path=/; max-age=31536000`; // Actualiza la cookie con el nuevo idioma
   };
 
+  // Estado para manejar los mensajes de localización
+  const [messages, setMessages] = useState({});
+  // Efecto para cargar los mensajes de localización correspondientes al idioma seleccionado
+  useEffect(() => {
+    import(`../locales/${locale}.json`).then((msgs) => setMessages(msgs.default));
+  }, [locale]);
+
   return (
     <>
       <Head>
-        <title>El Paraiso del Jamón</title> {/* Título de la página */}
-        <meta name="description" content="El Paraiso del Jamón" /> {/* Descripción de la página */}
+        <title>Paraíso del Jamón</title> {/* Título de la página */}
+        <meta name="description" content="Paraíso del Jamón" /> {/* Descripción de la página */}
       </Head>
       {/* Proveedor de internacionalización */}
       <IntlProvider locale={locale} messages={messages}>
-        {/* Barra de navegación, se pasa la función de cambio de idioma y el idioma actual como props */}
-        <Navbar onLocaleChange={handleLocaleChange} currentLocale={locale} />
-        <Component {...pageProps} /> {/* Componente principal de la página */}
-        <Footer /> {/* Pie de página */}
+        <React.StrictMode>
+          {/* Barra de navegación, se pasa la función de cambio de idioma y el idioma actual como props */}
+          <Navbar onLocaleChange={handleLocaleChange} currentLocale={locale} />
+          <Component {...pageProps} /> {/* Componente principal de la página */}
+          <Footer /> {/* Pie de página */}
+        </React.StrictMode>
       </IntlProvider>
     </>
   );

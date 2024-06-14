@@ -57,6 +57,8 @@
   "contacto_BotonEnviar": "Enviar",
   "contacto_ArchivoNoJPG": "Por favor, sube una imagen en formato JPG.",
   "contacto_ArchivoGrande": "Por favor, sube una imagen de tamaño máximo de 1MB",
+  "contacto_PoliticaPrivacidad_1": "He leído y acepto la",
+  "contacto_PoliticaPrivacidad_2": "política de privacidad",
   "contacto_Formulario": "Formulario enviado correctamente.",
 
   "error_Error400": "Solicitud incorrecta. Por favor, verifica los datos enviados e inténtalo de nuevo.",
