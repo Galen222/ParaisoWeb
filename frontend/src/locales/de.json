@@ -81,5 +81,13 @@
   "avisoLegal_Descripcion": "Dies ist die Seite des Impressums. Hier finden Sie Informationen zu unseren Richtlinien und Dienstleistungsbedingungen.",
 
   "politicaPrivacidad_Titulo": "Datenschutzrichtlinie",
-  "politicaPrivacidad_Descripcion": "Dies ist die Seite der Datenschutzrichtlinie. Hier finden Sie Informationen darüber, wie wir Ihre persönlichen Daten verwalten."
+  "politicaPrivacidad_Descripcion": "Dies ist die Seite der Datenschutzrichtlinie. Hier finden Sie Informationen darüber, wie wir Ihre persönlichen Daten verwalten.",
+
+  "politicaCookies_Titulo": "Cookie-Richtlinie",
+  "politicaCookies_Descripcion": "Dies ist die Cookie-Richtlinie, in der wir die Verwendung und Verwaltung von Cookies auf unserer Website erläutern. Cookies sind kleine Textdateien, die auf Ihrem Gerät gespeichert werden, um Ihr Website-Erlebnis zu verbessern und personalisierte Dienste bereitzustellen.",
+
+  "cookie_Texto": "Diese Website verwendet Cookies, um Ihre Benutzererfahrung zu verbessern. Akzeptieren Sie die Verwendung von Cookies?",
+  "cookie_BotonAceptar": "Akzeptieren",
+  "cookie_BotonRechazar": "Ablehnen",
+  "cookie_Enlace": "Cookie-Richtlinie"
 }

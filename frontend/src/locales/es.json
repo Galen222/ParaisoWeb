@@ -81,5 +81,13 @@
   "avisoLegal_Descripcion": "Esta es la página de Aviso Legal. Aquí puedes encontrar información sobre nuestras políticas y términos de servicio.",
 
   "politicaPrivacidad_Titulo": "Política de Privacidad",
-  "politicaPrivacidad_Descripcion": "Esta es la página de Política de Privacidad. Aquí puedes encontrar información sobre cómo manejamos tus datos personales."
+  "politicaPrivacidad_Descripcion": "Esta es la página de Política de Privacidad. Aquí puedes encontrar información sobre cómo manejamos tus datos personales.",
+
+  "politicaCookies_Titulo": "Política de Cookies",
+  "politicaCookies_Descripcion": "Esta es la política de cookies donde explicamos el uso y gestión de cookies en nuestro sitio web. Las cookies son pequeños archivos de texto que se almacenan en su dispositivo para ayudar a mejorar su experiencia en el sitio web y ofrecer servicios personalizados.",
+
+  "cookie_Texto": "Este sitio utiliza cookies para mejorar la experiencia de usuario. ¿Aceptas el uso de cookies?",
+  "cookie_BotonAceptar": "Aceptar",
+  "cookie_BotonRechazar": "Rechazar",
+  "cookie_Enlace": "Política de Cookies"
 }

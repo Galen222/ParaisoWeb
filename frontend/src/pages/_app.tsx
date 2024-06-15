@@ -1,64 +1,84 @@
-import Head from "next/head"; // Importa el componente Head de Next.js para manejar la cabecera del documento
-import "@/styles/globals.css"; // Importa los estilos globales
-import "bootstrap/dist/css/bootstrap.min.css"; // Importa estilos bootstrap
-import type { AppProps } from "next/app"; // Importa el tipo AppProps de Next.js
-import React, { useState, useEffect } from "react"; // Importa React, useState y useEffect de React
-import { IntlProvider } from "react-intl"; // Importa IntlProvider de react-intl para la internacionalización
-import Navbar from "../components/Navbar"; // Importa el componente Navbar
-import Footer from "../components/Footer"; // Importa el componente Footer
+// _app.tsx
+import Head from "next/head";
+import "@/styles/globals.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import type { AppProps } from "next/app";
+import React, { useState, useEffect } from "react";
+import { IntlProvider } from "react-intl";
+import { useRouter } from "next/router";
+import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
+import Cookie from "../components/Cookie";
 
-// Función principal de la aplicación que recibe las propiedades del componente y de la página
 export default function App({ Component, pageProps }: AppProps) {
-  // Estado para manejar el idioma, inicializado a partir de la cookie o por defecto a "es"
-  const [locale, setLocale] = useState(() => {
-    // Verifica si está en el entorno del navegador
-    if (typeof window !== "undefined") {
-      // Si está en el navegador, busca la cookie "Idioma" y extrae su valor
-      return (
-        document.cookie
-          .split("; ") // Divide las cookies en un array de cadenas
-          .find((row) => row.startsWith("Idioma=")) // Encuentra la cadena que empieza con "Idioma="
-          ?.split("=")[1] || "es" // Divide esa cadena en "Idioma=" y el valor del idioma, y retorna el valor o "es" si no se encuentra
-      );
-    }
-    // Si no está en el entorno del navegador (por ejemplo, en el servidor), retorna "es" por defecto
-    return "es";
-  });
-
-  // Efecto que se ejecuta cuando cambia el idioma
-  useEffect(() => {
-    // Establece el atributo lang del documento HTML
-    document.documentElement.lang = locale;
-    // Actualiza la cookie con el nuevo idioma y establece su duración a 1 año
-    document.cookie = `Idioma=${locale}; path=/; max-age=31536000`;
-  }, [locale]);
-
-  // Maneja el cambio de idioma
-  const handleLocaleChange = (newLocale: string) => {
-    setLocale(newLocale); // Actualiza el estado del idioma
-    document.cookie = `Idioma=${newLocale}; path=/; max-age=31536000`; // Actualiza la cookie con el nuevo idioma
-  };
-
-  // Estado para manejar los mensajes de localización
+  const [locale, setLocale] = useState<string>("es");
   const [messages, setMessages] = useState({});
-  // Efecto para cargar los mensajes de localización correspondientes al idioma seleccionado
+  const [cookieConsent, setCookieConsent] = useState<boolean>(false);
+  const [showCookieModal, setShowCookieModal] = useState<boolean>(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const cookieValue = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("locale="))
+      ?.split("=")[1];
+
+    if (cookieValue && ["es", "en", "de"].includes(cookieValue)) {
+      setLocale(cookieValue);
+      setCookieConsent(true);
+      setShowCookieModal(false);
+    } else {
+      setLocale(navigator.language.slice(0, 2));
+    }
+  }, []);
+
   useEffect(() => {
     import(`../locales/${locale}.json`).then((msgs) => setMessages(msgs.default));
   }, [locale]);
 
+  useEffect(() => {
+    if (cookieConsent) {
+      document.cookie = `locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+    }
+  }, [locale, cookieConsent]);
+
+  const handleLocaleChange = (newLocale: string) => {
+    setLocale(newLocale);
+    setCookieConsent(true);
+    setShowCookieModal(false);
+    document.cookie = `locale=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+  };
+
+  const handlePolicyLinkClick = () => {
+    setShowCookieModal(false);
+    setCookieConsent(false);
+    router.push("/politica-cookies");
+  };
+
   return (
     <>
       <Head>
-        <title>Paraíso del Jamón</title> {/* Título de la página */}
-        <meta name="description" content="Paraíso del Jamón" /> {/* Descripción de la página */}
+        <title>Paraíso del Jamón</title>
+        <meta name="description" content="Paraíso del Jamón" />
       </Head>
-      {/* Proveedor de internacionalización */}
       <IntlProvider locale={locale} messages={messages}>
         <React.StrictMode>
-          {/* Barra de navegación, se pasa la función de cambio de idioma y el idioma actual como props */}
+          {showCookieModal && (
+            <Cookie
+              onAccept={() => {
+                setCookieConsent(true);
+                setShowCookieModal(false);
+              }}
+              onDecline={() => {
+                setCookieConsent(false);
+                setShowCookieModal(false);
+              }}
+              onPolicyLinkClick={handlePolicyLinkClick}
+            />
+          )}
           <Navbar onLocaleChange={handleLocaleChange} currentLocale={locale} />
-          <Component {...pageProps} /> {/* Componente principal de la página */}
-          <Footer /> {/* Pie de página */}
+          <Component {...pageProps} />
+          <Footer />
         </React.StrictMode>
       </IntlProvider>
     </>

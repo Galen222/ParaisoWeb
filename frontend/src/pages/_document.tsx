@@ -1,54 +1,44 @@
 import Document, { Html, Head, Main, NextScript, DocumentContext } from "next/document";
 
-// Define una clase personalizada para el documento de Next.js
 class MyDocument extends Document {
-  // Método estático para obtener las propiedades iniciales del documento
   static async getInitialProps(ctx: DocumentContext) {
-    // Obtiene las propiedades iniciales del documento utilizando el método de Document
     const initialProps = await Document.getInitialProps(ctx);
-    let locale = "es"; // Establece el idioma predeterminado a español
+    let locale = "es"; // Default language
 
-    // Intenta obtener el idioma de la cookie "Idioma"
+    // Attempt to retrieve the locale from the 'locale' cookie
     const cookieLocale = ctx.req?.headers.cookie
       ?.split("; ")
-      .find((row) => row.startsWith("Idioma="))
+      .find((row) => row.startsWith("locale="))
       ?.split("=")[1];
 
-    // Si existe la cookie, usa su valor como el idioma
-    if (cookieLocale) {
+    // Validate and use cookieLocale if it's within the expected values
+    if (cookieLocale && ["es", "en", "de"].includes(cookieLocale)) {
       locale = cookieLocale;
     } else if (ctx.req?.headers["accept-language"]) {
-      // Si no existe la cookie, intenta obtener el idioma del navegador
+      // Fallback to browser language if no valid cookie is found
       const browserLang = ctx.req.headers["accept-language"].split(",")[0].slice(0, 2);
-      // Establece el idioma en español, inglés o alemán si está disponible, de lo contrario, usa español
       locale = ["es", "en", "de"].includes(browserLang) ? browserLang : "es";
     }
 
-    // Retorna las propiedades iniciales junto con el idioma seleccionado
     return { ...initialProps, locale };
   }
 
-  // Método render para definir la estructura del documento HTML
   render() {
-    const { locale } = this.props; // Obtiene el idioma de las propiedades del componente
+    const { locale } = this.props;
 
     return (
-      // Establece el atributo lang del elemento Html según el idioma seleccionado
       <Html lang={locale}>
         <Head>
-          {/* Meta etiqueta para configurar la vista en dispositivos móviles */}
           <meta name="viewport" content="width=device-width, initial-scale=1" />
-          {/* Enlace al icono de la página*/}
           <link rel="icon" href="/images/iconoLogo.ico" />
         </Head>
         <body>
-          <Main /> {/* Renderiza la aplicación principal de Next.js */}
-          <NextScript /> {/* Incluye los scripts necesarios para Next.js */}
+          <Main />
+          <NextScript />
         </body>
       </Html>
     );
   }
 }
 
-// Exporta la clase MyDocument como el componente por defecto del módulo
 export default MyDocument;
