@@ -3,21 +3,28 @@ import Head from "next/head";
 import "@/styles/globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import type { AppProps } from "next/app";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { IntlProvider } from "react-intl";
 import { useRouter } from "next/router";
+import { CookieConsentProvider, useCookieConsent } from "../context/CookieConsentContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cookie from "../components/Cookie";
 
-export default function App({ Component, pageProps }: AppProps) {
-  const [locale, setLocale] = useState<string>("es");
-  const [messages, setMessages] = useState({});
-  const [cookieConsent, setCookieConsent] = useState<boolean>(false);
-  const [showCookieModal, setShowCookieModal] = useState<boolean>(true);
+// Definir los tipos para las props de MainComponent
+interface MainComponentProps {
+  Component: React.ComponentType<AppProps>; // Define el tipo de Component como un componente React que acepta AppProps
+  pageProps: AppProps["pageProps"]; // Define el tipo de pageProps como pageProps de AppProps
+}
+
+function MainComponent({ Component, pageProps }: MainComponentProps) {
+  const [locale, setLocale] = React.useState<string>("es");
+  const [messages, setMessages] = React.useState({});
+  const { cookieConsent, setCookieConsent } = useCookieConsent();
+  const [showCookieModal, setShowCookieModal] = React.useState<boolean>(true);
   const router = useRouter();
 
-  useEffect(() => {
+  React.useEffect(() => {
     const cookieValue = document.cookie
       .split("; ")
       .find((row) => row.startsWith("locale="))
@@ -30,13 +37,13 @@ export default function App({ Component, pageProps }: AppProps) {
     } else {
       setLocale(navigator.language.slice(0, 2));
     }
-  }, []);
+  }, [setCookieConsent]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     import(`../locales/${locale}.json`).then((msgs) => setMessages(msgs.default));
   }, [locale]);
 
-  useEffect(() => {
+  React.useEffect(() => {
     if (cookieConsent) {
       document.cookie = `locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
     }
@@ -44,9 +51,9 @@ export default function App({ Component, pageProps }: AppProps) {
 
   const handleLocaleChange = (newLocale: string) => {
     setLocale(newLocale);
-    setCookieConsent(true);
-    setShowCookieModal(false);
-    document.cookie = `locale=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    if (cookieConsent) {
+      document.cookie = `locale=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    }
   };
 
   const handlePolicyLinkClick = () => {
@@ -82,5 +89,14 @@ export default function App({ Component, pageProps }: AppProps) {
         </React.StrictMode>
       </IntlProvider>
     </>
+  );
+}
+
+// Componente App que envuelve todo con CookieConsentProvider
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <CookieConsentProvider>
+      <MainComponent Component={Component} pageProps={pageProps} />
+    </CookieConsentProvider>
   );
 }

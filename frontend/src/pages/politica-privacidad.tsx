@@ -1,9 +1,11 @@
 import React from "react";
 import { useIntl } from "react-intl";
+import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import styles from "../styles/politica-privacidad.module.css";
 
 const PoliticaPrivacidadPage = () => {
   const intl = useIntl();
+  useVisitedPageTracking("politica-privacidad");
 
   return (
     <div className="container">

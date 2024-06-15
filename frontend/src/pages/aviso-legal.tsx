@@ -1,9 +1,11 @@
 import React from "react";
 import { useIntl } from "react-intl";
+import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import styles from "../styles/aviso-legal.module.css";
 
 const AvisoLegalPage = () => {
   const intl = useIntl();
+  useVisitedPageTracking("aviso-legal");
 
   return (
     <div className="container">

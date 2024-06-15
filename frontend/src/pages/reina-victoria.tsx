@@ -1,11 +1,12 @@
 import React from "react"; // Importa React para crear componentes y utilizar JSX.
 import { useIntl } from "react-intl"; // Importa el hook useIntl para internacionalización.
+import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import styles from "../styles/reina-victoria.module.css"; // Importa los estilos CSS específicos para la página Reina Victoria.
 
 // Define el componente funcional ReinaVictoriaPage utilizando una función flecha.
 const ReinaVictoriaPage = () => {
   const intl = useIntl(); // Inicializa el hook de internacionalización para usarlo en este componente.
-
+  useVisitedPageTracking("reina-victoria");
   // Devuelve el JSX que construye la interfaz de usuario de la página.
   return (
     <div className="container">
