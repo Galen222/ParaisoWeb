@@ -132,7 +132,11 @@ const ContactPage = () => {
           <span className={styles.archiveText}>{intl.formatMessage({ id: "contacto_SubirImagen" })}</span>
           <div className={styles.fileUploadContainer}>
             <input type="file" id="imageUpload" name="imageUpload" accept="image/jpeg" className="d-none" onChange={handleFileChange} />
-            <button type="button" className="btn btn-outline-secondary w-200p" onClick={() => document.getElementById("imageUpload")?.click()}>
+            <button
+              type="button"
+              className={`btn btn-outline-secondary w-200p ${styles.fileButton}`}
+              onClick={() => document.getElementById("imageUpload")?.click()}
+            >
               {intl.formatMessage({ id: "contacto_BotonSubirImagen" })}
             </button>
             <div className={styles.fileNameBox}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>

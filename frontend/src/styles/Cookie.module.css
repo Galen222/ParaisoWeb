@@ -30,7 +30,6 @@
   display: block;
   margin-top: 20px;
   text-align: center;
-  color: black; /* Color del texto de los enlaces */
   text-decoration: none; /* Opcional: eliminar el subrayado de los enlaces */
 }
 
