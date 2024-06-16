@@ -69,7 +69,7 @@ input:checked + .slider:before {
 .buttonContainer {
   display: flex;
   justify-content: space-between;
-  margin-top: 20px;
+  margin-top: 25px;
 }
 
 .acceptButton {
@@ -80,6 +80,18 @@ input:checked + .slider:before {
   --bs-btn-hover-border-color: #198754;
   --bs-btn-active-bg: #198754;
   --bs-btn-active-border-color: #198754;
+  --bs-btn-disabled-bg: #4a403a;
+  --bs-btn-disabled-border-color: #4a403a;
+}
+
+.cancelButton {
+  width: 200px;
+  --bs-btn-bg: #4a403a;
+  --bs-btn-border-color: #4a403a;
+  --bs-btn-hover-bg: #dc3545;
+  --bs-btn-hover-border-color: #dc3545;
+  --bs-btn-active-bg: #dc3545;
+  --bs-btn-active-border-color: #dc3545;
   --bs-btn-disabled-bg: #4a403a;
   --bs-btn-disabled-border-color: #4a403a;
 }

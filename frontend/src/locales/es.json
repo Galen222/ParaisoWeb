@@ -58,7 +58,7 @@
   "contacto_ArchivoNoJPG": "Por favor, sube una imagen en formato JPG.",
   "contacto_ArchivoGrande": "Por favor, sube una imagen de tamaño máximo de 1MB",
   "contacto_PoliticaPrivacidad_1": "He leído y acepto la",
-  "contacto_PoliticaPrivacidad_2": "política de privacidad y cookies",
+  "contacto_PoliticaPrivacidad_2": "política de privacidad",
   "contacto_Formulario": "Formulario enviado correctamente.",
 
   "error_Error400": "Solicitud incorrecta. Por favor, verifica los datos enviados e inténtalo de nuevo.",
@@ -81,7 +81,8 @@
   "cookie_AceptarPersonalizacion": "Aceptar cookies de personalización",
   "cookie_AceptarAnalisis": "Aceptar cookies de análisis",
   "cookie_BotonAceptar": "Aceptar",
-  "cookie_Enlace": "Política de privacidad y cookies",
+  "cookie_BotonRechazar": "Rechazar",
+  "cookie_Enlace": "Política de cookies",
 
   "politicaPrivacidadCookies_Principal_Titulo": "Política de privacidad y cookies",
   "politicaCookies_Principal_Titulo": "Política de cookies",

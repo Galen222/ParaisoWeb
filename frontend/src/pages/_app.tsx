@@ -109,6 +109,9 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
                   console.log("entra en false idioma");
                 }
               }}
+              onDecline={() => {
+                setShowCookieModal(false);
+              }}
               onPolicyLinkClick={handlePolicyLinkClick}
             />
           )}

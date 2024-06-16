@@ -75,6 +75,15 @@ const ContactPage = () => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     alert(intl.formatMessage({ id: "contacto_Formulario" }));
+    // Resetear el formulario
+    setFormData({
+      name: "",
+      reason: "",
+      email: "",
+      message: "",
+      file: null,
+    });
+    setIsPrivacyChecked(false);
   };
 
   // Verifica que los campos requeridos no estén vacíos y sea un email válido
