@@ -1,0 +1,24 @@
+.listas {
+  margin-left: 40px;
+  margin-right: 60px;
+}
+
+.mt-25p {
+  margin-top: 25px;
+}
+
+.mb-10p {
+  margin-bottom: 10px;
+}
+
+.ti-20p {
+  text-indent: 20px;
+}
+
+.link {
+  text-decoration: none; /* Opcional: eliminar el subrayado de los enlaces */
+}
+
+.link:hover {
+  text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
+}

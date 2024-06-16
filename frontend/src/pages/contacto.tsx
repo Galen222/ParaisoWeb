@@ -152,7 +152,7 @@ const ContactPage = () => {
             </span>
             <span className={styles.checkText}>
               {intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}{" "}
-              <Link href="/politica-privacidad" className={styles.link}>
+              <Link href="/politica-privacidad-cookies" className={styles.link}>
                 <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
               </Link>
             </span>

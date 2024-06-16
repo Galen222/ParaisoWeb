@@ -15,8 +15,8 @@ const Footer: React.FC = () => {
           {intl.formatMessage({ id: "Footer_AvisoLegal" })}
         </Link>
         {" | "}
-        <Link href="/politica-privacidad" className={styles.link}>
-          {intl.formatMessage({ id: "Footer_PoliticaPrivacidad" })}
+        <Link href="/politica-privacidad-cookies" className={styles.link}>
+          {intl.formatMessage({ id: "Footer_PoliticaPrivacidadCookies" })}
         </Link>
       </p>
     </footer>

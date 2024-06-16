@@ -8,7 +8,7 @@ class MyDocument extends Document {
     // Attempt to retrieve the locale from the 'locale' cookie
     const cookieLocale = ctx.req?.headers.cookie
       ?.split("; ")
-      .find((row) => row.startsWith("locale="))
+      .find((row) => row.startsWith("_locale="))
       ?.split("=")[1];
 
     // Validate and use cookieLocale if it's within the expected values
