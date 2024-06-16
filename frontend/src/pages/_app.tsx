@@ -6,7 +6,7 @@ import type { AppProps } from "next/app";
 import React from "react";
 import { IntlProvider } from "react-intl";
 import { useRouter } from "next/router";
-import { CookieConsentProvider, useCookieConsent } from "../context/CookieConsentContext";
+import { CookieConsentProvider, useCookieConsent } from "../context/CookieContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cookie from "../components/Cookie";
@@ -20,46 +20,65 @@ interface MainComponentProps {
 function MainComponent({ Component, pageProps }: MainComponentProps) {
   const [locale, setLocale] = React.useState<string>("es");
   const [messages, setMessages] = React.useState({});
-  const { cookieConsent, setCookieConsent } = useCookieConsent();
-  const [showCookieModal, setShowCookieModal] = React.useState<boolean>(true);
+  const { setCookieConsentAnalysis, cookieConsentPersonalization, setCookieConsentPersonalization, AcceptCookieAnalysis, AcceptCookiePersonalization } =
+    useCookieConsent();
+  const [showCookieModal, setShowCookieModal] = React.useState<boolean>(false);
   const router = useRouter();
 
   React.useEffect(() => {
-    const cookieValue = document.cookie
+    const cookieValuePersonalization = document.cookie
       .split("; ")
-      .find((row) => row.startsWith("locale="))
+      .find((row) => row.startsWith("_locale="))
       ?.split("=")[1];
+    const cookieNameAnalysis = document.cookie.split("; ").find((row) => row.startsWith("_visited="));
 
-    if (cookieValue && ["es", "en", "de"].includes(cookieValue)) {
-      setLocale(cookieValue);
-      setCookieConsent(true);
-      setShowCookieModal(false);
+    if (cookieValuePersonalization && ["es", "en", "de"].includes(cookieValuePersonalization)) {
+      setLocale(cookieValuePersonalization);
+      setCookieConsentPersonalization(true);
     } else {
       setLocale(navigator.language.slice(0, 2));
     }
-  }, [setCookieConsent]);
+    if (cookieNameAnalysis) {
+      setCookieConsentAnalysis(true);
+      // Aqui crea la cookie _info
+    }
+    if (!cookieNameAnalysis && !cookieValuePersonalization) {
+      setShowCookieModal(true);
+    }
+  }, [setCookieConsentPersonalization, setCookieConsentAnalysis]);
 
   React.useEffect(() => {
     import(`../locales/${locale}.json`).then((msgs) => setMessages(msgs.default));
   }, [locale]);
 
   React.useEffect(() => {
-    if (cookieConsent) {
-      document.cookie = `locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+    if (cookieConsentPersonalization) {
+      document.cookie = `_locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
     }
-  }, [locale, cookieConsent]);
+  }, [locale, cookieConsentPersonalization]);
 
   const handleLocaleChange = (newLocale: string) => {
     setLocale(newLocale);
-    if (cookieConsent) {
-      document.cookie = `locale=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+    if (cookieConsentPersonalization) {
+      document.cookie = `_locale=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
     }
   };
 
   const handlePolicyLinkClick = () => {
     setShowCookieModal(false);
-    setCookieConsent(false);
-    router.push("/politica-cookies");
+    setCookieConsentPersonalization(false);
+    setCookieConsentAnalysis(false);
+    router.push("/politica-privacidad-cookies");
+  };
+
+  const createDeviceCookie = () => {
+    const deviceInfo = {
+      deviceType: /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "PC",
+      screenResolution: `${window.screen.width}x${window.screen.height}`,
+      language: navigator.language,
+    };
+
+    document.cookie = `_device=${JSON.stringify(deviceInfo)}; path=/; max-age=31536000; SameSite=Lax`;
   };
 
   return (
@@ -73,12 +92,22 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
           {showCookieModal && (
             <Cookie
               onAccept={() => {
-                setCookieConsent(true);
                 setShowCookieModal(false);
-              }}
-              onDecline={() => {
-                setCookieConsent(false);
-                setShowCookieModal(false);
+                if (AcceptCookieAnalysis) {
+                  setCookieConsentAnalysis(true);
+                  createDeviceCookie();
+                  console.log("entra en true paginas");
+                } else {
+                  setCookieConsentAnalysis(false);
+                  console.log("entra en false paginas");
+                }
+                if (AcceptCookiePersonalization) {
+                  setCookieConsentPersonalization(true);
+                  console.log("entra en true idioma");
+                } else {
+                  setCookieConsentPersonalization(false);
+                  console.log("entra en false idioma");
+                }
               }}
               onPolicyLinkClick={handlePolicyLinkClick}
             />
