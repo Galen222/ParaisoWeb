@@ -57,7 +57,7 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onPolicyLinkClick }) => {
           </label>
         </div>
         <div className={styles.buttonContainer}>
-          <button className={`btn btn-primary w-200p mt-20p mx-auto ${styles.acceptButton}`} onClick={onAccept}>
+          <button className={`btn btn-primary mt-25p mx-auto ${styles.acceptButton}`} onClick={onAccept}>
             {intl.formatMessage({ id: "cookie_BotonAceptar" })}
           </button>
         </div>

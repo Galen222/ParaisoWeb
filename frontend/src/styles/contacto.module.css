@@ -42,6 +42,7 @@
 }
 
 .submitButton {
+  width: 200px;
   --bs-btn-bg: #4a403a;
   --bs-btn-border-color: #4a403a;
   --bs-btn-hover-bg: #198754;
@@ -53,6 +54,7 @@
 }
 
 .fileButton {
+  width: 200px;
   --bs-btn-bg: white;
   --bs-btn-hover-bg: #4a403a;
   --bs-btn-hover-border-color: #4a403a;

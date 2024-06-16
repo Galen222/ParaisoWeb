@@ -3,22 +3,22 @@
   margin-right: 60px;
 }
 
-.mt-25p {
-  margin-top: 25px;
-}
-
-.mb-10p {
-  margin-bottom: 10px;
-}
-
-.ti-20p {
-  text-indent: 20px;
-}
-
 .link {
   text-decoration: none; /* Opcional: eliminar el subrayado de los enlaces */
 }
 
 .link:hover {
   text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
+}
+
+.deleteButton {
+  width: 400px;
+  --bs-btn-bg: #4a403a;
+  --bs-btn-border-color: #4a403a;
+  --bs-btn-hover-bg: #dc3545;
+  --bs-btn-hover-border-color: #dc3545;
+  --bs-btn-active-bg: #dc3545;
+  --bs-btn-active-border-color: #dc3545;
+  --bs-btn-disabled-bg: #4a403a;
+  --bs-btn-disabled-border-color: #4a403a;
 }

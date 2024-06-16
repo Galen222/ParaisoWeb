@@ -73,6 +73,7 @@ input:checked + .slider:before {
 }
 
 .acceptButton {
+  width: 200px;
   --bs-btn-bg: #4a403a;
   --bs-btn-border-color: #4a403a;
   --bs-btn-hover-bg: #198754;

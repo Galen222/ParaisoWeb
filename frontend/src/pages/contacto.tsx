@@ -95,7 +95,7 @@ const ContactPage = () => {
 
   return (
     <div className="container">
-      <div className={`mt-30p ${styles.recuadro}`}>
+      <div className={`mt-25p ${styles.recuadro}`}>
         <form onSubmit={handleSubmit} className={styles.form}>
           <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
           <input
@@ -132,11 +132,7 @@ const ContactPage = () => {
           <span className={styles.archiveText}>{intl.formatMessage({ id: "contacto_SubirImagen" })}</span>
           <div className={styles.fileUploadContainer}>
             <input type="file" id="imageUpload" name="imageUpload" accept="image/jpeg" className="d-none" onChange={handleFileChange} />
-            <button
-              type="button"
-              className={`btn btn-outline-secondary w-200p ${styles.fileButton}`}
-              onClick={() => document.getElementById("imageUpload")?.click()}
-            >
+            <button type="button" className={`btn btn-outline-secondary ${styles.fileButton}`} onClick={() => document.getElementById("imageUpload")?.click()}>
               {intl.formatMessage({ id: "contacto_BotonSubirImagen" })}
             </button>
             <div className={styles.fileNameBox}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
@@ -157,7 +153,7 @@ const ContactPage = () => {
               </Link>
             </span>
           </div>
-          <button type="submit" className={`btn btn-primary w-200p mt-20p mx-auto ${styles.submitButton}`} disabled={!CheckFormComplete()}>
+          <button type="submit" className={`btn btn-primary mt-25p mx-auto ${styles.submitButton}`} disabled={!CheckFormComplete()}>
             {intl.formatMessage({ id: "contacto_BotonEnviar" })}
           </button>
         </form>

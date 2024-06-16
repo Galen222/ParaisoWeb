@@ -33,8 +33,8 @@
 }
 
 .noLink {
-  color: white; /* Esto asegura que el texto sea blanco */
-  cursor: pointer; /* Opcional, para mejorar la interacción del usuario */
+  color: white;
+  cursor: pointer; /* Para mejorar la interacción del usuario */
 }
 
 .menuContainer {

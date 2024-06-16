@@ -23,14 +23,14 @@ body {
   margin-bottom: 50px;
 }
 
-.mt-20p {
-  margin-top: 20px;
+.ti-20p {
+  text-indent: 20px;
 }
 
-.mt-30p {
-  padding-top: 30px;
+.mt-25p {
+  margin-top: 25px;
 }
 
-.w-200p {
-  width: 200px;
+.mb-10p {
+  margin-bottom: 10px;
 }
