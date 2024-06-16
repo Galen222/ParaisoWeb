@@ -16,8 +16,8 @@ const CookieConsentContext = createContext<CookieConsentContextType | undefined>
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
   const [cookieConsentAnalysis, setCookieConsentAnalysis] = useState<boolean>(false);
   const [cookieConsentPersonalization, setCookieConsentPersonalization] = useState<boolean>(false);
-  const [AcceptCookieAnalysis, setAcceptCookieAnalysis] = useState(true);
-  const [AcceptCookiePersonalization, setAcceptCookiePersonalization] = useState(true);
+  const [AcceptCookieAnalysis, setAcceptCookieAnalysis] = useState(false);
+  const [AcceptCookiePersonalization, setAcceptCookiePersonalization] = useState(false);
 
   return (
     <CookieConsentContext.Provider

@@ -17,7 +17,7 @@
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 90%;
-  max-width: 500px;
+  max-width: 650px;
 }
 
 .switchContainer {
@@ -59,7 +59,7 @@
 }
 
 input:checked + .slider {
-  background-color: #4a403a;
+  background-color: #198754;
 }
 
 input:checked + .slider:before {
@@ -73,7 +73,7 @@ input:checked + .slider:before {
 }
 
 .acceptButton {
-  width: 200px;
+  width: 300px;
   --bs-btn-bg: #4a403a;
   --bs-btn-border-color: #4a403a;
   --bs-btn-hover-bg: #198754;
@@ -85,7 +85,7 @@ input:checked + .slider:before {
 }
 
 .cancelButton {
-  width: 200px;
+  width: 300px;
   --bs-btn-bg: #4a403a;
   --bs-btn-border-color: #4a403a;
   --bs-btn-hover-bg: #dc3545;

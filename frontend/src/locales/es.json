@@ -77,11 +77,11 @@
   "Footer_AvisoLegal": "Aviso legal",
   "Footer_PoliticaPrivacidadCookies": "Política de privacidad y cookies",
 
-  "cookie_Texto": "Este sitio utiliza cookies para mejorar la experiencia de usuario.",
+  "cookie_Texto": "Este sitio web utiliza cookies para mejorar la experiencia de usuario.",
   "cookie_AceptarPersonalizacion": "Aceptar cookies de personalización",
   "cookie_AceptarAnalisis": "Aceptar cookies de análisis",
-  "cookie_BotonAceptar": "Aceptar",
-  "cookie_BotonRechazar": "Rechazar",
+  "cookie_BotonAceptar": "Aceptar cookies seleccionadas",
+  "cookie_BotonRechazar": "Rechazar todas las cookies",
   "cookie_Enlace": "Política de cookies",
 
   "politicaPrivacidadCookies_Principal_Titulo": "Política de privacidad y cookies",

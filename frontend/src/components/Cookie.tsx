@@ -25,6 +25,14 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onDecline, onPolicyLinkClick 
     console.log("el slider es: ", !AcceptCookieAnalysis);
   };
 
+  const checkCookiesState = () => {
+    if (!AcceptCookieAnalysis && !AcceptCookiePersonalization) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
   return (
     <div className={styles.cookieModalBackdrop}>
       <div className={styles.cookieModal}>
@@ -58,7 +66,7 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onDecline, onPolicyLinkClick 
           </label>
         </div>
         <div className={styles.buttonContainer}>
-          <button className={`btn btn-primary ${styles.acceptButton}`} onClick={onAccept}>
+          <button className={`btn btn-primary ${styles.acceptButton}`} disabled={checkCookiesState()} onClick={onAccept}>
             {intl.formatMessage({ id: "cookie_BotonAceptar" })}
           </button>
           <button className={`btn btn-primary ${styles.cancelButton}`} onClick={onDecline}>
