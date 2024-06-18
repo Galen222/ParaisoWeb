@@ -3,13 +3,13 @@ import React from "react";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useCookieConsent } from "../context/CookieContext";
-import styles from "../styles/politica-privacidad-cookies.module.css";
+import styles from "../styles/politica-cookies.module.css";
 
 const PoliticaCookies = () => {
   const intl = useIntl();
   const { cookieConsentAnalysis, setCookieConsentAnalysis, cookieConsentPersonalization, setCookieConsentPersonalization } = useCookieConsent();
   const cookiesState = cookieConsentAnalysis && cookieConsentPersonalization;
-  useVisitedPageTracking("politica-privacidad-cookies");
+  useVisitedPageTracking("politica-cookies");
 
   const deleteCookies = () => {
     if (cookieConsentAnalysis) {
@@ -26,7 +26,7 @@ const PoliticaCookies = () => {
   return (
     <div className="container2">
       <div>
-        <h1 className="text-center">{intl.formatMessage({ id: "politicaPrivacidadCookies_Principal_Titulo" })}</h1>
+        <h1 className="text-center">{intl.formatMessage({ id: "politicaCookies_Principal_Titulo" })}</h1>
       </div>
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Principal_Titulo" })}</h3>
@@ -176,7 +176,7 @@ const PoliticaCookies = () => {
       </div>
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Actualizacion_Titulo" })}</h3>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Actualizacion_texto" })}</p>
+        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Actualizacion_Texto" })}</p>
       </div>
     </div>
   );

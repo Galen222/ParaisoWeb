@@ -68,7 +68,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     setShowCookieModal(false);
     setCookieConsentPersonalization(false);
     setCookieConsentAnalysis(false);
-    router.push("/politica-privacidad-cookies");
+    router.push("/politica-cookies");
   };
 
   const createDeviceCookie = () => {

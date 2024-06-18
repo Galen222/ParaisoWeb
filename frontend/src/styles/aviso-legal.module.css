@@ -1,0 +1,15 @@
+.listas {
+  margin-left: 40px;
+  margin-right: 60px;
+}
+.listas2 {
+  margin-top: 5px;
+}
+
+.link {
+  text-decoration: none; /* Opcional: eliminar el subrayado de los enlaces */
+}
+
+.link:hover {
+  text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
+}
