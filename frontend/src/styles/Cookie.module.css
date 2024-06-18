@@ -1,14 +1,14 @@
 .cookieModalBackdrop {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-end; /* Alinea el modal al principio horizontalmente */
+  align-items: flex-end; /* Alinea el modal al final verticalmente */
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
+  z-index: 2000;
 }
 
 .cookieModal {
@@ -18,6 +18,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 90%;
   max-width: 650px;
+  margin: 20px; /* Agrega un margen para que no esté pegado a los bordes */
 }
 
 .switchContainer {
@@ -73,7 +74,7 @@ input:checked + .slider:before {
 }
 
 .acceptButton {
-  width: 300px;
+  width: 200px;
   --bs-btn-bg: #4a403a;
   --bs-btn-border-color: #4a403a;
   --bs-btn-hover-bg: #198754;
@@ -85,7 +86,7 @@ input:checked + .slider:before {
 }
 
 .cancelButton {
-  width: 300px;
+  width: 200px;
   --bs-btn-bg: #4a403a;
   --bs-btn-border-color: #4a403a;
   --bs-btn-hover-bg: #dc3545;

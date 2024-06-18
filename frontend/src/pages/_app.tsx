@@ -11,17 +11,23 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cookie from "../components/Cookie";
 
-// Definir los tipos para las props de MainComponent
 interface MainComponentProps {
-  Component: React.ComponentType<AppProps>; // Define el tipo de Component como un componente React que acepta AppProps
-  pageProps: AppProps["pageProps"]; // Define el tipo de pageProps como pageProps de AppProps
+  Component: React.ComponentType<AppProps>;
+  pageProps: AppProps["pageProps"];
 }
 
 function MainComponent({ Component, pageProps }: MainComponentProps) {
   const [locale, setLocale] = React.useState<string>("es");
   const [messages, setMessages] = React.useState({});
-  const { setCookieConsentAnalysis, cookieConsentPersonalization, setCookieConsentPersonalization, AcceptCookieAnalysis, AcceptCookiePersonalization } =
-    useCookieConsent();
+  const {
+    setCookieConsentAnalysis,
+    cookieConsentPersonalization,
+    setCookieConsentPersonalization,
+    setAcceptCookieAnalysis,
+    AcceptCookieAnalysis,
+    setAcceptCookiePersonalization,
+    AcceptCookiePersonalization,
+  } = useCookieConsent();
   const [showCookieModal, setShowCookieModal] = React.useState<boolean>(false);
   const router = useRouter();
 
@@ -40,7 +46,6 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     }
     if (cookieNameAnalysis) {
       setCookieConsentAnalysis(true);
-      // Aqui crea la cookie _info
     }
     if (!cookieNameAnalysis && !cookieValuePersonalization) {
       setShowCookieModal(true);
@@ -92,24 +97,31 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
           {showCookieModal && (
             <Cookie
               onAccept={() => {
-                setShowCookieModal(false);
                 if (AcceptCookieAnalysis) {
                   setCookieConsentAnalysis(true);
                   createDeviceCookie();
-                  console.log("entra en true paginas");
                 } else {
                   setCookieConsentAnalysis(false);
-                  console.log("entra en false paginas");
                 }
                 if (AcceptCookiePersonalization) {
                   setCookieConsentPersonalization(true);
-                  console.log("entra en true idioma");
                 } else {
                   setCookieConsentPersonalization(false);
-                  console.log("entra en false idioma");
                 }
+                setShowCookieModal(false);
               }}
-              onDecline={() => {
+              onDeclineAll={() => {
+                setAcceptCookieAnalysis(false);
+                setCookieConsentAnalysis(false);
+                setAcceptCookiePersonalization(false);
+                setCookieConsentPersonalization(false);
+                setShowCookieModal(false);
+              }}
+              onAcceptAll={() => {
+                setAcceptCookieAnalysis(true);
+                setCookieConsentAnalysis(true);
+                setAcceptCookiePersonalization(true);
+                setCookieConsentPersonalization(true);
                 setShowCookieModal(false);
               }}
               onPolicyLinkClick={handlePolicyLinkClick}
@@ -124,7 +136,6 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
   );
 }
 
-// Componente App que envuelve todo con CookieConsentProvider
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <CookieConsentProvider>

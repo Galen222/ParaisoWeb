@@ -7,11 +7,12 @@ import styles from "../styles/Cookie.module.css";
 
 interface CookieProps {
   onAccept: () => void;
-  onDecline: () => void;
+  onAcceptAll: () => void;
+  onDeclineAll: () => void;
   onPolicyLinkClick: () => void;
 }
 
-const Cookie: React.FC<CookieProps> = ({ onAccept, onDecline, onPolicyLinkClick }) => {
+const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, onPolicyLinkClick }) => {
   const intl = useIntl();
   const { AcceptCookieAnalysis, setAcceptCookieAnalysis, AcceptCookiePersonalization, setAcceptCookiePersonalization } = useCookieConsent();
 
@@ -69,8 +70,11 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onDecline, onPolicyLinkClick 
           <button className={`btn btn-primary ${styles.acceptButton}`} disabled={checkCookiesState()} onClick={onAccept}>
             {intl.formatMessage({ id: "cookie_BotonAceptar" })}
           </button>
-          <button className={`btn btn-primary ${styles.cancelButton}`} onClick={onDecline}>
-            {intl.formatMessage({ id: "cookie_BotonRechazar" })}
+          <button className={`btn btn-primary ${styles.acceptButton}`} onClick={onAcceptAll}>
+            {intl.formatMessage({ id: "cookie_BotonAceptarTodo" })}
+          </button>
+          <button className={`btn btn-primary ${styles.cancelButton}`} onClick={onDeclineAll}>
+            {intl.formatMessage({ id: "cookie_BotonRechazarTodo" })}
           </button>
         </div>
         <Link

@@ -81,8 +81,9 @@
   "cookie_Texto": "Este sitio web utiliza cookies para mejorar la experiencia de usuario.",
   "cookie_AceptarPersonalizacion": "Aceptar cookies de personalización",
   "cookie_AceptarAnalisis": "Aceptar cookies de análisis",
-  "cookie_BotonAceptar": "Aceptar cookies seleccionadas",
-  "cookie_BotonRechazar": "Rechazar todas las cookies",
+  "cookie_BotonAceptar": "Aceptar seleccionadas",
+  "cookie_BotonAceptarTodo": "Aceptar todas",
+  "cookie_BotonRechazarTodo": "Rechazar todas",
   "cookie_Enlace": "Política de cookies",
 
   "politicaCookies_Principal_Titulo": "Política de cookies",
