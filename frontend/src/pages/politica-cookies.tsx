@@ -1,6 +1,7 @@
 // pages/politica-cookies.tsx
 import React from "react";
 import { useIntl } from "react-intl";
+import Link from "next/link";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useCookieConsent } from "../context/CookieContext";
 import styles from "../styles/politica-cookies.module.css";
@@ -120,6 +121,13 @@ const PoliticaCookies = () => {
           <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto1" })}</li>
           <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto2" })}</li>
           <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto3" })}</li>
+          <li>
+            {intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto4" })}
+            <Link href="/politica-privacidad" className={styles.link}>
+              <span>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto4_Enlace" })}</span>
+            </Link>
+            .
+          </li>
         </ul>
       </div>
       <div className="mt-25p">
