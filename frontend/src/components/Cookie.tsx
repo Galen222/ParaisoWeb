@@ -9,10 +9,11 @@ interface CookieProps {
   onAccept: () => void;
   onAcceptAll: () => void;
   onDeclineAll: () => void;
-  onPolicyLinkClick: () => void;
+  onCookiesPolicyLinkClick: () => void;
+  onPrivacyPolicyLinkClick: () => void;
 }
 
-const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, onPolicyLinkClick }) => {
+const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, onCookiesPolicyLinkClick, onPrivacyPolicyLinkClick }) => {
   const intl = useIntl();
   const { AcceptCookieAnalysis, setAcceptCookieAnalysis, AcceptCookiePersonalization, setAcceptCookiePersonalization } = useCookieConsent();
 
@@ -37,7 +38,10 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
   return (
     <div className={styles.cookieModalBackdrop}>
       <div className={styles.cookieModal}>
-        <p>{intl.formatMessage({ id: "cookie_Texto" })}</p>
+        <p className="fw-bold">{intl.formatMessage({ id: "cookie_Texto1" })}</p>
+        <p>{intl.formatMessage({ id: "cookie_Texto2" })}</p>
+        <p>{intl.formatMessage({ id: "cookie_Texto3" })}</p>
+        <p>{intl.formatMessage({ id: "cookie_Texto4" })}</p>
         <div className={styles.switchContainer}>
           <label className={styles.switch}>
             <input
@@ -77,16 +81,33 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
             {intl.formatMessage({ id: "cookie_BotonRechazarTodo" })}
           </button>
         </div>
-        <Link
-          href="#"
-          onClick={(e) => {
-            e.preventDefault();
-            onPolicyLinkClick();
-          }}
-          className={styles.link}
-        >
-          {intl.formatMessage({ id: "cookie_Enlace" })}
-        </Link>
+        <div className="mt-25p">
+          <p className="d-inline">
+            {intl.formatMessage({ id: "cookie_Texto4_1" })}
+            <Link
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                onCookiesPolicyLinkClick();
+              }}
+              className={`${styles.link} d-inline`}
+            >
+              {intl.formatMessage({ id: "cookie_Texto4_Enlace1" })}
+            </Link>
+            {intl.formatMessage({ id: "cookie_Texto4_2" })}
+            <Link
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                onPrivacyPolicyLinkClick();
+              }}
+              className={`${styles.link} d-inline`}
+            >
+              {intl.formatMessage({ id: "cookie_Texto4_Enlace2" })}
+            </Link>
+            .
+          </p>
+        </div>
       </div>
     </div>
   );

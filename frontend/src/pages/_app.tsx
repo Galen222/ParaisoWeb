@@ -69,11 +69,18 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     }
   };
 
-  const handlePolicyLinkClick = () => {
+  const handleCookiesPolicyLinkClick = () => {
     setShowCookieModal(false);
     setCookieConsentPersonalization(false);
     setCookieConsentAnalysis(false);
     router.push("/politica-cookies");
+  };
+
+  const handlePrivacyPolicyLinkClick = () => {
+    setShowCookieModal(false);
+    setCookieConsentPersonalization(false);
+    setCookieConsentAnalysis(false);
+    router.push("/politica-privacidad");
   };
 
   const createDeviceCookie = () => {
@@ -124,7 +131,8 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
                 setCookieConsentPersonalization(true);
                 setShowCookieModal(false);
               }}
-              onPolicyLinkClick={handlePolicyLinkClick}
+              onCookiesPolicyLinkClick={handleCookiesPolicyLinkClick}
+              onPrivacyPolicyLinkClick={handlePrivacyPolicyLinkClick}
             />
           )}
           <Navbar onLocaleChange={handleLocaleChange} currentLocale={locale} />
