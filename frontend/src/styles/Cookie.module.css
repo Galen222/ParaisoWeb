@@ -1,7 +1,7 @@
 .cookieModalBackdrop {
   display: flex;
-  justify-content: flex-end; /* Alinea el modal al principio horizontalmente */
-  align-items: flex-end; /* Alinea el modal al final verticalmente */
+  justify-content: flex-end;
+  align-items: flex-end;
   position: fixed;
   top: 0;
   left: 0;
@@ -18,7 +18,7 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 90%;
   max-width: 700px;
-  margin: 20px; /* Agrega un margen para que no esté pegado a los bordes */
+  margin: 20px;
 }
 
 .switchContainer {
@@ -31,8 +31,14 @@
   margin-bottom: 10px;
 }
 
-.switch input {
-  display: none;
+.hiddenCheckbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
 }
 
 .slider {
@@ -73,7 +79,8 @@ input:checked + .slider:before {
   margin-top: 25px;
 }
 
-.acceptButton {
+.acceptButton,
+.cancelButton {
   width: 200px;
   --bs-btn-bg: #4a403a;
   --bs-btn-border-color: #4a403a;
@@ -85,25 +92,13 @@ input:checked + .slider:before {
   --bs-btn-disabled-border-color: #4a403a;
 }
 
-.cancelButton {
-  width: 200px;
-  --bs-btn-bg: #4a403a;
-  --bs-btn-border-color: #4a403a;
-  --bs-btn-hover-bg: #dc3545;
-  --bs-btn-hover-border-color: #dc3545;
-  --bs-btn-active-bg: #dc3545;
-  --bs-btn-active-border-color: #dc3545;
-  --bs-btn-disabled-bg: #4a403a;
-  --bs-btn-disabled-border-color: #4a403a;
-}
-
 .link {
   display: block;
   margin-top: 20px;
   text-align: center;
-  text-decoration: none; /* Opcional: eliminar el subrayado de los enlaces */
+  text-decoration: none;
 }
 
 .link:hover {
-  text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
+  text-decoration: underline;
 }

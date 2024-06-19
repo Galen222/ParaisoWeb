@@ -27,6 +27,11 @@ p {
   margin-bottom: 50px;
 }
 
+.table td,
+.table th {
+  vertical-align: middle;
+}
+
 .d-inline {
   display: inline;
 }

@@ -19,12 +19,10 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
 
   const handleAcceptCookiePersonalizationChange = () => {
     setAcceptCookiePersonalization(!AcceptCookiePersonalization);
-    console.log("el slider es: ", !AcceptCookiePersonalization);
   };
 
   const handleAcceptCookieAnalysisChange = () => {
     setAcceptCookieAnalysis(!AcceptCookieAnalysis);
-    console.log("el slider es: ", !AcceptCookieAnalysis);
   };
 
   const checkCookiesState = () => {
@@ -43,32 +41,30 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
         <p>{intl.formatMessage({ id: "cookie_Texto3" })}</p>
         <p>{intl.formatMessage({ id: "cookie_Texto4" })}</p>
         <div className={styles.switchContainer}>
-          <label className={styles.switch}>
+          <div className={styles.switch}>
             <input
               type="checkbox"
               id="cookiePersonalization"
               name="cookiePersonalization"
-              defaultChecked
-              role="switch"
               checked={AcceptCookiePersonalization}
               onChange={handleAcceptCookiePersonalizationChange}
+              className={styles.hiddenCheckbox}
             />
-            <span className={styles.slider}></span>
+            <span className={styles.slider} onClick={handleAcceptCookiePersonalizationChange}></span>
             {intl.formatMessage({ id: "cookie_AceptarPersonalizacion" })}
-          </label>
-          <label className={styles.switch}>
+          </div>
+          <div className={styles.switch}>
             <input
               type="checkbox"
               id="cookieAnalysis"
               name="cookieAnalysis"
-              defaultChecked
-              role="switch"
               checked={AcceptCookieAnalysis}
               onChange={handleAcceptCookieAnalysisChange}
+              className={styles.hiddenCheckbox}
             />
-            <span className={styles.slider}></span>
+            <span className={styles.slider} onClick={handleAcceptCookieAnalysisChange}></span>
             {intl.formatMessage({ id: "cookie_AceptarAnalisis" })}
-          </label>
+          </div>
         </div>
         <div className={styles.buttonContainer}>
           <button className={`btn btn-primary ${styles.acceptButton}`} disabled={checkCookiesState()} onClick={onAccept}>

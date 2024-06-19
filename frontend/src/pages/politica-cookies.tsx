@@ -9,9 +9,6 @@ import styles from "../styles/politica-cookies.module.css";
 const PoliticaCookies = () => {
   const intl = useIntl();
   const { cookieConsentAnalysis, setCookieConsentAnalysis, cookieConsentPersonalization, setCookieConsentPersonalization } = useCookieConsent();
-  console.log("perso: ", cookieConsentPersonalization);
-
-  console.log("ana: ", cookieConsentAnalysis);
   const cookiesState = cookieConsentAnalysis || cookieConsentPersonalization;
   useVisitedPageTracking("politica-cookies");
 
