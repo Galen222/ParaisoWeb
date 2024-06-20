@@ -27,10 +27,11 @@ const AvisoLegalPage = () => {
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto3" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto4" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto5" })}</li>
+          <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto6" })}</li>
           <li>
-            {intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto6" })}
-            <a className={styles.link} href={`mailto:${intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto6_Enlace" })}`}>
-              {intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto6_Enlace" })}
+            {intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto7" })}
+            <a className={styles.link} href={`mailto:${intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto7_Enlace" })}`}>
+              {intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto7_Enlace" })}
             </a>
           </li>
         </ul>
