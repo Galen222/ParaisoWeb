@@ -6,16 +6,13 @@ body {
   margin: 0;
 }
 
-p {
-  font-size: 16px;
-}
-
 .container {
   max-width: 50%;
   margin: auto;
   padding: 20px;
   text-align: center;
   margin-bottom: 50px;
+  font-size: 18px;
 }
 
 .container2 {
@@ -25,6 +22,11 @@ p {
   text-align: left;
   text-align: justify;
   margin-bottom: 50px;
+  font-size: 18px;
+}
+
+table {
+  font-size: 16px;
 }
 
 .table td,
@@ -34,6 +36,10 @@ p {
 
 .d-inline {
   display: inline;
+}
+
+.fs-16p {
+  font-size: 16px !important;
 }
 
 .ti-20p {

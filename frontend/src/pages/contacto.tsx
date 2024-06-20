@@ -156,7 +156,7 @@ const ContactPage = () => {
               )}
             </span>
             <span className={styles.checkText}>
-              {intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}{" "}
+              {intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}
               <Link href="/politica-privacidad" className={styles.link}>
                 <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
               </Link>
@@ -201,7 +201,7 @@ const ContactPage = () => {
               <td>
                 {intl.formatMessage({ id: "contacto_Tabla_Celda6_2" })}
                 <Link href="/politica-privacidad" className={styles.link}>
-                  <span>{intl.formatMessage({ id: "contacto_Tabla_Celda6_3" })}</span>
+                  <span className="fs-16p">{intl.formatMessage({ id: "contacto_Tabla_Celda6_3" })}</span>
                 </Link>
               </td>
             </tr>

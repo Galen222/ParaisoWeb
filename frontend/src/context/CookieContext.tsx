@@ -3,10 +3,14 @@ import { createContext, useContext, useState, ReactNode } from "react";
 interface CookieConsentContextType {
   cookieConsentAnalysis: boolean;
   setCookieConsentAnalysis: (consent: boolean) => void;
+  cookieConsentAnalysisGoogle: boolean;
+  setCookieConsentAnalysisGoogle: (consent: boolean) => void;
   cookieConsentPersonalization: boolean;
   setCookieConsentPersonalization: (consent: boolean) => void;
   AcceptCookieAnalysis: boolean;
   setAcceptCookieAnalysis: (value: boolean) => void;
+  AcceptCookieAnalysisGoogle: boolean;
+  setAcceptCookieAnalysisGoogle: (value: boolean) => void;
   AcceptCookiePersonalization: boolean;
   setAcceptCookiePersonalization: (value: boolean) => void;
 }
@@ -15,8 +19,10 @@ const CookieConsentContext = createContext<CookieConsentContextType | undefined>
 
 export function CookieConsentProvider({ children }: { children: ReactNode }) {
   const [cookieConsentAnalysis, setCookieConsentAnalysis] = useState<boolean>(false);
+  const [cookieConsentAnalysisGoogle, setCookieConsentAnalysisGoogle] = useState<boolean>(false);
   const [cookieConsentPersonalization, setCookieConsentPersonalization] = useState<boolean>(false);
   const [AcceptCookieAnalysis, setAcceptCookieAnalysis] = useState(false);
+  const [AcceptCookieAnalysisGoogle, setAcceptCookieAnalysisGoogle] = useState(false);
   const [AcceptCookiePersonalization, setAcceptCookiePersonalization] = useState(false);
 
   return (
@@ -24,10 +30,14 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
       value={{
         cookieConsentAnalysis,
         setCookieConsentAnalysis,
+        cookieConsentAnalysisGoogle,
+        setCookieConsentAnalysisGoogle,
         cookieConsentPersonalization,
         setCookieConsentPersonalization,
         AcceptCookieAnalysis,
         setAcceptCookieAnalysis,
+        AcceptCookieAnalysisGoogle,
+        setAcceptCookieAnalysisGoogle,
         AcceptCookiePersonalization,
         setAcceptCookiePersonalization,
       }}

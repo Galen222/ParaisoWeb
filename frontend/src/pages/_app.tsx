@@ -21,10 +21,14 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
   const [messages, setMessages] = React.useState({});
   const {
     setCookieConsentAnalysis,
+    cookieConsentAnalysisGoogle,
+    setCookieConsentAnalysisGoogle,
     cookieConsentPersonalization,
     setCookieConsentPersonalization,
     setAcceptCookieAnalysis,
     AcceptCookieAnalysis,
+    setAcceptCookieAnalysisGoogle,
+    AcceptCookieAnalysisGoogle,
     setAcceptCookiePersonalization,
     AcceptCookiePersonalization,
   } = useCookieConsent();
@@ -37,6 +41,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
       .find((row) => row.startsWith("_locale="))
       ?.split("=")[1];
     const cookieNameAnalysis = document.cookie.split("; ").find((row) => row.startsWith("_visited="));
+    const cookieNameAnalysisGoogle = document.cookie.split("; ").find((row) => row.startsWith("_ga="));
 
     if (cookieValuePersonalization && ["es", "en", "de"].includes(cookieValuePersonalization)) {
       setLocale(cookieValuePersonalization);
@@ -47,7 +52,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     if (cookieNameAnalysis) {
       setCookieConsentAnalysis(true);
     }
-    if (!cookieNameAnalysis && !cookieValuePersonalization) {
+    if (!cookieNameAnalysis && !cookieNameAnalysisGoogle && !cookieValuePersonalization) {
       setShowCookieModal(true);
     }
   }, [setCookieConsentPersonalization, setCookieConsentAnalysis]);
@@ -70,16 +75,24 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
   };
 
   const handleCookiesPolicyLinkClick = () => {
-    setShowCookieModal(false);
-    setCookieConsentPersonalization(false);
+    setAcceptCookieAnalysis(false);
+    setAcceptCookieAnalysisGoogle(false);
     setCookieConsentAnalysis(false);
+    setCookieConsentAnalysisGoogle(false);
+    setAcceptCookiePersonalization(false);
+    setCookieConsentPersonalization(false);
+    setShowCookieModal(false);
     router.push("/politica-cookies");
   };
 
   const handlePrivacyPolicyLinkClick = () => {
-    setShowCookieModal(false);
-    setCookieConsentPersonalization(false);
+    setAcceptCookieAnalysis(false);
+    setAcceptCookieAnalysisGoogle(false);
     setCookieConsentAnalysis(false);
+    setCookieConsentAnalysisGoogle(false);
+    setAcceptCookiePersonalization(false);
+    setCookieConsentPersonalization(false);
+    setShowCookieModal(false);
     router.push("/politica-privacidad");
   };
 
@@ -110,6 +123,11 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
                 } else {
                   setCookieConsentAnalysis(false);
                 }
+                if (AcceptCookieAnalysisGoogle) {
+                  setCookieConsentAnalysisGoogle(true);
+                } else {
+                  setCookieConsentAnalysis(false);
+                }
                 if (AcceptCookiePersonalization) {
                   setCookieConsentPersonalization(true);
                 } else {
@@ -119,7 +137,9 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
               }}
               onDeclineAll={() => {
                 setAcceptCookieAnalysis(false);
+                setAcceptCookieAnalysisGoogle(false);
                 setCookieConsentAnalysis(false);
+                setCookieConsentAnalysisGoogle(false);
                 setAcceptCookiePersonalization(false);
                 setCookieConsentPersonalization(false);
                 setShowCookieModal(false);
@@ -127,6 +147,8 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
               onAcceptAll={() => {
                 setAcceptCookieAnalysis(true);
                 setCookieConsentAnalysis(true);
+                setAcceptCookieAnalysisGoogle(true);
+                setCookieConsentAnalysisGoogle(true);
                 setAcceptCookiePersonalization(true);
                 setCookieConsentPersonalization(true);
                 setShowCookieModal(false);

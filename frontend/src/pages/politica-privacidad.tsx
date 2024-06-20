@@ -160,7 +160,7 @@ const PoliticaPrivacidadPage = () => {
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Conservacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Conservacion_Texto" })}</p>
       </div>
-      {/* <div className="mt-25p">
+      <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Destinatarios_Titulo" })}</h3>
         <ul className={styles.listas}>
           <li>
@@ -171,18 +171,18 @@ const PoliticaPrivacidadPage = () => {
             {intl.formatMessage({ id: "politicaPrivacidad_Destinatarios_Punto1_3" })}
           </li>
         </ul>
-      </div> */}
+      </div>
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto1" })}</p>
-        {/* <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto2" })}</p>
+        <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto2" })}</p>
         <ul className={styles.listas}>
           <li>
             <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto2_Punto1_Enlace" })} target="_blank">
               {intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto2_Punto1" })}
             </a>
           </li>
-        </ul> */}
+        </ul>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto3" })}</p>
       </div>
       <div className="mt-25p">

@@ -15,7 +15,14 @@ interface CookieProps {
 
 const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, onCookiesPolicyLinkClick, onPrivacyPolicyLinkClick }) => {
   const intl = useIntl();
-  const { AcceptCookieAnalysis, setAcceptCookieAnalysis, AcceptCookiePersonalization, setAcceptCookiePersonalization } = useCookieConsent();
+  const {
+    AcceptCookieAnalysis,
+    setAcceptCookieAnalysis,
+    AcceptCookieAnalysisGoogle,
+    setAcceptCookieAnalysisGoogle,
+    AcceptCookiePersonalization,
+    setAcceptCookiePersonalization,
+  } = useCookieConsent();
 
   const handleAcceptCookiePersonalizationChange = () => {
     setAcceptCookiePersonalization(!AcceptCookiePersonalization);
@@ -25,8 +32,12 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
     setAcceptCookieAnalysis(!AcceptCookieAnalysis);
   };
 
+  const handleAcceptCookieAnalysisGoogleChange = () => {
+    setAcceptCookieAnalysisGoogle(!AcceptCookieAnalysisGoogle);
+  };
+
   const checkCookiesState = () => {
-    if (!AcceptCookieAnalysis && !AcceptCookiePersonalization) {
+    if (!AcceptCookieAnalysis && !AcceptCookieAnalysisGoogle && !AcceptCookiePersonalization) {
       return true;
     } else {
       return false;
@@ -36,14 +47,15 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
   return (
     <div className={styles.cookieModalBackdrop}>
       <div className={styles.cookieModal}>
-        <p className="fw-bold">{intl.formatMessage({ id: "cookie_Texto1" })}</p>
+        <p className="fs-16p fw-bold">{intl.formatMessage({ id: "cookie_Texto1" })}</p>
         <p>{intl.formatMessage({ id: "cookie_Texto2" })}</p>
-        <p>{intl.formatMessage({ id: "cookie_Texto3" })}</p>
-        <p>{intl.formatMessage({ id: "cookie_Texto4" })}</p>
+        {/* <p>{intl.formatMessage({ id: "cookie_Texto3" })}</p>
+        <p>{intl.formatMessage({ id: "cookie_Texto4" })}</p> */}
         <div className={styles.switchContainer}>
           <div className={styles.switch}>
             <input
               type="checkbox"
+              role="checkbox"
               id="cookiePersonalization"
               name="cookiePersonalization"
               checked={AcceptCookiePersonalization}
@@ -51,11 +63,12 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
               className={styles.hiddenCheckbox}
             />
             <span className={styles.slider} onClick={handleAcceptCookiePersonalizationChange}></span>
-            {intl.formatMessage({ id: "cookie_AceptarPersonalizacion" })}
+            <span>{intl.formatMessage({ id: "cookie_AceptarPersonalizacion" })}</span>
           </div>
           <div className={styles.switch}>
             <input
               type="checkbox"
+              role="checkbox"
               id="cookieAnalysis"
               name="cookieAnalysis"
               checked={AcceptCookieAnalysis}
@@ -63,7 +76,20 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
               className={styles.hiddenCheckbox}
             />
             <span className={styles.slider} onClick={handleAcceptCookieAnalysisChange}></span>
-            {intl.formatMessage({ id: "cookie_AceptarAnalisis" })}
+            <span>{intl.formatMessage({ id: "cookie_AceptarAnalisis" })}</span>
+          </div>
+          <div className={styles.switch}>
+            <input
+              type="checkbox"
+              role="checkbox"
+              id="cookieAnalysisGoogle"
+              name="cookieAnalysisGoogle"
+              checked={AcceptCookieAnalysisGoogle}
+              onChange={handleAcceptCookieAnalysisGoogleChange}
+              className={styles.hiddenCheckbox}
+            />
+            <span className={styles.slider} onClick={handleAcceptCookieAnalysisGoogleChange}></span>
+            <span>{intl.formatMessage({ id: "cookie_AceptarAnalisisGoogle" })}</span>
           </div>
         </div>
         <div className={styles.buttonContainer}>

@@ -91,23 +91,23 @@ const PoliticaCookies = () => {
                 <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Finalidad3" })}</td>
                 <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Duracion3" })}</td>
               </tr>
-              {/* <tr>
-              <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Nombre4" })}</td>
-              <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Titular4" })}</td>
-              <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Finalidad4" })}</td>
-              <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Duracion4" })}</td>
-            </tr> */}
+              <tr>
+                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Nombre4" })}</td>
+                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Titular4" })}</td>
+                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Finalidad4" })}</td>
+                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Duracion4" })}</td>
+              </tr>
             </tbody>
           </table>
         </div>
-        {/* <p className="ti-20p">
+        <p className="ti-20p">
           {intl.formatMessage({ id: "politicaCookies_Utilizadas_texto1" })}
           <a className={styles.link} href={intl.formatMessage({ id: "politicaCookies_Utilizadas_texto1_Enlace" })} target="_blank">
             Google Analytics
           </a>
           .
         </p>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Utilizadas_texto2" })}</p> */}
+        {/* <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Utilizadas_texto2" })}</p> */}
       </div>
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Titulo" })}</h3>

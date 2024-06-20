@@ -17,8 +17,16 @@
   border-radius: 10px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 90%;
-  max-width: 700px;
+  max-width: 680px;
   margin: 20px;
+}
+
+.cookieModal p {
+  font-size: 14px;
+}
+
+.cookieModal span {
+  font-size: 16px;
 }
 
 .switchContainer {
