@@ -11,28 +11,39 @@ interface NavbarProps {
 const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale }) => {
   const intl = useIntl();
   const [showRestaurants, setShowRestaurants] = useState(false); // Estado para controlar la visibilidad del menú desplegable
+  const [mobileMenu, setMobileMenu] = useState(false); // Estado para controlar la apertura del menú
+
+  const toggleMobileMenu = () => setMobileMenu(!mobileMenu); // Función para alternar el estado del menú de movil
 
   return (
     <div className={styles.navbar}>
       <div className={styles.navbarTop}>
-        <div className="w-25">
+        <div className={styles.imgLogoContainer}>
           <Link href="/">
-            <img src="/images/navbar/imagenLogo.png" alt="Logo Paraiso Del Jamón" className={styles.logo} />
+            <img src="/images/navbar/imagenLogo.png" alt="Logo Paraiso Del Jamón" className={styles.imgLogo} />
           </Link>
         </div>
-        <div className="w-50 text-center">
+        <div className={styles.textLogoContainer}>
           <img src="/images/navbar/textoLogo.png" alt="Paraíso del Jamón" className={styles.textLogo} />
         </div>
-        <div className="w-25 d-flex justify-content-end">
-          <img src="/images/flags/es.png" alt="Español" className={styles.flag} onClick={() => onLocaleChange("es")} />
-          <img src="/images/flags/en.png" alt="English" className={styles.flag} onClick={() => onLocaleChange("en")} />
-          <img src="/images/flags/de.png" alt="Deutsch" className={styles.flag} onClick={() => onLocaleChange("de")} />
+        <div className={styles.flagContainer}>
+          <div className={styles.mobileMenuIcon} onClick={toggleMobileMenu}>
+            {mobileMenu ? "X" : "☰"} {/* Cambia entre X y el icono de menú */}
+          </div>
+          <div>
+            <img src="/images/flags/es.png" alt="Español" className={styles.flag} onClick={() => onLocaleChange("es")} />
+            <img src="/images/flags/en.png" alt="English" className={styles.flag} onClick={() => onLocaleChange("en")} />
+            <img src="/images/flags/de.png" alt="Deutsch" className={styles.flag} onClick={() => onLocaleChange("de")} />
+          </div>
         </div>
       </div>
-      <div className={styles.links}>
-        <div className={styles.menuContainer}>
+      <div className={styles.separator}>
+        <hr></hr>
+      </div>
+      <div className={styles.navbarMenu}>
+        <div className={styles.links}>
           <Link href="/">{intl.formatMessage({ id: "Navbar_inicio" })}</Link>
-          <div className={styles.linksWithDropdown} onMouseEnter={() => setShowRestaurants(true)} onMouseLeave={() => setShowRestaurants(false)}>
+          <div className={styles.linksDropdown} onMouseEnter={() => setShowRestaurants(true)} onMouseLeave={() => setShowRestaurants(false)}>
             <span className={styles.noLink}>{intl.formatMessage({ id: "Navbar_restaurantes" })}</span>
             <div className={`${styles.dropdown} ${showRestaurants ? styles.show : ""}`}>
               <Link href="/san-bernardo">San Bernardo</Link>

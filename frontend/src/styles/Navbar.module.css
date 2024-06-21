@@ -15,17 +15,46 @@
   align-items: center;
 }
 
-.logo {
+.imgLogoContainer {
+  width: 25%;
+}
+
+.imgLogo {
   width: 100%;
   cursor: pointer;
+}
+
+.textLogoContainer {
+  width: 50%;
 }
 
 .textLogo {
   width: 100%;
 }
 
+.flagContainer {
+  width: 25%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.mobileMenuIcon {
+  display: none; /* Por defecto no se muestra, cambiará en media query para móviles */
+}
+
+.flag {
+  cursor: pointer;
+  width: 40px;
+  height: auto;
+  margin: 5px;
+}
+
+.separator {
+  display: none;
+}
+
 /* Estilo para el contenedor de enlaces */
-.links {
+.navbarMenu {
   width: 100%;
   display: flex;
   justify-content: center;
@@ -33,12 +62,7 @@
   font-size: 18px;
 }
 
-.noLink {
-  color: white;
-  cursor: pointer; /* Para mejorar la interacción del usuario */
-}
-
-.menuContainer {
+.links {
   width: 50%;
   display: flex;
   justify-content: space-between; /* Distribuye automáticamente los elementos */
@@ -46,18 +70,22 @@
   flex-wrap: nowrap;
   padding: 0 10px; /* Añade padding si es necesario para evitar que los enlaces toquen los bordes */
 }
-
 /* Estilo de los enlaces */
 .links a,
-.linksWithDropdown a {
+.linksDropdown a {
   color: white;
   text-decoration: none;
   padding: 10px 5px;
   margin: 0 5px;
 }
 
+.noLink {
+  color: white;
+  cursor: pointer; /* Para mejorar la interacción del usuario */
+}
+
 /* Configuración del menú desplegable para 'Restaurantes' */
-.linksWithDropdown {
+.linksDropdown {
   position: relative; /* Establece posición relativa para el menú desplegable */
 }
 
@@ -80,19 +108,61 @@
   text-align: left;
 }
 
+.linksDropdown:hover .dropdown {
+  display: block;
+}
+
 .links a:hover,
-.linksWithDropdown a:hover,
+.linksDropdown a:hover,
 .dropdown a:hover {
   background-color: #7a726b; /* Un marrón más claro */
 }
 
-.linksWithDropdown:hover .dropdown {
-  display: block;
-}
+@media (max-width: 1024px) {
+  .navbarTop {
+    width: 100%;
+  }
 
-.flag {
-  cursor: pointer;
-  width: 40px;
-  height: auto;
-  margin: 5px;
+  .links {
+    width: 100%;
+  }
+}
+@media (max-width: 767px) {
+  .navbarTop {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .imgLogoContainer {
+    width: 80%;
+  }
+
+  .textLogoContainer {
+    display: none;
+  }
+
+  .flagContainer {
+    width: 90%;
+    margin-top: 15px;
+    justify-content: space-between;
+  }
+
+  .mobileMenuIcon {
+    display: block; /* Se muestra solo en móvil */
+    cursor: pointer;
+    font-size: 24px; /* Tamaño del ícono de menú */
+  }
+
+  .flag {
+    width: 30px;
+  }
+
+  .separator {
+    display: block;
+    width: 95%;
+  }
+
+  .navbarMenu {
+    display: none;
+  }
 }
