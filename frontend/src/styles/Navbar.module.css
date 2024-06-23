@@ -49,10 +49,6 @@
   margin: 5px;
 }
 
-.separator {
-  display: none;
-}
-
 /* Estilo para el contenedor de enlaces */
 .navbarMenu {
   width: 100%;
@@ -68,7 +64,6 @@
   justify-content: space-between; /* Distribuye automáticamente los elementos */
   align-items: center;
   flex-wrap: nowrap;
-  padding: 0 10px; /* Añade padding si es necesario para evitar que los enlaces toquen los bordes */
 }
 /* Estilo de los enlaces */
 .links a,
@@ -142,24 +137,26 @@
   }
 
   .flagContainer {
-    width: 90%;
+    width: 100%;
     margin-top: 15px;
     justify-content: space-between;
+    background-color: #4a403a;
   }
 
   .mobileMenuIcon {
     display: block; /* Se muestra solo en móvil */
     cursor: pointer;
     font-size: 24px; /* Tamaño del ícono de menú */
+    margin-left: 5%;
+    padding: 10px; /* Espacio adicional para facilitar el clic */
+  }
+
+  .flags {
+    margin-right: 5%;
   }
 
   .flag {
     width: 30px;
-  }
-
-  .separator {
-    display: block;
-    width: 95%;
   }
 
   .navbarMenu {

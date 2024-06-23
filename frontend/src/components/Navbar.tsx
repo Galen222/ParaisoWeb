@@ -30,15 +30,12 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale }) => {
           <div className={styles.mobileMenuIcon} onClick={toggleMobileMenu}>
             {mobileMenu ? "X" : "☰"} {/* Cambia entre X y el icono de menú */}
           </div>
-          <div>
+          <div className={styles.flags}>
             <img src="/images/flags/es.png" alt="Español" className={styles.flag} onClick={() => onLocaleChange("es")} />
             <img src="/images/flags/en.png" alt="English" className={styles.flag} onClick={() => onLocaleChange("en")} />
             <img src="/images/flags/de.png" alt="Deutsch" className={styles.flag} onClick={() => onLocaleChange("de")} />
           </div>
         </div>
-      </div>
-      <div className={styles.separator}>
-        <hr></hr>
       </div>
       <div className={styles.navbarMenu}>
         <div className={styles.links}>
