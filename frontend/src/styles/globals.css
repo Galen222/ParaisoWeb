@@ -42,6 +42,10 @@ table {
   font-size: 16px !important;
 }
 
+.fs-14p {
+  font-size: 14px !important;
+}
+
 .ti-20p {
   text-indent: 20px;
 }
@@ -59,4 +63,13 @@ table {
 
 .mw-600p {
   max-width: 600px;
+}
+
+/* MODO TABLET */
+@media (max-width: 1024px) {
+  .container,
+  .container2 {
+    max-width: 100%;
+    font-size: 22px;
+  }
 }

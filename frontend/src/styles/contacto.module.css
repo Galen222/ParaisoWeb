@@ -1,5 +1,5 @@
 /* contacto.module.css */
-.recuadro {
+.formContainer {
   max-width: 600px;
   margin: 0 auto;
   padding: 20px;
@@ -13,6 +13,7 @@
 }
 
 .form label {
+  display: block;
   margin-top: 10px;
   margin-bottom: 5px;
   font-weight: bold;
@@ -22,15 +23,12 @@
 .form input,
 .form select,
 .form textarea {
+  display: block;
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-bottom: 10px;
-}
-
-.form textarea {
-  resize: none;
-  height: 100px;
 }
 
 .emailValid {
@@ -39,6 +37,33 @@
 
 .emailInvalid {
   color: red;
+}
+
+.form textarea {
+  resize: none;
+  height: 100px;
+}
+
+.archiveText {
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.fileUploadContainer {
+  display: flex;
+  width: 100%;
+}
+
+.fileButton {
+  width: 200px;
+  --bs-btn-bg: white;
+  --bs-btn-hover-bg: #4a403a;
+  --bs-btn-hover-border-color: #4a403a;
+  --bs-btn-active-bg: #4a403a;
+  --bs-btn-active-border-color: #4a403a;
+  --bs-btn-disabled-bg: white;
 }
 
 .submitButton {
@@ -53,22 +78,6 @@
   --bs-btn-disabled-border-color: #4a403a;
 }
 
-.fileButton {
-  width: 200px;
-  --bs-btn-bg: white;
-  --bs-btn-hover-bg: #4a403a;
-  --bs-btn-hover-border-color: #4a403a;
-  --bs-btn-active-bg: #4a403a;
-  --bs-btn-active-border-color: #4a403a;
-  --bs-btn-disabled-bg: white;
-}
-
-.fileUploadContainer {
-  display: flex;
-  align-items: center;
-  width: 100%;
-}
-
 .fileNameBox {
   flex-grow: 1;
   margin-left: 10px;
@@ -80,6 +89,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
+  font-size: 16px;
 }
 
 .customCheckbox {
@@ -112,13 +122,6 @@
   position: relative;
 }
 
-.archiveText {
-  font-weight: bold;
-  margin-top: 15px;
-  margin-bottom: 5px;
-  text-align: left;
-}
-
 .checkText {
   font-weight: bold;
   margin-top: 9px;
@@ -131,4 +134,25 @@
 
 .link:hover {
   text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
+}
+
+/* MODO TABLET */
+@media (max-width: 1024px) {
+  .fileUploadContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .fileButton {
+    margin-bottom: 10px;
+  }
+
+  .fileNameBox {
+    margin-left: 0px;
+  }
+
+  .checkText {
+    font-size: 18px;
+  }
 }

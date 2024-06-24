@@ -104,46 +104,63 @@ const ContactPage = () => {
 
   return (
     <div className="container">
-      <div className={`mt-25p ${styles.recuadro}`}>
+      <div className={`mt-25p ${styles.formContainer}`}>
         <form onSubmit={handleSubmit} className={styles.form}>
-          <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
-          <input
-            type="text"
-            autoComplete="given-name"
-            id="name"
-            name="name"
-            value={formData.name}
-            onChange={handleValidateName}
-            required
-            className={styles.input}
-          />
-          <label htmlFor="reason">{intl.formatMessage({ id: "contacto_Motivo" })}</label>
-          <select id="reason" name="reason" value={formData.reason} onChange={handleSelect} required>
-            <option value="info">{intl.formatMessage({ id: "contacto_MotivoInfo" })}</option>
-            <option value="bug">{intl.formatMessage({ id: "contacto_MotivoBug" })}</option>
-            <option value="commercial">{intl.formatMessage({ id: "contacto_MotivoComercial" })}</option>
-            <option value="invoice">{intl.formatMessage({ id: "contacto_MotivoFactura" })}</option>
-            <option value="other">{intl.formatMessage({ id: "contacto_MotivoOtro" })}</option>
-          </select>
-          <label htmlFor="email">{intl.formatMessage({ id: "contacto_Email" })}</label>
-          <input
-            type="email"
-            autoComplete="email"
-            id="email"
-            name="email"
-            value={formData.email}
-            onChange={handleValidateEmail}
-            required
-            className={`${styles.input} ${isValidEmail ? styles.emailValid : styles.emailInvalid}`} // Cambia de color si el email no es válido
-          />
-          <label htmlFor="message">{intl.formatMessage({ id: "contacto_Mensaje" })}</label>
-          <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
-          <span className={styles.archiveText}>{intl.formatMessage({ id: "contacto_SubirImagen" })}</span>
+          <div>
+            <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
+            <input
+              type="text"
+              autoComplete="given-name"
+              id="name"
+              name="name"
+              value={formData.name}
+              onChange={handleValidateName}
+              required
+              className={styles.input}
+            />
+          </div>
+          <div>
+            <label htmlFor="reason">{intl.formatMessage({ id: "contacto_Motivo" })}</label>
+            <select id="reason" name="reason" value={formData.reason} onChange={handleSelect} required>
+              <option value="info">{intl.formatMessage({ id: "contacto_MotivoInfo" })}</option>
+              <option value="commercial">{intl.formatMessage({ id: "contacto_MotivoComercial" })}</option>
+              <option value="invoice">{intl.formatMessage({ id: "contacto_MotivoFactura" })}</option>
+              <option value="bug">{intl.formatMessage({ id: "contacto_MotivoBug" })}</option>
+              <option value="other">{intl.formatMessage({ id: "contacto_MotivoOtro" })}</option>
+            </select>
+          </div>
+          <div>
+            <label htmlFor="email">{intl.formatMessage({ id: "contacto_Email" })}</label>
+            <input
+              type="email"
+              autoComplete="email"
+              id="email"
+              name="email"
+              value={formData.email}
+              onChange={handleValidateEmail}
+              required
+              className={`${styles.input} ${isValidEmail ? styles.emailValid : styles.emailInvalid}`} // Cambia de color si el email no es válido
+            />
+          </div>
+          <div>
+            <label htmlFor="message">{intl.formatMessage({ id: "contacto_Mensaje" })}</label>
+            <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
+          </div>
+          <div className={styles.archiveText}>
+            <span>{intl.formatMessage({ id: "contacto_SubirImagen1" })}</span>
+            <span className="fs-14p">{intl.formatMessage({ id: "contacto_SubirImagen2" })}</span>
+          </div>
           <div className={styles.fileUploadContainer}>
-            <input type="file" id="imageUpload" name="imageUpload" accept="image/jpeg" className="d-none" onChange={handleFileChange} />
-            <button type="button" className={`btn btn-outline-secondary ${styles.fileButton}`} onClick={() => document.getElementById("imageUpload")?.click()}>
-              {intl.formatMessage({ id: "contacto_BotonSubirImagen" })}
-            </button>
+            <div className="w-600p">
+              <input type="file" id="imageUpload" name="imageUpload" accept="image/jpeg" className="d-none" onChange={handleFileChange} />
+              <button
+                type="button"
+                className={`btn btn-outline-secondary ${styles.fileButton}`}
+                onClick={() => document.getElementById("imageUpload")?.click()}
+              >
+                <span>{intl.formatMessage({ id: "contacto_BotonSubirImagen" })}</span>
+              </button>
+            </div>
             <div className={styles.fileNameBox}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
           </div>
           <div className={styles.customCheckbox}>
@@ -156,7 +173,7 @@ const ContactPage = () => {
               )}
             </span>
             <span className={styles.checkText}>
-              {intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}
+              <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}</span>
               <Link href="/politica-privacidad" className={styles.link}>
                 <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
               </Link>
