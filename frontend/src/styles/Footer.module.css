@@ -4,7 +4,7 @@
   color: white;
   text-align: center;
   padding: 0; /* Elimina el padding */
-  height: 60px; /* Altura fija */
+  height: 70px; /* Altura fija */
   display: flex;
   align-items: center; /* Centrar verticalmente el contenido */
   justify-content: center; /* Centrar horizontalmente el contenido */

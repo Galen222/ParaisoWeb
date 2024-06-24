@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
+import useDeviceType from "../hooks/useDeviceType";
 import styles from "../styles/Navbar.module.css";
 
 interface NavbarProps {
@@ -10,19 +11,9 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale }) => {
   const intl = useIntl();
+  const deviceType = useDeviceType(); // deviceType es 'pc', 'tablet' o 'mobile'
   const [showRestaurants, setShowRestaurants] = useState(false); // Estado para controlar la visibilidad del menú desplegable
   const [mobileMenu, setMobileMenu] = useState(false); // Estado para controlar la apertura del menú
-  const [isMobile, setIsMobile] = useState(false); // Estado para detectar el modo móvil
-
-  useEffect(() => {
-    const handleDevice = () => {
-      setIsMobile(window.innerWidth <= 767);
-    };
-
-    handleDevice(); // Verificar al cargar la página
-    window.addEventListener("resize", handleDevice);
-    return () => window.removeEventListener("resize", handleDevice);
-  }, []);
 
   const toggleMobileMenu = () => setMobileMenu(!mobileMenu); // Función para alternar el estado del menú de móvil
   const closeMobileMenu = () => {
@@ -31,8 +22,10 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale }) => {
     }
   };
 
+  const isMobile = deviceType === "mobile"; // Determina si el dispositivo es móvil
+
   return (
-    <div className={styles.navbar}>
+    <nav className={styles.navbar}>
       <div className={styles.navbarTop}>
         <div className={styles.imgLogoContainer}>
           <Link href="/" onClick={closeMobileMenu}>
@@ -143,7 +136,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale }) => {
           </Link>
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 
