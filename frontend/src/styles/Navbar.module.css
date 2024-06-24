@@ -42,6 +42,11 @@
   display: none; /* Por defecto no se muestra, cambiará en media query para móviles */
 }
 
+.menuIcon {
+  width: 30px; /* Ajusta el ancho de la imagen del menú */
+  height: auto; /* Mantiene la proporción */
+}
+
 .flag {
   cursor: pointer;
   width: 40px;
@@ -61,10 +66,11 @@
 .links {
   width: 50%;
   display: flex;
-  justify-content: space-between; /* Distribuye automáticamente los elementos */
+  justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap;
 }
+
 /* Estilo de los enlaces */
 .links a,
 .linksDropdown a {
@@ -76,12 +82,12 @@
 
 .noLink {
   color: white;
-  cursor: pointer; /* Para mejorar la interacción del usuario */
+  cursor: pointer;
 }
 
 /* Configuración del menú desplegable para 'Restaurantes' */
 .linksDropdown {
-  position: relative; /* Establece posición relativa para el menú desplegable */
+  position: relative;
 }
 
 .dropdown {
@@ -92,7 +98,7 @@
   background-color: #4a403a;
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   z-index: 1;
-  width: 150px; /* Ajusta el ancho del desplegable */
+  width: 150px;
   padding-bottom: 5px;
 }
 
@@ -110,9 +116,10 @@
 .links a:hover,
 .linksDropdown a:hover,
 .dropdown a:hover {
-  background-color: #7a726b; /* Un marrón más claro */
+  background-color: #7a726b;
 }
 
+/* MODO TABLET */
 @media (max-width: 1024px) {
   .navbarTop {
     width: 100%;
@@ -122,6 +129,8 @@
     width: 100%;
   }
 }
+
+/* MODO MOVIL */
 @media (max-width: 767px) {
   .navbarTop {
     width: 100%;
@@ -129,9 +138,14 @@
   }
 
   .imgLogoContainer {
-    width: 80%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
   }
-
+  .imgLogo {
+    height: 200px;
+    width: auto;
+  }
   .textLogoContainer {
     display: none;
   }
@@ -141,14 +155,15 @@
     margin-top: 15px;
     justify-content: space-between;
     background-color: #4a403a;
+    align-items: center;
+    padding: 10px 0px;
   }
 
   .mobileMenuIcon {
-    display: block; /* Se muestra solo en móvil */
+    display: flex;
     cursor: pointer;
-    font-size: 24px; /* Tamaño del ícono de menú */
     margin-left: 5%;
-    padding: 10px; /* Espacio adicional para facilitar el clic */
+    align-items: center;
   }
 
   .flags {
@@ -160,6 +175,44 @@
   }
 
   .navbarMenu {
-    display: none;
+    font-size: 22px;
+    flex-direction: column;
+    max-height: 0;
+    visibility: hidden;
+    opacity: 0;
+    overflow: hidden;
+    transition: visibility 0s 0.3s, opacity 0.3s ease-in-out, max-height 0.3s ease-in-out;
+    margin-top: -1px;
+  }
+
+  .navbarMenu.showMenu {
+    max-height: 100vh;
+    min-height: calc(100vh - 325px);
+    visibility: visible;
+    opacity: 1;
+    overflow: auto;
+    padding-bottom: 10px;
+    transition-delay: 0s;
+  }
+
+  .links {
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+  }
+
+  .links a {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    margin: 0px;
+  }
+
+  .dropdown {
+    position: relative;
+    display: block;
+    width: 100%;
+    box-shadow: none;
+    padding: 0px;
   }
 }

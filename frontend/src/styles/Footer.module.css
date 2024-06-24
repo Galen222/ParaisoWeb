@@ -3,7 +3,11 @@
   background-color: #4a403a;
   color: white;
   text-align: center;
-  padding: 15px 0;
+  padding: 0; /* Elimina el padding */
+  height: 60px; /* Altura fija */
+  display: flex;
+  align-items: center; /* Centrar verticalmente el contenido */
+  justify-content: center; /* Centrar horizontalmente el contenido */
   position: fixed;
   bottom: 0;
   left: 0;
