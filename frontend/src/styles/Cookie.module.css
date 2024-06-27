@@ -121,3 +121,11 @@ input:checked + .slider:before {
 .link:hover {
   text-decoration: underline;
 }
+
+/* MODO TABLET */
+@media (max-width: 1024px) {
+  .acceptButton,
+  .cancelButton {
+    width: 100px;
+  }
+}

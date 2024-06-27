@@ -27,3 +27,10 @@
   padding: 1px 0; /* Ajusta el espaciado según necesites */
   background-color: white; /* Ajusta el color de fondo si es necesario */
 }
+
+/* MODO TABLET */
+@media (max-width: 1024px) {
+  .deleteButton {
+    width: 300px;
+  }
+}

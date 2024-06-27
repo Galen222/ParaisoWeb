@@ -4,7 +4,7 @@
   color: white;
   text-align: center;
   padding: 0; /* Elimina el padding */
-  height: 70px; /* Altura fija */
+  height: 60px; /* Altura fija */
   display: flex;
   align-items: center; /* Centrar verticalmente el contenido */
   justify-content: center; /* Centrar horizontalmente el contenido */
@@ -25,4 +25,11 @@
 
 .link:hover {
   text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
+}
+
+/* MODO TABLET */
+@media (max-width: 1024px) {
+  .footer {
+    height: 90px;
+  }
 }
