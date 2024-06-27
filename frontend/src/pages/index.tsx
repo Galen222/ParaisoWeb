@@ -6,7 +6,7 @@ import styles from "../styles/index.module.css";
 export default function Home() {
   const intl = useIntl(); // Utiliza el hook useIntl para internacionalización
 
-  useVisitedPageTracking("index");
+  useVisitedPageTracking("inicio");
 
   return (
     <div className="container">
