@@ -1,4 +1,4 @@
-// _app.tsx
+// src/pages/_app.tsx
 import Head from "next/head";
 import "@/styles/globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -6,7 +6,8 @@ import type { AppProps } from "next/app";
 import React from "react";
 import { IntlProvider } from "react-intl";
 import { useRouter } from "next/router";
-import { CookieConsentProvider, useCookieConsent } from "../context/CookieContext";
+import { CookieConsentProvider, useCookieConsent } from "../contexts/CookieContext";
+import { MobileMenuProvider } from "../contexts/MobileMenuContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cookie from "../components/Cookie";
@@ -98,7 +99,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
 
   const createDeviceCookie = () => {
     const deviceInfo = {
-      deviceType: /Mobi|Android/i.test(navigator.userAgent) ? "Mobile" : "PC",
+      deviceType: /Mobi|Android/i.test(navigator.userAgent) ? "Tablet-Mobile" : "PC",
       screenResolution: `${window.screen.width}x${window.screen.height}`,
       language: navigator.language,
     };
@@ -113,54 +114,56 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
         <meta name="description" content="Paraíso del Jamón" />
       </Head>
       <IntlProvider locale={locale} messages={messages}>
-        <React.StrictMode>
-          {showCookieModal && (
-            <Cookie
-              onAccept={() => {
-                if (AcceptCookieAnalysis) {
-                  setCookieConsentAnalysis(true);
-                  createDeviceCookie();
-                } else {
+        <MobileMenuProvider>
+          <React.StrictMode>
+            {showCookieModal && (
+              <Cookie
+                onAccept={() => {
+                  if (AcceptCookieAnalysis) {
+                    setCookieConsentAnalysis(true);
+                    createDeviceCookie();
+                  } else {
+                    setCookieConsentAnalysis(false);
+                  }
+                  if (AcceptCookieAnalysisGoogle) {
+                    setCookieConsentAnalysisGoogle(true);
+                  } else {
+                    setCookieConsentAnalysisGoogle(false);
+                  }
+                  if (AcceptCookiePersonalization) {
+                    setCookieConsentPersonalization(true);
+                  } else {
+                    setCookieConsentPersonalization(false);
+                  }
+                  setShowCookieModal(false);
+                }}
+                onDeclineAll={() => {
+                  setAcceptCookieAnalysis(false);
+                  setAcceptCookieAnalysisGoogle(false);
                   setCookieConsentAnalysis(false);
-                }
-                if (AcceptCookieAnalysisGoogle) {
-                  setCookieConsentAnalysisGoogle(true);
-                } else {
-                  setCookieConsentAnalysis(false);
-                }
-                if (AcceptCookiePersonalization) {
-                  setCookieConsentPersonalization(true);
-                } else {
+                  setCookieConsentAnalysisGoogle(false);
+                  setAcceptCookiePersonalization(false);
                   setCookieConsentPersonalization(false);
-                }
-                setShowCookieModal(false);
-              }}
-              onDeclineAll={() => {
-                setAcceptCookieAnalysis(false);
-                setAcceptCookieAnalysisGoogle(false);
-                setCookieConsentAnalysis(false);
-                setCookieConsentAnalysisGoogle(false);
-                setAcceptCookiePersonalization(false);
-                setCookieConsentPersonalization(false);
-                setShowCookieModal(false);
-              }}
-              onAcceptAll={() => {
-                setAcceptCookieAnalysis(true);
-                setCookieConsentAnalysis(true);
-                setAcceptCookieAnalysisGoogle(true);
-                setCookieConsentAnalysisGoogle(true);
-                setAcceptCookiePersonalization(true);
-                setCookieConsentPersonalization(true);
-                setShowCookieModal(false);
-              }}
-              onCookiesPolicyLinkClick={handleCookiesPolicyLinkClick}
-              onPrivacyPolicyLinkClick={handlePrivacyPolicyLinkClick}
-            />
-          )}
-          <Navbar onLocaleChange={handleLocaleChange} currentLocale={locale} />
-          <Component {...pageProps} />
-          <Footer />
-        </React.StrictMode>
+                  setShowCookieModal(false);
+                }}
+                onAcceptAll={() => {
+                  setAcceptCookieAnalysis(true);
+                  setCookieConsentAnalysis(true);
+                  setAcceptCookieAnalysisGoogle(true);
+                  setCookieConsentAnalysisGoogle(true);
+                  setAcceptCookiePersonalization(true);
+                  setCookieConsentPersonalization(true);
+                  setShowCookieModal(false);
+                }}
+                onCookiesPolicyLinkClick={handleCookiesPolicyLinkClick}
+                onPrivacyPolicyLinkClick={handlePrivacyPolicyLinkClick}
+              />
+            )}
+            <Navbar onLocaleChange={handleLocaleChange} currentLocale={locale} />
+            <Component {...pageProps} />
+            <Footer />
+          </React.StrictMode>
+        </MobileMenuProvider>
       </IntlProvider>
     </>
   );

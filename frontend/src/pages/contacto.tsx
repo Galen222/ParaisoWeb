@@ -164,27 +164,28 @@ const ContactPage = () => {
             <div className={styles.fileNameBox}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
           </div>
           <div className={styles.customCheckbox}>
-            <input type="checkbox" id="privacyCheck" checked={isPrivacyChecked} onChange={handlePrivacyCheck} className={styles.hiddenCheckbox} />
-            <span className={styles.checkboxControl} onClick={() => setIsPrivacyChecked(!isPrivacyChecked)}>
-              {isPrivacyChecked && (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M2 8L6 12L14 4" stroke="green" strokeWidth="3" />
-                </svg>
-              )}
-            </span>
-            <span className={styles.checkText}>
-              <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}</span>
-              <Link href="/politica-privacidad" className={styles.link}>
-                <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
-              </Link>
-            </span>
+            <div className={styles.checkboxLabelContainer}>
+              <span className={styles.checkboxControl} onClick={() => setIsPrivacyChecked(!isPrivacyChecked)}>
+                <input type="checkbox" id="privacyCheck" checked={isPrivacyChecked} onChange={handlePrivacyCheck} className={styles.hiddenCheckbox} />
+                {isPrivacyChecked && (
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 8L6 12L14 4" stroke="green" strokeWidth="3" />
+                  </svg>
+                )}
+              </span>
+              <label htmlFor="privacyCheck" className={styles.checkText}>
+                <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}</span>
+                <Link href="/politica-privacidad" className={styles.link}>
+                  <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
+                </Link>
+              </label>
+            </div>
           </div>
           <button type="submit" className={`btn btn-primary mt-25p mx-auto ${styles.submitButton}`} disabled={!CheckFormComplete()}>
             {intl.formatMessage({ id: "contacto_BotonEnviar" })}
           </button>
         </form>
       </div>
-
       <div className="table-responsive">
         <table className="table table-dark table-striped-columns mw-600p mt-25p mx-auto">
           <thead>

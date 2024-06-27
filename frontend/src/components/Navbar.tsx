@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
 import useDeviceType from "../hooks/useDeviceType";
+import { useMobileMenu } from "../contexts/MobileMenuContext";
 import styles from "../styles/Navbar.module.css";
 
 interface NavbarProps {
@@ -11,18 +12,10 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale }) => {
   const intl = useIntl();
-  const deviceType = useDeviceType(); // deviceType es 'pc', 'tablet' o 'mobile'
-  const [showRestaurants, setShowRestaurants] = useState(false); // Estado para controlar la visibilidad del menú desplegable
-  const [mobileMenu, setMobileMenu] = useState(false); // Estado para controlar la apertura del menú
-
-  const toggleMobileMenu = () => setMobileMenu(!mobileMenu); // Función para alternar el estado del menú de móvil
-  const closeMobileMenu = () => {
-    if (mobileMenu) {
-      setMobileMenu(false);
-    }
-  };
-
-  const isMobile = deviceType === "mobile"; // Determina si el dispositivo es móvil
+  const deviceType = useDeviceType();
+  const { mobileMenu, toggleMobileMenu, closeMobileMenu } = useMobileMenu();
+  const [showRestaurants, setShowRestaurants] = useState(false); // Agregamos el estado para manejar la visibilidad del dropdown de restaurantes
+  const isMobile = deviceType === "mobile";
 
   return (
     <nav className={styles.navbar}>

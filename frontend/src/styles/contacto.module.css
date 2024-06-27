@@ -94,9 +94,15 @@
 
 .customCheckbox {
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   margin-top: 20px;
+}
+
+.checkboxLabelContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .hiddenCheckbox {
@@ -124,19 +130,19 @@
 
 .checkText {
   font-weight: bold;
-  margin-top: 9px;
-  margin-bottom: 10px;
+  margin: 0;
+  transform: translateY(-3px); /* Mueve el texto 3px hacia arriba */
 }
 
 .link {
-  text-decoration: none; /* Opcional: eliminar el subrayado de los enlaces */
+  text-decoration: none;
 }
 
 .link:hover {
-  text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
+  text-decoration: underline;
 }
 
-/* MODO TABLET */
+/* MODO TABLET Y MÓVIL */
 @media (max-width: 1024px) {
   .fileUploadContainer {
     display: flex;
@@ -149,10 +155,10 @@
   }
 
   .fileNameBox {
-    margin-left: 0px;
+    margin-left: 0;
   }
 
   .checkText {
-    font-size: 18px;
+    font-size: 16px; /* Ajusta el tamaño del texto si es necesario */
   }
 }

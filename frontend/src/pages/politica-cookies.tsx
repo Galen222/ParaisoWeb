@@ -3,7 +3,7 @@ import React from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useCookieConsent } from "../context/CookieContext";
+import { useCookieConsent } from "../contexts/CookieContext";
 import styles from "../styles/politica-cookies.module.css";
 
 const PoliticaCookies = () => {
