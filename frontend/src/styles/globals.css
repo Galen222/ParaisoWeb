@@ -65,11 +65,41 @@ table {
   max-width: 600px;
 }
 
+.scrollTop {
+  position: fixed;
+  right: calc(25% + 20px);
+  bottom: 70px; /* Separación de 70px desde el fondo para evitar superposición con el footer */
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  line-height: 40px;
+  background: rgba(74, 64, 58, 0.5); /* Corregido para usar rgba para la transparencia */
+  border-radius: 20px; /* Esto hará que el botón sea perfectamente redondo */
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.scrollTop:hover {
+  background: #4a403a; /* Corregido para usar rgba para la transparencia */
+}
+
+.scrollTop img {
+  width: 20px; /* Ajusta el tamaño de la imagen según necesario */
+  height: auto; /* Mantiene la proporción de la imagen */
+}
+
 /* MODO TABLET */
 @media (max-width: 1024px) {
   .container,
   .container2 {
     max-width: 100%;
     font-size: 22px;
+  }
+
+  .scrollTop {
+    right: 20px;
+    bottom: 100px;
   }
 }

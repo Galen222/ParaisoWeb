@@ -1,11 +1,13 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl"; // Para internacionalización
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import useScrollToTop from "../hooks/useScrollToTop";
 import Link from "next/link";
 import styles from "../styles/contacto.module.css"; // Estilos específicos para esta página
 
 const ContactPage = () => {
   const intl = useIntl(); // Hook para utilizar la internacionalización
+  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
   useVisitedPageTracking("contacto");
   const [formData, setFormData] = useState({
     name: "",
@@ -226,6 +228,11 @@ const ContactPage = () => {
           </tbody>
         </table>
       </div>
+      {isScrollButtonVisible && (
+        <button onClick={scrollToTop} className="scrollTop">
+          <img src="/images/web/flechaArriba.png" alt="Subir" />
+        </button>
+      )}
     </div>
   );
 };

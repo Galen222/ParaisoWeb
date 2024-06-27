@@ -2,10 +2,12 @@ import React from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/aviso-legal.module.css";
 
 const AvisoLegalPage = () => {
   const intl = useIntl();
+  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
   useVisitedPageTracking("aviso-legal");
 
   return (
@@ -163,6 +165,11 @@ const AvisoLegalPage = () => {
         <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Actualizacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Actualizacion_Texto" })}</p>
       </div>
+      {isScrollButtonVisible && (
+        <button onClick={scrollToTop} className="scrollTop">
+          <img src="/images/web/flechaArriba.png" alt="Subir" />
+        </button>
+      )}
     </div>
   );
 };

@@ -1,8 +1,8 @@
 import React from "react";
 import { useIntl } from "react-intl";
-import Link from "next/link";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import useDeviceType from "../hooks/useDeviceType";
+import useScrollToTop from "../hooks/useScrollToTop";
 import { useCookieConsent } from "../contexts/CookieContext";
 import styles from "../styles/politica-cookies.module.css";
 
@@ -10,6 +10,7 @@ const PoliticaCookies = () => {
   const intl = useIntl();
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
+  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
   const { cookieConsentAnalysis, setCookieConsentAnalysis, cookieConsentPersonalization, setCookieConsentPersonalization } = useCookieConsent();
   const cookiesState = cookieConsentAnalysis || cookieConsentPersonalization;
   useVisitedPageTracking("politica-cookies");
@@ -184,6 +185,11 @@ const PoliticaCookies = () => {
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Actualizacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Actualizacion_Texto" })}</p>
       </div>
+      {isScrollButtonVisible && (
+        <button onClick={scrollToTop} className="scrollTop">
+          <img src="/images/web/flechaArriba.png" alt="Subir" />
+        </button>
+      )}
     </div>
   );
 };
