@@ -1,13 +1,15 @@
-// pages/politica-cookies.tsx
 import React from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import useDeviceType from "../hooks/useDeviceType";
 import { useCookieConsent } from "../contexts/CookieContext";
 import styles from "../styles/politica-cookies.module.css";
 
 const PoliticaCookies = () => {
   const intl = useIntl();
+  const deviceType = useDeviceType();
+  const isMobile = deviceType === "mobile";
   const { cookieConsentAnalysis, setCookieConsentAnalysis, cookieConsentPersonalization, setCookieConsentPersonalization } = useCookieConsent();
   const cookiesState = cookieConsentAnalysis || cookieConsentPersonalization;
   useVisitedPageTracking("politica-cookies");
@@ -23,6 +25,61 @@ const PoliticaCookies = () => {
       document.cookie = "_locale=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     }
   };
+
+  const mobileTable = (
+    <table className="table table-dark table-striped-columns">
+      <tbody>
+        {Array.from({ length: 4 }, (_, i) => (
+          <React.Fragment key={i}>
+            <tr>
+              <td>Nombre</td>
+              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Nombre${i + 1}` })}</td>
+            </tr>
+            <tr>
+              <td>Titular</td>
+              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Titular${i + 1}` })}</td>
+            </tr>
+            <tr>
+              <td>Finalidad</td>
+              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Finalidad${i + 1}` })}</td>
+            </tr>
+            <tr>
+              <td>Duración</td>
+              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Duracion${i + 1}` })}</td>
+            </tr>
+            {i < 3 && ( // Condición para no mostrar el separador en el último grupo
+              <tr className={styles.tableSeparator}>
+                <td colSpan={2}></td>
+              </tr>
+            )}
+          </React.Fragment>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  const desktopTable = (
+    <table className="table table-dark table-striped-columns">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Titular</th>
+          <th>Finalidad</th>
+          <th>Duración</th>
+        </tr>
+      </thead>
+      <tbody className="table-group-divider">
+        {Array.from({ length: 4 }, (_, i) => i + 1).map((index) => (
+          <tr key={index}>
+            <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Nombre${index}` })}</td>
+            <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Titular${index}` })}</td>
+            <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Finalidad${index}` })}</td>
+            <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Duracion${index}` })}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
 
   return (
     <div className="container2">
@@ -62,44 +119,7 @@ const PoliticaCookies = () => {
       </div>
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Utilizadas_Titulo" })}</h3>
-        <div className="table-responsive">
-          <table className="table table-dark table-striped-columns">
-            <thead>
-              <tr>
-                <th>Nombre</th>
-                <th>Titular</th>
-                <th>Finalidad</th>
-                <th>Duración</th>
-              </tr>
-            </thead>
-            <tbody className="table-group-divider">
-              <tr>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Nombre1" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Titular1" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Finalidad1" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Duracion1" })}</td>
-              </tr>
-              <tr>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Nombre2" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Titular2" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Finalidad2" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Duracion2" })}</td>
-              </tr>
-              <tr>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Nombre3" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Titular3" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Finalidad3" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Duracion3" })}</td>
-              </tr>
-              <tr>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Nombre4" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Titular4" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Finalidad4" })}</td>
-                <td>{intl.formatMessage({ id: "politicaCookies_Utilizadas_Duracion4" })}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <div className="table-responsive">{isMobile ? mobileTable : desktopTable}</div>
         <p className="ti-20p">
           {intl.formatMessage({ id: "politicaCookies_Utilizadas_texto1" })}
           <a className={styles.link} href={intl.formatMessage({ id: "politicaCookies_Utilizadas_texto1_Enlace" })} target="_blank">
@@ -107,29 +127,6 @@ const PoliticaCookies = () => {
           </a>
           .
         </p>
-        {/* <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Utilizadas_texto2" })}</p> */}
-      </div>
-      <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Titulo" })}</h3>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto1" })}</p>
-        {/* <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto2" })}</p> */}
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3" })}</p>
-        <ul className={styles.listas}>
-          <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto1" })}</li>
-          <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto2" })}</li>
-          <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto3" })}</li>
-          <li>
-            {intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto4" })}
-            <Link href="/politica-privacidad" className={styles.link}>
-              <span>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto4_Enlace" })}</span>
-            </Link>
-            .
-          </li>
-        </ul>
-      </div>
-      <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Denegacion_Titulo" })}</h3>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Denegacion_Texto" })}</p>
       </div>
       <div className="text-center">
         <button className={`btn btn-primary mx-auto ${styles.deleteButton}`} disabled={!cookiesState} onClick={deleteCookies}>

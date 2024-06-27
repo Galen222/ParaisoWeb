@@ -22,3 +22,8 @@
   --bs-btn-disabled-bg: #4a403a;
   --bs-btn-disabled-border-color: #4a403a;
 }
+
+.tableSeparator td {
+  padding: 1px 0; /* Ajusta el espaciado según necesites */
+  background-color: white; /* Ajusta el color de fondo si es necesario */
+}
