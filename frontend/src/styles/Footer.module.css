@@ -20,16 +20,23 @@
 }
 
 .link {
-  text-decoration: none; /* Opcional: eliminar el subrayado de los enlaces */
+  text-decoration: none;
 }
 
 .link:hover {
-  text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
+  text-decoration: underline;
 }
 
 /* MODO TABLET */
 @media (max-width: 1024px) {
   .footer {
-    height: 90px;
+    height: 80px;
+  }
+}
+
+/* MODO MOVIL CON PANTALLA PEQUEÑA */
+@media (max-width: 385px) {
+  .footer {
+    height: 100px;
   }
 }

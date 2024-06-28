@@ -1,5 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl"; // Para internacionalización
+import { toast, Slide } from "react-toastify";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import useScrollToTop from "../hooks/useScrollToTop";
 import Link from "next/link";
@@ -59,12 +60,32 @@ const ContactPage = () => {
     if (file) {
       if (file.type !== "image/jpeg") {
         // Verifica el tipo de archivo
-        alert(intl.formatMessage({ id: "contacto_ArchivoNoJPG" }));
+        toast.error(intl.formatMessage({ id: "contacto_ArchivoNoJPG" }), {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Slide,
+        });
         return;
       }
       if (file.size > 1048576) {
         // Verifica el tamaño del archivo
-        alert(intl.formatMessage({ id: "contacto_ArchivoGrande" }));
+        toast.error(intl.formatMessage({ id: "contacto_ArchivoGrande" }), {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: false,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Slide,
+        });
         return;
       }
       setFormData({ ...formData, file });
@@ -76,7 +97,17 @@ const ContactPage = () => {
   // Procesa el envío del formulario
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    alert(intl.formatMessage({ id: "contacto_Formulario" }));
+    toast.success(intl.formatMessage({ id: "contacto_Formulario" }), {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      transition: Slide,
+    });
     // Resetear el formulario
     setFormData({
       name: "",

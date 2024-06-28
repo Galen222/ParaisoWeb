@@ -124,8 +124,51 @@ input:checked + .slider:before {
 
 /* MODO TABLET */
 @media (max-width: 1024px) {
+  .cookieModal {
+    text-align: justify;
+  }
+
+  .slider {
+    margin-left: 5px;
+  }
+
   .acceptButton,
   .cancelButton {
     width: 100px;
+  }
+}
+
+/* MODO MOVIL PANTALLA PEQUEÑA */
+@media (max-width: 385px) {
+  .cookieModal {
+    padding: 20px;
+    margin: 10 auto;
+  }
+
+  .switchContainer {
+    margin-bottom: 10px;
+  }
+
+  .cookieModal span {
+    font-size: 14px;
+    text-align: left;
+  }
+
+  .slider {
+    width: 30px;
+  }
+
+  input:checked + .slider:before {
+    transform: translateX(10px);
+  }
+
+  .buttonContainer {
+    margin-top: 15px;
+  }
+
+  .acceptButton,
+  .cancelButton {
+    width: 80px;
+    font-size: 14px;
   }
 }

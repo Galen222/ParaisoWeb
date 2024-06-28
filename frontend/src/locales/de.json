@@ -105,7 +105,8 @@
   "cookie_Texto4_Enlace1": "Cookie-Richtlinie",
   "cookie_Texto4_2": "und unsere",
   "cookie_Texto4_Enlace2": "Datenschutzerklärung",
-  "cookie_Borrado": "Zustimmung widerrufen und Cookies gelöscht",
+  "cookie_Borrado_Ok": "Zustimmung widerrufen und Cookies gelöscht",
+  "cookie_Borrado_Error": "Fehler beim Löschen der Cookies",
 
   "politicaCookies_Principal_Titulo": "Cookie-Richtlinie",
   "politicaCookies_Principal_Texto": "PACAVA S.A informiert über die Verwendung von Cookies auf ihrer Website www.paraisodeljamon.com",

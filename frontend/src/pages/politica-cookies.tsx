@@ -1,5 +1,7 @@
 import React from "react";
 import { useIntl } from "react-intl";
+import Link from "next/link";
+import { deleteCookies } from "../utils/utils";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import useDeviceType from "../hooks/useDeviceType";
 import useScrollToTop from "../hooks/useScrollToTop";
@@ -14,19 +16,6 @@ const PoliticaCookies = () => {
   const { cookieConsentAnalysis, setCookieConsentAnalysis, cookieConsentPersonalization, setCookieConsentPersonalization } = useCookieConsent();
   const cookiesState = cookieConsentAnalysis || cookieConsentPersonalization;
   useVisitedPageTracking("politica-cookies");
-
-  const deleteCookies = () => {
-    if (cookieConsentAnalysis) {
-      setCookieConsentAnalysis(false);
-      document.cookie = "_device=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-      document.cookie = "_visited=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    }
-    if (cookieConsentPersonalization) {
-      setCookieConsentPersonalization(false);
-      document.cookie = "_locale=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    }
-    alert(intl.formatMessage({ id: "cookie_Borrado" }));
-  };
 
   const mobileTable = (
     <table className="table table-dark table-striped-columns">
@@ -129,9 +118,36 @@ const PoliticaCookies = () => {
           </a>
           .
         </p>
+        {/* <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Utilizadas_texto2" })}</p> */}
+      </div>
+      <div className="mt-25p">
+        <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Titulo" })}</h3>
+        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto1" })}</p>
+        {/* <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto2" })}</p> */}
+        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3" })}</p>
+        <ul className={styles.listas}>
+          <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto1" })}</li>
+          <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto2" })}</li>
+          <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto3" })}</li>
+          <li>
+            {intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto4" })}
+            <Link href="/politica-privacidad" className={styles.link}>
+              <span>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto4_Enlace" })}</span>
+            </Link>
+            .
+          </li>
+        </ul>
+      </div>
+      <div className="mt-25p">
+        <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Denegacion_Titulo" })}</h3>
+        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Denegacion_Texto" })}</p>
       </div>
       <div className="text-center">
-        <button className={`btn btn-primary mx-auto ${styles.deleteButton}`} disabled={!cookiesState} onClick={deleteCookies}>
+        <button
+          className={`btn btn-primary mx-auto ${styles.deleteButton}`}
+          disabled={!cookiesState}
+          onClick={() => deleteCookies(intl, cookieConsentAnalysis, setCookieConsentAnalysis, cookieConsentPersonalization, setCookieConsentPersonalization)}
+        >
           {intl.formatMessage({ id: "politicaCookies_BotonBorrar" })}
         </button>
       </div>

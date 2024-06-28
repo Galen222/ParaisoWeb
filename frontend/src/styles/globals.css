@@ -19,7 +19,6 @@ body {
   max-width: 50%;
   margin: auto;
   padding: 20px;
-  text-align: left;
   text-align: justify;
   margin-bottom: 90px;
   font-size: 18px;
@@ -90,6 +89,16 @@ table {
   height: auto; /* Mantiene la proporción de la imagen */
 }
 
+.Toastify__toast-container {
+  font-family: Arial, Helvetica, sans-serif;
+  width: 420px;
+  margin-bottom: 70px;
+}
+
+.Toastify__toast {
+  background-color: #4a403a;
+}
+
 /* MODO TABLET */
 @media (max-width: 1024px) {
   .container,
@@ -100,6 +109,20 @@ table {
 
   .scrollTop {
     right: 20px;
-    bottom: 100px;
+    bottom: 90px;
+  }
+
+  .Toastify__toast-container {
+    font-family: Arial, Helvetica, sans-serif;
+    width: initial;
+    margin-bottom: 100px;
+  }
+}
+
+/* MODO MOVIL PANTALLA PEQUEÑA */
+@media (max-width: 385px) {
+  .scrollTop {
+    right: 20px;
+    bottom: 110px;
   }
 }

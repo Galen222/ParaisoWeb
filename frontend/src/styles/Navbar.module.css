@@ -142,10 +142,12 @@
     display: flex;
     justify-content: center;
   }
+
   .imgLogo {
     height: 200px;
     width: auto;
   }
+
   .textLogoContainer {
     display: none;
   }
@@ -187,7 +189,7 @@
 
   .navbarMenu.showMenu {
     max-height: 100vh;
-    min-height: calc(100vh - 355px);
+    min-height: calc(100vh - 360px);
     visibility: visible;
     opacity: 1;
     overflow: auto;
@@ -214,5 +216,13 @@
     width: 100%;
     box-shadow: none;
     padding: 0px;
+  }
+}
+
+/* MODO MOVIL PANTALLA PEQUEÑA */
+@media (max-width: 385px) {
+  .imgLogo {
+    height: 150px;
+    width: auto;
   }
 }

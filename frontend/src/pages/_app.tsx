@@ -1,10 +1,12 @@
 // src/pages/_app.tsx
 import Head from "next/head";
-import "@/styles/globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
+import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import React from "react";
 import { IntlProvider } from "react-intl";
+import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/router";
 import { CookieConsentProvider, useCookieConsent } from "../contexts/CookieContext";
 import { MobileMenuProvider } from "../contexts/MobileMenuContext";
@@ -162,6 +164,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
             <Navbar onLocaleChange={handleLocaleChange} currentLocale={locale} />
             <Component {...pageProps} />
             <Footer />
+            <ToastContainer />
           </React.StrictMode>
         </MobileMenuProvider>
       </IntlProvider>
