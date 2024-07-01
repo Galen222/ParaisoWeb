@@ -92,7 +92,6 @@ table {
 .Toastify__toast-container {
   font-family: Arial, Helvetica, sans-serif;
   width: 420px;
-  margin-bottom: 70px;
 }
 
 .Toastify__toast {
@@ -114,8 +113,7 @@ table {
 
   .Toastify__toast-container {
     font-family: Arial, Helvetica, sans-serif;
-    width: initial;
-    margin-bottom: 100px;
+    width: 100%;
   }
 }
 

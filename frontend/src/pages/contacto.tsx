@@ -62,7 +62,7 @@ const ContactPage = () => {
         // Verifica el tipo de archivo
         toast.error(intl.formatMessage({ id: "contacto_ArchivoNoJPG" }), {
           position: "top-center",
-          autoClose: 5000,
+          autoClose: 4000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: false,
@@ -77,7 +77,7 @@ const ContactPage = () => {
         // Verifica el tamaño del archivo
         toast.error(intl.formatMessage({ id: "contacto_ArchivoGrande" }), {
           position: "top-center",
-          autoClose: 5000,
+          autoClose: 4000,
           hideProgressBar: false,
           closeOnClick: true,
           pauseOnHover: false,
@@ -99,7 +99,7 @@ const ContactPage = () => {
     e.preventDefault();
     toast.success(intl.formatMessage({ id: "contacto_Formulario" }), {
       position: "top-center",
-      autoClose: 5000,
+      autoClose: 4000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: false,

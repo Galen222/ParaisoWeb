@@ -24,7 +24,7 @@ export const deleteCookies = (
     }
     toast.success(intl.formatMessage({ id: "cookie_Borrado_Ok" }), {
       position: "top-center",
-      autoClose: 5000,
+      autoClose: 4000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: false,
@@ -34,10 +34,9 @@ export const deleteCookies = (
       transition: Slide,
     });
   } catch (error) {
-    console.error("Error deleting cookies:", error);
     toast.error(intl.formatMessage({ id: "cookie_Borrado_Error" }), {
       position: "top-center",
-      autoClose: 5000,
+      autoClose: 4000,
       hideProgressBar: false,
       closeOnClick: true,
       pauseOnHover: false,
