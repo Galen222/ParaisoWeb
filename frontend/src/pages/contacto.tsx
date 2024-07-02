@@ -2,6 +2,7 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl"; // Para internacionalización
 import { toast, Slide } from "react-toastify";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useTrackingGA } from "../hooks/useTrackingGA";
 import useScrollToTop from "../hooks/useScrollToTop";
 import Link from "next/link";
 import styles from "../styles/contacto.module.css"; // Estilos específicos para esta página
@@ -10,6 +11,7 @@ const ContactPage = () => {
   const intl = useIntl(); // Hook para utilizar la internacionalización
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
   useVisitedPageTracking("contacto");
+  useTrackingGA("contacto");
   const [formData, setFormData] = useState({
     name: "",
     reason: "",

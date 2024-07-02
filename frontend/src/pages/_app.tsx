@@ -2,11 +2,12 @@
 import Head from "next/head";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
+import ReactGA from "react-ga4";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import React from "react";
 import { IntlProvider } from "react-intl";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast, Slide } from "react-toastify";
 import { useRouter } from "next/router";
 import { CookieConsentProvider, useCookieConsent } from "../contexts/CookieContext";
 import { MobileMenuProvider } from "../contexts/MobileMenuContext";
@@ -55,10 +56,14 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     if (cookieNameAnalysis) {
       setCookieConsentAnalysis(true);
     }
+    if (cookieNameAnalysisGoogle) {
+      setCookieConsentAnalysisGoogle(true);
+      initGA();
+    }
     if (!cookieNameAnalysis && !cookieNameAnalysisGoogle && !cookieValuePersonalization) {
       setShowCookieModal(true);
     }
-  }, [setCookieConsentPersonalization, setCookieConsentAnalysis]);
+  }, [setCookieConsentPersonalization, setCookieConsentAnalysis, setCookieConsentAnalysisGoogle]);
 
   React.useEffect(() => {
     import(`../locales/${locale}.json`).then((msgs) => setMessages(msgs.default));
@@ -109,6 +114,14 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     document.cookie = `_device=${JSON.stringify(deviceInfo)}; path=/; max-age=31536000; SameSite=Lax`;
   };
 
+  const initGA = () => {
+    if (!window.ga) {
+      // Asegura que ga4 solo se inicialice una vez
+      ReactGA.initialize("G-LXYGK9W7J8"); // Reemplaza con tu ID de Google Analytics 4
+      console.log("ga4 iniciado");
+    }
+  };
+
   return (
     <>
       <Head>
@@ -129,6 +142,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
                   }
                   if (AcceptCookieAnalysisGoogle) {
                     setCookieConsentAnalysisGoogle(true);
+                    initGA();
                   } else {
                     setCookieConsentAnalysisGoogle(false);
                   }
@@ -151,11 +165,13 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
                 onAcceptAll={() => {
                   setAcceptCookieAnalysis(true);
                   setCookieConsentAnalysis(true);
+                  createDeviceCookie();
                   setAcceptCookieAnalysisGoogle(true);
                   setCookieConsentAnalysisGoogle(true);
                   setAcceptCookiePersonalization(true);
                   setCookieConsentPersonalization(true);
                   setShowCookieModal(false);
+                  initGA();
                 }}
                 onCookiesPolicyLinkClick={handleCookiesPolicyLinkClick}
                 onPrivacyPolicyLinkClick={handlePrivacyPolicyLinkClick}

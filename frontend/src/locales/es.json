@@ -2,12 +2,14 @@
   "Navbar_inicio": "Inicio",
   "Navbar_restaurantes": "Restaurantes",
   "Navbar_reservas": "Reservas",
-  "Navbar_menu": "Menú Diario",
+  "Navbar_menu": "Menú",
   "Navbar_carta": "Carta",
   "Navbar_charcuteria": "Charcutería",
-  "Navbar_about": "Sobre nosotros",
+  "Navbar_about": "Nosotros",
   "Navbar_blog": "Blog",
   "Navbar_contacto": "Contacto",
+
+  "app_CookieSuccess": "Cookies configuradas satisfactoriamente",
 
   "inicio_Titulo": "Bienvenidos a Paraíso del Jamón",
   "inicio_Descripcion": "Descubre los mejores sabores de nuestros platos y embutidos.",

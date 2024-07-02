@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useCookieConsent } from "../contexts/CookieContext";
-import { getCookieValue } from "../utils/utils";
+import { getCookieValue } from "../utils/getCookieValue";
 
 // Hook personalizado para rastrear páginas visitadas
 export function useVisitedPageTracking(currentPage: string) {

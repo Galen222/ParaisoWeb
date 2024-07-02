@@ -4,6 +4,7 @@ import { useIntl } from "react-intl";
 import styles from "../styles/error.module.css";
 // Importa el tipo NextPageContext de Next.js
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useTrackingGA } from "../hooks/useTrackingGA";
 import { NextPageContext } from "next";
 
 // Define la interfaz para las props del componente ErrorPage
@@ -16,6 +17,7 @@ const ErrorPage = ({ statusCode }: ErrorPageProps) => {
   // Obtiene el objeto intl usando el hook useIntl para manejar la internacionalización
   const intl = useIntl();
   useVisitedPageTracking("error");
+  useTrackingGA("error");
   // Variable para almacenar el mensaje de error
   let message;
   // Utiliza un switch para determinar el mensaje basado en el código de estado

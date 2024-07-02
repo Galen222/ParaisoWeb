@@ -9,6 +9,8 @@
   "Navbar_blog": "Blog",
   "Navbar_contacto": "Kontakt",
 
+  "app_CookieSuccess": "Cookies erfolgreich gesetzt",
+
   "inicio_Titulo": "Willkommen im Paraíso del Jamón",
   "inicio_Descripcion": "Entdecken Sie die besten Aromen unserer Gerichte und Würste.",
 
@@ -71,7 +73,7 @@
   "contacto_Tabla_Celda5_1": "Rechte",
   "contacto_Tabla_Celda5_2": "Zugriff, Berichtigung und Löschung der Daten sowie andere Rechte, wie in den zusätzlichen Informationen erläutert",
   "contacto_Tabla_Celda6_1": "Zusätzliche Informationen",
-  "contacto_Tabla_Celda6_2": "Sie können unsere",
+  "contacto_Tabla_Celda6_2": "Sie können unsere ",
   "contacto_Tabla_Celda6_3": "Datenschutzerklärung",
 
   "error_Error400": "Fehlerhafte Anfrage. Bitte überprüfen Sie die gesendeten Daten und versuchen Sie es erneut.",

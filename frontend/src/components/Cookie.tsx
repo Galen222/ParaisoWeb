@@ -1,6 +1,7 @@
 // components/Cookie.tsx
 import React from "react";
 import { useIntl } from "react-intl";
+import { toast, Slide } from "react-toastify";
 import Link from "next/link";
 import { useCookieConsent } from "../contexts/CookieContext";
 import styles from "../styles/Cookie.module.css";
@@ -44,6 +45,34 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
     }
   };
 
+  // Función para mostrar el toast
+  const showCookieToast = () => {
+    toast.success(intl.formatMessage({ id: "app_CookieSuccess" }), {
+      position: "top-center",
+      autoClose: 2000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+      transition: Slide,
+    });
+  };
+  const handleAccept = () => {
+    onAccept();
+    showCookieToast();
+  };
+
+  const handleAcceptAll = () => {
+    onAcceptAll();
+    showCookieToast();
+  };
+
+  const handleDeclineAll = () => {
+    onDeclineAll();
+    showCookieToast();
+  };
   return (
     <div className={styles.cookieModalBackdrop}>
       <div className={styles.cookieModal}>
@@ -93,13 +122,13 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
           </div>
         </div>
         <div className={styles.buttonContainer}>
-          <button className={`btn btn-primary ${styles.acceptButton}`} disabled={checkCookiesState()} onClick={onAccept}>
+          <button className={`btn btn-primary ${styles.acceptButton}`} disabled={checkCookiesState()} onClick={handleAccept}>
             {intl.formatMessage({ id: "cookie_BotonAceptar" })}
           </button>
-          <button className={`btn btn-primary ${styles.acceptButton}`} onClick={onAcceptAll}>
+          <button className={`btn btn-primary ${styles.acceptButton}`} onClick={handleAcceptAll}>
             {intl.formatMessage({ id: "cookie_BotonAceptarTodo" })}
           </button>
-          <button className={`btn btn-primary ${styles.cancelButton}`} onClick={onDeclineAll}>
+          <button className={`btn btn-primary ${styles.cancelButton}`} onClick={handleDeclineAll}>
             {intl.formatMessage({ id: "cookie_BotonRechazarTodo" })}
           </button>
         </div>

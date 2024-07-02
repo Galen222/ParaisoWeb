@@ -1,13 +1,14 @@
 import React from "react";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useTrackingGA } from "../hooks/useTrackingGA";
 import styles from "../styles/about.module.css"; // Importa los estilos específicos para la página About
 
 const AboutPage = () => {
   const intl = useIntl(); // Inicializa el hook de internacionalización para usar en este componente
 
   useVisitedPageTracking("about");
-
+  useTrackingGA("about");
   // Retorna JSX para renderizar la página About
   return (
     <div className="container">

@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useTrackingGA } from "../hooks/useTrackingGA";
 import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/aviso-legal.module.css";
 
@@ -9,6 +10,7 @@ const AvisoLegalPage = () => {
   const intl = useIntl();
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
   useVisitedPageTracking("aviso-legal");
+  useTrackingGA("aviso-legal");
 
   return (
     <div className="container2">

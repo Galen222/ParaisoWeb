@@ -1,7 +1,7 @@
 import React from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
-import { deleteCookies } from "../utils/utils";
+import { deleteCookies } from "../utils/deleteCookies";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import useDeviceType from "../hooks/useDeviceType";
 import useScrollToTop from "../hooks/useScrollToTop";
@@ -13,7 +13,14 @@ const PoliticaCookies = () => {
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
-  const { cookieConsentAnalysis, setCookieConsentAnalysis, cookieConsentPersonalization, setCookieConsentPersonalization } = useCookieConsent();
+  const {
+    cookieConsentAnalysis,
+    setCookieConsentAnalysis,
+    cookieConsentAnalysisGoogle,
+    setCookieConsentAnalysisGoogle,
+    cookieConsentPersonalization,
+    setCookieConsentPersonalization,
+  } = useCookieConsent();
   const cookiesState = cookieConsentAnalysis || cookieConsentPersonalization;
   useVisitedPageTracking("politica-cookies");
 
@@ -146,7 +153,17 @@ const PoliticaCookies = () => {
         <button
           className={`btn btn-primary mx-auto ${styles.deleteButton}`}
           disabled={!cookiesState}
-          onClick={() => deleteCookies(intl, cookieConsentAnalysis, setCookieConsentAnalysis, cookieConsentPersonalization, setCookieConsentPersonalization)}
+          onClick={() =>
+            deleteCookies(
+              intl,
+              cookieConsentAnalysis,
+              setCookieConsentAnalysis,
+              cookieConsentAnalysisGoogle,
+              setCookieConsentAnalysisGoogle,
+              cookieConsentPersonalization,
+              setCookieConsentPersonalization
+            )
+          }
         >
           {intl.formatMessage({ id: "politicaCookies_BotonBorrar" })}
         </button>

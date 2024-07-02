@@ -9,6 +9,8 @@
   "Navbar_blog": "Blog",
   "Navbar_contacto": "Contact",
 
+  "app_CookieSuccess": "Cookies successfully set",
+
   "inicio_Titulo": "Welcome to Paraíso del Jamón",
   "inicio_Descripcion": "Discover the best flavors of our dishes and sausages.",
 
@@ -71,7 +73,7 @@
   "contacto_Tabla_Celda5_1": "Rights",
   "contacto_Tabla_Celda5_2": "Access, rectify, and delete data, as well as other rights, as explained in the additional information",
   "contacto_Tabla_Celda6_1": "Additional Information",
-  "contacto_Tabla_Celda6_2": "You can consult our",
+  "contacto_Tabla_Celda6_2": "You can consult our ",
   "contacto_Tabla_Celda6_3": "Privacy Policy",
 
   "error_Error400": "Bad request. Please verify the data sent and try again.",

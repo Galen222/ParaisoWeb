@@ -1,12 +1,14 @@
 import React from "react"; // Importa React para utilizar JSX y crear componentes.
 import { useIntl } from "react-intl"; // Importa el hook useIntl para la internacionalización.
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useTrackingGA } from "../hooks/useTrackingGA";
 import styles from "../styles/san-bernardo.module.css"; // Importa los estilos CSS específicos para la página San Bernardo.
 
 // Define el componente funcional SanBernardo.
 const SanBernardo = () => {
   const intl = useIntl(); // Inicializa el hook de internacionalización para usarlo en este componente.
   useVisitedPageTracking("san-bernardo");
+  useTrackingGA("san-bernardo");
   // Renderiza la interfaz de usuario para la página de San Bernardo.
   return (
     <div className="container">
