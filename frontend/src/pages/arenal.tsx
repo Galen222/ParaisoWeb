@@ -1,14 +1,14 @@
 import React from "react"; // Importa React para crear el componente
 import { useIntl } from "react-intl"; // Importa el hook useIntl para utilizar internacionalización
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useTrackingGA } from "../hooks/useTrackingGA";
+import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import styles from "../styles/arenal.module.css"; // Importa los estilos CSS específicos para la página Arenal
 
 // Define el componente funcional ArenalPage utilizando una función flecha de ES6
 const ArenalPage = () => {
   const intl = useIntl(); // Inicializa el hook de internacionalización para utilizar en este componente
   useVisitedPageTracking("arenal");
-  useTrackingGA("arenal");
+  useVisitedPageTrackingGA("arenal");
   // Retorna JSX que representa el UI de la página Arenal
   return (
     <div className="container">

@@ -3,6 +3,7 @@ import { useIntl } from "react-intl";
 import Link from "next/link";
 import { deleteCookies } from "../utils/deleteCookies";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import useDeviceType from "../hooks/useDeviceType";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useCookieConsent } from "../contexts/CookieContext";
@@ -23,6 +24,23 @@ const PoliticaCookies = () => {
   } = useCookieConsent();
   const cookiesState = cookieConsentAnalysis || cookieConsentPersonalization;
   useVisitedPageTracking("politica-cookies");
+  useVisitedPageTrackingGA("politica-cookies");
+
+  // Seguimiento del botón
+  const trackButtonClick = useButtonClickTrackingGA();
+
+  const handleDeleteCookies = () => {
+    trackButtonClick("Borrar Cookies"); // Ahora debería estar claro para TypeScript
+    deleteCookies(
+      intl,
+      cookieConsentAnalysis,
+      setCookieConsentAnalysis,
+      cookieConsentAnalysisGoogle,
+      setCookieConsentAnalysisGoogle,
+      cookieConsentPersonalization,
+      setCookieConsentPersonalization
+    );
+  };
 
   const mobileTable = (
     <table className="table table-dark table-striped-columns">
@@ -130,7 +148,7 @@ const PoliticaCookies = () => {
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto1" })}</p>
-        {/* <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto2" })}</p> */}
+        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto2" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3" })}</p>
         <ul className={styles.listas}>
           <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto1" })}</li>
@@ -150,21 +168,7 @@ const PoliticaCookies = () => {
         <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Denegacion_Texto" })}</p>
       </div>
       <div className="text-center">
-        <button
-          className={`btn btn-primary mx-auto ${styles.deleteButton}`}
-          disabled={!cookiesState}
-          onClick={() =>
-            deleteCookies(
-              intl,
-              cookieConsentAnalysis,
-              setCookieConsentAnalysis,
-              cookieConsentAnalysisGoogle,
-              setCookieConsentAnalysisGoogle,
-              cookieConsentPersonalization,
-              setCookieConsentPersonalization
-            )
-          }
-        >
+        <button className={`btn btn-primary mx-auto ${styles.deleteButton}`} disabled={!cookiesState} onClick={() => handleDeleteCookies()}>
           {intl.formatMessage({ id: "politicaCookies_BotonBorrar" })}
         </button>
       </div>

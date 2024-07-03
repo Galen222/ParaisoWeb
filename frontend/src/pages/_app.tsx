@@ -116,8 +116,11 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
 
   const initGA = () => {
     if (!window.ga) {
-      // Asegura que ga4 solo se inicialice una vez
-      ReactGA.initialize("G-LXYGK9W7J8"); // Reemplaza con tu ID de Google Analytics 4
+      const analyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+      if (!analyticsId) {
+        throw new Error("Google Analytics ID no está definido en las variables de entorno.");
+      }
+      ReactGA.initialize(analyticsId);
       console.log("ga4 iniciado");
     }
   };

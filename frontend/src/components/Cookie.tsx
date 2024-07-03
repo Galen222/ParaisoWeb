@@ -59,6 +59,7 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
       transition: Slide,
     });
   };
+
   const handleAccept = () => {
     onAccept();
     showCookieToast();

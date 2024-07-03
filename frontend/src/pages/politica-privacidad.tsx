@@ -2,7 +2,7 @@ import React from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useTrackingGA } from "../hooks/useTrackingGA";
+import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/politica-privacidad.module.css";
 
@@ -10,7 +10,7 @@ const PoliticaPrivacidadPage = () => {
   const intl = useIntl();
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
   useVisitedPageTracking("politica-privacidad");
-  useTrackingGA("politica-privacidad");
+  useVisitedPageTrackingGA("politica-privacidad");
 
   return (
     <div className="container2">

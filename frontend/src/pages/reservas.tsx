@@ -1,14 +1,14 @@
 import React from "react"; // Importa React para usar JSX y crear componentes funcionales.
 import { useIntl } from "react-intl"; // Importa el hook useIntl, que permite la internacionalización de la aplicación.
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useTrackingGA } from "../hooks/useTrackingGA";
+import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import styles from "../styles/reservas.module.css"; // Importa estilos CSS específicos para la página de reservas.
 
 // Define el componente funcional ReservasPage.
 const ReservasPage = () => {
   const intl = useIntl(); // Inicia el hook de internacionalización para acceder a las funciones de traducción.
   useVisitedPageTracking("reservas");
-  useTrackingGA("reservas");
+  useVisitedPageTrackingGA("reservas");
   // Renderiza el componente con la estructura de la página de reservas.
   return (
     <div className="container">

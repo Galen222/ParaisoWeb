@@ -1,14 +1,14 @@
 import React from "react"; // Importa React, necesario para crear componentes y usar JSX.
 import { useIntl } from "react-intl"; // Importa el hook useIntl para la internacionalización de texto.
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useTrackingGA } from "../hooks/useTrackingGA";
+import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import styles from "../styles/bravo-murillo.module.css"; // Importa los estilos CSS específicos para esta página.
 
 // Define el componente funcional BravoMurilloPage.
 const BravoMurilloPage = () => {
   const intl = useIntl(); // Utiliza el hook de internacionalización para obtener funciones de traducción.
   useVisitedPageTracking("bravo-murillo");
-  useTrackingGA("bravo-murillo");
+  useVisitedPageTrackingGA("bravo-murillo");
   // Devuelve el JSX que construye la UI de la página.
   return (
     <div className="container">
