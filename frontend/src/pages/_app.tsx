@@ -14,6 +14,7 @@ import { MobileMenuProvider } from "../contexts/MobileMenuContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cookie from "../components/Cookie";
+import { deleteCookieGA } from "@/utils/deleteCookies";
 
 interface MainComponentProps {
   Component: React.ComponentType<AppProps>;
@@ -59,6 +60,8 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     if (cookieNameAnalysisGoogle) {
       setCookieConsentAnalysisGoogle(true);
       initGA();
+    } else {
+      deleteCookieGA();
     }
     if (!cookieNameAnalysis && !cookieNameAnalysisGoogle && !cookieValuePersonalization) {
       setShowCookieModal(true);
@@ -84,8 +87,8 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
 
   const handleCookiesPolicyLinkClick = () => {
     setAcceptCookieAnalysis(false);
-    setAcceptCookieAnalysisGoogle(false);
     setCookieConsentAnalysis(false);
+    setAcceptCookieAnalysisGoogle(false);
     setCookieConsentAnalysisGoogle(false);
     setAcceptCookiePersonalization(false);
     setCookieConsentPersonalization(false);
@@ -95,8 +98,8 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
 
   const handlePrivacyPolicyLinkClick = () => {
     setAcceptCookieAnalysis(false);
-    setAcceptCookieAnalysisGoogle(false);
     setCookieConsentAnalysis(false);
+    setAcceptCookieAnalysisGoogle(false);
     setCookieConsentAnalysisGoogle(false);
     setAcceptCookiePersonalization(false);
     setCookieConsentPersonalization(false);

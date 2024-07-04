@@ -21,9 +21,9 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
   const [cookieConsentAnalysis, setCookieConsentAnalysis] = useState<boolean>(false);
   const [cookieConsentAnalysisGoogle, setCookieConsentAnalysisGoogle] = useState<boolean>(false);
   const [cookieConsentPersonalization, setCookieConsentPersonalization] = useState<boolean>(false);
-  const [AcceptCookieAnalysis, setAcceptCookieAnalysis] = useState(false);
-  const [AcceptCookieAnalysisGoogle, setAcceptCookieAnalysisGoogle] = useState(false);
-  const [AcceptCookiePersonalization, setAcceptCookiePersonalization] = useState(false);
+  const [AcceptCookieAnalysis, setAcceptCookieAnalysis] = useState<boolean>(false);
+  const [AcceptCookieAnalysisGoogle, setAcceptCookieAnalysisGoogle] = useState<boolean>(false);
+  const [AcceptCookiePersonalization, setAcceptCookiePersonalization] = useState<boolean>(false);
 
   return (
     <CookieConsentContext.Provider

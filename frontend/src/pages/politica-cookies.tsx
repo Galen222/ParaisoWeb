@@ -15,6 +15,9 @@ const PoliticaCookies = () => {
   const isMobile = deviceType === "mobile";
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
   const {
+    setAcceptCookieAnalysis,
+    setAcceptCookieAnalysisGoogle,
+    setAcceptCookiePersonalization,
     cookieConsentAnalysis,
     setCookieConsentAnalysis,
     cookieConsentAnalysisGoogle,
@@ -33,9 +36,12 @@ const PoliticaCookies = () => {
     trackButtonClick("Borrar Cookies");
     deleteCookies(
       intl,
+      setAcceptCookiePersonalization,
       cookieConsentAnalysis,
+      setAcceptCookieAnalysis,
       setCookieConsentAnalysis,
       cookieConsentAnalysisGoogle,
+      setAcceptCookieAnalysisGoogle,
       setCookieConsentAnalysisGoogle,
       cookieConsentPersonalization,
       setCookieConsentPersonalization
