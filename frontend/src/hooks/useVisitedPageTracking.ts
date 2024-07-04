@@ -23,8 +23,6 @@ export function useVisitedPageTracking(currentPage: string) {
         document.cookie = `_visited=${currentPage}; path=/; max-age=31536000; SameSite=Lax`;
         console.log(`Cookie '_visited' creada con el valor de ${currentPage}.`);
       }
-    } else {
-      console.log("El consentimiento de cookies de analisis no ha sido aceptado.");
     }
   }, [cookieConsentAnalysis, currentPage]);
 }

@@ -2,7 +2,7 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl"; // Para internacionalización
 import { toast, Slide } from "react-toastify";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import useScrollToTop from "../hooks/useScrollToTop";
 import Link from "next/link";
 import styles from "../styles/contacto.module.css"; // Estilos específicos para esta página
@@ -96,9 +96,12 @@ const ContactPage = () => {
     }
   };
 
+  const trackButtonClick = useButtonClickTrackingGA();
+
   // Procesa el envío del formulario
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    trackButtonClick("Enviar Formulario");
     toast.success(intl.formatMessage({ id: "contacto_Formulario" }), {
       position: "top-center",
       autoClose: 4000,

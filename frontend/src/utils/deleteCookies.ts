@@ -29,7 +29,6 @@ export const deleteCookies = (
       if (cookieName.match(/^_ga($|_)/) && cookieConsentAnalysisGoogle) {
         setCookieConsentAnalysisGoogle(false);
         document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
-        console.log(`Borrada cookie Google: ${cookieName}`);
       }
     }
     toast.success(intl.formatMessage({ id: "cookie_Borrado_Ok" }), {

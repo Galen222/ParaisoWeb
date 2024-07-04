@@ -30,7 +30,7 @@ const PoliticaCookies = () => {
   const trackButtonClick = useButtonClickTrackingGA();
 
   const handleDeleteCookies = () => {
-    trackButtonClick("Borrar Cookies"); // Ahora debería estar claro para TypeScript
+    trackButtonClick("Borrar Cookies");
     deleteCookies(
       intl,
       cookieConsentAnalysis,
