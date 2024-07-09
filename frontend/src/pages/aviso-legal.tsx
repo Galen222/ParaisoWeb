@@ -25,7 +25,7 @@ const AvisoLegalPage = () => {
       </div>
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Titulo" })}</h3>
-        <ul className={styles.listas}>
+        <ul className={`text-left ${styles.listas}`}>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto1" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto2" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto3" })}</li>

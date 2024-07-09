@@ -183,7 +183,7 @@ const PoliticaCookies = () => {
         <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto2" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3" })}</p>
-        <ul className={styles.listas}>
+        <ul className={`text-left ${styles.listas}`}>
           <li>
             <a className={styles.link} href={intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto1_Enlace" })} target="_blank">
               {intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto1" })}
