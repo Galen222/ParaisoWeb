@@ -1,0 +1,14 @@
+.carouselContainer {
+  width: 70%;
+  margin: 0 auto; /* Centrar el carrusel en el contenedor */
+}
+
+.image {
+  width: 100%;
+  height: auto;
+}
+
+.text {
+  padding: 20px;
+  text-align: center;
+}

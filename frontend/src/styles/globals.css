@@ -98,6 +98,23 @@ table {
   background-color: #4a403a;
 }
 
+/* Ajustar los puntos del carrusel */
+.slick-dots {
+  bottom: 25px; /* Ajusta este valor según lo cerca que quieras los puntos de la imagen */
+  color: #4a403a;
+}
+
+/* Cambiar el color de las flechas del carrusel */
+.slick-prev,
+.slick-next {
+  color: #4a403a; /* Cambia el color de las flechas */
+}
+
+.slick-prev::before,
+.slick-next::before {
+  color: #4a403a; /* Asegura que el color de las flechas sea marrón */
+}
+
 /* MODO TABLET */
 @media (max-width: 1024px) {
   .container,

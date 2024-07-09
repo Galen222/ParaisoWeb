@@ -2,6 +2,7 @@ import React from "react";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import Carousel from "../components/Carousel";
 import styles from "../styles/index.module.css";
 
 export default function Home() {
@@ -14,6 +15,7 @@ export default function Home() {
     <div className="container">
       <h1>{intl.formatMessage({ id: "inicio_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "inicio_Descripcion" })}</p>
+      <Carousel />
     </div>
   );
 }

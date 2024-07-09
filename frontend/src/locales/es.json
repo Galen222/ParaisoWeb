@@ -110,6 +110,13 @@
   "cookie_Borrado_Ok": "Consentimiento retirado y cookies eliminadas",
   "cookie_Borrado_Error": "Error borrando las cookies",
 
+  "carousel_Alt1": "texto 1",
+  "carousel_Alt2": "texto 2",
+  "carousel_Alt3": "texto 3",
+  "carousel_Texto1": "texto 1",
+  "carousel_Texto2": "texto 2",
+  "carousel_Texto3": "texto 3",
+
   "politicaCookies_Principal_Titulo": "Política de Cookies",
   "politicaCookies_Principal_Texto": "PACAVA S.A informa acerca del uso de las cookies en su sitio web www.paraisodeljamon.com",
   "politicaCookies_Informacion_Titulo": "¿Qué son las cookies?",

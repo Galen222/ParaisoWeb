@@ -110,6 +110,13 @@
   "cookie_Borrado_Ok": "Zustimmung widerrufen und Cookies gelöscht",
   "cookie_Borrado_Error": "Fehler beim Löschen der Cookies",
 
+  "carousel_Alt1": "texto 1",
+  "carousel_Alt2": "texto 2",
+  "carousel_Alt3": "texto 3",
+  "carousel_Texto1": "texto 1",
+  "carousel_Texto2": "texto 2",
+  "carousel_Texto3": "texto 3",
+
   "politicaCookies_Principal_Titulo": "Cookie-Richtlinie",
   "politicaCookies_Principal_Texto": "PACAVA S.A informiert über die Verwendung von Cookies auf ihrer Website www.paraisodeljamon.com",
   "politicaCookies_Informacion_Titulo": "Was sind Cookies?",

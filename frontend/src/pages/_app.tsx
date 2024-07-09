@@ -1,13 +1,18 @@
 // src/pages/_app.tsx
 import Head from "next/head";
+// Estilos de Bootstrap
 import "bootstrap/dist/css/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
-import ReactGA from "react-ga4";
+// Estilos de react-slick
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+// Estilos globales
 import "@/styles/globals.css";
+import ReactGA from "react-ga4";
 import type { AppProps } from "next/app";
 import React from "react";
 import { IntlProvider } from "react-intl";
-import { ToastContainer, toast, Slide } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { useRouter } from "next/router";
 import { CookieConsentProvider, useCookieConsent } from "../contexts/CookieContext";
 import { MobileMenuProvider } from "../contexts/MobileMenuContext";
