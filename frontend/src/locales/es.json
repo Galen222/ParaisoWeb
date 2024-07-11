@@ -110,12 +110,17 @@
   "cookie_Borrado_Ok": "Consentimiento retirado y cookies eliminadas",
   "cookie_Borrado_Error": "Error borrando las cookies",
 
-  "carousel_Alt1": "texto 1",
-  "carousel_Alt2": "texto 2",
-  "carousel_Alt3": "texto 3",
-  "carousel_Texto1": "texto 1",
-  "carousel_Texto2": "texto 2",
-  "carousel_Texto3": "texto 3",
+  "Map_Loading_Texto": "Cargando...",
+  "Map_Marker_Texto1": "Como llegar",
+  "Map_Marker_Url": "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&hl=es-ES&gl=US&mapclient=apiv3&cid=16475304548653478685",
+  "Map_Marker_Texto2": "Ver en Google Maps",
+
+  "carousel_Alt1": "foto 1",
+  "carousel_Alt2": "foto 2",
+  "carousel_Alt3": "foto 3",
+  "carousel_Texto1": "Especialistas en jamones",
+  "carousel_Texto2": "Gran variedad de productos en charcuteria",
+  "carousel_Texto3": "menu diario y carta",
 
   "politicaCookies_Principal_Titulo": "Política de Cookies",
   "politicaCookies_Principal_Texto": "PACAVA S.A informa acerca del uso de las cookies en su sitio web www.paraisodeljamon.com",

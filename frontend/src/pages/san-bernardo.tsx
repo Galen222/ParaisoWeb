@@ -1,21 +1,24 @@
-import React from "react"; // Importa React para utilizar JSX y crear componentes.
-import { useIntl } from "react-intl"; // Importa el hook useIntl para la internacionalización.
+import React from "react";
+import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import styles from "../styles/san-bernardo.module.css"; // Importa los estilos CSS específicos para la página San Bernardo.
+import Map from "../components/Map";
+import styles from "../styles/san-bernardo.module.css";
 
-// Define el componente funcional SanBernardo.
 const SanBernardo = () => {
-  const intl = useIntl(); // Inicializa el hook de internacionalización para usarlo en este componente.
+  const intl = useIntl();
   useVisitedPageTracking("san-bernardo");
   useVisitedPageTrackingGA("san-bernardo");
-  // Renderiza la interfaz de usuario para la página de San Bernardo.
+
+  const locationKey = "san-bernardo";
+
   return (
     <div className="container">
       <h1>{intl.formatMessage({ id: "sanBernardo_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "sanBernardo_Descripcion" })}</p>
+      <Map locationKey={locationKey} />
     </div>
   );
 };
 
-export default SanBernardo; // Exporta el componente SanBernardo para que pueda ser utilizado en otras partes de la aplicación.
+export default SanBernardo;

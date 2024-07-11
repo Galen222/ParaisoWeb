@@ -3,6 +3,7 @@ declare module "react-slick" {
 
   interface Settings {
     accessibility?: boolean;
+    arrows?: boolean;
     dots?: boolean;
     infinite?: boolean;
     speed?: number;

@@ -8,6 +8,7 @@ const Carousel = () => {
   const intl = useIntl();
   const settings = {
     accessibility: true,
+    arrows: false,
     dots: true,
     infinite: true,
     speed: 500,

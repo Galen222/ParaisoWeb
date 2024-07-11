@@ -1,0 +1,14 @@
+.mapContainer {
+  width: 80%;
+  height: 400px;
+  margin: 0 auto; /* Centrar el mapa */
+}
+
+/* MODO TABLET */
+@media (max-width: 1024px) {
+  .mapContainer {
+    width: 100%;
+    height: 400px;
+    margin: 0 auto; /* Centrar el mapa */
+  }
+}

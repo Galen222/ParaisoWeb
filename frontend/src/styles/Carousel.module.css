@@ -1,5 +1,5 @@
 .carouselContainer {
-  width: 70%;
+  width: 60%;
   margin: 0 auto; /* Centrar el carrusel en el contenedor */
 }
 
@@ -9,6 +9,12 @@
 }
 
 .text {
+  width: 100%;
+  height: auto;
   padding: 20px;
   text-align: center;
+  display: flex;
+  justify-content: center; /* Centrar horizontalmente */
+  align-items: center; /* Centrar verticalmente */
+  border: 1px solid #4a403a; /* Borde de 1px */
 }

@@ -100,7 +100,7 @@ table {
 
 /* Ajustar los puntos del carrusel */
 .slick-dots {
-  bottom: 25px; /* Ajusta este valor según lo cerca que quieras los puntos de la imagen */
+  bottom: 30px; /* Ajusta este valor según lo cerca que quieras los puntos de la imagen */
   color: #4a403a;
 }
 
