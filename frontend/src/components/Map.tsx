@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
+import { useJsApiLoader } from "@react-google-maps/api";
 import { useIntl } from "react-intl";
 import styles from "../styles/Map.module.css";
 
@@ -6,6 +7,7 @@ type Location = {
   lat: number;
   lng: number;
   address: string;
+  address_url: string;
   url: string;
 };
 
@@ -13,111 +15,115 @@ type Locations = {
   [key: string]: Location;
 };
 
-type MapProps = {
-  locationKey: string;
-};
-
 const locations: Locations = {
   "san-bernardo": {
     lat: 40.42182213478454,
     lng: -3.7077311767926227,
     address: "San Bernardo, 8, 28015 Madrid, España",
-    url: "Paraíso del Jamón Calle de San Bernardo",
+    address_url: "Paraíso del Jamón Calle de San Bernardo",
+    url: "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
   },
   "bravo-murillo": {
     lat: 40.449348434670554,
     lng: -3.7033976601087657,
     address: "Bravo Murillo, 124, 28020 Madrid, España",
-    url: "Paraíso del Jamón Calle de Bravo Murillo",
+    address_url: "Paraíso del Jamón Calle de Bravo Murillo",
+    url: "https://www.google.com/maps?ll=40.449348,-3.703398&z=20&t=m&gl=US&mapclient=apiv3&cid=17291774062565476387",
   },
   "reina-victoria": {
     lat: 40.44667864352768,
     lng: -3.704447234180926,
     address: "Reina Victoria, 3, 28003 Madrid, España",
-    url: "Paraíso del Jamón Calle de Reina Victoria",
+    address_url: "Paraíso del Jamón Calle de Reina Victoria",
+    url: "https://www.google.com/maps?ll=40.446679,-3.704447&z=20&t=m&gl=US&mapclient=apiv3&cid=8431686105412493623",
   },
   arenal: {
     lat: 40.41781005932472,
     lng: -3.7082838848125155,
     address: "Arenal, 26, 28015 Madrid, España",
-    url: "Paraíso del Jamón Calle de Arenal",
+    address_url: "Paraíso del Jamón Calle de Arenal",
+    url: "https://www.google.com/maps?ll=40.41781,-3.708284&z=20&t=m&gl=US&mapclient=apiv3&cid=3523718250256320549",
   },
 };
 
+type MapProps = {
+  locationKey: keyof Locations;
+};
+
+const libraries: ("marker" | "places")[] = ["marker"];
+
 const MapComponent: React.FC<MapProps> = ({ locationKey }) => {
   const intl = useIntl();
+  const { isLoaded, loadError } = useJsApiLoader({
+    id: "google-map-script",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+    libraries, // Usa la constante definida fuera del componente
+    version: "weekly",
+    language: "es",
+  });
+
   const mapRef = useRef<HTMLDivElement>(null);
-  const [infoWindowShown, setInfoWindowShown] = useState(false);
+  const mapInstanceRef = useRef<google.maps.Map>();
+  const infoWindowRef = useRef<google.maps.InfoWindow>();
   const location = locations[locationKey];
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY) {
-      console.error("API Key no definida. Asegúrate de configurarla en tus variables de entorno.");
-      return;
-    }
+    if (isLoaded && mapRef.current && !mapInstanceRef.current) {
+      // Inicialización del mapa
+      mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
+        center: { lat: location.lat, lng: location.lng },
+        zoom: 20,
+        mapId: "3c9679b7244c46e5",
+      });
 
-    const initMap = async () => {
-      const { Map } = (await google.maps.importLibrary("maps")) as google.maps.MapsLibrary;
-
-      if (mapRef.current && Map) {
-        const map = new Map(mapRef.current, {
-          center: { lat: location.lat, lng: location.lng },
-          zoom: 20,
-          mapId: "3c9679b7244c46e5",
-        });
-
-        const { AdvancedMarkerElement } = (await google.maps.importLibrary("marker")) as any;
-
+      // Carga e inicialización de AdvancedMarkerElement
+      const loadMarker = async () => {
+        const { AdvancedMarkerElement } = await window.google.maps.marker;
         const marker = new AdvancedMarkerElement({
+          map: mapInstanceRef.current,
           position: { lat: location.lat, lng: location.lng },
-          map,
+          title: location.address_url,
         });
 
-        const infoWindow = new google.maps.InfoWindow({
-          content: `<div>
-                      <h5>Paraíso del Jamón</h5>
-                      <p>${location.address}</p>
-                      <p><a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-                        location.address
-                      )}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({ id: "Map_Marker_Texto1" })}</a></p>
-                      <p><a href="${intl.formatMessage({ id: "Map_Marker_Url" })}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({
-            id: "Map_Marker_Texto2",
-          })}</a></p>
-                    </div>`,
+        // Crear e inicializar InfoWindow
+        const contentString = `<div>
+          <h5>Paraíso del Jamón</h5>
+          <p>${location.address}</p>
+          <p><a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+            location.address_url
+          )}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({ id: "Map_Marker_Texto1" })}</a></p>
+          <p><a href="${location.url}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({
+          id: "Map_Marker_Texto2",
+        })}</a></p>
+        </div>`;
+
+        infoWindowRef.current = new google.maps.InfoWindow({
+          content: contentString,
         });
 
         marker.addListener("click", () => {
-          infoWindow.open(map, marker);
-          setInfoWindowShown(true);
+          if (infoWindowRef.current && mapInstanceRef.current) {
+            // Verificación de null añadida aquí
+            infoWindowRef.current.open({
+              anchor: marker,
+              map: mapInstanceRef.current,
+              shouldFocus: false,
+            });
+          }
         });
+      };
 
-        if (infoWindowShown) {
-          infoWindow.open(map, marker);
-        }
-      }
-    };
+      loadMarker();
+    }
+  }, [isLoaded, location, intl]);
 
-    const mapLoader = () => {
-      return new Promise<void>((resolve, reject) => {
-        if (!document.querySelector(`script[src*="maps.googleapis.com/maps/api/js"]`)) {
-          const script = document.createElement("script");
-          script.async = true;
-          script.defer = true;
-          script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY}&loading=async&callback=initMap`;
-          script.onload = () => resolve();
-          script.onerror = () => reject(new Error("Failed to load script"));
-          document.head.appendChild(script);
-        } else {
-          resolve();
-        }
-      });
-    };
+  if (loadError) {
+    return <div>{intl.formatMessage({ id: "Map_Error_Texto" })}</div>;
+  }
 
-    // Asignar initMap al objeto window
-    (window as any).initMap = initMap;
-
-    mapLoader().catch((err) => console.error("Error loading Google Maps script:", err));
-  }, [location, infoWindowShown, intl]);
+  if (!isLoaded) {
+    return <div>{intl.formatMessage({ id: "Map_Loading_Texto" })}</div>;
+  }
 
   return (
     <div>
@@ -126,4 +132,4 @@ const MapComponent: React.FC<MapProps> = ({ locationKey }) => {
   );
 };
 
-export default MapComponent;
+export default React.memo(MapComponent);

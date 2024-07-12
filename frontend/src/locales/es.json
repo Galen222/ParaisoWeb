@@ -111,8 +111,9 @@
   "cookie_Borrado_Error": "Error borrando las cookies",
 
   "Map_Loading_Texto": "Cargando...",
+  "Map_Error_Texto": "No se ha podido cargar el mapa.",
   "Map_Marker_Texto1": "Como llegar",
-  "Map_Marker_Url": "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&hl=es-ES&gl=US&mapclient=apiv3&cid=16475304548653478685",
+  "Map_Marker_Url": "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
   "Map_Marker_Texto2": "Ver en Google Maps",
 
   "carousel_Alt1": "foto 1",

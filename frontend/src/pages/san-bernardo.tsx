@@ -6,11 +6,12 @@ import Map from "../components/Map";
 import styles from "../styles/san-bernardo.module.css";
 
 const SanBernardo = () => {
+  let restaurante = "san-bernardo";
   const intl = useIntl();
-  useVisitedPageTracking("san-bernardo");
-  useVisitedPageTrackingGA("san-bernardo");
+  useVisitedPageTracking(restaurante);
+  useVisitedPageTrackingGA(restaurante);
 
-  const locationKey = "san-bernardo";
+  const locationKey = restaurante;
 
   return (
     <div className="container">

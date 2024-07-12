@@ -110,6 +110,12 @@
   "cookie_Borrado_Ok": "Consent withdrawn and cookies deleted",
   "cookie_Borrado_Error": "Error deleting cookies",
 
+  "Map_Loading_Texto": "Loading...",
+  "Map_Error_Texto": "Unable to load the map.",
+  "Map_Marker_Texto1": "Get directions",
+  "Map_Marker_Url": "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
+  "Map_Marker_Texto2": "View on Google Maps",
+
   "carousel_Alt1": "texto 1",
   "carousel_Alt2": "texto 2",
   "carousel_Alt3": "texto 3",

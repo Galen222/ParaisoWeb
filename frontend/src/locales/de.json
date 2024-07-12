@@ -110,6 +110,12 @@
   "cookie_Borrado_Ok": "Zustimmung widerrufen und Cookies gelöscht",
   "cookie_Borrado_Error": "Fehler beim Löschen der Cookies",
 
+  "Map_Loading_Texto": "Wird geladen...",
+  "Map_Error_Texto": "Die Karte konnte nicht geladen werden.",
+  "Map_Marker_Texto1": "Wegbeschreibung",
+  "Map_Marker_Url": "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
+  "Map_Marker_Texto2": "Auf Google Maps anzeigen",
+
   "carousel_Alt1": "texto 1",
   "carousel_Alt2": "texto 2",
   "carousel_Alt3": "texto 3",
