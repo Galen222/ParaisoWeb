@@ -25,7 +25,7 @@ const PoliticaCookies = () => {
     cookieConsentPersonalization,
     setCookieConsentPersonalization,
   } = useCookieConsent();
-  const cookiesState = cookieConsentAnalysis || cookieConsentPersonalization;
+  const cookiesState = cookieConsentAnalysis || cookieConsentPersonalization || cookieConsentAnalysisGoogle;
   useVisitedPageTracking("politica-cookies");
   useVisitedPageTrackingGA("politica-cookies");
 
