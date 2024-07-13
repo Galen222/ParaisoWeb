@@ -13,6 +13,7 @@ body {
   text-align: center;
   margin-bottom: 90px;
   font-size: 18px;
+  color: #4a403a;
 }
 
 .container2 {
@@ -22,6 +23,7 @@ body {
   text-align: justify;
   margin-bottom: 90px;
   font-size: 18px;
+  color: #4a403a;
 }
 
 table {
@@ -143,7 +145,7 @@ table {
 }
 
 .slick-dots {
-  bottom: 25px; /* Ajusta este valor según lo cerca que quieras los puntos de la imagen */
+  bottom: 15px; /* Ajusta este valor según lo cerca que quieras los puntos de la imagen */
 }
 
 /* MODO MOVIL PANTALLA PEQUEÑA */

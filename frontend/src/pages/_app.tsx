@@ -1,4 +1,3 @@
-// src/pages/_app.tsx
 import Head from "next/head";
 // Estilos de Bootstrap
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -6,6 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 // Estilos de react-slick
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+// Estilos de fuentes
+import "@/styles/fonts.css";
 // Estilos globales
 import "@/styles/globals.css";
 import ReactGA from "react-ga4";
@@ -43,6 +44,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     AcceptCookiePersonalization,
   } = useCookieConsent();
   const [showCookieModal, setShowCookieModal] = React.useState<boolean>(false);
+  const [cookiesModalClosed, setCookiesModalClosed] = React.useState<boolean>(false); // Nuevo estado
   const router = useRouter();
 
   React.useEffect(() => {
@@ -70,6 +72,8 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     }
     if (!cookieNameAnalysis && !cookieNameAnalysisGoogle && !cookieValuePersonalization) {
       setShowCookieModal(true);
+    } else {
+      setCookiesModalClosed(true); // Si ya hay cookies aceptadas o rechazadas, marcamos el modal como cerrado
     }
   }, [setCookieConsentPersonalization, setCookieConsentAnalysis, setCookieConsentAnalysisGoogle]);
 
@@ -98,6 +102,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     setAcceptCookiePersonalization(false);
     setCookieConsentPersonalization(false);
     setShowCookieModal(false);
+    setCookiesModalClosed(true); // Marcar el modal como cerrado
     router.push("/politica-cookies");
   };
 
@@ -109,6 +114,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     setAcceptCookiePersonalization(false);
     setCookieConsentPersonalization(false);
     setShowCookieModal(false);
+    setCookiesModalClosed(true); // Marcar el modal como cerrado
     router.push("/politica-privacidad");
   };
 
@@ -133,6 +139,52 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     }
   };
 
+  const handleAcceptCookies = () => {
+    if (AcceptCookieAnalysis) {
+      setCookieConsentAnalysis(true);
+      createDeviceCookie();
+    } else {
+      setCookieConsentAnalysis(false);
+    }
+    if (AcceptCookieAnalysisGoogle) {
+      setCookieConsentAnalysisGoogle(true);
+      initGA();
+    } else {
+      setCookieConsentAnalysisGoogle(false);
+    }
+    if (AcceptCookiePersonalization) {
+      setCookieConsentPersonalization(true);
+    } else {
+      setCookieConsentPersonalization(false);
+    }
+    setShowCookieModal(false);
+    setCookiesModalClosed(true); // Marcar el modal como cerrado
+  };
+
+  const handleDeclineAllCookies = () => {
+    setAcceptCookieAnalysis(false);
+    setAcceptCookieAnalysisGoogle(false);
+    setCookieConsentAnalysis(false);
+    setCookieConsentAnalysisGoogle(false);
+    setAcceptCookiePersonalization(false);
+    setCookieConsentPersonalization(false);
+    setShowCookieModal(false);
+    setCookiesModalClosed(true); // Marcar el modal como cerrado
+  };
+
+  const handleAcceptAllCookies = () => {
+    setAcceptCookieAnalysis(true);
+    setCookieConsentAnalysis(true);
+    createDeviceCookie();
+    setAcceptCookieAnalysisGoogle(true);
+    setCookieConsentAnalysisGoogle(true);
+    setAcceptCookiePersonalization(true);
+    setCookieConsentPersonalization(true);
+    setShowCookieModal(false);
+    setCookiesModalClosed(true); // Marcar el modal como cerrado
+    initGA();
+  };
+
   return (
     <>
       <Head>
@@ -144,52 +196,15 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
           <React.StrictMode>
             {showCookieModal && (
               <Cookie
-                onAccept={() => {
-                  if (AcceptCookieAnalysis) {
-                    setCookieConsentAnalysis(true);
-                    createDeviceCookie();
-                  } else {
-                    setCookieConsentAnalysis(false);
-                  }
-                  if (AcceptCookieAnalysisGoogle) {
-                    setCookieConsentAnalysisGoogle(true);
-                    initGA();
-                  } else {
-                    setCookieConsentAnalysisGoogle(false);
-                  }
-                  if (AcceptCookiePersonalization) {
-                    setCookieConsentPersonalization(true);
-                  } else {
-                    setCookieConsentPersonalization(false);
-                  }
-                  setShowCookieModal(false);
-                }}
-                onDeclineAll={() => {
-                  setAcceptCookieAnalysis(false);
-                  setAcceptCookieAnalysisGoogle(false);
-                  setCookieConsentAnalysis(false);
-                  setCookieConsentAnalysisGoogle(false);
-                  setAcceptCookiePersonalization(false);
-                  setCookieConsentPersonalization(false);
-                  setShowCookieModal(false);
-                }}
-                onAcceptAll={() => {
-                  setAcceptCookieAnalysis(true);
-                  setCookieConsentAnalysis(true);
-                  createDeviceCookie();
-                  setAcceptCookieAnalysisGoogle(true);
-                  setCookieConsentAnalysisGoogle(true);
-                  setAcceptCookiePersonalization(true);
-                  setCookieConsentPersonalization(true);
-                  setShowCookieModal(false);
-                  initGA();
-                }}
+                onAccept={handleAcceptCookies}
+                onDeclineAll={handleDeclineAllCookies}
+                onAcceptAll={handleAcceptAllCookies}
                 onCookiesPolicyLinkClick={handleCookiesPolicyLinkClick}
                 onPrivacyPolicyLinkClick={handlePrivacyPolicyLinkClick}
               />
             )}
             <Navbar onLocaleChange={handleLocaleChange} currentLocale={locale} />
-            <Component {...pageProps} />
+            <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} /> {/* Pasar el estado al componente */}
             <Footer />
             <ToastContainer />
           </React.StrictMode>
@@ -200,9 +215,10 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
 }
 
 export default function App({ Component, pageProps }: AppProps) {
+  const cookiesModalClosed = true; // Este valor debería venir del estado
   return (
     <CookieConsentProvider>
-      <MainComponent Component={Component} pageProps={pageProps} />
+      <MainComponent Component={Component} pageProps={{ ...pageProps, cookiesModalClosed }} />
     </CookieConsentProvider>
   );
 }

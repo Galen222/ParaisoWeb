@@ -40,6 +40,56 @@
 
 .mobileMenuIcon {
   display: none; /* Por defecto no se muestra, cambiará en media query para móviles */
+  cursor: pointer;
+  margin-top: 3px; /* Añade esta línea para mover el icono 2px hacia abajo */
+}
+
+.mobileMenuIcon .inner {
+  width: 30px; /* Reducido de 40px a 30px */
+  height: 30px; /* Reducido de 40px a 30px */
+  position: relative;
+}
+
+.mobileMenuIcon .inner span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30px; /* Reducido de 40px a 30px */
+  height: 3px; /* Reducido de 4px a 3px */
+  background-color: white;
+  transition: top 0.2s ease-in-out 0.4s, transform 0.4s ease-in-out, opacity 0.2s ease-in-out 0.2s, left 0.2s ease-in-out;
+}
+
+.mobileMenuIcon .inner span:nth-child(1) {
+  top: 0;
+}
+
+.mobileMenuIcon .inner span:nth-child(2),
+.mobileMenuIcon .inner span:nth-child(4) {
+  top: 13px; /* Ajustado para mantener proporción */
+}
+
+.mobileMenuIcon .inner span:nth-child(3) {
+  top: 26px; /* Ajustado para mantener proporción */
+}
+
+.colapseSpin .inner span {
+  transition: top 0.2s ease-in-out, transform 0.4s ease-in-out 0.2s, opacity 0.1s ease-in-out 0.2s;
+}
+
+.colapseSpin .inner span:nth-child(1) {
+  top: 13px; /* Ajustado para mantener proporción */
+  transform: rotate(45deg);
+}
+
+.colapseSpin .inner span:nth-child(2) {
+  top: 13px; /* Ajustado para mantener proporción */
+  opacity: 0;
+}
+
+.colapseSpin .inner span:nth-child(3) {
+  top: 13px; /* Ajustado para mantener proporción */
+  transform: rotate(-45deg);
 }
 
 .menuIcon {

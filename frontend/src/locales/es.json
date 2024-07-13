@@ -11,7 +11,8 @@
 
   "app_CookieSuccess": "Cookies configuradas satisfactoriamente",
 
-  "inicio_Titulo": "Bienvenidos a Paraíso del Jamón",
+  "inicio_Titulo_Texto1": "Bienvenido a ",
+  "inicio_Titulo_Texto2": "Paraíso del Jamón",
   "inicio_Descripcion": "Descubre los mejores sabores de nuestros platos y embutidos.",
 
   "sanBernardo_Titulo": "Restaurante San Bernardo",

@@ -6,8 +6,12 @@ import Loader from "../components/Loader";
 import Carousel from "../components/Carousel";
 import styles from "../styles/index.module.css";
 
-export default function Home() {
-  const intl = useIntl(); // Utiliza el hook useIntl para internacionalización
+interface HomeProps {
+  cookiesModalClosed: boolean;
+}
+
+export default function Home({ cookiesModalClosed }: HomeProps) {
+  const intl = useIntl();
   const [loading, setLoading] = useState(true);
 
   useVisitedPageTracking("inicio");
@@ -25,9 +29,31 @@ export default function Home() {
 
   return (
     <div className="container">
-      <h1>{intl.formatMessage({ id: "inicio_Titulo" })}</h1>
-      <p>{intl.formatMessage({ id: "inicio_Descripcion" })}</p>
-      <Carousel />
+      <div className={styles.body}>
+        <h1 className={styles.blockEffect}>
+          {cookiesModalClosed ? (
+            <>
+              <div className={`${styles.blockReveal} ${styles.blockReveal1}`}>
+                <div>{intl.formatMessage({ id: "inicio_Titulo_Texto1" })}</div>
+              </div>
+              <div className={`${styles.blockReveal} ${styles.blockReveal2}`}>
+                <div>{intl.formatMessage({ id: "inicio_Titulo_Texto2" })}</div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <div>{intl.formatMessage({ id: "inicio_Titulo_Texto1" })}</div>
+                <div>{intl.formatMessage({ id: "inicio_Titulo_Texto2" })}</div>
+              </div>
+            </>
+          )}
+        </h1>
+      </div>
+      <div>
+        <p>{intl.formatMessage({ id: "inicio_Descripcion" })}</p>
+        <Carousel />
+      </div>
     </div>
   );
 }

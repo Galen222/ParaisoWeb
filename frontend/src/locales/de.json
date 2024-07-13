@@ -11,7 +11,8 @@
 
   "app_CookieSuccess": "Cookies erfolgreich gesetzt",
 
-  "inicio_Titulo": "Willkommen im Paraíso del Jamón",
+  "inicio_Titulo_Texto1": "Willkommen im ",
+  "inicio_Titulo_Texto2": "Paraíso del Jamón",
   "inicio_Descripcion": "Entdecken Sie die besten Aromen unserer Gerichte und Würste.",
 
   "sanBernardo_Titulo": "Restaurant San Bernardo",
@@ -116,12 +117,12 @@
   "Map_Marker_Url": "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
   "Map_Marker_Texto2": "Auf Google Maps anzeigen",
 
-  "carousel_Alt1": "texto 1",
-  "carousel_Alt2": "texto 2",
-  "carousel_Alt3": "texto 3",
-  "carousel_Texto1": "texto 1",
-  "carousel_Texto2": "texto 2",
-  "carousel_Texto3": "texto 3",
+  "carousel_Alt1": "imagen 1 aleman",
+  "carousel_Alt2": "imagen 2 aleman",
+  "carousel_Alt3": "imagen 3 aleman",
+  "carousel_Texto1": "texto 1 aleman",
+  "carousel_Texto2": "texto 2 aleman",
+  "carousel_Texto3": "texto 3 aleman",
 
   "politicaCookies_Principal_Titulo": "Cookie-Richtlinie",
   "politicaCookies_Principal_Texto": "PACAVA S.A informiert über die Verwendung von Cookies auf ihrer Website www.paraisodeljamon.com",

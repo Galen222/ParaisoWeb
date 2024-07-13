@@ -37,12 +37,12 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale }) => {
           <img src="/images/navbar/textoLogo.png" alt="Paraíso del Jamón" className={styles.textLogo} />
         </div>
         <div className={styles.flagContainer}>
-          <div className={styles.mobileMenuIcon} onClick={toggleMobileMenu}>
-            <img
-              src={mobileMenu ? "/images/navbar/cerrar.png" : "/images/navbar/menu.png"}
-              alt={mobileMenu ? "Cerrar menú" : "Abrir menú"}
-              className={styles.menuIcon}
-            />
+          <div className={`${styles.mobileMenuIcon} ${mobileMenu ? styles.colapseSpin : ""}`} onClick={toggleMobileMenu}>
+            <div className={styles.inner}>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
           </div>
           <div className={styles.flags}>
             <img
