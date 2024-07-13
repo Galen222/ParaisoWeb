@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import Loader from "../components/Loader";
 import Carousel from "../components/Carousel";
 import styles from "../styles/index.module.css";
 
@@ -19,7 +20,7 @@ export default function Home() {
   }, [intl]);
 
   if (loading) {
-    return <div className="loading">Cargando...</div>;
+    return <Loader />;
   }
 
   return (

@@ -1,14 +1,18 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import useDeviceType from "../hooks/useDeviceType";
 import { useMobileMenu } from "../contexts/MobileMenuContext";
+import Loader from "../components/Loader";
 import styles from "../styles/Footer.module.css";
 
 const Footer: React.FC = () => {
   const intl = useIntl();
+  const [loading, setLoading] = useState(true);
+
   const deviceType = useDeviceType();
   const { closeMobileMenu } = useMobileMenu();
+
   const isMobile = deviceType === "mobile";
 
   // Función para cerrar el menú móvil al hacer clic en los enlaces, si está en móvil
@@ -18,7 +22,13 @@ const Footer: React.FC = () => {
     }
   };
 
-  // Contenido de los enlaces
+  // Simular un retraso para el Loader, similar al Navbar
+  useEffect(() => {
+    if (intl) {
+      setLoading(false);
+    }
+  }, [intl]);
+
   const links = (
     <>
       <Link href="/aviso-legal" className={styles.link} onClick={handleLinkClick}>
@@ -37,14 +47,20 @@ const Footer: React.FC = () => {
 
   return (
     <footer className={styles.footer}>
-      <div>
-        <p>
-          {intl.formatMessage({ id: "Footer_Rights" }, { year: new Date().getFullYear() })}
-          {!isMobile && " | "}
-          {!isMobile && links}
-        </p>
-        {isMobile && <p>{links}</p>}
-      </div>
+      {loading ? (
+        <div>
+          <Loader className={styles.footerLoader} />
+        </div>
+      ) : (
+        <div>
+          <p>
+            {intl.formatMessage({ id: "Footer_Rights" }, { year: new Date().getFullYear() })}
+            {!isMobile && " | "}
+            {!isMobile && links}
+          </p>
+          {isMobile && <p>{links}</p>}
+        </div>
+      )}
     </footer>
   );
 };

@@ -1,17 +1,22 @@
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl"; // Para internacionalización
 import { toast, Slide } from "react-toastify";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
+import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import Link from "next/link";
 import styles from "../styles/contacto.module.css"; // Estilos específicos para esta página
 
 const ContactPage = () => {
   const intl = useIntl(); // Hook para utilizar la internacionalización
+  const [loading, setLoading] = useState(true);
+
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+
   useVisitedPageTracking("contacto");
   useVisitedPageTrackingGA("contacto");
+
   const [formData, setFormData] = useState({
     name: "",
     reason: "",
@@ -139,6 +144,16 @@ const ContactPage = () => {
     }
     return formData.name.trim() !== "" && formData.email.trim() !== "" && formData.message.trim() !== "" && isValidEmail && isPrivacyChecked;
   };
+
+  useEffect(() => {
+    if (intl) {
+      setLoading(false);
+    }
+  }, [intl]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="container">

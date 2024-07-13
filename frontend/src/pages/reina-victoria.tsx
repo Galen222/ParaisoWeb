@@ -1,7 +1,8 @@
-import React from "react"; // Importa React para crear componentes y utilizar JSX.
+import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl"; // Importa el hook useIntl para internacionalización.
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import Loader from "../components/Loader";
 import Map from "../components/Map";
 import styles from "../styles/reina-victoria.module.css"; // Importa los estilos CSS específicos para la página Reina Victoria.
 
@@ -9,11 +10,25 @@ import styles from "../styles/reina-victoria.module.css"; // Importa los estilos
 const ReinaVictoriaPage = () => {
   let restaurante = "reina-victoria";
   const intl = useIntl(); // Inicializa el hook de internacionalización para usarlo en este componente.
+  const [loading, setLoading] = useState(true);
+
   useVisitedPageTracking(restaurante);
   useVisitedPageTrackingGA(restaurante);
 
   const locationKey = restaurante;
+
   // Devuelve el JSX que construye la interfaz de usuario de la página.
+
+  useEffect(() => {
+    if (intl) {
+      setLoading(false);
+    }
+  }, [intl]);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="container">
       <h1>{intl.formatMessage({ id: "reinaVictoria_Titulo" })}</h1>

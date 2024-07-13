@@ -1,16 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/aviso-legal.module.css";
 
 const AvisoLegalPage = () => {
   const intl = useIntl();
+  const [loading, setLoading] = useState(true);
+
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+
   useVisitedPageTracking("aviso-legal");
   useVisitedPageTrackingGA("aviso-legal");
+
+  useEffect(() => {
+    if (intl) {
+      setLoading(false);
+    }
+  }, [intl]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="container2">

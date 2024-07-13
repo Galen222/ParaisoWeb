@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { deleteCookies } from "../utils/deleteCookies";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
+import Loader from "../components/Loader";
 import useDeviceType from "../hooks/useDeviceType";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useCookieConsent } from "../contexts/CookieContext";
@@ -11,9 +12,13 @@ import styles from "../styles/politica-cookies.module.css";
 
 const PoliticaCookies = () => {
   const intl = useIntl();
+  const [loading, setLoading] = useState(true);
+
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
+
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+
   const {
     setAcceptCookieAnalysis,
     setAcceptCookieAnalysisGoogle,
@@ -102,6 +107,16 @@ const PoliticaCookies = () => {
       </tbody>
     </table>
   );
+
+  useEffect(() => {
+    if (intl) {
+      setLoading(false);
+    }
+  }, [intl]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="container2">

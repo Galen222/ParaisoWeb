@@ -141,6 +141,11 @@ table {
     text-align: center;
   }
 }
+
+.slick-dots {
+  bottom: 25px; /* Ajusta este valor según lo cerca que quieras los puntos de la imagen */
+}
+
 /* MODO MOVIL PANTALLA PEQUEÑA */
 @media (max-width: 385px) {
   .scrollTop {

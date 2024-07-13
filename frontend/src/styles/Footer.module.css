@@ -27,6 +27,20 @@
   text-decoration: underline;
 }
 
+.footerLoader {
+  --point-color: white; /* Cambiar el color si es necesario */
+  --size: 3px; /* Ajustar el tamaño de los puntos */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  align-content: center;
+  justify-content: center;
+  z-index: 10;
+}
+
 /* MODO TABLET */
 @media (max-width: 1024px) {
   .footer {

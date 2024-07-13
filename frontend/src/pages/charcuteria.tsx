@@ -1,14 +1,28 @@
-import React from "react"; // Importa React, necesario para crear componentes y usar JSX.
+import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl"; // Importa el hook useIntl para la internacionalización de texto.
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import Loader from "../components/Loader";
 import styles from "../styles/charcuteria.module.css"; // Importa los estilos CSS específicos para la página Charcutería.
 
 // Define el componente funcional CharcuteriaPage utilizando una función flecha.
 const CharcuteriaPage = () => {
   const intl = useIntl(); // Utiliza el hook de internacionalización para obtener funciones de traducción.
+  const [loading, setLoading] = useState(true);
+
   useVisitedPageTracking("charcuteria");
   useVisitedPageTrackingGA("charcuteria");
+
+  useEffect(() => {
+    if (intl) {
+      setLoading(false);
+    }
+  }, [intl]);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   // Renderiza la interfaz de usuario para la página de Charcutería.
   return (
     <div className="container">

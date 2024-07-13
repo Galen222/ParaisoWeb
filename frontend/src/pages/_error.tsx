@@ -1,11 +1,13 @@
+import React, { useEffect, useState } from "react";
 // Importa el hook useIntl de react-intl para la internacionalización
 import { useIntl } from "react-intl";
-// Importa los estilos específicos del módulo
-import styles from "../styles/error.module.css";
 // Importa el tipo NextPageContext de Next.js
+import { NextPageContext } from "next";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import { NextPageContext } from "next";
+import Loader from "../components/Loader";
+// Importa los estilos específicos del módulo
+import styles from "../styles/error.module.css";
 
 // Define la interfaz para las props del componente ErrorPage
 interface ErrorPageProps {
@@ -16,6 +18,8 @@ interface ErrorPageProps {
 const ErrorPage = ({ statusCode }: ErrorPageProps) => {
   // Obtiene el objeto intl usando el hook useIntl para manejar la internacionalización
   const intl = useIntl();
+  const [loading, setLoading] = useState(true);
+
   useVisitedPageTracking("error");
   useVisitedPageTrackingGA("error");
   // Variable para almacenar el mensaje de error
@@ -57,8 +61,17 @@ const ErrorPage = ({ statusCode }: ErrorPageProps) => {
       message = `${statusCode} - ${intl.formatMessage({ id: "error_Other" })}`;
       break;
   }
-
   // Renderiza el componente de error
+  useEffect(() => {
+    if (intl) {
+      setLoading(false);
+    }
+  }, [intl]);
+
+  if (loading) {
+    return <Loader />;
+  }
+
   return (
     <div className="container">
       <h1>{statusCode}</h1> {/* Muestra el código de estado */}

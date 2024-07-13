@@ -1,16 +1,30 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/politica-privacidad.module.css";
 
 const PoliticaPrivacidadPage = () => {
   const intl = useIntl();
+  const [loading, setLoading] = useState(true);
+
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+
   useVisitedPageTracking("politica-privacidad");
   useVisitedPageTrackingGA("politica-privacidad");
+
+  useEffect(() => {
+    if (intl) {
+      setLoading(false);
+    }
+  }, [intl]);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <div className="container2">
