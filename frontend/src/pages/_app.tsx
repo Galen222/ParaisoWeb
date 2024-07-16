@@ -5,10 +5,10 @@ import "react-toastify/dist/ReactToastify.css";
 // Estilos de react-slick
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-// Estilos de fuentes
-import "@/styles/fonts.css";
-// Estilos globales
-import "@/styles/globals.css";
+import "animate.css"; // Estilos de libreria de animaciones
+import "@/styles/fonts.css"; // Estilos de fuentes
+import "../styles/animateButton.css"; // Estilos para animacion de botones
+import "@/styles/globals.css"; // Estilos globales
 import ReactGA from "react-ga4";
 import type { AppProps } from "next/app";
 import React from "react";

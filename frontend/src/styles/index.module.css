@@ -1,86 +1,31 @@
-.body {
+.animationContainer {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
   align-items: center;
-  font-family: "Arvo", serif;
-  font-weight: 700;
-  font-style: italic;
+  padding-bottom: 30px;
 }
 
-.p {
-  margin-bottom: 20px;
+.animationTime {
+  --animate-duration: 1s;
+  --animate-delay: 0.5s;
 }
 
-/* block-$ */
-.blockEffect {
-  font-size: 90px;
+.animationFont {
+  font-family: "Courgette", serif !important;
+  font-size: 80px;
 }
 
-.blockReveal {
-  color: transparent;
-  padding: 4px;
-  position: relative;
-  overflow: hidden;
-}
-
-.blockReveal1 {
-  animation: revealBlock 0s 1.7s forwards;
-}
-
-.blockReveal2 {
-  animation: revealBlock 0s 2.2s forwards;
-}
-
-.blockReveal::after {
-  content: "";
-  width: 0;
-  height: 100%;
-  padding-bottom: 4px;
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.blockReveal1::after {
-  background: #4a403a;
-  animation: revealingIn 1.2s 0.5s forwards, revealingOut 1.2s 1.7s forwards;
-}
-
-.blockReveal2::after {
-  background: #4a403a;
-  animation: revealingIn 1.2s 1s forwards, revealingOut 1.2s 2.2s forwards;
-}
-
-/* animations */
-@keyframes revealBlock {
-  100% {
-    color: #4a403a;
+/* MODO TABLET */
+@media (max-width: 1024px) {
+  .animationFont {
+    font-size: 60px;
   }
 }
 
-@keyframes revealingIn {
-  0% {
-    width: 0;
-  }
-
-  100% {
-    width: 100%;
-  }
-}
-
-@keyframes revealingOut {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(100%);
-  }
-}
-
+/* MODO MOVIL */
 @media (max-width: 767px) {
-  .blockEffect {
+  .animationFont {
     font-size: 40px;
   }
 }

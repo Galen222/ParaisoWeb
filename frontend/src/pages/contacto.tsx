@@ -11,6 +11,8 @@ import styles from "../styles/contacto.module.css"; // Estilos específicos para
 const ContactPage = () => {
   const intl = useIntl(); // Hook para utilizar la internacionalización
   const [loading, setLoading] = useState(true);
+  const [isPushingSend, setIsPushingSend] = useState(false);
+  const [isPushingFile, setIsPushingFile] = useState(false);
 
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
 
@@ -208,8 +210,12 @@ const ContactPage = () => {
               <input type="file" id="imageUpload" name="imageUpload" accept="image/jpeg" className="d-none" onChange={handleFileChange} />
               <button
                 type="button"
-                className={`btn btn-outline-secondary ${styles.fileButton}`}
-                onClick={() => document.getElementById("imageUpload")?.click()}
+                className={`btn btn-outline-secondary ${styles.fileButton} ${isPushingFile ? "animate-push" : ""}`}
+                onClick={() => {
+                  setIsPushingFile(true);
+                  document.getElementById("imageUpload")?.click();
+                }}
+                onAnimationEnd={() => setIsPushingFile(false)}
               >
                 <span>{intl.formatMessage({ id: "contacto_BotonSubirImagen" })}</span>
               </button>
@@ -234,7 +240,13 @@ const ContactPage = () => {
               </label>
             </div>
           </div>
-          <button type="submit" className={`btn btn-primary mt-25p mx-auto ${styles.submitButton}`} disabled={!CheckFormComplete()}>
+          <button
+            type="submit"
+            className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${isPushingSend ? "animate-push" : ""}`}
+            disabled={!CheckFormComplete()}
+            onClick={() => setIsPushingSend(true)}
+            onAnimationEnd={() => setIsPushingSend(false)}
+          >
             {intl.formatMessage({ id: "contacto_BotonEnviar" })}
           </button>
         </form>

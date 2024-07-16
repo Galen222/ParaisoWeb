@@ -13,6 +13,7 @@ import styles from "../styles/politica-cookies.module.css";
 const PoliticaCookies = () => {
   const intl = useIntl();
   const [loading, setLoading] = useState(true);
+  const [isPushingDelCookies, setIsPushingDelCookies] = useState(false);
 
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
@@ -39,6 +40,7 @@ const PoliticaCookies = () => {
 
   const handleDeleteCookies = () => {
     trackButtonClick("Borrar Cookies");
+    setIsPushingDelCookies(true);
     deleteCookies(
       intl,
       setAcceptCookiePersonalization,
@@ -189,7 +191,12 @@ const PoliticaCookies = () => {
         <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Denegacion_Texto" })}</p>
       </div>
       <div className="text-center">
-        <button className={`btn btn-primary mx-auto ${styles.deleteButton}`} disabled={!cookiesState} onClick={() => handleDeleteCookies()}>
+        <button
+          className={`btn btn-primary mx-auto ${styles.deleteButton} ${isPushingDelCookies ? "animate-push" : ""}`}
+          disabled={!cookiesState}
+          onClick={() => handleDeleteCookies()}
+          onAnimationEnd={() => setIsPushingDelCookies(false)}
+        >
           {intl.formatMessage({ id: "politicaCookies_BotonBorrar" })}
         </button>
       </div>

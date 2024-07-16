@@ -29,24 +29,22 @@ export default function Home({ cookiesModalClosed }: HomeProps) {
 
   return (
     <div className="container">
-      <div className={styles.body}>
-        <h1 className={styles.blockEffect}>
+      <div className={styles.animationContainer}>
+        <h1>
           {cookiesModalClosed ? (
-            <>
-              <div className={`${styles.blockReveal} ${styles.blockReveal1}`}>
-                <div>{intl.formatMessage({ id: "inicio_Titulo_Texto1" })}</div>
+            <div className={styles.animationTime}>
+              <div className={`animate__animated animate__fadeInLeft`}>
+                <div className={styles.animationFont}>{intl.formatMessage({ id: "inicio_Titulo_Texto1" })}</div>
               </div>
-              <div className={`${styles.blockReveal} ${styles.blockReveal2}`}>
-                <div>{intl.formatMessage({ id: "inicio_Titulo_Texto2" })}</div>
+              <div className={`animate__animated animate__fadeInRight animate__delay-1s`}>
+                <div className={styles.animationFont}>{intl.formatMessage({ id: "inicio_Titulo_Texto2" })}</div>
               </div>
-            </>
+            </div>
           ) : (
-            <>
-              <div>
-                <div>{intl.formatMessage({ id: "inicio_Titulo_Texto1" })}</div>
-                <div>{intl.formatMessage({ id: "inicio_Titulo_Texto2" })}</div>
-              </div>
-            </>
+            <div>
+              <div className={styles.animationFont}>{intl.formatMessage({ id: "inicio_Titulo_Texto1" })}</div>
+              <div className={styles.animationFont}>{intl.formatMessage({ id: "inicio_Titulo_Texto2" })}</div>
+            </div>
           )}
         </h1>
       </div>
