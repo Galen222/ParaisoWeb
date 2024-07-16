@@ -8,6 +8,7 @@ body {
   background-repeat: repeat; /* Hace que la imagen se repita para llenar todo el fondo */
   background-size: auto; /* La imagen conservará su tamaño original */
   margin: 0;
+  overflow-x: hidden;
 }
 
 .container {

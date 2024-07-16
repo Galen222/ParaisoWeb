@@ -9,6 +9,7 @@ type Location = {
   address: string;
   address_url: string;
   url: string;
+  telephone: string;
 };
 
 type Locations = {
@@ -22,6 +23,7 @@ const locations: Locations = {
     address: "San Bernardo, 8, 28015 Madrid, España",
     address_url: "Paraíso del Jamón Calle de San Bernardo",
     url: "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
+    telephone: "+34 532 83 50",
   },
   "bravo-murillo": {
     lat: 40.449348434670554,
@@ -29,6 +31,7 @@ const locations: Locations = {
     address: "Bravo Murillo, 124, 28020 Madrid, España",
     address_url: "Paraíso del Jamón Calle de Bravo Murillo",
     url: "https://www.google.com/maps?ll=40.449348,-3.703398&z=20&t=m&gl=US&mapclient=apiv3&cid=17291774062565476387",
+    telephone: "+34 553 97 83",
   },
   "reina-victoria": {
     lat: 40.44667864352768,
@@ -36,6 +39,7 @@ const locations: Locations = {
     address: "Reina Victoria, 3, 28003 Madrid, España",
     address_url: "Paraíso del Jamón Calle de Reina Victoria",
     url: "https://www.google.com/maps?ll=40.446679,-3.704447&z=20&t=m&gl=US&mapclient=apiv3&cid=8431686105412493623",
+    telephone: "+34 534 18 20",
   },
   arenal: {
     lat: 40.41781005932472,
@@ -43,6 +47,7 @@ const locations: Locations = {
     address: "Arenal, 26, 28015 Madrid, España",
     address_url: "Paraíso del Jamón Calle de Arenal",
     url: "https://www.google.com/maps?ll=40.41781,-3.708284&z=20&t=m&gl=US&mapclient=apiv3&cid=3523718250256320549",
+    telephone: "+34 541 95 19",
   },
 };
 
@@ -89,10 +94,15 @@ const MapComponent: React.FC<MapProps> = ({ locationKey }) => {
         const contentString = `<div>
           <h5>Paraíso del Jamón</h5>
           <p>${location.address}</p>
-          <p><a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+          <p>${intl.formatMessage({
+            id: "Map_Marker_Telefono",
+          })}<a class="text-decoration-none" href="tel:${location.telephone}" target="_blank" rel="noopener noreferrer">
+         ${location.telephone}
+        </a></p>
+          <p><a class="text-decoration-none" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
             location.address_url
           )}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({ id: "Map_Marker_Texto1" })}</a></p>
-          <p><a href="${location.url}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({
+          <p><a class="text-decoration-none" href="${location.url}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({
           id: "Map_Marker_Texto2",
         })}</a></p>
         </div>`;
