@@ -318,7 +318,13 @@
     padding: 0px;
     opacity: 1; /* Esto asegurará que el dropdown siempre sea visible en móviles */
     visibility: visible;
+    transform: translateX(-50%) translateY(0px);
+    transition: none; /* Elimina cualquier transición */
   }
+}
+
+.linksDropdown .dropdown::before {
+  display: none; /* Elimina el triángulo */
 }
 
 /* MODO MOVIL PANTALLA PEQUEÑA */
