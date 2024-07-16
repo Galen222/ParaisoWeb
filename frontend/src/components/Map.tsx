@@ -91,7 +91,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey }) => {
         });
 
         // Crear e inicializar InfoWindow
-        const contentString = `<div>
+        const contentString = `<div class="fw-bold">
           <h5>Paraíso del Jamón</h5>
           <p>${location.address}</p>
           <p>${intl.formatMessage({
