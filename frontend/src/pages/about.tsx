@@ -5,21 +5,17 @@ import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
 import styles from "../styles/about.module.css"; // Importa los estilos específicos para la página About
 
-const AboutPage = () => {
+interface AboutPageProps {
+  loadingMessages: boolean; // Nuevo prop para el estado de carga
+}
+
+const AboutPage = ({ loadingMessages }: AboutPageProps) => {
   const intl = useIntl(); // Inicializa el hook de internacionalización para usar en este componente
-  const [loading, setLoading] = useState(true);
 
   useVisitedPageTracking("about");
   useVisitedPageTrackingGA("about");
 
-  useEffect(() => {
-    if (intl) {
-      setLoading(false);
-    }
-  }, [intl]);
-  // Retorna JSX para renderizar la página About
-
-  if (loading) {
+  if (loadingMessages) {
     return <Loader />;
   }
 

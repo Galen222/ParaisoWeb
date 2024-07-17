@@ -8,22 +8,16 @@ import styles from "../styles/index.module.css";
 
 interface HomeProps {
   cookiesModalClosed: boolean;
+  loadingMessages: boolean;
 }
 
-export default function Home({ cookiesModalClosed }: HomeProps) {
+export default function Home({ cookiesModalClosed, loadingMessages }: HomeProps) {
   const intl = useIntl();
-  const [loading, setLoading] = useState(true);
 
   useVisitedPageTracking("inicio");
   useVisitedPageTrackingGA("inicio");
 
-  useEffect(() => {
-    if (intl) {
-      setLoading(false);
-    }
-  }, [intl]);
-
-  if (loading) {
+  if (loadingMessages) {
     return <Loader />;
   }
 

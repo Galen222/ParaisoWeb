@@ -10,9 +10,12 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import { useCookieConsent } from "../contexts/CookieContext";
 import styles from "../styles/politica-cookies.module.css";
 
-const PoliticaCookies = () => {
+interface PoliticaCookiesPageProps {
+  loadingMessages: boolean;
+}
+
+const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
   const intl = useIntl();
-  const [loading, setLoading] = useState(true);
   const [isPushingDelCookies, setIsPushingDelCookies] = useState(false);
 
   const deviceType = useDeviceType();
@@ -110,13 +113,7 @@ const PoliticaCookies = () => {
     </table>
   );
 
-  useEffect(() => {
-    if (intl) {
-      setLoading(false);
-    }
-  }, [intl]);
-
-  if (loading) {
+  if (loadingMessages) {
     return <Loader />;
   }
 
@@ -259,4 +256,4 @@ const PoliticaCookies = () => {
   );
 };
 
-export default PoliticaCookies;
+export default PoliticaCookiesPage;

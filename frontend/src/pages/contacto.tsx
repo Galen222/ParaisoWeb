@@ -8,9 +8,12 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import Link from "next/link";
 import styles from "../styles/contacto.module.css"; // Estilos específicos para esta página
 
-const ContactPage = () => {
+interface ContactPageProps {
+  loadingMessages: boolean; // Nuevo prop para el estado de carga
+}
+
+const ContactPage = ({ loadingMessages }: ContactPageProps) => {
   const intl = useIntl(); // Hook para utilizar la internacionalización
-  const [loading, setLoading] = useState(true);
   const [isPushingSend, setIsPushingSend] = useState(false);
   const [isPushingFile, setIsPushingFile] = useState(false);
 
@@ -147,13 +150,7 @@ const ContactPage = () => {
     return formData.name.trim() !== "" && formData.email.trim() !== "" && formData.message.trim() !== "" && isValidEmail && isPrivacyChecked;
   };
 
-  useEffect(() => {
-    if (intl) {
-      setLoading(false);
-    }
-  }, [intl]);
-
-  if (loading) {
+  if (loadingMessages) {
     return <Loader />;
   }
 

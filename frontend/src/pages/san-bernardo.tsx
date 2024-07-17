@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
@@ -6,23 +6,20 @@ import Loader from "../components/Loader";
 import Map from "../components/Map";
 import styles from "../styles/san-bernardo.module.css";
 
-const SanBernardo = () => {
+interface SanBernardoProps {
+  loadingMessages: boolean; // Nuevo prop para el estado de carga
+}
+
+const SanBernardo = ({ loadingMessages }: SanBernardoProps) => {
   let restaurante = "san-bernardo";
   const intl = useIntl();
-  const [loading, setLoading] = useState(true);
 
   useVisitedPageTracking(restaurante);
   useVisitedPageTrackingGA(restaurante);
 
   const locationKey = restaurante;
 
-  useEffect(() => {
-    if (intl) {
-      setLoading(false);
-    }
-  }, [intl]);
-
-  if (loading) {
+  if (loadingMessages) {
     return <Loader />;
   }
 

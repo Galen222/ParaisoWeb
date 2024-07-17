@@ -12,10 +12,11 @@ import styles from "../styles/error.module.css";
 // Define la interfaz para las props del componente ErrorPage
 interface ErrorPageProps {
   statusCode: number; // Propiedad que contiene el código de estado HTTP
+  loadingMessages: boolean; // Nuevo prop para el estado de carga
 }
 
 // Define el componente funcional ErrorPage
-const ErrorPage = ({ statusCode }: ErrorPageProps) => {
+const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
   // Obtiene el objeto intl usando el hook useIntl para manejar la internacionalización
   const intl = useIntl();
   const [loading, setLoading] = useState(true);
@@ -68,7 +69,7 @@ const ErrorPage = ({ statusCode }: ErrorPageProps) => {
     }
   }, [intl]);
 
-  if (loading) {
+  if (loadingMessages) {
     return <Loader />;
   }
 

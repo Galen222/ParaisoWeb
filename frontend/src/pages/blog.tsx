@@ -1,27 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useIntl } from "react-intl"; // Importa el hook useIntl para internacionalización.
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
 import styles from "../styles/blog.module.css"; // Importa estilos CSS específicos para la página de blog.
 
+interface BlogPageProps {
+  loadingMessages: boolean; // Nuevo prop para el estado de carga
+}
+
 // Define el componente funcional BlogPage.
-const BlogPage = () => {
+const BlogPage = ({ loadingMessages }: BlogPageProps) => {
   const intl = useIntl(); // Utiliza el hook de internacionalización para obtener funciones de traducción.
-  const [loading, setLoading] = useState(true);
 
   useVisitedPageTracking("blog");
   useVisitedPageTrackingGA("blog");
 
-  // Renderiza la interfaz de la página del blog.
-
-  useEffect(() => {
-    if (intl) {
-      setLoading(false);
-    }
-  }, [intl]);
-
-  if (loading) {
+  if (loadingMessages) {
     return <Loader />;
   }
 

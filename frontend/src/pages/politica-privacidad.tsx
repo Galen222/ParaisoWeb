@@ -7,7 +7,11 @@ import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/politica-privacidad.module.css";
 
-const PoliticaPrivacidadPage = () => {
+interface PoliticaPrivacidadPageProps {
+  loadingMessages: boolean;
+}
+
+const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps) => {
   const intl = useIntl();
   const [loading, setLoading] = useState(true);
 
@@ -16,13 +20,7 @@ const PoliticaPrivacidadPage = () => {
   useVisitedPageTracking("politica-privacidad");
   useVisitedPageTrackingGA("politica-privacidad");
 
-  useEffect(() => {
-    if (intl) {
-      setLoading(false);
-    }
-  }, [intl]);
-
-  if (loading) {
+  if (loadingMessages) {
     return <Loader />;
   }
 

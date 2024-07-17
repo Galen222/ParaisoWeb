@@ -7,22 +7,19 @@ import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/aviso-legal.module.css";
 
-const AvisoLegalPage = () => {
+interface AvisoLegalPageProps {
+  loadingMessages: boolean;
+}
+
+const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
   const intl = useIntl();
-  const [loading, setLoading] = useState(true);
 
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
 
   useVisitedPageTracking("aviso-legal");
   useVisitedPageTrackingGA("aviso-legal");
 
-  useEffect(() => {
-    if (intl) {
-      setLoading(false);
-    }
-  }, [intl]);
-
-  if (loading) {
+  if (loadingMessages) {
     return <Loader />;
   }
 

@@ -6,9 +6,12 @@ import { useMobileMenu } from "../contexts/MobileMenuContext";
 import Loader from "../components/Loader";
 import styles from "../styles/Footer.module.css";
 
-const Footer: React.FC = () => {
+interface FooterProps {
+  loadingMessages: boolean;
+}
+
+const Footer: React.FC<FooterProps> = ({ loadingMessages }) => {
   const intl = useIntl();
-  const [loading, setLoading] = useState(true);
 
   const deviceType = useDeviceType();
   const { closeMobileMenu } = useMobileMenu();
@@ -21,13 +24,6 @@ const Footer: React.FC = () => {
       closeMobileMenu();
     }
   };
-
-  // Simular un retraso para el Loader, similar al Navbar
-  useEffect(() => {
-    if (intl) {
-      setLoading(false);
-    }
-  }, [intl]);
 
   const links = (
     <>
@@ -47,7 +43,7 @@ const Footer: React.FC = () => {
 
   return (
     <footer className={styles.footer}>
-      {loading ? (
+      {loadingMessages ? (
         <div>
           <Loader className={styles.footerLoader} />
         </div>

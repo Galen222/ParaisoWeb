@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useIntl } from "react-intl"; // Importa el hook useIntl para la internacionalización de texto.
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
@@ -6,24 +6,21 @@ import Loader from "../components/Loader";
 import Map from "../components/Map";
 import styles from "../styles/bravo-murillo.module.css"; // Importa los estilos CSS específicos para esta página.
 
+interface BravoMurilloPageProps {
+  loadingMessages: boolean; // Nuevo prop para el estado de carga
+}
+
 // Define el componente funcional BravoMurilloPage.
-const BravoMurilloPage = () => {
+const BravoMurilloPage = ({ loadingMessages }: BravoMurilloPageProps) => {
   let restaurante = "bravo-murillo";
   const intl = useIntl(); // Utiliza el hook de internacionalización para obtener funciones de traducción.
-  const [loading, setLoading] = useState(true);
 
   useVisitedPageTracking(restaurante);
   useVisitedPageTrackingGA(restaurante);
 
   const locationKey = restaurante;
 
-  useEffect(() => {
-    if (intl) {
-      setLoading(false);
-    }
-  }, [intl]);
-
-  if (loading) {
+  if (loadingMessages) {
     return <Loader />;
   }
 
