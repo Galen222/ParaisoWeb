@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
-import { deleteCookies } from "../utils/deleteCookies";
+import { deleteCookies } from "../utils/cookieUtils";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";

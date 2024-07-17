@@ -2,8 +2,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
-import { deleteCookieGA } from "@/utils/deleteCookies";
-import ReactGA from "react-ga4";
+import { deleteCookieGA, createDeviceCookie } from "@/utils/cookieUtils";
+import { initGA } from "@/utils/gaUtils"; // Importa la función desde utils
 
 export function useCookieLogic() {
   const [locale, setLocale] = useState<string>("es");
@@ -15,7 +15,6 @@ export function useCookieLogic() {
 
   const {
     setCookieConsentAnalysis,
-    cookieConsentAnalysisGoogle,
     setCookieConsentAnalysisGoogle,
     cookieConsentPersonalization,
     setCookieConsentPersonalization,
@@ -99,26 +98,6 @@ export function useCookieLogic() {
     setCookieConsentAnalysisGoogle(false);
     setAcceptCookiePersonalization(false);
     setCookieConsentPersonalization(false);
-  };
-
-  const createDeviceCookie = () => {
-    const deviceInfo = {
-      deviceType: /Mobi|Android/i.test(navigator.userAgent) ? "Tablet-Mobile" : "PC",
-      screenResolution: `${window.screen.width}x${window.screen.height}`,
-      language: navigator.language,
-    };
-    document.cookie = `_device=${JSON.stringify(deviceInfo)}; path=/; max-age=31536000; SameSite=Lax`;
-  };
-
-  const initGA = () => {
-    if (!window.ga) {
-      const analyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
-      if (!analyticsId) {
-        throw new Error("Google Analytics ID no está definido en las variables de entorno.");
-      }
-      ReactGA.initialize(analyticsId);
-      console.log("ga4 iniciado");
-    }
   };
 
   const handleAcceptCookies = () => {
