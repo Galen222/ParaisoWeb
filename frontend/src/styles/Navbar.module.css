@@ -130,7 +130,10 @@
 .linksDropdown a {
   color: white;
   text-decoration: none;
-  padding: 10px 5px;
+  padding: 10px 20px;
+  position: relative; /* Necesario para posicionar el pseudo-elemento ::after correctamente */
+  overflow: hidden; /* Asegura que cualquier hijo que desborde se oculte */
+  transition: color 0.3s ease; /* Transición suave para color */
 }
 
 .noLink {
@@ -156,6 +159,26 @@
   transition: all 0.5s ease-out;
   opacity: 0;
   visibility: hidden;
+}
+
+.links a::after,
+.linksDropdown a::after,
+.dropdown a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px; /* Altura de la línea */
+  background-color: white; /* Color de la línea */
+  transform: scaleX(0); /* Inicia sin ser visible */
+  transition: transform 0.3s ease; /* Transición suave para la transformación */
+}
+
+.links a:hover::after,
+.linksDropdown a:hover::after,
+.dropdown a:hover::after {
+  transform: scaleX(1); /* Escala a tamaño completo para hacer visible la línea */
 }
 
 .dropdown::before {
@@ -191,7 +214,7 @@
 .links a:hover,
 .linksDropdown a:hover,
 .dropdown a:hover {
-  background-color: #7a726b;
+  background-color: #7a726b; /* Color de fondo al hacer hover */
 }
 
 .loaderContainer {
@@ -324,6 +347,21 @@
 
   .linksDropdown .dropdown::before {
     display: none; /* Elimina el triángulo */
+  }
+
+  .links a::after,
+  .linksDropdown a::after,
+  .dropdown a::after {
+    height: 0; /* Elimina la altura para que la línea no aparezca */
+    background-color: transparent; /* Hace que la línea sea transparente */
+    transform: none; /* Anula cualquier transformación */
+    transition: none; /* Anula las transiciones */
+  }
+
+  .links a:hover::after,
+  .linksDropdown a:hover::after,
+  .dropdown a:hover::after {
+    transform: none; /* Anula la transformación al hacer hover */
   }
 }
 
