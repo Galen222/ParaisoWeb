@@ -19,14 +19,6 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale, loadingM
   const [showRestaurants, setShowRestaurants] = useState(false);
   const isMobile = deviceType === "mobile";
 
-  if (loadingMessages) {
-    return (
-      <div className={styles.loaderContainer}>
-        <Loader className={styles.navbarLoader} />
-      </div>
-    );
-  }
-
   return (
     <nav className={styles.navbar}>
       <div className={styles.navbarTop}>
@@ -78,14 +70,35 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale, loadingM
         </div>
       </div>
       <div className={`${styles.navbarMenu} ${mobileMenu ? styles.showMenu : ""}`}>
-        <div className={styles.links}>
-          <Link href="/" onClick={closeMobileMenu}>
-            {intl.formatMessage({ id: "Navbar_inicio" })}
-          </Link>
-          {!isMobile ? (
-            <div className={styles.linksDropdown} onMouseEnter={() => setShowRestaurants(true)} onMouseLeave={() => setShowRestaurants(false)}>
-              <span className={styles.noLink}>{intl.formatMessage({ id: "Navbar_restaurantes" })}</span>
-              <div className={`${styles.dropdown} ${showRestaurants ? styles.show : ""}`}>
+        {loadingMessages ? (
+          <div className={styles.loaderContainer}>
+            <Loader className={styles.navbarLoader} />
+          </div>
+        ) : (
+          <div className={styles.links}>
+            <Link href="/" onClick={closeMobileMenu}>
+              {intl.formatMessage({ id: "Navbar_inicio" })}
+            </Link>
+            {!isMobile ? (
+              <div className={styles.linksDropdown} onMouseEnter={() => setShowRestaurants(true)} onMouseLeave={() => setShowRestaurants(false)}>
+                <span className={styles.noLink}>{intl.formatMessage({ id: "Navbar_restaurantes" })}</span>
+                <div className={`${styles.dropdown} ${showRestaurants ? styles.show : ""}`}>
+                  <Link href="/san-bernardo" onClick={closeMobileMenu}>
+                    San Bernardo
+                  </Link>
+                  <Link href="/bravo-murillo" onClick={closeMobileMenu}>
+                    Bravo Murillo
+                  </Link>
+                  <Link href="/reina-victoria" onClick={closeMobileMenu}>
+                    Reina Victoria
+                  </Link>
+                  <Link href="/arenal" onClick={closeMobileMenu}>
+                    Arenal
+                  </Link>
+                </div>
+              </div>
+            ) : (
+              <div className={`${styles.dropdown} ${styles.show}`}>
                 <Link href="/san-bernardo" onClick={closeMobileMenu}>
                   San Bernardo
                 </Link>
@@ -99,45 +112,30 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale, loadingM
                   Arenal
                 </Link>
               </div>
-            </div>
-          ) : (
-            <div className={`${styles.dropdown} ${styles.show}`}>
-              <Link href="/san-bernardo" onClick={closeMobileMenu}>
-                San Bernardo
-              </Link>
-              <Link href="/bravo-murillo" onClick={closeMobileMenu}>
-                Bravo Murillo
-              </Link>
-              <Link href="/reina-victoria" onClick={closeMobileMenu}>
-                Reina Victoria
-              </Link>
-              <Link href="/arenal" onClick={closeMobileMenu}>
-                Arenal
-              </Link>
-            </div>
-          )}
-          <Link href="/reservas" onClick={closeMobileMenu}>
-            {intl.formatMessage({ id: "Navbar_reservas" })}
-          </Link>
-          <Link href="/menu" onClick={closeMobileMenu}>
-            {intl.formatMessage({ id: "Navbar_menu" })}
-          </Link>
-          <Link href="/carta" onClick={closeMobileMenu}>
-            {intl.formatMessage({ id: "Navbar_carta" })}
-          </Link>
-          <Link href="/charcuteria" onClick={closeMobileMenu}>
-            {intl.formatMessage({ id: "Navbar_charcuteria" })}
-          </Link>
-          <Link href="/about" onClick={closeMobileMenu}>
-            {intl.formatMessage({ id: "Navbar_about" })}
-          </Link>
-          <Link href="/blog" onClick={closeMobileMenu}>
-            {intl.formatMessage({ id: "Navbar_blog" })}
-          </Link>
-          <Link href="/contacto" onClick={closeMobileMenu}>
-            {intl.formatMessage({ id: "Navbar_contacto" })}
-          </Link>
-        </div>
+            )}
+            <Link href="/reservas" onClick={closeMobileMenu}>
+              {intl.formatMessage({ id: "Navbar_reservas" })}
+            </Link>
+            <Link href="/menu" onClick={closeMobileMenu}>
+              {intl.formatMessage({ id: "Navbar_menu" })}
+            </Link>
+            <Link href="/carta" onClick={closeMobileMenu}>
+              {intl.formatMessage({ id: "Navbar_carta" })}
+            </Link>
+            <Link href="/charcuteria" onClick={closeMobileMenu}>
+              {intl.formatMessage({ id: "Navbar_charcuteria" })}
+            </Link>
+            <Link href="/about" onClick={closeMobileMenu}>
+              {intl.formatMessage({ id: "Navbar_about" })}
+            </Link>
+            <Link href="/blog" onClick={closeMobileMenu}>
+              {intl.formatMessage({ id: "Navbar_blog" })}
+            </Link>
+            <Link href="/contacto" onClick={closeMobileMenu}>
+              {intl.formatMessage({ id: "Navbar_contacto" })}
+            </Link>
+          </div>
+        )}
       </div>
     </nav>
   );

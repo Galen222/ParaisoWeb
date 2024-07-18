@@ -130,7 +130,7 @@
 .linksDropdown a {
   color: white;
   text-decoration: none;
-  padding: 10px 20px;
+  padding: 10px 16px;
   position: relative; /* Necesario para posicionar el pseudo-elemento ::after correctamente */
   overflow: hidden; /* Asegura que cualquier hijo que desborde se oculte */
   transition: color 0.3s ease; /* Transición suave para color */
@@ -139,6 +139,7 @@
 .noLink {
   color: white;
   cursor: pointer;
+  padding: 10px 16px;
 }
 
 /* Configuración del menú desplegable para 'Restaurantes' */
@@ -242,14 +243,24 @@
   z-index: 10; /* Ajusta según el contexto de tu app */
 }
 
-/* MODO TABLET */
-@media (max-width: 1024px) {
+/* MODO TABLET Y ESCRITORIO POCA RESOLUCION */
+@media (max-width: 1600px) {
   .navbarTop {
     width: 100%;
   }
 
   .links {
     width: 100%;
+    justify-content: center;
+  }
+}
+
+/* MODO TABLET PEQUEÑA*/
+@media (max-width: 850px) {
+  .links a,
+  .linksDropdown a,
+  .noLink {
+    padding: 10px;
   }
 }
 
