@@ -13,7 +13,7 @@ import type { AppProps } from "next/app";
 import { IntlProvider } from "react-intl";
 import { ToastContainer } from "react-toastify";
 import { CookieConsentProvider } from "../contexts/CookieContext";
-import { MobileMenuProvider } from "../contexts/MobileMenuContext";
+import { MenuProvider } from "../contexts/MenuContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cookie from "../components/Cookie";
@@ -51,7 +51,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
         <meta name="description" content="Paraíso del Jamón" />
       </Head>
       <IntlProvider locale={locale} messages={messages}>
-        <MobileMenuProvider>
+        <MenuProvider>
           <React.StrictMode>
             {showCookieModal && (
               <Cookie
@@ -62,12 +62,12 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
                 onPrivacyPolicyLinkClick={handlePrivacyPolicyLinkClick}
               />
             )}
-            <Navbar onLocaleChange={handleLocaleChange} currentLocale={locale} loadingMessages={loadingMessages} />
+            <Navbar onLocaleChange={handleLocaleChange} loadingMessages={loadingMessages} />
             <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} />
             <Footer loadingMessages={loadingMessages} />
             <ToastContainer />
           </React.StrictMode>
-        </MobileMenuProvider>
+        </MenuProvider>
       </IntlProvider>
     </>
   );

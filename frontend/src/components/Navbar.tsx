@@ -1,23 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
 import useDeviceType from "../hooks/useDeviceType";
-import { useMobileMenu } from "../contexts/MobileMenuContext";
+import { useMenu } from "../contexts/MenuContext";
 import Loader from "../components/Loader";
 import styles from "../styles/Navbar.module.css";
 
 interface NavbarProps {
   onLocaleChange: (locale: string) => void;
-  currentLocale: string;
   loadingMessages: boolean;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale, loadingMessages }) => {
+const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages }) => {
   const intl = useIntl();
   const deviceType = useDeviceType();
-  const { mobileMenu, toggleMobileMenu, closeMobileMenu } = useMobileMenu();
-  const [showRestaurants, setShowRestaurants] = useState(false);
+  const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();
   const isMobile = deviceType === "mobile";
+
+  const handleDropdownClick = () => {
+    if (!restaurantsMenu) {
+      openRestaurantsMenu();
+    }
+  };
 
   return (
     <nav className={styles.navbar}>
@@ -80,19 +84,19 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, currentLocale, loadingM
               {intl.formatMessage({ id: "Navbar_inicio" })}
             </Link>
             {!isMobile ? (
-              <div className={styles.linksDropdown} onMouseEnter={() => setShowRestaurants(true)} onMouseLeave={() => setShowRestaurants(false)}>
+              <div className={styles.linksDropdown} onMouseEnter={openRestaurantsMenu} onMouseLeave={closeRestaurantsMenu} onClick={handleDropdownClick}>
                 <span className={styles.noLink}>{intl.formatMessage({ id: "Navbar_restaurantes" })}</span>
-                <div className={`${styles.dropdown} ${showRestaurants ? styles.show : ""}`}>
-                  <Link href="/san-bernardo" onClick={closeMobileMenu}>
+                <div className={`${styles.dropdown} ${restaurantsMenu ? styles.show : styles.hide}`}>
+                  <Link href="/san-bernardo" onClick={closeRestaurantsMenu}>
                     San Bernardo
                   </Link>
-                  <Link href="/bravo-murillo" onClick={closeMobileMenu}>
+                  <Link href="/bravo-murillo" onClick={closeRestaurantsMenu}>
                     Bravo Murillo
                   </Link>
-                  <Link href="/reina-victoria" onClick={closeMobileMenu}>
+                  <Link href="/reina-victoria" onClick={closeRestaurantsMenu}>
                     Reina Victoria
                   </Link>
-                  <Link href="/arenal" onClick={closeMobileMenu}>
+                  <Link href="/arenal" onClick={closeRestaurantsMenu}>
                     Arenal
                   </Link>
                 </div>

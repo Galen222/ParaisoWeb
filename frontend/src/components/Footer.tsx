@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import useDeviceType from "../hooks/useDeviceType";
-import { useMobileMenu } from "../contexts/MobileMenuContext";
+import { useMenu } from "../contexts/MenuContext";
 import Loader from "../components/Loader";
 import styles from "../styles/Footer.module.css";
 
@@ -14,7 +14,7 @@ const Footer: React.FC<FooterProps> = ({ loadingMessages }) => {
   const intl = useIntl();
 
   const deviceType = useDeviceType();
-  const { closeMobileMenu } = useMobileMenu();
+  const { closeMobileMenu } = useMenu();
 
   const isMobile = deviceType === "mobile";
 

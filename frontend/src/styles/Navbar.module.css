@@ -127,7 +127,8 @@
 
 /* Estilo de los enlaces */
 .links a,
-.linksDropdown a {
+.linksDropdown a,
+.noLink {
   color: white;
   text-decoration: none;
   padding: 10px 16px;
@@ -137,9 +138,41 @@
 }
 
 .noLink {
-  color: white;
   cursor: pointer;
-  padding: 10px 16px;
+  display: flex; /* Asegura la misma alineación vertical */
+  align-items: center; /* Alinea verticalmente el contenido */
+}
+
+/* Añade pseudo-elementos ::after para la barra inferior blanca */
+.links a::after,
+.linksDropdown a::after,
+.noLink::after,
+.dropdown a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px; /* Altura de la línea */
+  background-color: white; /* Color de la línea */
+  transform: scaleX(0); /* Inicia sin ser visible */
+  transition: transform 0.3s ease; /* Transición suave para la transformación */
+}
+
+/* Cambia el color de fondo al pasar el ratón por encima y muestra la barra inferior blanca */
+.links a:hover::after,
+.linksDropdown a:hover::after,
+.dropdown a:hover::after,
+.noLink:hover::after {
+  transform: scaleX(1); /* Escala a tamaño completo para hacer visible la línea */
+}
+
+/* Cambia el color de fondo al pasar el ratón por encima */
+.links a:hover,
+.linksDropdown a:hover,
+.noLink:hover,
+.dropdown a:hover {
+  background-color: #7a726b; /* Color de fondo al hacer hover */
 }
 
 /* Configuración del menú desplegable para 'Restaurantes' */
@@ -162,24 +195,16 @@
   visibility: hidden;
 }
 
-.links a::after,
-.linksDropdown a::after,
-.dropdown a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 3px; /* Altura de la línea */
-  background-color: white; /* Color de la línea */
-  transform: scaleX(0); /* Inicia sin ser visible */
-  transition: transform 0.3s ease; /* Transición suave para la transformación */
+.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(10px);
 }
 
-.links a:hover::after,
-.linksDropdown a:hover::after,
-.dropdown a:hover::after {
-  transform: scaleX(1); /* Escala a tamaño completo para hacer visible la línea */
+.hide {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(10px);
 }
 
 .dropdown::before {
@@ -197,6 +222,14 @@
   z-index: 2; /* Asegurándonos de que esté por encima del menú desplegable */
 }
 
+.dropdown.show::before {
+  display: block;
+}
+
+.dropdown.hide::before {
+  display: none;
+}
+
 .dropdown a {
   color: white;
   padding: 12px 16px;
@@ -207,14 +240,13 @@
 }
 
 .linksDropdown:hover .dropdown {
-  visibility: visible;
-  opacity: 1;
-  transform: translateX(-50%) translateY(20px);
+  transform: translateX(-50%) translateY(10px);
 }
 
 .links a:hover,
 .linksDropdown a:hover,
-.dropdown a:hover {
+.dropdown a:hover,
+.noLink:hover {
   background-color: #7a726b; /* Color de fondo al hacer hover */
 }
 
@@ -346,14 +378,20 @@
 
   .dropdown {
     position: relative;
-    display: block;
+    display: none;
     width: 100%;
     box-shadow: none;
     padding: 0px;
-    opacity: 1; /* Esto asegurará que el dropdown siempre sea visible en móviles */
-    visibility: visible;
     transform: translateX(-50%) translateY(0px);
     transition: none; /* Elimina cualquier transición */
+  }
+
+  .dropdown.show {
+    display: block;
+  }
+
+  .dropdown.hide {
+    display: none;
   }
 
   .linksDropdown .dropdown::before {
