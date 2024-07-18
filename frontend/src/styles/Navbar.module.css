@@ -160,19 +160,37 @@
 }
 
 /* Cambia el color de fondo al pasar el ratón por encima y muestra la barra inferior blanca */
-.links a:hover::after,
-.linksDropdown a:hover::after,
-.dropdown a:hover::after,
-.noLink:hover::after {
-  transform: scaleX(1); /* Escala a tamaño completo para hacer visible la línea */
+@media (hover: hover) {
+  .links a:hover::after,
+  .linksDropdown a:hover::after,
+  .dropdown a:hover::after,
+  .noLink:hover::after {
+    transform: scaleX(1); /* Escala a tamaño completo para hacer visible la línea */
+  }
+
+  .links a:hover,
+  .linksDropdown a:hover,
+  .noLink:hover,
+  .dropdown a:hover {
+    background-color: #7a726b; /* Color de fondo al hacer hover */
+  }
 }
 
-/* Cambia el color de fondo al pasar el ratón por encima */
-.links a:hover,
-.linksDropdown a:hover,
-.noLink:hover,
-.dropdown a:hover {
-  background-color: #7a726b; /* Color de fondo al hacer hover */
+/* Deshabilita el hover en dispositivos táctiles */
+@media (hover: none) {
+  .links a::after,
+  .linksDropdown a::after,
+  .noLink::after,
+  .dropdown a::after {
+    content: none; /* Elimina la barra inferior */
+  }
+
+  .links a:hover,
+  .linksDropdown a:hover,
+  .noLink:hover,
+  .dropdown a:hover {
+    background-color: inherit; /* Elimina el efecto de fondo al hacer hover */
+  }
 }
 
 /* Configuración del menú desplegable para 'Restaurantes' */
@@ -241,13 +259,6 @@
 
 .linksDropdown:hover .dropdown {
   transform: translateX(-50%) translateY(10px);
-}
-
-.links a:hover,
-.linksDropdown a:hover,
-.dropdown a:hover,
-.noLink:hover {
-  background-color: #7a726b; /* Color de fondo al hacer hover */
 }
 
 .loaderContainer {
