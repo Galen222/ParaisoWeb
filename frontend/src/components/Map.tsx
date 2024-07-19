@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { useIntl } from "react-intl";
 import styles from "../styles/Map.module.css";
@@ -62,7 +62,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey }) => {
   const { isLoaded, loadError } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-    libraries, // Usa la constante definida fuera del componente
+    libraries,
     version: "weekly",
     language: "es",
   });
@@ -71,61 +71,74 @@ const MapComponent: React.FC<MapProps> = ({ locationKey }) => {
   const mapInstanceRef = useRef<google.maps.Map>();
   const infoWindowRef = useRef<google.maps.InfoWindow>();
   const location = locations[locationKey];
+  const [currentLocale, setCurrentLocale] = useState(intl.locale);
 
   useEffect(() => {
     if (isLoaded && mapRef.current && !mapInstanceRef.current) {
-      // Inicialización del mapa
       mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
         center: { lat: location.lat, lng: location.lng },
         zoom: 20,
         mapId: "3c9679b7244c46e5",
       });
 
-      // Carga e inicialización de AdvancedMarkerElement
-      const loadMarker = async () => {
-        const { AdvancedMarkerElement } = await window.google.maps.marker;
-        const marker = new AdvancedMarkerElement({
-          map: mapInstanceRef.current,
-          position: { lat: location.lat, lng: location.lng },
-          title: location.address_url,
-        });
-
-        // Crear e inicializar InfoWindow
-        const contentString = `<div class="fw-bold">
-          <h5>Paraíso del Jamón</h5>
-          <p>${location.address}</p>
-          <p>${intl.formatMessage({
-            id: "Map_Marker_Telefono",
-          })}<a class="text-decoration-none" href="tel:${location.telephone}" target="_blank" rel="noopener noreferrer">
-         ${location.telephone}
-        </a></p>
-          <p><a class="text-decoration-none" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-            location.address_url
-          )}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({ id: "Map_Marker_Texto1" })}</a></p>
-          <p><a class="text-decoration-none" href="${location.url}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({
-          id: "Map_Marker_Texto2",
-        })}</a></p>
-        </div>`;
-
-        infoWindowRef.current = new google.maps.InfoWindow({
-          content: contentString,
-        });
-
-        marker.addListener("click", () => {
-          if (infoWindowRef.current && mapInstanceRef.current) {
-            // Verificación de null añadida aquí
-            infoWindowRef.current.open({
-              anchor: marker,
-              map: mapInstanceRef.current,
-              shouldFocus: false,
-            });
-          }
-        });
-      };
-
       loadMarker();
     }
-  }, [isLoaded, location, intl]);
+  }, [isLoaded, location]);
+
+  useEffect(() => {
+    if (currentLocale !== intl.locale) {
+      setCurrentLocale(intl.locale);
+    }
+  }, [intl.locale]);
+
+  useEffect(() => {
+    if (mapInstanceRef.current) {
+      loadMarker();
+    }
+  }, [currentLocale]);
+
+  const loadMarker = async () => {
+    const { AdvancedMarkerElement } = await window.google.maps.marker;
+    const marker = new AdvancedMarkerElement({
+      map: mapInstanceRef.current,
+      position: { lat: location.lat, lng: location.lng },
+      title: location.address_url,
+    });
+
+    const contentString = `<div class="fw-bold">
+      <h5>Paraíso del Jamón</h5>
+      <p>${location.address}</p>
+      <p>${intl.formatMessage({
+        id: "Map_Marker_Telefono",
+      })}<a class="text-decoration-none" href="tel:${location.telephone}" target="_blank" rel="noopener noreferrer">
+     ${location.telephone}
+    </a></p>
+      <p><a class="text-decoration-none" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+        location.address_url
+      )}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({ id: "Map_Marker_Texto1" })}</a></p>
+      <p><a class="text-decoration-none" href="${location.url}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({
+      id: "Map_Marker_Texto2",
+    })}</a></p>
+    </div>`;
+
+    if (infoWindowRef.current) {
+      infoWindowRef.current.setContent(contentString);
+    } else {
+      infoWindowRef.current = new google.maps.InfoWindow({
+        content: contentString,
+      });
+    }
+
+    marker.addListener("click", () => {
+      if (infoWindowRef.current && mapInstanceRef.current) {
+        infoWindowRef.current.open({
+          anchor: marker,
+          map: mapInstanceRef.current,
+          shouldFocus: false,
+        });
+      }
+    });
+  };
 
   if (loadError) {
     return <div>{intl.formatMessage({ id: "Map_Error_Texto" })}</div>;
