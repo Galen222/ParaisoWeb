@@ -38,6 +38,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     handleAcceptCookies,
     handleDeclineAllCookies,
     handleAcceptAllCookies,
+    mapLocale,
   } = useCookieLogic();
 
   if (loadingMessages) {
@@ -63,7 +64,7 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
               />
             )}
             <Navbar onLocaleChange={handleLocaleChange} loadingMessages={loadingMessages} />
-            <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} />
+            <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} mapLocale={mapLocale} />
             <Footer loadingMessages={loadingMessages} />
             <ToastContainer />
           </React.StrictMode>

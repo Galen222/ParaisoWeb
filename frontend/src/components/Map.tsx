@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useJsApiLoader } from "@react-google-maps/api";
+import { Loader } from "@googlemaps/js-api-loader";
 import { useIntl } from "react-intl";
 import styles from "../styles/Map.module.css";
 
@@ -53,29 +53,40 @@ const locations: Locations = {
 
 type MapProps = {
   locationKey: keyof Locations;
+  mapLocale: string;
 };
 
-const libraries: ("marker" | "places")[] = ["marker"];
-
-const MapComponent: React.FC<MapProps> = ({ locationKey }) => {
+const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
   const intl = useIntl();
-  const { isLoaded, loadError } = useJsApiLoader({
-    id: "google-map-script",
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-    libraries,
-    version: "weekly",
-    language: "es",
-  });
-
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<google.maps.Map>();
   const infoWindowRef = useRef<google.maps.InfoWindow>();
   const location = locations[locationKey];
   const [currentLocale, setCurrentLocale] = useState(intl.locale);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loader = new Loader({
+      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+      version: "weekly",
+      libraries: ["marker"],
+      language: mapLocale,
+    });
+
+    loader
+      .load()
+      .then(() => {
+        setIsLoaded(true);
+      })
+      .catch((err) => {
+        setLoadError(err.message);
+      });
+  }, [mapLocale]);
 
   useEffect(() => {
     if (isLoaded && mapRef.current && !mapInstanceRef.current) {
-      mapInstanceRef.current = new window.google.maps.Map(mapRef.current, {
+      mapInstanceRef.current = new google.maps.Map(mapRef.current, {
         center: { lat: location.lat, lng: location.lng },
         zoom: 20,
         mapId: "3c9679b7244c46e5",
@@ -98,7 +109,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey }) => {
   }, [currentLocale]);
 
   const loadMarker = async () => {
-    const { AdvancedMarkerElement } = await window.google.maps.marker;
+    const { AdvancedMarkerElement } = (await google.maps.importLibrary("marker")) as any;
     const marker = new AdvancedMarkerElement({
       map: mapInstanceRef.current,
       position: { lat: location.lat, lng: location.lng },

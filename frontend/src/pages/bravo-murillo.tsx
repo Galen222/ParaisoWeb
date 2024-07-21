@@ -7,11 +7,12 @@ import Map from "../components/Map";
 import styles from "../styles/bravo-murillo.module.css"; // Importa los estilos CSS específicos para esta página.
 
 interface BravoMurilloPageProps {
-  loadingMessages: boolean; // Nuevo prop para el estado de carga
+  loadingMessages: boolean;
+  mapLocale: string;
 }
 
 // Define el componente funcional BravoMurilloPage.
-const BravoMurilloPage = ({ loadingMessages }: BravoMurilloPageProps) => {
+const BravoMurilloPage = ({ loadingMessages, mapLocale }: BravoMurilloPageProps) => {
   let restaurante = "bravo-murillo";
   const intl = useIntl(); // Utiliza el hook de internacionalización para obtener funciones de traducción.
 
@@ -29,7 +30,7 @@ const BravoMurilloPage = ({ loadingMessages }: BravoMurilloPageProps) => {
     <div className="container">
       <h1>{intl.formatMessage({ id: "bravoMurillo_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "bravoMurillo_Descripcion" })}</p>
-      <Map locationKey={locationKey} />
+      <Map locationKey={locationKey} mapLocale={mapLocale} />
     </div>
   );
 };

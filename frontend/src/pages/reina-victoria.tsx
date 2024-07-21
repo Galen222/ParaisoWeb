@@ -7,11 +7,12 @@ import Map from "../components/Map";
 import styles from "../styles/reina-victoria.module.css"; // Importa los estilos CSS específicos para la página Reina Victoria.
 
 interface ReinaVictoriaPageProps {
-  loadingMessages: boolean; // Nuevo prop para el estado de carga
+  loadingMessages: boolean;
+  mapLocale: string;
 }
 
 // Define el componente funcional ReinaVictoriaPage utilizando una función flecha.
-const ReinaVictoriaPage = ({ loadingMessages }: ReinaVictoriaPageProps) => {
+const ReinaVictoriaPage = ({ loadingMessages, mapLocale }: ReinaVictoriaPageProps) => {
   let restaurante = "reina-victoria";
   const intl = useIntl(); // Inicializa el hook de internacionalización para usarlo en este componente.
 
@@ -29,7 +30,7 @@ const ReinaVictoriaPage = ({ loadingMessages }: ReinaVictoriaPageProps) => {
     <div className="container">
       <h1>{intl.formatMessage({ id: "reinaVictoria_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "reinaVictoria_Descripcion" })}</p>
-      <Map locationKey={locationKey} />
+      <Map locationKey={locationKey} mapLocale={mapLocale} />
     </div>
   );
 };

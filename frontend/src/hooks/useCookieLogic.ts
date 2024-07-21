@@ -1,4 +1,4 @@
-// hooks/useCookieLogic.ts
+//hooks/useCookieLogic.ts
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
@@ -7,6 +7,7 @@ import { initGA } from "@/utils/gaUtils"; // Importa la función desde utils
 
 export function useCookieLogic() {
   const [locale, setLocale] = useState<string>("es");
+  const [mapLocale, setMapLocale] = useState<string>("");
   const [messages, setMessages] = useState({});
   const [loadingMessages, setLoadingMessages] = useState<boolean>(true);
   const [showCookieModal, setShowCookieModal] = useState<boolean>(false);
@@ -27,6 +28,8 @@ export function useCookieLogic() {
   } = useCookieConsent();
 
   useEffect(() => {
+    let initialLocale = "es";
+
     const cookieValuePersonalization = document.cookie
       .split("; ")
       .find((row) => row.startsWith("_locale="))
@@ -35,17 +38,18 @@ export function useCookieLogic() {
     const cookieNameAnalysisGoogle = document.cookie.split("; ").find((row) => row.startsWith("_ga="));
 
     if (cookieValuePersonalization && ["es", "en", "de"].includes(cookieValuePersonalization)) {
-      setLocale(cookieValuePersonalization);
+      initialLocale = cookieValuePersonalization;
       setCookieConsentPersonalization(true);
     } else {
       const browserLocale = navigator.language.slice(0, 2);
       if (["es", "en", "de"].includes(browserLocale)) {
-        setLocale(browserLocale);
-      } else {
-        setLocale("es");
+        initialLocale = browserLocale;
       }
     }
-
+    setLocale(initialLocale);
+    if (mapLocale === "") {
+      setMapLocale(initialLocale);
+    }
     if (cookieNameAnalysis) {
       setCookieConsentAnalysis(true);
     }
@@ -149,6 +153,7 @@ export function useCookieLogic() {
 
   return {
     locale,
+    mapLocale,
     messages,
     loadingMessages,
     showCookieModal,

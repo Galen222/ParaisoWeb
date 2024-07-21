@@ -7,11 +7,12 @@ import Map from "../components/Map";
 import styles from "../styles/arenal.module.css"; // Importa los estilos CSS específicos para la página Arenal
 
 interface ArenalPageProps {
-  loadingMessages: boolean; // Nuevo prop para el estado de carga
+  loadingMessages: boolean;
+  mapLocale: string;
 }
 
 // Define el componente funcional ArenalPage utilizando una función flecha de ES6
-const ArenalPage = ({ loadingMessages }: ArenalPageProps) => {
+const ArenalPage = ({ loadingMessages, mapLocale }: ArenalPageProps) => {
   let restaurante = "arenal";
   const intl = useIntl(); // Inicializa el hook de internacionalización para utilizar en este componente
 
@@ -28,7 +29,7 @@ const ArenalPage = ({ loadingMessages }: ArenalPageProps) => {
     <div className="container">
       <h1>{intl.formatMessage({ id: "arenal_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "arenal_Descripcion" })}</p>
-      <Map locationKey={locationKey} />
+      <Map locationKey={locationKey} mapLocale={mapLocale} />
     </div>
   );
 };

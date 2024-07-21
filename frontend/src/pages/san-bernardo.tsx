@@ -7,10 +7,11 @@ import Map from "../components/Map";
 import styles from "../styles/san-bernardo.module.css";
 
 interface SanBernardoProps {
-  loadingMessages: boolean; // Nuevo prop para el estado de carga
+  loadingMessages: boolean;
+  mapLocale: string;
 }
 
-const SanBernardo = ({ loadingMessages }: SanBernardoProps) => {
+const SanBernardo = ({ loadingMessages, mapLocale }: SanBernardoProps) => {
   let restaurante = "san-bernardo";
   const intl = useIntl();
 
@@ -27,7 +28,7 @@ const SanBernardo = ({ loadingMessages }: SanBernardoProps) => {
     <div className="container">
       <h1>{intl.formatMessage({ id: "sanBernardo_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "sanBernardo_Descripcion" })}</p>
-      <Map locationKey={locationKey} />
+      <Map locationKey={locationKey} mapLocale={mapLocale} />
     </div>
   );
 };
