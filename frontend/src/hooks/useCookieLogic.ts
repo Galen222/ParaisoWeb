@@ -38,8 +38,14 @@ export function useCookieLogic() {
       setLocale(cookieValuePersonalization);
       setCookieConsentPersonalization(true);
     } else {
-      setLocale(navigator.language.slice(0, 2));
+      const browserLocale = navigator.language.slice(0, 2);
+      if (["es", "en", "de"].includes(browserLocale)) {
+        setLocale(browserLocale);
+      } else {
+        setLocale("es");
+      }
     }
+
     if (cookieNameAnalysis) {
       setCookieConsentAnalysis(true);
     }
