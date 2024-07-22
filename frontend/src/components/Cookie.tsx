@@ -134,9 +134,6 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
         )}
 
         <div className={styles.buttonContainer}>
-          <button className={`btn btn-primary ${styles.acceptButton}`} onClick={handleAcceptAll}>
-            {intl.formatMessage({ id: "cookie_BotonAceptarTodo" })}
-          </button>
           <button className={`btn btn-primary ${styles.cancelButton}`} onClick={handleDeclineAll}>
             {intl.formatMessage({ id: "cookie_BotonRechazarTodo" })}
           </button>
@@ -150,6 +147,9 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
               {intl.formatMessage({ id: "cookie_BotonAceptar" })}
             </button>
           )}
+          <button className={`btn btn-primary ${styles.acceptButton}`} onClick={handleAcceptAll}>
+            {intl.formatMessage({ id: "cookie_BotonAceptarTodo" })}
+          </button>
         </div>
         <div className="mt-25p">
           <p className="d-inline">
