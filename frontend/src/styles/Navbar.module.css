@@ -283,7 +283,7 @@
   align-items: center;
   align-content: center;
   justify-content: center;
-  z-index: 10; /* Ajusta según el contexto de tu app */
+  z-index: 10;
 }
 
 /* MODO TABLET Y ESCRITORIO POCA RESOLUCION */

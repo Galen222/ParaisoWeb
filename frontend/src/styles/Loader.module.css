@@ -11,7 +11,7 @@
   align-items: center;
   align-content: center;
   justify-content: center;
-  z-index: 100000;
+  z-index: 10;
 }
 
 .loader_element {
