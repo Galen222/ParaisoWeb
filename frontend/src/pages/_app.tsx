@@ -8,6 +8,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "animate.css";
 import "@/styles/fonts.css";
 import "../styles/animateButton.css";
+import "../styles/scrollbar.css";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { IntlProvider } from "react-intl";

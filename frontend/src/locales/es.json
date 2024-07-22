@@ -9,7 +9,9 @@
   "Navbar_blog": "Blog",
   "Navbar_contacto": "Contacto",
 
-  "app_CookieSuccess": "Cookies configuradas satisfactoriamente",
+  "app_CookieAcceptAll": "Cookies aceptadas satisfactoriamente",
+  "app_CookieAccept": "Cookies personalizadas satisfactoriamente",
+  "app_CookieDenied": "Cookies rechazadas satisfactoriamente",
 
   "inicio_Titulo_Texto1": "Bienvenido a ",
   "inicio_Titulo_Texto2": "Paraíso del Jamón",

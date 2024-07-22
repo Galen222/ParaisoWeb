@@ -1,5 +1,4 @@
 .animationContainer {
-  overflow: hidden; /* Esto oculta cualquier desbordamiento horizontal */
   width: 100%; /* Asegura que el contenedor no se expanda más allá del ancho de la pantalla */
   position: relative; /* Asegura que el contenedor mantenga su posición en relación a su padre */
   padding-bottom: 30px;
@@ -16,14 +15,17 @@
 
 .animationFont {
   white-space: nowrap; /* Evita que el texto se rompa en múltiples líneas */
-  overflow: hidden; /* Oculta cualquier contenido que se desborde */
   font-family: "Courgette", serif !important;
   font-size: 80px;
 }
 
 /* MODO TABLET */
 @media (max-width: 1024px) {
+  .animationContainer {
+    overflow: hidden; /* Esto oculta cualquier desbordamiento horizontal */
+  }
   .animationFont {
+    overflow: hidden; /* Oculta cualquier contenido que se desborde */
     font-size: 60px;
   }
 }

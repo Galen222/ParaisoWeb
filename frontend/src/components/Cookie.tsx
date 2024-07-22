@@ -16,6 +16,7 @@ interface CookieProps {
 
 const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, onCookiesPolicyLinkClick, onPrivacyPolicyLinkClick }) => {
   const intl = useIntl();
+  let app_message = "";
   const {
     AcceptCookieAnalysis,
     setAcceptCookieAnalysis,
@@ -47,7 +48,7 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
 
   // Función para mostrar el toast
   const showCookieToast = () => {
-    toast.success(intl.formatMessage({ id: "app_CookieSuccess" }), {
+    toast.success(app_message, {
       position: "top-center",
       autoClose: 2000,
       hideProgressBar: false,
@@ -62,16 +63,19 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
 
   const handleAccept = () => {
     onAccept();
+    app_message = intl.formatMessage({ id: "app_CookieAccept" });
     showCookieToast();
   };
 
   const handleAcceptAll = () => {
     onAcceptAll();
+    app_message = intl.formatMessage({ id: "app_CookieAcceptAll" });
     showCookieToast();
   };
 
   const handleDeclineAll = () => {
     onDeclineAll();
+    app_message = intl.formatMessage({ id: "app_CookieDenied" });
     showCookieToast();
   };
   return (
