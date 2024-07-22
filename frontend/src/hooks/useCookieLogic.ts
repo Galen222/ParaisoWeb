@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
-import { deleteCookieGA, createDeviceCookie } from "@/utils/cookieUtils";
+import { createDeviceCookie } from "@/utils/cookieUtils";
 import { initGA } from "@/utils/gaUtils"; // Importa la función desde utils
 
 export function useCookieLogic() {
@@ -56,8 +56,6 @@ export function useCookieLogic() {
     if (cookieNameAnalysisGoogle) {
       setCookieConsentAnalysisGoogle(true);
       initGA();
-    } else {
-      deleteCookieGA();
     }
     if (!cookieNameAnalysis && !cookieNameAnalysisGoogle && !cookieValuePersonalization) {
       setShowCookieModal(true);

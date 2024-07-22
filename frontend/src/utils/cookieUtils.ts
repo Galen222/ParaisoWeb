@@ -1,6 +1,7 @@
 // Importaciones necesarias para las funciones
 import { IntlShape } from "react-intl";
 import { toast, Slide } from "react-toastify";
+import { disableGA } from "@/utils/gaUtils";
 
 // Función para obtener el valor de una cookie especificada por nombre
 export const getCookieValue = (name: string): string | undefined => {
@@ -23,7 +24,7 @@ export const createDeviceCookie = () => {
 };
 
 // Función para borrar cookies que coincidan con un patrón específico
-export const deleteCookies = (
+export const deleteCookies = async (
   intl: IntlShape,
   setAcceptCookiePersonalization: (value: boolean) => void,
   cookieConsentAnalysis: boolean,
@@ -37,7 +38,8 @@ export const deleteCookies = (
 ) => {
   try {
     const cookies = document.cookie.split("; ");
-    const domains = ["localhost", ".asuscomm.com"];
+    // const domains = ["paraisodeljamon.com"]; // Prod
+    const domains = ["localhost", ".asuscomm.com"]; // Dev
     for (const cookie of cookies) {
       const [cookieName] = cookie.split("=");
 
@@ -55,6 +57,7 @@ export const deleteCookies = (
       if (cookieName.match(/^_ga($|_)/) && cookieConsentAnalysisGoogle) {
         setAcceptCookieAnalysisGoogle(false);
         setCookieConsentAnalysisGoogle(false);
+        await disableGA();
         domains.forEach((domain) => {
           document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
           console.log(`Borrada cookie Google: ${cookieName} del dominio: ${domain}`);
@@ -83,19 +86,6 @@ export const deleteCookies = (
       progress: undefined,
       theme: "dark",
       transition: Slide,
-    });
-  }
-};
-
-// Función para borrar cookies de Google Analytics residuales si no se acepta el consentimiento
-export const deleteCookieGA = () => {
-  const cookies = document.cookie.split("; ");
-  const domains = ["localhost", ".asuscomm.com"];
-  for (const cookie of cookies) {
-    const [cookieName] = cookie.split("=");
-    domains.forEach((domain) => {
-      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
-      console.log(`Borrada cookie Google: ${cookieName} del dominio: ${domain}`);
     });
   }
 };

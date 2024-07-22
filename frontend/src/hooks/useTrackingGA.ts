@@ -19,7 +19,7 @@ export function useButtonClickTrackingGA() {
   const { cookieConsentAnalysisGoogle } = useCookieConsent();
 
   return (usedButton: string): void => {
-    console.log("pulsacion del boton boton " + usedButton + " registrada en ga4");
+    console.log("pulsacion del boton " + usedButton + " registrada en ga4");
     if (cookieConsentAnalysisGoogle) {
       ReactGA.event({
         category: "Botón",
