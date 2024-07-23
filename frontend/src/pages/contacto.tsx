@@ -36,10 +36,10 @@ const ContactPage = ({ loadingMessages }: ContactPageProps) => {
     setIsPrivacyChecked(e.target.checked);
   };
 
-  // Maneja la validación del nombre, permitiendo solo letras y espacios
+  // Maneja la validación del nombre, permitiendo solo letras, espacios y caracteres especiales del aleman
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (/^[a-zA-Z\s]*$/.test(value)) {
+    if (/^[a-zA-ZäöüÄÖÜß\s]*$/.test(value)) {
       // Regex para verificar la entrada
       setFormData({ ...formData, [name]: value });
     }
@@ -85,7 +85,7 @@ const ContactPage = ({ loadingMessages }: ContactPageProps) => {
         });
         return;
       }
-      if (file.size > 1048576) {
+      if (file.size > 10485760) {
         // Verifica el tamaño del archivo
         toast.error(intl.formatMessage({ id: "contacto_ArchivoGrande" }), {
           position: "top-center",
