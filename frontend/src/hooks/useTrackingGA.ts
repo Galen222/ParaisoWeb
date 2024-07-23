@@ -23,7 +23,7 @@ export function useButtonClickTrackingGA() {
     if (cookieConsentAnalysisGoogle) {
       ReactGA.event({
         category: "Botón",
-        action: "Pulsación",
+        action: "Pulsado " + usedButton,
         label: usedButton,
       });
     }
