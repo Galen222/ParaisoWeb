@@ -36,7 +36,7 @@ const Carousel = () => {
               <img src={slide.src} alt={slide.alt} className={styles.image} />
             ) : (
               <div className={styles.text}>
-                <h2>{slide.content}</h2>
+                <h3>{slide.content}</h3>
               </div>
             )}
           </div>

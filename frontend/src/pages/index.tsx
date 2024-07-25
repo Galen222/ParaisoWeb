@@ -22,7 +22,7 @@ export default function Home({ cookiesModalClosed, loadingMessages }: HomeProps)
   }
 
   return (
-    <div className="container">
+    <div className="pageContainer">
       <div className={styles.animationContainer}>
         <h1>
           {cookiesModalClosed ? (

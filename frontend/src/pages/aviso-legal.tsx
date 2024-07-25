@@ -24,7 +24,7 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
   }
 
   return (
-    <div className="container2">
+    <div className="pageContainer">
       <div>
         <h1 className="text-center">{intl.formatMessage({ id: "avisoLegal_Principal_Titulo" })}</h1>
       </div>

@@ -2,6 +2,7 @@
 .formContainer {
   max-width: 600px;
   margin: 0 auto;
+  margin-top: 40px;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -56,6 +57,7 @@
 }
 
 .fileUploadContainer {
+  text-align: center;
   display: flex;
   width: 100%;
 }
@@ -136,7 +138,7 @@
 .checkText {
   font-weight: bold;
   margin: 0;
-  transform: translateY(-3px); /* Mueve el texto 3px hacia arriba */
+  transform: translateY(-2px); /* Mueve el texto 3px hacia arriba */
 }
 
 .link {
@@ -145,6 +147,22 @@
 
 .link:hover {
   text-decoration: underline;
+}
+
+.localesContainer {
+  margin-bottom: 20px;
+  text-align: center; /* Centrar el contenedor de información de contacto */
+}
+
+.contactLocation {
+  display: inline-block;
+  width: 80%; /* 20% menos de ancho */
+  border: 2px solid #4a403a;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 16px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+  text-align: left;
 }
 
 /* MODO TABLET Y MÓVIL */
@@ -165,5 +183,12 @@
 
   .checkText {
     font-size: 16px; /* Ajusta el tamaño del texto si es necesario */
+  }
+}
+
+/* MODO MOVIL */
+@media (max-width: 767px) {
+  .checkText {
+    transform: translateY(-3px); /* Mueve el texto 3px hacia arriba */
   }
 }

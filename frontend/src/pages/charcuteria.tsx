@@ -22,7 +22,7 @@ const CharcuteriaPage = ({ loadingMessages }: CharcuteriaPageProps) => {
 
   // Renderiza la interfaz de usuario para la página de Charcutería.
   return (
-    <div className="container">
+    <div className="pageContainer">
       <h1>{intl.formatMessage({ id: "charcuteria_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "charcuteria_Descripcion" })}</p>
     </div>

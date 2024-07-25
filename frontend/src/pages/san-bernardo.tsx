@@ -25,7 +25,7 @@ const SanBernardo = ({ loadingMessages, mapLocale }: SanBernardoProps) => {
   }
 
   return (
-    <div className="container">
+    <div className="pageContainer">
       <h1>{intl.formatMessage({ id: "sanBernardo_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "sanBernardo_Descripcion" })}</p>
       <Map locationKey={locationKey} mapLocale={mapLocale} />

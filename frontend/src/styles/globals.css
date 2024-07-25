@@ -11,17 +11,7 @@ body {
   overflow-x: hidden;
 }
 
-.container {
-  max-width: 50%;
-  margin: auto;
-  padding: 20px;
-  text-align: center;
-  margin-bottom: 90px;
-  font-size: 18px;
-  color: var(--text_color);
-}
-
-.container2 {
+.pageContainer {
   max-width: 50%;
   margin: auto;
   padding: 20px;
@@ -66,6 +56,10 @@ table {
 
 .mb-10p {
   margin-bottom: 10px;
+}
+
+.mb-40p {
+  margin-bottom: 40px;
 }
 
 .mw-600p {
@@ -125,8 +119,7 @@ table {
 
 /* MODO TABLET */
 @media (max-width: 1024px) {
-  .container,
-  .container2 {
+  .pageContainer {
     max-width: 100%;
     font-size: 22px;
   }
@@ -148,6 +141,10 @@ table {
     font-weight: bold;
     text-align: center;
   }
+}
+
+.ti-20p {
+  text-indent: 0px;
 }
 
 .slick-dots {

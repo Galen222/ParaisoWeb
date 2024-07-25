@@ -27,7 +27,7 @@ const ReinaVictoriaPage = ({ loadingMessages, mapLocale }: ReinaVictoriaPageProp
 
   // Devuelve el JSX que construye la interfaz de usuario de la página.
   return (
-    <div className="container">
+    <div className="pageContainer">
       <h1>{intl.formatMessage({ id: "reinaVictoria_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "reinaVictoria_Descripcion" })}</p>
       <Map locationKey={locationKey} mapLocale={mapLocale} />

@@ -27,7 +27,7 @@ const BravoMurilloPage = ({ loadingMessages, mapLocale }: BravoMurilloPageProps)
 
   // Devuelve el JSX que construye la UI de la página.
   return (
-    <div className="container">
+    <div className="pageContainer">
       <h1>{intl.formatMessage({ id: "bravoMurillo_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "bravoMurillo_Descripcion" })}</p>
       <Map locationKey={locationKey} mapLocale={mapLocale} />

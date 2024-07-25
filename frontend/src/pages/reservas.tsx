@@ -22,7 +22,7 @@ const ReservasPage = ({ loadingMessages }: ReservasPageProps) => {
 
   // Renderiza el componente con la estructura de la página de reservas.
   return (
-    <div className="container">
+    <div className="pageContainer">
       <h1>{intl.formatMessage({ id: "reservas_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "reservas_Descripcion" })}</p>
     </div>

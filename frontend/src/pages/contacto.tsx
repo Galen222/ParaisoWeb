@@ -36,7 +36,7 @@ const ContactPage = ({ loadingMessages }: ContactPageProps) => {
     setIsPrivacyChecked(e.target.checked);
   };
 
-  // Maneja la validación del nombre, permitiendo solo letras, espacios y caracteres especiales del aleman
+  // Maneja la validación del nombre, permitiendo solo letras, espacios y caracteres especiales del alemán
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (/^[a-zA-ZäöüÄÖÜß\s]*$/.test(value)) {
@@ -155,10 +155,15 @@ const ContactPage = ({ loadingMessages }: ContactPageProps) => {
   }
 
   return (
-    <div className="container">
-      <div className={`mt-25p ${styles.formContainer}`}>
+    <div className="pageContainer">
+      <h1 className="text-center">{intl.formatMessage({ id: "contacto_Titulo" })}</h1>
+      <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto1" })}</p>
+      <p className="fw-bold ti-20p">{intl.formatMessage({ id: "contacto_Texto2" })}</p>
+      <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto3" })}</p>
+      <div className={styles.formContainer}>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div>
+            <h3 className="text-center">{intl.formatMessage({ id: "contacto_Titulo_Formulario" })}</h3>
             <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
             <input
               type="text"
@@ -217,7 +222,7 @@ const ContactPage = ({ loadingMessages }: ContactPageProps) => {
                 <span>{intl.formatMessage({ id: "contacto_BotonSubirImagen" })}</span>
               </button>
             </div>
-            <div className={styles.fileNameBox}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
+            <div className={`text-center ${styles.fileNameBox}`}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
           </div>
           <div className={styles.customCheckbox}>
             <div className={styles.checkboxLabelContainer}>
@@ -249,7 +254,7 @@ const ContactPage = ({ loadingMessages }: ContactPageProps) => {
         </form>
       </div>
       <div className="table-responsive">
-        <table className="table table-dark table-striped-columns mw-600p mt-25p mx-auto">
+        <table className="table table-dark table-striped-columns mw-600p mt-25p mx-auto text-center mb-40p">
           <thead>
             <tr>
               <th colSpan={2}>{intl.formatMessage({ id: "contacto_Tabla_Titulo" })}</th>
@@ -287,6 +292,83 @@ const ContactPage = ({ loadingMessages }: ContactPageProps) => {
             </tr>
           </tbody>
         </table>
+      </div>
+      <p className="ti-20p">
+        {intl.formatMessage({ id: "contacto_Texto4_1" })}
+        <a className={styles.link} href="mailto:info@paraisodeljamon.com">
+          {intl.formatMessage({ id: "contacto_texto4_enlace" })}
+        </a>
+        {intl.formatMessage({ id: "contacto_Texto4_2" })}
+      </p>
+      <div className={styles.localesContainer}>
+        <div className={styles.contactLocation}>
+          <h3>{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Titulo" })}</h3>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Direccion_Texto" })}</span>
+            {intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Direccion_Calle" })}
+          </p>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Telefono_Texto" })}</span>
+            <a className={styles.link} href="tel:+345328350">
+              {intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Telefono_Numero" })}
+            </a>
+          </p>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Horario_Texto" })}</span>
+            {intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Horario_Numero" })}
+          </p>
+        </div>
+        <div className={styles.contactLocation}>
+          <h3>{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Titulo" })}</h3>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Direccion_Texto" })}</span>
+            {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Direccion_Calle" })}
+          </p>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Telefono_Texto" })}</span>
+            <a className={styles.link} href="tel:+345539783">
+              {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Telefono_Numero" })}
+            </a>
+          </p>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Horario_Texto" })}</span>
+            {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Horario_Numero" })}
+          </p>
+        </div>
+        <div className={styles.contactLocation}>
+          <h3>{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Titulo" })}</h3>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Direccion_Texto" })}</span>
+            {intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Direccion_Calle" })}
+          </p>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Telefono_Texto" })}</span>
+            <a className={styles.link} href="tel:+345341820">
+              {intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Telefono_Numero" })}
+            </a>
+          </p>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Horario_Texto" })}</span>
+            {intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Horario_Numero" })}
+          </p>
+        </div>
+        <div className={styles.contactLocation}>
+          <h3>{intl.formatMessage({ id: "contacto_Informacion_Arenal_Titulo" })}</h3>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_Arenal_Direccion_Texto" })}</span>
+            {intl.formatMessage({ id: "contacto_Informacion_Arenal_Direccion_Calle" })}
+          </p>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_Arenal_Telefono_Texto" })}</span>
+            <a className={styles.link} href="tel:+345419519">
+              {intl.formatMessage({ id: "contacto_Informacion_Arenal_Telefono_Numero" })}
+            </a>
+          </p>
+          <p>
+            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_Arenal_Horario_Texto" })}</span>
+            {intl.formatMessage({ id: "contacto_Informacion_Arenal_Horario_Numero" })}
+          </p>
+        </div>
       </div>
       {isScrollButtonVisible && (
         <button onClick={scrollToTop} className="scrollTop">

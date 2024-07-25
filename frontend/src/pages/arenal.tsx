@@ -26,7 +26,7 @@ const ArenalPage = ({ loadingMessages, mapLocale }: ArenalPageProps) => {
   }
 
   return (
-    <div className="container">
+    <div className="pageContainer">
       <h1>{intl.formatMessage({ id: "arenal_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "arenal_Descripcion" })}</p>
       <Map locationKey={locationKey} mapLocale={mapLocale} />

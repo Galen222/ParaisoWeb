@@ -118,7 +118,7 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
   }
 
   return (
-    <div className="container2">
+    <div className="pageContainer">
       <div>
         <h1 className="text-center">{intl.formatMessage({ id: "politicaCookies_Principal_Titulo" })}</h1>
       </div>

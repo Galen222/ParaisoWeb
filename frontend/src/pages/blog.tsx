@@ -21,7 +21,7 @@ const BlogPage = ({ loadingMessages }: BlogPageProps) => {
   }
 
   return (
-    <div className="container">
+    <div className="pageContainer">
       <h1>{intl.formatMessage({ id: "blog_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "blog_Descripcion" })}</p>
     </div>

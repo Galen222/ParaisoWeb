@@ -74,7 +74,7 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
   }
 
   return (
-    <div className="container">
+    <div className="pageContainer">
       <h1>{statusCode}</h1> {/* Muestra el código de estado */}
       <p>{message}</p> {/* Muestra el mensaje de error */}
     </div>

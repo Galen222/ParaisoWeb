@@ -22,7 +22,7 @@ const MenuPage = ({ loadingMessages }: MenuPageProps) => {
 
   // Retorna JSX que forma la interfaz de usuario de la página del menú.
   return (
-    <div className="container">
+    <div className="pageContainer">
       <h1>{intl.formatMessage({ id: "menu_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "menu_Descripcion" })}</p>
     </div>

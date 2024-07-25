@@ -20,7 +20,7 @@ const AboutPage = ({ loadingMessages }: AboutPageProps) => {
   }
 
   return (
-    <div className="container">
+    <div className="pageContainer">
       <h1>{intl.formatMessage({ id: "about_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "about_Descripcion" })}</p>
     </div>

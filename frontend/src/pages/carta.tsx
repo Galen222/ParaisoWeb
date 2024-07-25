@@ -22,7 +22,7 @@ const CartaPage = ({ loadingMessages }: CartaPageProps) => {
 
   // Renderiza el contenido del componente.
   return (
-    <div className="container">
+    <div className="pageContainer">
       <h1>{intl.formatMessage({ id: "carta_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "carta_Descripcion" })}</p>
     </div>
