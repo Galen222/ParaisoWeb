@@ -9,10 +9,11 @@ import Link from "next/link";
 import styles from "../styles/contacto.module.css"; // Estilos específicos para esta página
 
 interface ContactPageProps {
+  cookiesModalClosed: boolean;
   loadingMessages: boolean; // Nuevo prop para el estado de carga
 }
 
-const ContactPage = ({ loadingMessages }: ContactPageProps) => {
+const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) => {
   const intl = useIntl(); // Hook para utilizar la internacionalización
   const [isPushingSend, setIsPushingSend] = useState(false);
   const [isPushingFile, setIsPushingFile] = useState(false);
@@ -156,218 +157,238 @@ const ContactPage = ({ loadingMessages }: ContactPageProps) => {
 
   return (
     <div className="pageContainer">
-      <h1 className="text-center">{intl.formatMessage({ id: "contacto_Titulo" })}</h1>
-      <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto1" })}</p>
-      <p className="fw-bold ti-20p">{intl.formatMessage({ id: "contacto_Texto2" })}</p>
-      <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto3" })}</p>
-      <div className={styles.formContainer}>
-        <form onSubmit={handleSubmit} className={styles.form}>
-          <div>
-            <h3 className="text-center">{intl.formatMessage({ id: "contacto_Titulo_Formulario" })}</h3>
-            <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
-            <input
-              type="text"
-              autoComplete="given-name"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleValidateName}
-              required
-              className={styles.input}
-            />
-          </div>
-          <div>
-            <label htmlFor="reason">{intl.formatMessage({ id: "contacto_Motivo" })}</label>
-            <select id="reason" name="reason" value={formData.reason} onChange={handleSelect} required>
-              <option value="info">{intl.formatMessage({ id: "contacto_MotivoInfo" })}</option>
-              <option value="commercial">{intl.formatMessage({ id: "contacto_MotivoComercial" })}</option>
-              <option value="invoice">{intl.formatMessage({ id: "contacto_MotivoFactura" })}</option>
-              <option value="bug">{intl.formatMessage({ id: "contacto_MotivoBug" })}</option>
-              <option value="other">{intl.formatMessage({ id: "contacto_MotivoOtro" })}</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="email">{intl.formatMessage({ id: "contacto_Email" })}</label>
-            <input
-              type="email"
-              autoComplete="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleValidateEmail}
-              required
-              className={`${styles.input} ${isValidEmail ? styles.emailValid : styles.emailInvalid}`} // Cambia de color si el email no es válido
-            />
-          </div>
-          <div>
-            <label htmlFor="message">{intl.formatMessage({ id: "contacto_Mensaje" })}</label>
-            <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
-          </div>
-          <div className={styles.archiveText}>
-            <span>{intl.formatMessage({ id: "contacto_SubirImagen1" })}</span>
-            <span className="fs-14p">{intl.formatMessage({ id: "contacto_SubirImagen2" })}</span>
-          </div>
-          <div className={styles.fileUploadContainer}>
-            <div className="w-600p">
-              <input type="file" id="imageUpload" name="imageUpload" accept="image/jpeg" className="d-none" onChange={handleFileChange} />
-              <button
-                type="button"
-                className={`btn btn-outline-secondary ${styles.fileButton} ${isPushingFile ? "animate-push" : ""}`}
-                onClick={() => {
-                  setIsPushingFile(true);
-                  document.getElementById("imageUpload")?.click();
-                }}
-                onAnimationEnd={() => setIsPushingFile(false)}
-              >
-                <span>{intl.formatMessage({ id: "contacto_BotonSubirImagen" })}</span>
-              </button>
+      <div className="animationContainer">
+        <h1>
+          {cookiesModalClosed ? (
+            <div className="animationTime">
+              <div className="animate__animated animate__fadeInLeft">
+                <div className="animationFont">{intl.formatMessage({ id: "contacto_Titulo_Texto1" })}</div>
+              </div>
+              <div className="animate__animated animate__fadeInRight animate__delay-1s">
+                <div className="animationFont">{intl.formatMessage({ id: "contacto_Titulo_Texto2" })}</div>
+              </div>
             </div>
-            <div className={`text-center ${styles.fileNameBox}`}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
-          </div>
-          <div className={styles.customCheckbox}>
-            <div className={styles.checkboxLabelContainer}>
-              <span className={styles.checkboxControl} onClick={() => setIsPrivacyChecked(!isPrivacyChecked)}>
-                <input type="checkbox" id="privacyCheck" checked={isPrivacyChecked} onChange={handlePrivacyCheck} className={styles.hiddenCheckbox} />
-                {isPrivacyChecked && (
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M2 8L6 12L14 4" stroke="green" strokeWidth="3" />
-                  </svg>
-                )}
-              </span>
-              <label htmlFor="privacyCheck" className={styles.checkText}>
-                <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}</span>
-                <Link href="/politica-privacidad" className={styles.link}>
-                  <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
-                </Link>
-              </label>
+          ) : (
+            <div>
+              <div className="animationFont">{intl.formatMessage({ id: "contacto_Titulo_Texto1" })}</div>
+              <div className="animationFont">{intl.formatMessage({ id: "contacto_Titulo_Texto2" })}</div>
             </div>
+          )}
+        </h1>
+      </div>
+      <div>
+        <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto1" })}</p>
+        <p className="fw-bold ti-20p">{intl.formatMessage({ id: "contacto_Texto2" })}</p>
+        <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto3" })}</p>
+        <div className={styles.formContainer}>
+          <form onSubmit={handleSubmit} className={styles.form}>
+            <div>
+              <h3 className="text-center">{intl.formatMessage({ id: "contacto_Titulo_Formulario" })}</h3>
+              <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
+              <input
+                type="text"
+                autoComplete="given-name"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleValidateName}
+                required
+                className={styles.input}
+              />
+            </div>
+            <div>
+              <label htmlFor="reason">{intl.formatMessage({ id: "contacto_Motivo" })}</label>
+              <select id="reason" name="reason" value={formData.reason} onChange={handleSelect} required>
+                <option value="info">{intl.formatMessage({ id: "contacto_MotivoInfo" })}</option>
+                <option value="commercial">{intl.formatMessage({ id: "contacto_MotivoComercial" })}</option>
+                <option value="invoice">{intl.formatMessage({ id: "contacto_MotivoFactura" })}</option>
+                <option value="bug">{intl.formatMessage({ id: "contacto_MotivoBug" })}</option>
+                <option value="other">{intl.formatMessage({ id: "contacto_MotivoOtro" })}</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="email">{intl.formatMessage({ id: "contacto_Email" })}</label>
+              <input
+                type="email"
+                autoComplete="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleValidateEmail}
+                required
+                className={`${styles.input} ${isValidEmail ? styles.emailValid : styles.emailInvalid}`} // Cambia de color si el email no es válido
+              />
+            </div>
+            <div>
+              <label htmlFor="message">{intl.formatMessage({ id: "contacto_Mensaje" })}</label>
+              <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
+            </div>
+            <div className={styles.archiveText}>
+              <span>{intl.formatMessage({ id: "contacto_SubirImagen1" })}</span>
+              <span className="fs-14p">{intl.formatMessage({ id: "contacto_SubirImagen2" })}</span>
+            </div>
+            <div className={styles.fileUploadContainer}>
+              <div className="w-600p">
+                <input type="file" id="imageUpload" name="imageUpload" accept="image/jpeg" className="d-none" onChange={handleFileChange} />
+                <button
+                  type="button"
+                  className={`btn btn-outline-secondary ${styles.fileButton} ${isPushingFile ? "animate-push" : ""}`}
+                  onClick={() => {
+                    setIsPushingFile(true);
+                    document.getElementById("imageUpload")?.click();
+                  }}
+                  onAnimationEnd={() => setIsPushingFile(false)}
+                >
+                  <span>{intl.formatMessage({ id: "contacto_BotonSubirImagen" })}</span>
+                </button>
+              </div>
+              <div className={`text-center ${styles.fileNameBox}`}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
+            </div>
+            <div className={styles.customCheckbox}>
+              <div className={styles.checkboxLabelContainer}>
+                <span className={styles.checkboxControl} onClick={() => setIsPrivacyChecked(!isPrivacyChecked)}>
+                  <input type="checkbox" id="privacyCheck" checked={isPrivacyChecked} onChange={handlePrivacyCheck} className={styles.hiddenCheckbox} />
+                  {isPrivacyChecked && (
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M2 8L6 12L14 4" stroke="green" strokeWidth="3" />
+                    </svg>
+                  )}
+                </span>
+                <label htmlFor="privacyCheck" className={styles.checkText}>
+                  <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}</span>
+                  <Link href="/politica-privacidad" className={styles.link}>
+                    <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
+                  </Link>
+                </label>
+              </div>
+            </div>
+            <button
+              type="submit"
+              className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${isPushingSend ? "animate-push" : ""}`}
+              disabled={!CheckFormComplete()}
+              onClick={() => setIsPushingSend(true)}
+              onAnimationEnd={() => setIsPushingSend(false)}
+            >
+              {intl.formatMessage({ id: "contacto_BotonEnviar" })}
+            </button>
+          </form>
+        </div>
+        <div className="table-responsive">
+          <table className="table table-dark table-striped-columns mw-600p mt-25p mx-auto text-center mb-40p">
+            <thead>
+              <tr>
+                <th colSpan={2}>{intl.formatMessage({ id: "contacto_Tabla_Titulo" })}</th>
+              </tr>
+            </thead>
+            <tbody className="table-group-divider">
+              <tr>
+                <td>{intl.formatMessage({ id: "contacto_Tabla_Celda1_1" })}</td>
+                <td>PACAVA S.A.</td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage({ id: "contacto_Tabla_Celda2_1" })}</td>
+                <td>{intl.formatMessage({ id: "contacto_Tabla_Celda2_2" })}</td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage({ id: "contacto_Tabla_Celda3_1" })}</td>
+                <td>{intl.formatMessage({ id: "contacto_Tabla_Celda3_2" })}</td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage({ id: "contacto_Tabla_Celda4_1" })}</td>
+                <td>PACAVA S.A.</td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage({ id: "contacto_Tabla_Celda5_1" })}</td>
+                <td>{intl.formatMessage({ id: "contacto_Tabla_Celda5_2" })}</td>
+              </tr>
+              <tr>
+                <td>{intl.formatMessage({ id: "contacto_Tabla_Celda6_1" })}</td>
+                <td>
+                  {intl.formatMessage({ id: "contacto_Tabla_Celda6_2" })}
+                  <Link href="/politica-privacidad" className={styles.link}>
+                    <span className="fs-16p">{intl.formatMessage({ id: "contacto_Tabla_Celda6_3" })}</span>
+                  </Link>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p className="ti-20p">
+          {intl.formatMessage({ id: "contacto_Texto4_1" })}
+          <a className={styles.link} href="mailto:info@paraisodeljamon.com">
+            {intl.formatMessage({ id: "contacto_texto4_enlace" })}
+          </a>
+          {intl.formatMessage({ id: "contacto_Texto4_2" })}
+        </p>
+        <div className={styles.localesContainer}>
+          <div className={styles.contactLocation}>
+            <h3 className="text-center">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Titulo" })}</h3>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Direccion_Texto" })}</span>
+              {intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Direccion_Calle" })}
+            </p>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Telefono_Texto" })}</span>
+              <a className={styles.link} href="tel:+345328350">
+                {intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Telefono_Numero" })}
+              </a>
+            </p>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Horario_Texto" })}</span>
+              {intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Horario_Numero" })}
+            </p>
           </div>
-          <button
-            type="submit"
-            className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${isPushingSend ? "animate-push" : ""}`}
-            disabled={!CheckFormComplete()}
-            onClick={() => setIsPushingSend(true)}
-            onAnimationEnd={() => setIsPushingSend(false)}
-          >
-            {intl.formatMessage({ id: "contacto_BotonEnviar" })}
-          </button>
-        </form>
-      </div>
-      <div className="table-responsive">
-        <table className="table table-dark table-striped-columns mw-600p mt-25p mx-auto text-center mb-40p">
-          <thead>
-            <tr>
-              <th colSpan={2}>{intl.formatMessage({ id: "contacto_Tabla_Titulo" })}</th>
-            </tr>
-          </thead>
-          <tbody className="table-group-divider">
-            <tr>
-              <td>{intl.formatMessage({ id: "contacto_Tabla_Celda1_1" })}</td>
-              <td>PACAVA S.A.</td>
-            </tr>
-            <tr>
-              <td>{intl.formatMessage({ id: "contacto_Tabla_Celda2_1" })}</td>
-              <td>{intl.formatMessage({ id: "contacto_Tabla_Celda2_2" })}</td>
-            </tr>
-            <tr>
-              <td>{intl.formatMessage({ id: "contacto_Tabla_Celda3_1" })}</td>
-              <td>{intl.formatMessage({ id: "contacto_Tabla_Celda3_2" })}</td>
-            </tr>
-            <tr>
-              <td>{intl.formatMessage({ id: "contacto_Tabla_Celda4_1" })}</td>
-              <td>PACAVA S.A.</td>
-            </tr>
-            <tr>
-              <td>{intl.formatMessage({ id: "contacto_Tabla_Celda5_1" })}</td>
-              <td>{intl.formatMessage({ id: "contacto_Tabla_Celda5_2" })}</td>
-            </tr>
-            <tr>
-              <td>{intl.formatMessage({ id: "contacto_Tabla_Celda6_1" })}</td>
-              <td>
-                {intl.formatMessage({ id: "contacto_Tabla_Celda6_2" })}
-                <Link href="/politica-privacidad" className={styles.link}>
-                  <span className="fs-16p">{intl.formatMessage({ id: "contacto_Tabla_Celda6_3" })}</span>
-                </Link>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <p className="ti-20p">
-        {intl.formatMessage({ id: "contacto_Texto4_1" })}
-        <a className={styles.link} href="mailto:info@paraisodeljamon.com">
-          {intl.formatMessage({ id: "contacto_texto4_enlace" })}
-        </a>
-        {intl.formatMessage({ id: "contacto_Texto4_2" })}
-      </p>
-      <div className={styles.localesContainer}>
-        <div className={styles.contactLocation}>
-          <h3>{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Titulo" })}</h3>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Direccion_Texto" })}</span>
-            {intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Direccion_Calle" })}
-          </p>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Telefono_Texto" })}</span>
-            <a className={styles.link} href="tel:+345328350">
-              {intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Telefono_Numero" })}
-            </a>
-          </p>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Horario_Texto" })}</span>
-            {intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Horario_Numero" })}
-          </p>
-        </div>
-        <div className={styles.contactLocation}>
-          <h3>{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Titulo" })}</h3>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Direccion_Texto" })}</span>
-            {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Direccion_Calle" })}
-          </p>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Telefono_Texto" })}</span>
-            <a className={styles.link} href="tel:+345539783">
-              {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Telefono_Numero" })}
-            </a>
-          </p>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Horario_Texto" })}</span>
-            {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Horario_Numero" })}
-          </p>
-        </div>
-        <div className={styles.contactLocation}>
-          <h3>{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Titulo" })}</h3>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Direccion_Texto" })}</span>
-            {intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Direccion_Calle" })}
-          </p>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Telefono_Texto" })}</span>
-            <a className={styles.link} href="tel:+345341820">
-              {intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Telefono_Numero" })}
-            </a>
-          </p>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Horario_Texto" })}</span>
-            {intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Horario_Numero" })}
-          </p>
-        </div>
-        <div className={styles.contactLocation}>
-          <h3>{intl.formatMessage({ id: "contacto_Informacion_Arenal_Titulo" })}</h3>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_Arenal_Direccion_Texto" })}</span>
-            {intl.formatMessage({ id: "contacto_Informacion_Arenal_Direccion_Calle" })}
-          </p>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_Arenal_Telefono_Texto" })}</span>
-            <a className={styles.link} href="tel:+345419519">
-              {intl.formatMessage({ id: "contacto_Informacion_Arenal_Telefono_Numero" })}
-            </a>
-          </p>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_Arenal_Horario_Texto" })}</span>
-            {intl.formatMessage({ id: "contacto_Informacion_Arenal_Horario_Numero" })}
-          </p>
+          <div className={styles.contactLocation}>
+            <h3 className="text-center">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Titulo" })}</h3>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Direccion_Texto" })}</span>
+              {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Direccion_Calle" })}
+            </p>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Telefono_Texto" })}</span>
+              <a className={styles.link} href="tel:+345539783">
+                {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Telefono_Numero" })}
+              </a>
+            </p>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Horario_Texto" })}</span>
+              {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Horario_Numero" })}
+            </p>
+          </div>
+          <div className={styles.contactLocation}>
+            <h3 className="text-center">{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Titulo" })}</h3>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Direccion_Texto" })}</span>
+              {intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Direccion_Calle" })}
+            </p>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Telefono_Texto" })}</span>
+              <a className={styles.link} href="tel:+345341820">
+                {intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Telefono_Numero" })}
+              </a>
+            </p>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Horario_Texto" })}</span>
+              {intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Horario_Numero" })}
+            </p>
+          </div>
+          <div className={styles.contactLocation}>
+            <h3 className="text-center">{intl.formatMessage({ id: "contacto_Informacion_Arenal_Titulo" })}</h3>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_Arenal_Direccion_Texto" })}</span>
+              {intl.formatMessage({ id: "contacto_Informacion_Arenal_Direccion_Calle" })}
+            </p>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_Arenal_Telefono_Texto" })}</span>
+              <a className={styles.link} href="tel:+345419519">
+                {intl.formatMessage({ id: "contacto_Informacion_Arenal_Telefono_Numero" })}
+              </a>
+            </p>
+            <p>
+              <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_Arenal_Horario_Texto" })}</span>
+              {intl.formatMessage({ id: "contacto_Informacion_Arenal_Horario_Numero" })}
+            </p>
+          </div>
         </div>
       </div>
       {isScrollButtonVisible && (

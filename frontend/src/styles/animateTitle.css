@@ -1,0 +1,38 @@
+.animationContainer {
+  width: 100%; /* Asegura que el contenedor no se expanda más allá del ancho de la pantalla */
+  position: relative; /* Asegura que el contenedor mantenga su posición en relación a su padre */
+  padding-bottom: 30px;
+}
+
+.animationTime {
+  --animate-duration: 1s;
+  --animate-delay: 0.5s;
+  display: flex; /* Usar flex para manejar la disposición de los elementos */
+  flex-direction: column; /* Esto organiza los elementos verticalmente */
+  align-items: center; /* Centra los elementos horizontalmente */
+  justify-content: center;
+}
+
+.animationFont {
+  white-space: nowrap; /* Evita que el texto se rompa en múltiples líneas */
+  font-family: "Courgette", serif !important;
+  font-size: 80px;
+}
+
+/* MODO TABLET */
+@media (max-width: 1024px) {
+  .animationContainer {
+    overflow: hidden; /* Esto oculta cualquier desbordamiento horizontal */
+  }
+  .animationFont {
+    overflow: hidden; /* Oculta cualquier contenido que se desborde */
+    font-size: 60px;
+  }
+}
+
+/* MODO MOVIL */
+@media (max-width: 767px) {
+  .animationFont {
+    font-size: 40px;
+  }
+}
