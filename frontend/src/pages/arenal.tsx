@@ -3,16 +3,18 @@ import { useIntl } from "react-intl"; // Importa el hook useIntl para utilizar i
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
+import AnimatedTitle from "../components/AnimatedTitle";
 import Map from "../components/Map";
 import styles from "../styles/arenal.module.css"; // Importa los estilos CSS específicos para la página Arenal
 
 interface ArenalPageProps {
+  cookiesModalClosed: boolean;
   loadingMessages: boolean;
   mapLocale: string;
 }
 
 // Define el componente funcional ArenalPage utilizando una función flecha de ES6
-const ArenalPage = ({ loadingMessages, mapLocale }: ArenalPageProps) => {
+const ArenalPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: ArenalPageProps) => {
   let restaurante = "arenal";
   const intl = useIntl(); // Inicializa el hook de internacionalización para utilizar en este componente
 
@@ -27,7 +29,7 @@ const ArenalPage = ({ loadingMessages, mapLocale }: ArenalPageProps) => {
 
   return (
     <div className="pageContainer">
-      <h1>{intl.formatMessage({ id: "arenal_Titulo" })}</h1>
+      <AnimatedTitle text1Id="arenal_Titulo_Texto1" text2Id="arenal_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
       <p>{intl.formatMessage({ id: "arenal_Descripcion" })}</p>
       <Map locationKey={locationKey} mapLocale={mapLocale} />
     </div>

@@ -1,20 +1,21 @@
-import React, { useEffect, useState, ChangeEvent, FormEvent } from "react";
-import { useIntl } from "react-intl"; // Para internacionalización
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useIntl } from "react-intl";
 import { toast, Slide } from "react-toastify";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import Link from "next/link";
-import styles from "../styles/contacto.module.css"; // Estilos específicos para esta página
+import AnimatedTitle from "../components/AnimatedTitle";
+import styles from "../styles/contacto.module.css";
 
 interface ContactPageProps {
   cookiesModalClosed: boolean;
-  loadingMessages: boolean; // Nuevo prop para el estado de carga
+  loadingMessages: boolean;
 }
 
 const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) => {
-  const intl = useIntl(); // Hook para utilizar la internacionalización
+  const intl = useIntl();
   const [isPushingSend, setIsPushingSend] = useState(false);
   const [isPushingFile, setIsPushingFile] = useState(false);
 
@@ -30,49 +31,42 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
     message: "",
     file: null as File | null,
   });
-  const [isValidEmail, setIsValidEmail] = useState(true); // Estado para la validez del email
-  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false); // Estado para el checkbox de privacidad
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
 
   const handlePrivacyCheck = (e: ChangeEvent<HTMLInputElement>) => {
     setIsPrivacyChecked(e.target.checked);
   };
 
-  // Maneja la validación del nombre, permitiendo solo letras, espacios y caracteres especiales del alemán
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (/^[a-zA-ZäöüÄÖÜß\s]*$/.test(value)) {
-      // Regex para verificar la entrada
       setFormData({ ...formData, [name]: value });
     }
   };
 
-  // Maneja la validación del email según un patrón específico
   const handleValidateEmail = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/; // Regex para validar el email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     const isValid = emailRegex.test(value);
     setIsValidEmail(isValid);
     setFormData({ ...formData, [name]: value });
   };
 
-  // Maneja cambios en el selector de motivo
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Actualiza el estado del mensaje conforme se edita
   const handleValidateMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  // Maneja el cambio de archivo, asegurando que sea una imagen JPEG y no exceda 1MB
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       if (file.type !== "image/jpeg") {
-        // Verifica el tipo de archivo
         toast.error(intl.formatMessage({ id: "contacto_ArchivoNoJPG" }), {
           position: "top-center",
           autoClose: 4000,
@@ -87,7 +81,6 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
         return;
       }
       if (file.size > 10485760) {
-        // Verifica el tamaño del archivo
         toast.error(intl.formatMessage({ id: "contacto_ArchivoGrande" }), {
           position: "top-center",
           autoClose: 4000,
@@ -109,7 +102,6 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
 
   const trackButtonClick = useButtonClickTrackingGA();
 
-  // Procesa el envío del formulario
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trackButtonClick("Enviar Formulario");
@@ -124,7 +116,6 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
       theme: "dark",
       transition: Slide,
     });
-    // Resetear el formulario
     setFormData({
       name: "",
       reason: "",
@@ -135,9 +126,7 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
     setIsPrivacyChecked(false);
   };
 
-  // Verifica que los campos requeridos no estén vacíos y sea un email válido
   const CheckFormComplete = () => {
-    // Si el motivo es solicitar factura es necesario que se suba una imagen de la factura
     if (formData.reason === "invoice") {
       return (
         formData.name.trim() !== "" &&
@@ -157,25 +146,7 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
 
   return (
     <div className="pageContainer">
-      <div className="animationContainer">
-        <h1>
-          {cookiesModalClosed ? (
-            <div className="animationTime">
-              <div className="animate__animated animate__fadeInLeft">
-                <div className="animationFont">{intl.formatMessage({ id: "contacto_Titulo_Texto1" })}</div>
-              </div>
-              <div className="animate__animated animate__fadeInRight animate__delay-1s">
-                <div className="animationFont">{intl.formatMessage({ id: "contacto_Titulo_Texto2" })}</div>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <div className="animationFont">{intl.formatMessage({ id: "contacto_Titulo_Texto1" })}</div>
-              <div className="animationFont">{intl.formatMessage({ id: "contacto_Titulo_Texto2" })}</div>
-            </div>
-          )}
-        </h1>
-      </div>
+      <AnimatedTitle text1Id="contacto_Titulo_Texto1" text2Id="contacto_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
       <div>
         <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto1" })}</p>
         <p className="fw-bold ti-20p">{intl.formatMessage({ id: "contacto_Texto2" })}</p>
@@ -216,7 +187,7 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
                 value={formData.email}
                 onChange={handleValidateEmail}
                 required
-                className={`${styles.input} ${isValidEmail ? styles.emailValid : styles.emailInvalid}`} // Cambia de color si el email no es válido
+                className={`${styles.input} ${isValidEmail ? styles.emailValid : styles.emailInvalid}`}
               />
             </div>
             <div>

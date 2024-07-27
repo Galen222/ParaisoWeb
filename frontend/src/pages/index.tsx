@@ -4,6 +4,7 @@ import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
+import AnimatedTitle from "../components/AnimatedTitle";
 import Carousel from "../components/Carousel";
 import styles from "../styles/index.module.css";
 
@@ -26,25 +27,7 @@ export default function Home({ cookiesModalClosed, loadingMessages }: HomeProps)
 
   return (
     <div className="pageContainer">
-      <div className="animationContainer">
-        <h1>
-          {cookiesModalClosed ? (
-            <div className="animationTime">
-              <div className="animate__animated animate__fadeInLeft">
-                <div className="animationFont">{intl.formatMessage({ id: "inicio_Titulo_Texto1" })}</div>
-              </div>
-              <div className="animate__animated animate__fadeInRight animate__delay-1s">
-                <div className="animationFont">{intl.formatMessage({ id: "inicio_Titulo_Texto2" })}</div>
-              </div>
-            </div>
-          ) : (
-            <div>
-              <div className="animationFont">{intl.formatMessage({ id: "inicio_Titulo_Texto1" })}</div>
-              <div className="animationFont">{intl.formatMessage({ id: "inicio_Titulo_Texto2" })}</div>
-            </div>
-          )}
-        </h1>
-      </div>
+      <AnimatedTitle text1Id="inicio_Titulo_Texto1" text2Id="inicio_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
       <div>
         <p className="text-center">{intl.formatMessage({ id: "inicio_Descripcion" })}</p>
         <Carousel />

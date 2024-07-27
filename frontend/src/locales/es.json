@@ -17,16 +17,20 @@
   "inicio_Titulo_Texto2": "Paraíso del Jamón",
   "inicio_Descripcion": "Descubre los mejores sabores de nuestros platos y embutidos.",
 
-  "sanBernardo_Titulo": "Restaurante San Bernardo",
+  "sanBernardo_Titulo_Texto1": "Paraíso del Jamón I",
+  "sanBernardo_Titulo_Texto2": "San Bernardo",
   "sanBernardo_Descripcion": "En el centro de Madrid para disfrutar de nuestra comida.",
 
-  "bravoMurillo_Titulo": "Restaurante Bravo Murillo",
+  "bravoMurillo_Titulo_Texto1": "Paraíso del Jamón II",
+  "bravoMurillo_Titulo_Texto2": "Bravo Murillo",
   "bravoMurillo_Descripcion": "El lugar perfecto para disfrutar de una experiencia culinaria única en Bravo Murillo.",
 
-  "reinaVictoria_Titulo": "Restaurante Reina Victoria",
+  "reinaVictoria_Titulo_Texto1": "Paraíso del Jamón III",
+  "reinaVictoria_Titulo_Texto2": "Reina Victoria",
   "reinaVictoria_Descripcion": "Disfruta de la mejor gastronomía en nuestro restaurante en Reina Victoria.",
 
-  "arenal_Titulo": "Restaurante Arenal",
+  "arenal_Titulo_Texto1": "Paraíso del Jamón IV",
+  "arenal_Titulo_Texto2": "Arenal",
   "arenal_Descripcion": "Vive una experiencia gastronómica excepcional en nuestro restaurante en Arenal.",
 
   "reservas_Titulo": "Hacer una Reserva",
@@ -41,7 +45,8 @@
   "charcuteria_Titulo": "Nuestra Charcutería",
   "charcuteria_Descripcion": "Descubre los mejores embutidos y jamones seleccionados con cuidado.",
 
-  "about_Titulo": "Sobre Nosotros",
+  "about_Titulo_Texto1": "Conoce sobre",
+  "about_Titulo_Texto2": "Paraíso del Jamón",
   "about_Descripcion": "Conoce más sobre la historia y la filosofía de Paraíso de Jamón.",
 
   "blog_Titulo": "Blog de Paraíso de Jamón",

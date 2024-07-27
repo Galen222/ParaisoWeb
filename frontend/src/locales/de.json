@@ -17,16 +17,20 @@
   "inicio_Titulo_Texto2": "Paraíso del Jamón",
   "inicio_Descripcion": "Entdecken Sie die besten Aromen unserer Gerichte und Würste.",
 
-  "sanBernardo_Titulo": "Restaurant San Bernardo",
+  "sanBernardo_Titulo_Texto1": "Paraíso del Jamón I",
+  "sanBernardo_Titulo_Texto2": "San Bernardo",
   "sanBernardo_Descripcion": "Im Zentrum von Madrid, um unser Essen zu genießen.",
 
-  "bravoMurillo_Titulo": "Restaurant Bravo Murillo",
+  "bravoMurillo_Titulo_Texto1": "Paraíso del Jamón II",
+  "bravoMurillo_Titulo_Texto2": "Bravo Murillo",
   "bravoMurillo_Descripcion": "Der perfekte Ort, um ein einzigartiges kulinarisches Erlebnis in Bravo Murillo zu genießen.",
 
-  "reinaVictoria_Titulo": "Restaurant Reina Victoria",
+  "reinaVictoria_Titulo_Texto1": "Paraíso del Jamón III",
+  "reinaVictoria_Titulo_Texto2": "Reina Victoria",
   "reinaVictoria_Descripcion": "Genießen Sie die beste Gastronomie in unserem Restaurant in Reina Victoria.",
 
-  "arenal_Titulo": "Restaurant Arenal",
+  "arenal_Titulo_texto1": "Paraíso del Jamón IV",
+  "arenal_Titulo_texto2": "Arenal",
   "arenal_Descripcion": "Erleben Sie ein außergewöhnliches gastronomisches Erlebnis in unserem Restaurant in Arenal.",
 
   "reservas_Titulo": "Eine Reservierung machen",
@@ -41,7 +45,8 @@
   "charcuteria_Titulo": "Unsere Feinkost",
   "charcuteria_Descripcion": "Entdecken Sie die besten Würste und Schinken, sorgfältig ausgewählt.",
 
-  "about_Titulo": "Über uns",
+  "about_Titulo_Texto1": "Erfahre mehr über",
+  "about_Titulo_Texto2": "Paraíso del Jamón",
   "about_Descripcion": "Erfahren Sie mehr über die Geschichte und Philosophie von Paraíso del Jamón.",
 
   "blog_Titulo": "Paraíso del Jamón Blog",

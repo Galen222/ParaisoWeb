@@ -3,14 +3,19 @@ import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
+import useScrollToTop from "../hooks/useScrollToTop";
+import AnimatedTitle from "../components/AnimatedTitle";
 import styles from "../styles/about.module.css"; // Importa los estilos específicos para la página About
 
 interface AboutPageProps {
+  cookiesModalClosed: boolean;
   loadingMessages: boolean; // Nuevo prop para el estado de carga
 }
 
-const AboutPage = ({ loadingMessages }: AboutPageProps) => {
+const AboutPage = ({ cookiesModalClosed, loadingMessages }: AboutPageProps) => {
   const intl = useIntl(); // Inicializa el hook de internacionalización para usar en este componente
+
+  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
 
   useVisitedPageTracking("about");
   useVisitedPageTrackingGA("about");
@@ -21,7 +26,7 @@ const AboutPage = ({ loadingMessages }: AboutPageProps) => {
 
   return (
     <div className="pageContainer">
-      <h1>{intl.formatMessage({ id: "about_Titulo" })}</h1>
+      <AnimatedTitle text1Id="about_Titulo_Texto1" text2Id="about_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
       <p>{intl.formatMessage({ id: "about_Descripcion" })}</p>
     </div>
   );
