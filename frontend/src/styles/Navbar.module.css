@@ -168,12 +168,12 @@
     transform: scaleX(1); /* Escala a tamaño completo para hacer visible la línea */
   }
 
-  .links a:hover,
+  /* .links a:hover,
   .linksDropdown a:hover,
   .noLink:hover,
   .dropdown a:hover {
-    background-color: #7a726b; /* Color de fondo al hacer hover */
-  }
+    background-color: #7a726b;
+  } */
 }
 
 /* Deshabilita el hover en dispositivos táctiles */
@@ -185,12 +185,12 @@
     content: none; /* Elimina la barra inferior */
   }
 
-  .links a:hover,
+  /* .links a:hover,
   .linksDropdown a:hover,
   .noLink:hover,
   .dropdown a:hover {
-    background-color: inherit; /* Elimina el efecto de fondo al hacer hover */
-  }
+    background-color: inherit;
+  } */
 }
 
 /* Configuración del menú desplegable para 'Restaurantes' */
