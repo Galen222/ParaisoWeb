@@ -120,11 +120,8 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages }) => {
             <Link href="/reservas" onClick={closeMobileMenu}>
               {intl.formatMessage({ id: "Navbar_reservas" })}
             </Link>
-            <Link href="/menu" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "Navbar_menu" })}
-            </Link>
-            <Link href="/carta" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "Navbar_carta" })}
+            <Link href="/carta-menu" onClick={closeMobileMenu}>
+              {intl.formatMessage({ id: "Navbar_carta-menu" })}
             </Link>
             <Link href="/charcuteria" onClick={closeMobileMenu}>
               {intl.formatMessage({ id: "Navbar_charcuteria" })}

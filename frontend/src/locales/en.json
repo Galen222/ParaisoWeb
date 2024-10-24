@@ -2,8 +2,7 @@
   "Navbar_inicio": "Home",
   "Navbar_restaurantes": "Restaurants",
   "Navbar_reservas": "Reservations",
-  "Navbar_menu": "Daily Menu",
-  "Navbar_carta": "Menu",
+  "Navbar_carta-menu": "Menu",
   "Navbar_charcuteria": "Charcuterie",
   "Navbar_about": "Us",
   "Navbar_blog": "Blog",
@@ -64,11 +63,8 @@
   "reservas_Titulo": "Make a Reservation",
   "reservas_Descripcion": "Book a table to enjoy our delicious dishes and sausages.",
 
-  "menu_Titulo": "Our Menu",
-  "menu_Descripcion": "Explore the variety of our dishes and find your favorites.",
-
-  "carta_Titulo": "Restaurant Menu",
-  "carta_Descripcion": "Explore our menu to see all the dishes we offer.",
+  "carta-menu_Titulo": "Restaurant Menu",
+  "carta-menu_Descripcion": "Explore our menu to see all the dishes we offer.",
 
   "charcuteria_Titulo": "Our Charcuterie",
   "charcuteria_Descripcion": "Discover the best sausages and hams carefully selected.",

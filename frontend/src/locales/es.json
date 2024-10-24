@@ -2,8 +2,7 @@
   "Navbar_inicio": "Inicio",
   "Navbar_restaurantes": "Restaurantes",
   "Navbar_reservas": "Reservas",
-  "Navbar_menu": "Menú",
-  "Navbar_carta": "Carta",
+  "Navbar_carta-menu": "Carta",
   "Navbar_charcuteria": "Charcutería",
   "Navbar_about": "Nosotros",
   "Navbar_blog": "Blog",
@@ -64,11 +63,8 @@
   "reservas_Titulo": "Hacer una Reserva",
   "reservas_Descripcion": "Reserva una mesa para disfrutar de nuestros deliciosos platos y embutidos.",
 
-  "menu_Titulo": "Nuestro Menú",
-  "menu_Descripcion": "Explora la variedad de nuestros platos y encuentra tus favoritos.",
-
-  "carta_Titulo": "Carta del Restaurante",
-  "carta_Descripcion": "Explora nuestra carta para ver todos los platos que ofrecemos.",
+  "carta-menu_Titulo": "Carta del Restaurante",
+  "carta-menu_Descripcion": "Explora nuestra carta y menu para ver todos los platos que ofrecemos.",
 
   "charcuteria_Titulo": "Nuestra Charcutería",
   "charcuteria_Descripcion": "Descubre los mejores embutidos y jamones seleccionados con cuidado.",

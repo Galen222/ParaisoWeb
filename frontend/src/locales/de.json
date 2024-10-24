@@ -2,8 +2,7 @@
   "Navbar_inicio": "Startseite",
   "Navbar_restaurantes": "Restaurants",
   "Navbar_reservas": "Reservierungen",
-  "Navbar_menu": "Tagesmenü",
-  "Navbar_carta": "Speisekarte",
+  "Navbar_carta-menu": "Speisekarte",
   "Navbar_charcuteria": "Feinkost",
   "Navbar_about": "Uns",
   "Navbar_blog": "Blog",
@@ -64,11 +63,8 @@
   "reservas_Titulo": "Eine Reservierung machen",
   "reservas_Descripcion": "Reservieren Sie einen Tisch, um unsere köstlichen Gerichte und Würste zu genießen.",
 
-  "menu_Titulo": "Unsere Speisekarte",
-  "menu_Descripcion": "Entdecken Sie die Vielfalt unserer Gerichte und finden Sie Ihre Favoriten.",
-
-  "carta_Titulo": "Restaurant-Speisekarte",
-  "carta_Descripcion": "Entdecken Sie unsere Speisekarte, um alle angebotenen Gerichte zu sehen.",
+  "carta-menu_Titulo": "Restaurant-Speisekarte",
+  "carta-menu_Descripcion": "Entdecken Sie unsere Speisekarte, um alle angebotenen Gerichte zu sehen.",
 
   "charcuteria_Titulo": "Unsere Feinkost",
   "charcuteria_Descripcion": "Entdecken Sie die besten Würste und Schinken, sorgfältig ausgewählt.",

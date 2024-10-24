@@ -13,8 +13,8 @@ interface CartaPageProps {
 const CartaPage = ({ loadingMessages }: CartaPageProps) => {
   const intl = useIntl(); // Inicializa el hook de internacionalización para usarlo en este componente.
 
-  useVisitedPageTracking("carta");
-  useVisitedPageTrackingGA("carta");
+  useVisitedPageTracking("carta-menu");
+  useVisitedPageTrackingGA("carta-menu");
 
   if (loadingMessages) {
     return <Loader />;
@@ -23,8 +23,8 @@ const CartaPage = ({ loadingMessages }: CartaPageProps) => {
   // Renderiza el contenido del componente.
   return (
     <div className="pageContainer">
-      <h1>{intl.formatMessage({ id: "carta_Titulo" })}</h1>
-      <p>{intl.formatMessage({ id: "carta_Descripcion" })}</p>
+      <h1>{intl.formatMessage({ id: "carta-menu_Titulo" })}</h1>
+      <p>{intl.formatMessage({ id: "carta-menu_Descripcion" })}</p>
     </div>
   );
 };
