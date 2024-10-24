@@ -19,9 +19,14 @@
 
   "sanBernardo_Titulo_Texto1": "Paraíso del Jamón I",
   "sanBernardo_Titulo_Texto2": "San Bernardo",
-  "sanBernardo_Texto1": "Das Lokal befindet sich in der San Bernardo Straße 8, nur wenige Schritte von der Gran Vía entfernt, einer der wichtigsten Einkaufs- und Vergnügungsstraßen Madrids. Die nächste U-Bahn-Station ist Santo Domingo (Linie 2), aber auch die U-Bahn-Station Callao (Linien 3 und 5) ist ganz in der Nähe, was den Zugang von verschiedenen Teilen der Stadt erleichtert. Neben der U-Bahn gibt es mehrere Buslinien, die in der Nähe halten, zahlreiche Parkmöglichkeiten in der Umgebung und es ist auch einfach, Taxis zu finden.",
-  "sanBernardo_Texto2": "Die Umgebung des Restaurants ist ideal für diejenigen, die ein hervorragendes kulinarisches Erlebnis mit dem Zugang zu zahlreichen Sehenswürdigkeiten verbinden möchten. Zu den nahegelegenen Attraktionen gehören einige der berühmtesten Theater und Kinos Madrids, das breite Einkaufsangebot mit Modegeschäften, Buchläden und Kaufhäusern und die Nähe zu Orten wie der Plaza de España und dem Königspalast ermöglicht es, vor oder nach dem Essen eine historische und kulturelle Tour zu genießen.",
-  "sanBernardo_Texto3": "San Bernardo und Gran Vía sind belebte Gebiete voller Leben und Aktivität, besonders abends und am Wochenende. Die dynamische und lebendige Atmosphäre der Gegend macht es zu einem perfekten Ort, um mit Freunden oder Familie zu Abend zu essen oder sogar ein Geschäftsessen zu genießen.",
+  "sanBernardo_Metro_Titulo": "U-Bahn",
+  "sanBernardo_Metro_Lineas": "Santo Domingo (Linie 2), Callao (Linien 3 und 5)",
+  "sanBernardo_Bus_Titulo": "Bus",
+  "sanBernardo_Bus_Lineas": "Linien 1, 44, 46, 75 und 133",
+  "sanBernardo_Taxi_Titulo": "Taxi",
+  "sanBernardo_Taxi_Descripcion": "Verfügbarkeit von Taxis in der Umgebung",
+  "sanBernardo_Aparcamiento_Titulo": "Parken",
+  "sanBernardo_Aparcamiento_Descripcion": "Nahegelegene Parkmöglichkeiten",
 
   "bravoMurillo_Titulo_Texto1": "Paraíso del Jamón II",
   "bravoMurillo_Titulo_Texto2": "Bravo Murillo",

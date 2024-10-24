@@ -19,9 +19,14 @@
 
   "sanBernardo_Titulo_Texto1": "Paraíso del Jamón I",
   "sanBernardo_Titulo_Texto2": "San Bernardo",
-  "sanBernardo_Texto1": "Located at 8 San Bernardo Street, the venue is just a few steps from Gran Vía, one of Madrid’s main shopping and entertainment streets. The nearest metro station is Santo Domingo (Line 2), although it is also very close to Callao metro station (Lines 3 and 5), which provides easy access from different parts of the city. In addition to the metro, several bus lines pass nearby, there are many parking options in the vicinity, and taxis are also easy to find.",
-  "sanBernardo_Texto2": "The restaurant's surroundings are ideal for those who want to combine an excellent dining experience with access to numerous points of interest. Nearby attractions include some of Madrid's most famous theaters and cinemas, its wide range of shopping options, with fashion stores, bookstores, and department stores, and the proximity to places like Plaza de España and the Royal Palace allows you to enjoy a historical and cultural tour before or after your meal.",
-  "sanBernardo_Texto3": "San Bernardo and Gran Vía are vibrant areas full of life and activity, especially during the evenings and weekends. The dynamic and lively atmosphere of the area makes it a perfect place to enjoy dinner with friends or family, or even for a business meal.",
+  "sanBernardo_Metro_Titulo": "Metro",
+  "sanBernardo_Metro_Lineas": "Santo Domingo (Line 2), Callao (Lines 3 and 5)",
+  "sanBernardo_Bus_Titulo": "Bus",
+  "sanBernardo_Bus_Lineas": "Lines 1, 44, 46, 75, and 133",
+  "sanBernardo_Taxi_Titulo": "Taxi",
+  "sanBernardo_Taxi_Descripcion": "Availability of taxis in the surroundings",
+  "sanBernardo_Aparcamiento_Titulo": "Parking",
+  "sanBernardo_Aparcamiento_Descripcion": "Nearby parking options",
 
   "bravoMurillo_Titulo_Texto1": "Paraíso del Jamón II",
   "bravoMurillo_Titulo_Texto2": "Bravo Murillo",

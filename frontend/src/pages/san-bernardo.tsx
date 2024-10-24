@@ -32,10 +32,6 @@ const SanBernardo = ({ loadingMessages, mapLocale, cookiesModalClosed }: SanBern
   return (
     <div className="pageContainer">
       <AnimatedTitle text1Id="sanBernardo_Titulo_Texto1" text2Id="sanBernardo_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
-      <p>{intl.formatMessage({ id: "sanBernardo_Texto1" })}</p>
-      <p>{intl.formatMessage({ id: "sanBernardo_Texto2" })}</p>
-      <p>{intl.formatMessage({ id: "sanBernardo_Texto3" })}</p>
-      <br></br>
       <div className={styles.localesContainer}>
         <div className={styles.contactLocation}>
           <h3 className="text-center">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Titulo" })}</h3>
@@ -56,12 +52,36 @@ const SanBernardo = ({ loadingMessages, mapLocale, cookiesModalClosed }: SanBern
         </div>
       </div>
       <br></br>
+      <div className={styles.transportContainer}>
+        <div className={styles.transportItem}>
+          <img src="/images/transport/metro.png" alt="Metro" />
+          <h4>{intl.formatMessage({ id: "sanBernardo_Metro_Titulo" })}</h4>
+          <p>{intl.formatMessage({ id: "sanBernardo_Metro_Lineas" })}</p>
+        </div>
+        <div className={styles.transportItem}>
+          <img src="/images/transport/bus.png" alt="Autobús" />
+          <h4>{intl.formatMessage({ id: "sanBernardo_Bus_Titulo" })}</h4>
+          <p>{intl.formatMessage({ id: "sanBernardo_Bus_Lineas" })}</p>
+        </div>
+        <div className={styles.transportItem}>
+          <img src="/images/transport/taxi.png" alt="Taxi" />
+          <h4>{intl.formatMessage({ id: "sanBernardo_Taxi_Titulo" })}</h4>
+          <p>{intl.formatMessage({ id: "sanBernardo_Taxi_Descripcion" })}</p>
+        </div>
+        <div className={styles.transportItem}>
+          <img src="/images/transport/parking.png" alt="Aparcamiento" />
+          <h4>{intl.formatMessage({ id: "sanBernardo_Aparcamiento_Titulo" })}</h4>
+          <p>{intl.formatMessage({ id: "sanBernardo_Aparcamiento_Descripcion" })}</p>
+        </div>
+      </div>
+      <br></br>
       <Map locationKey={locationKey} mapLocale={mapLocale} />
       {isScrollButtonVisible && (
         <button onClick={scrollToTop} className="scrollTop">
           <img src="/images/web/flechaArriba.png" alt="Subir" />
         </button>
       )}
+      <br></br>
     </div>
   );
 };
