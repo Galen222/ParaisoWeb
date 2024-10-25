@@ -1,11 +1,24 @@
-// components/Carousel.tsx
+// src/components/Carousel.tsx
 import React from "react";
 import Slider from "react-slick";
 import { useIntl } from "react-intl";
+import { slidesData } from "../utils/slidesData";
 import styles from "../styles/Carousel.module.css";
 
-const Carousel = () => {
+interface Slide {
+  type: "image" | "text";
+  src?: string;
+  alt?: string;
+  content?: string;
+}
+
+interface CarouselProps {
+  carouselType: string;
+}
+
+const Carousel = ({ carouselType }: CarouselProps) => {
   const intl = useIntl();
+
   const settings = {
     accessibility: true,
     arrows: false,
@@ -18,14 +31,9 @@ const Carousel = () => {
     autoplaySpeed: 3000,
   };
 
-  const slides = [
-    { type: "image", src: "/images/carousel/carousel1.jpg", alt: intl.formatMessage({ id: "carousel_Alt1" }) },
-    { type: "text", content: intl.formatMessage({ id: "carousel_Texto1" }) },
-    { type: "image", src: "/images/carousel/carousel2.jpg", alt: intl.formatMessage({ id: "carousel_Alt2" }) },
-    { type: "text", content: intl.formatMessage({ id: "carousel_Texto2" }) },
-    { type: "image", src: "/images/carousel/carousel3.jpg", alt: intl.formatMessage({ id: "carousel_Alt3" }) },
-    { type: "text", content: intl.formatMessage({ id: "carousel_Texto3" }) },
-  ];
+  // Obtener las diapositivas correspondientes al tipo de carrusel
+  const allSlides = slidesData(intl);
+  const slides: Slide[] = allSlides[carouselType];
 
   return (
     <div className={styles.carouselContainer}>

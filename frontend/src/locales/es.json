@@ -14,7 +14,6 @@
 
   "inicio_Titulo_Texto1": "Bienvenido a ",
   "inicio_Titulo_Texto2": "Paraíso del Jamón",
-  "inicio_Descripcion": "Descubre los mejores sabores de nuestros platos y embutidos.",
 
   "sanBernardo_Titulo_Texto1": "Paraíso del Jamón I",
   "sanBernardo_Titulo_Texto2": "San Bernardo",
@@ -194,12 +193,12 @@
   "Map_Marker_Texto2": "Ver en Google Maps",
   "Map_Marker_Telefono": "Teléfono: ",
 
-  "carousel_Alt1": "foto 1",
-  "carousel_Alt2": "foto 2",
-  "carousel_Alt3": "foto 3",
-  "carousel_Texto1": "Especialistas en jamones",
-  "carousel_Texto2": "Gran variedad de productos en charcuteria",
-  "carousel_Texto3": "menu diario y carta",
+  "carousel_Inicio_Alt1": "foto 1",
+  "carousel_Inicio_Alt2": "foto 2",
+  "carousel_Inicio_Alt3": "foto 3",
+  "carousel_Inicio_Texto1": "Especialistas en jamones",
+  "carousel_Inicio_Texto2": "Gran variedad de productos en charcuteria",
+  "carousel_Inicio_Texto3": "menu diario y carta",
 
   "politicaCookies_Principal_Titulo": "Política de Cookies",
   "politicaCookies_Principal_Texto": "PACAVA S.A informa acerca del uso de las cookies en su sitio web www.paraisodeljamon.com",

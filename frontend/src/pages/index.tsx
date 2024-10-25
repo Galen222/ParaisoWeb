@@ -29,8 +29,7 @@ export default function Home({ cookiesModalClosed, loadingMessages }: HomeProps)
     <div className="pageContainer">
       <AnimatedTitle text1Id="inicio_Titulo_Texto1" text2Id="inicio_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
       <div>
-        <p className="text-center">{intl.formatMessage({ id: "inicio_Descripcion" })}</p>
-        <Carousel />
+        <Carousel carouselType="inicio" /> {/* Pasa "inicio" como prop */}
       </div>
       {isScrollButtonVisible && (
         <button onClick={scrollToTop} className="scrollTop">
