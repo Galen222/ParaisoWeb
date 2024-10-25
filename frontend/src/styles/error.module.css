@@ -1,1 +1,12 @@
+/* error.module.css */
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px; /* Añade un margen superior */
+}
 
+.imageContainer img {
+  max-width: 100%;
+  height: auto;
+}

@@ -62,6 +62,16 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
       message = `${statusCode} - ${intl.formatMessage({ id: "error_Other" })}`;
       break;
   }
+
+  // Define la lista de códigos de estado para los que existe una imagen
+  const availableStatusCodes = [404];
+
+  // Verifica si hay una imagen específica para el código de estado; si no, utiliza una imagen por defecto
+  const imageFileName = availableStatusCodes.includes(statusCode) ? `${statusCode}.png` : `error.png`;
+
+  // Define la ruta de la imagen
+  const imagePath = `/images/web/${imageFileName}`;
+
   // Renderiza el componente de error
   useEffect(() => {
     if (intl) {
@@ -76,7 +86,11 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
   return (
     <div className="pageContainer">
       <h1>{statusCode}</h1> {/* Muestra el código de estado */}
-      <p>{message}</p> {/* Muestra el mensaje de error */}
+      <p className="text-center">{message}</p> {/* Muestra el mensaje de error */}
+      {/* Añade la imagen debajo del mensaje */}
+      <div className={styles.imageContainer}>
+        <img src={imagePath} alt={`Error ${statusCode}`} />
+      </div>
     </div>
   );
 };
