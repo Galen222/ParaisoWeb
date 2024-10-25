@@ -118,7 +118,7 @@
   "contacto_Informacion_Arenal_Horario_Numero": "Martes a Domingo de 07:00 AM - 24:00 PM. Lunes cerrado.",
   "contacto_Titulo_Formulario": "Formulario de contacto",
   "contacto_Nombre": "Nombre",
-  "contacto_SeleccioneMotivo": "Seleccione una opción",
+  "contacto_SeleccioneMotivo": "Seleccione un motivo",
   "contacto_Motivo": "Motivo",
   "contacto_MotivoInfo": "Información",
   "contacto_MotivoBug": "Informar de un error",
@@ -188,6 +188,7 @@
 
   "Map_Loading_Texto": "Cargando...",
   "Map_Error_Texto": "No se ha podido cargar el mapa.",
+  "Map_Marker_Pais": "España",
   "Map_Marker_Texto1": "Como llegar",
   "Map_Marker_Url": "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
   "Map_Marker_Texto2": "Ver en Google Maps",

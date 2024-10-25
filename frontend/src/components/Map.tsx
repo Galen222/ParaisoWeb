@@ -20,7 +20,7 @@ const locations: Locations = {
   "san-bernardo": {
     lat: 40.42182213478454,
     lng: -3.7077311767926227,
-    address: "San Bernardo, 8, 28015 Madrid, España",
+    address: "San Bernardo, 8, 28015 Madrid, ",
     address_url: "Paraíso del Jamón Calle de San Bernardo",
     url: "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
     telephone: "+34 532 83 50",
@@ -28,7 +28,7 @@ const locations: Locations = {
   "bravo-murillo": {
     lat: 40.449348434670554,
     lng: -3.7033976601087657,
-    address: "Bravo Murillo, 124, 28020 Madrid, España",
+    address: "Bravo Murillo, 124, 28020 Madrid, ",
     address_url: "Paraíso del Jamón Calle de Bravo Murillo",
     url: "https://www.google.com/maps?ll=40.449348,-3.703398&z=20&t=m&gl=US&mapclient=apiv3&cid=17291774062565476387",
     telephone: "+34 553 97 83",
@@ -36,7 +36,7 @@ const locations: Locations = {
   "reina-victoria": {
     lat: 40.44667864352768,
     lng: -3.704447234180926,
-    address: "Reina Victoria, 3, 28003 Madrid, España",
+    address: "Reina Victoria, 3, 28003 Madrid, ",
     address_url: "Paraíso del Jamón Calle de Reina Victoria",
     url: "https://www.google.com/maps?ll=40.446679,-3.704447&z=20&t=m&gl=US&mapclient=apiv3&cid=8431686105412493623",
     telephone: "+34 534 18 20",
@@ -44,7 +44,7 @@ const locations: Locations = {
   arenal: {
     lat: 40.41781005932472,
     lng: -3.7082838848125155,
-    address: "Arenal, 26, 28015 Madrid, España",
+    address: "Arenal, 26, 28015 Madrid, ",
     address_url: "Paraíso del Jamón Calle de Arenal",
     url: "https://www.google.com/maps?ll=40.41781,-3.708284&z=20&t=m&gl=US&mapclient=apiv3&cid=3523718250256320549",
     telephone: "+34 541 95 19",
@@ -118,7 +118,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
 
     const contentString = `<div class="fw-bold">
       <h5>Paraíso del Jamón</h5>
-      <p>${location.address}</p>
+      <p>${location.address} ${intl.formatMessage({ id: "Map_Marker_Pais" })}</p>
       <p>${intl.formatMessage({
         id: "Map_Marker_Telefono",
       })}<a class="text-decoration-none" href="tel:${location.telephone}" target="_blank" rel="noopener noreferrer">

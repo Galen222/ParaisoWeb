@@ -118,7 +118,7 @@
   "contacto_Informacion_Arenal_Horario_Numero": "Dienstag bis Sonntag von 7:00 Uhr bis 24:00 Uhr. Montags geschlossen.",
   "contacto_Titulo_Formulario": "Kontaktformular",
   "contacto_Nombre": "Name",
-  "contacto_SeleccioneMotivo": "Wählen Sie eine Option",
+  "contacto_SeleccioneMotivo": "Bitte wählen Sie einen Grund aus",
   "contacto_Motivo": "Grund",
   "contacto_MotivoInfo": "Information",
   "contacto_MotivoBug": "Fehler melden",
@@ -188,6 +188,7 @@
 
   "Map_Loading_Texto": "Wird geladen...",
   "Map_Error_Texto": "Die Karte konnte nicht geladen werden.",
+  "Map_Marker_Pais": "Spanien",
   "Map_Marker_Texto1": "Wegbeschreibung",
   "Map_Marker_Url": "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
   "Map_Marker_Texto2": "Auf Google Maps anzeigen",
