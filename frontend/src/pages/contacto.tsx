@@ -66,8 +66,9 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
-      if (file.type !== "image/jpeg") {
-        toast.error(intl.formatMessage({ id: "contacto_ArchivoNoJPG" }), {
+      // Permitir tanto imágenes JPEG como documentos PDF
+      if (file.type !== "image/jpeg" && file.type !== "application/pdf") {
+        toast.error(intl.formatMessage({ id: "contacto_ArchivoNoJPG-PDF" }), {
           position: "top-center",
           autoClose: 4000,
           hideProgressBar: false,
@@ -127,19 +128,21 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
   };
 
   const CheckFormComplete = () => {
-    if (formData.reason === "invoice") {
-      return (
-        formData.name.trim() !== "" &&
-        formData.email.trim() !== "" &&
-        formData.message.trim() !== "" &&
-        isValidEmail &&
-        formData.file !== null &&
-        isPrivacyChecked
-      );
+    if (
+      formData.name.trim() !== "" &&
+      formData.email.trim() !== "" &&
+      formData.message.trim() !== "" &&
+      formData.reason !== "" &&
+      isValidEmail &&
+      isPrivacyChecked
+    ) {
+      if (formData.reason === "invoice" || formData.reason === "curriculum") {
+        return formData.file !== null;
+      }
+      return true;
     }
-    return formData.name.trim() !== "" && formData.email.trim() !== "" && formData.message.trim() !== "" && isValidEmail && isPrivacyChecked;
+    return false;
   };
-
   if (loadingMessages) {
     return <Loader />;
   }
@@ -150,7 +153,8 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
       <div>
         <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto1" })}</p>
         <p className="fw-bold ti-20p">{intl.formatMessage({ id: "contacto_Texto2" })}</p>
-        <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto3" })}</p>
+        <p className="fw-bold ti-20p">{intl.formatMessage({ id: "contacto_Texto3" })}</p>
+        <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto4" })}</p>
         <div className={styles.formContainer}>
           <form onSubmit={handleSubmit} className={styles.form}>
             <div>
@@ -170,9 +174,13 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
             <div>
               <label htmlFor="reason">{intl.formatMessage({ id: "contacto_Motivo" })}</label>
               <select id="reason" name="reason" value={formData.reason} onChange={handleSelect} required>
+                <option value="" disabled>
+                  {intl.formatMessage({ id: "contacto_SeleccioneMotivo" })}
+                </option>
                 <option value="info">{intl.formatMessage({ id: "contacto_MotivoInfo" })}</option>
                 <option value="commercial">{intl.formatMessage({ id: "contacto_MotivoComercial" })}</option>
                 <option value="invoice">{intl.formatMessage({ id: "contacto_MotivoFactura" })}</option>
+                <option value="curriculum">{intl.formatMessage({ id: "contacto_MotivoCurriculum" })}</option>
                 <option value="bug">{intl.formatMessage({ id: "contacto_MotivoBug" })}</option>
                 <option value="other">{intl.formatMessage({ id: "contacto_MotivoOtro" })}</option>
               </select>
@@ -195,22 +203,22 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
               <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
             </div>
             <div className={styles.archiveText}>
-              <span>{intl.formatMessage({ id: "contacto_SubirImagen1" })}</span>
-              <span className="fs-14p">{intl.formatMessage({ id: "contacto_SubirImagen2" })}</span>
+              <span>{intl.formatMessage({ id: "contacto_SubirArchivo1" })}</span>
+              <span className="fs-14p">{intl.formatMessage({ id: "contacto_SubirArchivo2" })}</span>
             </div>
             <div className={styles.fileUploadContainer}>
               <div className="w-600p">
-                <input type="file" id="imageUpload" name="imageUpload" accept="image/jpeg" className="d-none" onChange={handleFileChange} />
+                <input type="file" id="fileUpload" name="fileUpload" accept="image/jpeg,application/pdf" className="d-none" onChange={handleFileChange} />
                 <button
                   type="button"
                   className={`btn btn-outline-secondary ${styles.fileButton} ${isPushingFile ? "animate-push" : ""}`}
                   onClick={() => {
                     setIsPushingFile(true);
-                    document.getElementById("imageUpload")?.click();
+                    document.getElementById("fileUpload")?.click();
                   }}
                   onAnimationEnd={() => setIsPushingFile(false)}
                 >
-                  <span>{intl.formatMessage({ id: "contacto_BotonSubirImagen" })}</span>
+                  <span>{intl.formatMessage({ id: "contacto_BotonSubirArchivo" })}</span>
                 </button>
               </div>
               <div className={`text-center ${styles.fileNameBox}`}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
