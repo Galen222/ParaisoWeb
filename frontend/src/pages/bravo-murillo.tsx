@@ -6,6 +6,7 @@ import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import AnimatedTitle from "../components/AnimatedTitle";
 import Map from "../components/Map";
+import Carousel from "../components/Carousel";
 import styles from "../styles/bravo-murillo.module.css"; // Importa los estilos CSS específicos para esta página.
 
 interface BravoMurilloPageProps {
@@ -34,7 +35,9 @@ const BravoMurilloPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: Br
   return (
     <div className="pageContainer">
       <AnimatedTitle text1Id="bravoMurillo_Titulo_Texto1" text2Id="bravoMurillo_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
-
+      <div>
+        <Carousel carouselType="inicio" />
+      </div>
       <div className={styles.localesContainer}>
         <div className={styles.contactLocation}>
           <h3 className="text-center">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Titulo" })}</h3>

@@ -6,6 +6,7 @@ import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import AnimatedTitle from "../components/AnimatedTitle";
 import Map from "../components/Map";
+import Carousel from "../components/Carousel";
 import styles from "../styles/san-bernardo.module.css";
 
 interface SanBernardoProps {
@@ -32,6 +33,9 @@ const SanBernardo = ({ loadingMessages, mapLocale, cookiesModalClosed }: SanBern
   return (
     <div className="pageContainer">
       <AnimatedTitle text1Id="sanBernardo_Titulo_Texto1" text2Id="sanBernardo_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
+      <div>
+        <Carousel carouselType="inicio" />
+      </div>
       <div className={styles.localesContainer}>
         <div className={styles.contactLocation}>
           <h3 className="text-center">{intl.formatMessage({ id: "contacto_Informacion_SanBernardo_Titulo" })}</h3>

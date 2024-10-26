@@ -3,6 +3,7 @@ import { useIntl } from "react-intl"; // Importa el hook useIntl para facilitar 
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
+import Carousel from "../components/Carousel";
 import styles from "../styles/carta.module.css"; // Importa los estilos específicos para la página 'Carta'.
 
 interface CartaPageProps {
@@ -25,6 +26,9 @@ const CartaPage = ({ loadingMessages }: CartaPageProps) => {
     <div className="pageContainer">
       <h1>{intl.formatMessage({ id: "carta-menu_Titulo" })}</h1>
       <p>{intl.formatMessage({ id: "carta-menu_Descripcion" })}</p>
+      <div>
+        <Carousel carouselType="inicio" />
+      </div>
     </div>
   );
 };

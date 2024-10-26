@@ -6,6 +6,7 @@ import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import AnimatedTitle from "../components/AnimatedTitle";
 import Map from "../components/Map";
+import Carousel from "../components/Carousel";
 import styles from "../styles/reina-victoria.module.css"; // Importa los estilos CSS específicos para la página Reina Victoria.
 
 interface ReinaVictoriaPageProps {
@@ -34,6 +35,9 @@ const ReinaVictoriaPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: R
   return (
     <div className="pageContainer">
       <AnimatedTitle text1Id="reinaVictoria_Titulo_Texto1" text2Id="reinaVictoria_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
+      <div>
+        <Carousel carouselType="inicio" />
+      </div>
       <div className={styles.localesContainer}>
         <div className={styles.contactLocation}>
           <h3 className="text-center">{intl.formatMessage({ id: "contacto_Informacion_ReinaVictoria_Titulo" })}</h3>
