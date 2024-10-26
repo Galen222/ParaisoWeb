@@ -1,11 +1,15 @@
 .carouselContainer {
-  width: 60%;
+  width: 80%;
   margin: 0 auto; /* Centrar el carrusel en el contenedor */
+  border-radius: 10px;
+  overflow: hidden;
+  line-height: 0;
 }
 
 .image {
   width: 100%;
   height: auto;
+  display: block;
 }
 
 .text {

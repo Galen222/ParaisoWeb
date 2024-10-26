@@ -27,7 +27,7 @@ export default function Home({ cookiesModalClosed, loadingMessages }: HomeProps)
 
   return (
     <div className="pageContainer">
-      <AnimatedTitle text1Id="inicio_Titulo_Texto1" text2Id="inicio_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
+      <AnimatedTitle textName="inicio" cookiesModalClosed={cookiesModalClosed} />
       <div>
         <Carousel carouselType="inicio" /> {/* Pasa "inicio" como prop */}
       </div>

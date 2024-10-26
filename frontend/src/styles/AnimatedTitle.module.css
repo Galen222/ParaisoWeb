@@ -15,7 +15,6 @@
 
 .animationFont {
   white-space: nowrap; /* Evita que el texto se rompa en múltiples líneas */
-  font-family: "Courgette", serif !important;
   font-size: 80px;
 }
 

@@ -4,12 +4,11 @@ import { useIntl } from "react-intl";
 import styles from "../styles/AnimatedTitle.module.css"; // Puedes definir estilos específicos si lo necesitas
 
 interface AnimatedTitleProps {
-  text1Id: string;
-  text2Id: string;
+  textName: string;
   cookiesModalClosed: boolean;
 }
 
-const AnimatedTitle: React.FC<AnimatedTitleProps> = ({ text1Id, text2Id, cookiesModalClosed }) => {
+const AnimatedTitle: React.FC<AnimatedTitleProps> = ({ textName, cookiesModalClosed }) => {
   const intl = useIntl();
 
   return (
@@ -18,16 +17,16 @@ const AnimatedTitle: React.FC<AnimatedTitleProps> = ({ text1Id, text2Id, cookies
         {cookiesModalClosed ? (
           <div className={styles.animationTime}>
             <div className="animate__animated animate__fadeInLeft">
-              <div className={styles.animationFont}>{intl.formatMessage({ id: text1Id })}</div>
+              <div className={styles.animationFont}>{intl.formatMessage({ id: `${textName}_Titulo_Texto1` })}</div>
             </div>
             <div className="animate__animated animate__fadeInRight animate__delay-1s">
-              <div className={styles.animationFont}>{intl.formatMessage({ id: text2Id })}</div>
+              <div className={styles.animationFont}>{intl.formatMessage({ id: `${textName}_Titulo_Texto2` })}</div>
             </div>
           </div>
         ) : (
           <div>
-            <div className={styles.animationFont}>{intl.formatMessage({ id: text1Id })}</div>
-            <div className={styles.animationFont}>{intl.formatMessage({ id: text2Id })}</div>
+            <div className={styles.animationFont}>{intl.formatMessage({ id: `${textName}_Titulo_Texto1` })}</div>
+            <div className={styles.animationFont}>{intl.formatMessage({ id: `${textName}_Titulo_Texto2` })}</div>
           </div>
         )}
       </h1>

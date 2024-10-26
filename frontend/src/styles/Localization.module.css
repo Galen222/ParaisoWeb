@@ -1,0 +1,15 @@
+.localesContainer {
+  margin-bottom: 20px;
+  text-align: center; /* Centrar el contenedor de información de contacto */
+}
+
+.contactLocation {
+  display: inline-block;
+  width: 80%; /* 20% menos de ancho */
+  border: 2px solid #4a403a;
+  border-radius: 10px;
+  padding: 10px;
+  margin-bottom: 16px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra */
+  text-align: left;
+}

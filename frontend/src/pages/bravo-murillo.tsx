@@ -7,6 +7,8 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import AnimatedTitle from "../components/AnimatedTitle";
 import Map from "../components/Map";
 import Carousel from "../components/Carousel";
+import Localization from "../components/Localization";
+import Transport from "../components/Transport";
 import styles from "../styles/bravo-murillo.module.css"; // Importa los estilos CSS específicos para esta página.
 
 interface BravoMurilloPageProps {
@@ -34,55 +36,24 @@ const BravoMurilloPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: Br
   // Devuelve el JSX que construye la UI de la página.
   return (
     <div className="pageContainer">
-      <AnimatedTitle text1Id="bravoMurillo_Titulo_Texto1" text2Id="bravoMurillo_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
       <div>
-        <Carousel carouselType="inicio" />
+        <AnimatedTitle textName="bravo-murillo" cookiesModalClosed={cookiesModalClosed} />
       </div>
-      <div className={styles.localesContainer}>
-        <div className={styles.contactLocation}>
-          <h3 className="text-center">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Titulo" })}</h3>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Direccion_Texto" })}</span>
-            {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Direccion_Calle" })}
-          </p>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Telefono_Texto" })}</span>
-            <a className={styles.link} href="tel:+345539783">
-              {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Telefono_Numero" })}
-            </a>
-          </p>
-          <p>
-            <span className="fw-bold">{intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Horario_Texto" })}</span>
-            {intl.formatMessage({ id: "contacto_Informacion_BravoMurillo_Horario_Numero" })}
-          </p>
-        </div>
+      <div>
+        <Carousel carouselType="bravo-murillo" />
       </div>
       <br></br>
-      <div className={styles.transportContainer}>
-        <div className={styles.transportItem}>
-          <img src="/images/transport/metro.png" alt="Metro" />
-          <h4>{intl.formatMessage({ id: "bravoMurillo_Metro_Titulo" })}</h4>
-          <p>{intl.formatMessage({ id: "bravoMurillo_Metro_Lineas" })}</p>
-        </div>
-        <div className={styles.transportItem}>
-          <img src="/images/transport/bus.png" alt="Autobús" />
-          <h4>{intl.formatMessage({ id: "bravoMurillo_Bus_Titulo" })}</h4>
-          <p>{intl.formatMessage({ id: "bravoMurillo_Bus_Lineas" })}</p>
-        </div>
-        <div className={styles.transportItem}>
-          <img src="/images/transport/taxi.png" alt="Taxi" />
-          <h4>{intl.formatMessage({ id: "bravoMurillo_Taxi_Titulo" })}</h4>
-          <p>{intl.formatMessage({ id: "bravoMurillo_Taxi_Descripcion" })}</p>
-        </div>
-        <div className={styles.transportItem}>
-          <img src="/images/transport/parking.png" alt="Aparcamiento" />
-          <h4>{intl.formatMessage({ id: "bravoMurillo_Aparcamiento_Titulo" })}</h4>
-          <p>{intl.formatMessage({ id: "bravoMurillo_Aparcamiento_Descripcion" })}</p>
-        </div>
+      <div>
+        <Localization localizationName="bravo-murillo" />
       </div>
       <br></br>
-
-      <Map locationKey={locationKey} mapLocale={mapLocale} />
+      <div>
+        <Transport transportName="bravo-murillo" />
+      </div>
+      <br></br>
+      <div>
+        <Map locationKey={locationKey} mapLocale={mapLocale} />
+      </div>
       {isScrollButtonVisible && (
         <button onClick={scrollToTop} className="scrollTop">
           <img src="/images/web/flechaArriba.png" alt="Subir" />

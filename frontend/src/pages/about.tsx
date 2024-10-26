@@ -26,7 +26,7 @@ const AboutPage = ({ cookiesModalClosed, loadingMessages }: AboutPageProps) => {
 
   return (
     <div className="pageContainer">
-      <AnimatedTitle text1Id="about_Titulo_Texto1" text2Id="about_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
+      <AnimatedTitle textName="about" cookiesModalClosed={cookiesModalClosed} />
       <p>{intl.formatMessage({ id: "about_Descripcion" })}</p>
     </div>
   );

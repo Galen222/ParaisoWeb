@@ -149,7 +149,7 @@ const ContactPage = ({ cookiesModalClosed, loadingMessages }: ContactPageProps) 
 
   return (
     <div className="pageContainer">
-      <AnimatedTitle text1Id="contacto_Titulo_Texto1" text2Id="contacto_Titulo_Texto2" cookiesModalClosed={cookiesModalClosed} />
+      <AnimatedTitle textName="contacto" cookiesModalClosed={cookiesModalClosed} />
       <div>
         <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto1" })}</p>
         <p className="fw-bold ti-20p">{intl.formatMessage({ id: "contacto_Texto2" })}</p>
