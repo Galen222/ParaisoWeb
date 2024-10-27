@@ -10,7 +10,8 @@ import "@/styles/fonts.css";
 import "../styles/animateButton.css";
 import "../styles/scrollbar.css";
 import "@/styles/globals.css";
-import type { AppProps } from "next/app";
+import type { AppProps as NextAppProps } from "next/app";
+import { useRouter } from "next/router";
 import { IntlProvider } from "react-intl";
 import { ToastContainer } from "react-toastify";
 import { CookieConsentProvider } from "../contexts/CookieContext";
@@ -21,12 +22,13 @@ import Cookie from "../components/Cookie";
 import { useCookieLogic } from "../hooks/useCookieLogic";
 import Loader from "../components/Loader";
 
-interface MainComponentProps {
-  Component: React.ComponentType<AppProps>;
-  pageProps: AppProps["pageProps"];
+// Extiende AppProps e incluye `pageTitletext` opcional
+interface CustomAppProps extends NextAppProps {
+  Component: NextAppProps["Component"] & { pageTitletext?: string };
 }
 
-function MainComponent({ Component, pageProps }: MainComponentProps) {
+function MainComponent({ Component, pageProps, router }: CustomAppProps) {
+  // Incluye `router` aquí
   const {
     locale,
     messages,
@@ -46,6 +48,8 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
     return <Loader />;
   }
 
+  const pageTitletext = Component.pageTitletext || "inicio";
+
   return (
     <>
       <Head>
@@ -64,7 +68,12 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
                 onPrivacyPolicyLinkClick={handlePrivacyPolicyLinkClick}
               />
             )}
-            <Navbar onLocaleChange={handleLocaleChange} loadingMessages={loadingMessages} />
+            <Navbar
+              onLocaleChange={handleLocaleChange}
+              loadingMessages={loadingMessages}
+              cookiesModalClosed={cookiesModalClosed}
+              pageTitletext={pageTitletext}
+            />
             <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} mapLocale={mapLocale} />
             <Footer loadingMessages={loadingMessages} />
             <ToastContainer />
@@ -75,10 +84,11 @@ function MainComponent({ Component, pageProps }: MainComponentProps) {
   );
 }
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps, router }: CustomAppProps) {
+  // Incluye `router` aquí también
   return (
     <CookieConsentProvider>
-      <MainComponent Component={Component} pageProps={pageProps} />
+      <MainComponent Component={Component} pageProps={pageProps} router={router} />
     </CookieConsentProvider>
   );
 }

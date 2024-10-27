@@ -1,50 +1,50 @@
+// pages/reina-victoria.tsx
+
 import React from "react";
-import { useIntl } from "react-intl"; // Importa el hook useIntl para internacionalización.
+import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import AnimatedTitle from "../components/AnimatedTitle";
 import Map from "../components/Map";
 import Carousel from "../components/Carousel";
 import Localization from "../components/Localization";
 import Transport from "../components/Transport";
-import styles from "../styles/reina-victoria.module.css"; // Importa los estilos CSS específicos para la página Reina Victoria.
+import styles from "../styles/reina-victoria.module.css";
+import type { ComponentType } from "react";
 
 interface ReinaVictoriaPageProps {
-  cookiesModalClosed: boolean;
   loadingMessages: boolean;
   mapLocale: string;
 }
 
-// Define el componente funcional ReinaVictoriaPage utilizando una función flecha.
-const ReinaVictoriaPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: ReinaVictoriaPageProps) => {
+// Define el tipo del componente para incluir `pageTitletext`
+type ReinaVictoriaComponent = ComponentType<ReinaVictoriaPageProps> & { pageTitletext?: string };
+
+const ReinaVictoriaPage: ReinaVictoriaComponent = ({ loadingMessages, mapLocale }) => {
   let restaurante = "reina-victoria";
-  const intl = useIntl(); // Inicializa el hook de internacionalización para usarlo en este componente.
+  const intl = useIntl();
 
   useVisitedPageTracking(restaurante);
   useVisitedPageTrackingGA(restaurante);
 
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
-
   const locationKey = restaurante;
 
   if (loadingMessages) {
     return <Loader />;
   }
 
-  // Devuelve el JSX que construye la interfaz de usuario de la página.
   return (
     <div className="pageContainer">
-      <div>
-        <AnimatedTitle textName="reina-victoria" cookiesModalClosed={cookiesModalClosed} />
-      </div>
-      <div>
-        <Carousel carouselType="reina-victoria" />
-      </div>
+      <div>{intl.formatMessage({ id: "reina-victoria_Texto" })}</div>
       <br></br>
       <div>
         <Localization localizationName="reina-victoria" />
+      </div>
+      <br></br>
+      <div>
+        <Carousel carouselType="reina-victoria" />
       </div>
       <br></br>
       <div>
@@ -64,4 +64,7 @@ const ReinaVictoriaPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: R
   );
 };
 
-export default ReinaVictoriaPage; // Exporta ReinaVictoriaPage para que pueda ser utilizado en otros lugares de la aplicación.
+// Define `pageTitletext` como una propiedad estática del componente `ReinaVictoriaPage`
+ReinaVictoriaPage.pageTitletext = "reina-victoria";
+
+export default ReinaVictoriaPage;

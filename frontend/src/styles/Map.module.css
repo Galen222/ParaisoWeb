@@ -2,6 +2,7 @@
   width: 80%;
   height: 400px;
   margin: 0 auto; /* Centrar el mapa */
+  border-radius: 10px;
 }
 
 /* MODO TABLET */

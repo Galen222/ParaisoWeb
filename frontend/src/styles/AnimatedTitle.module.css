@@ -2,6 +2,7 @@
   width: 100%; /* Asegura que el contenedor no se expanda más allá del ancho de la pantalla */
   position: relative; /* Asegura que el contenedor mantenga su posición en relación a su padre */
   padding-bottom: 30px;
+  text-align: center;
 }
 
 .animationTime {
@@ -16,6 +17,7 @@
 .animationFont {
   white-space: nowrap; /* Evita que el texto se rompa en múltiples líneas */
   font-size: 80px;
+  color: white;
 }
 
 /* MODO TABLET */

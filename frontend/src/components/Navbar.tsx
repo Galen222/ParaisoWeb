@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from "react";
+// navbar.tsx
+
+import React from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
 import useDeviceType from "../hooks/useDeviceType";
 import { useMenu } from "../contexts/MenuContext";
 import Loader from "../components/Loader";
+import AnimatedTitle from "../components/AnimatedTitle";
 import styles from "../styles/Navbar.module.css";
 
 interface NavbarProps {
   onLocaleChange: (locale: string) => void;
   loadingMessages: boolean;
+  cookiesModalClosed: boolean;
+  pageTitletext: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages }) => {
+const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookiesModalClosed, pageTitletext }) => {
   const intl = useIntl();
   const deviceType = useDeviceType();
   const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();
@@ -137,6 +142,9 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages }) => {
             </Link>
           </div>
         )}
+      </div>
+      <div className={styles.animatedTitleContainer}>
+        <AnimatedTitle key={pageTitletext} pageTitletext={pageTitletext} cookiesModalClosed={cookiesModalClosed} />
       </div>
     </nav>
   );

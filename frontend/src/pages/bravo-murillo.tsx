@@ -1,27 +1,29 @@
+// pages/bravo-murillo.tsx
+
 import React from "react";
-import { useIntl } from "react-intl"; // Importa el hook useIntl para la internacionalización de texto.
+import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import AnimatedTitle from "../components/AnimatedTitle";
 import Map from "../components/Map";
 import Carousel from "../components/Carousel";
 import Localization from "../components/Localization";
 import Transport from "../components/Transport";
-import styles from "../styles/bravo-murillo.module.css"; // Importa los estilos CSS específicos para esta página.
+import styles from "../styles/bravo-murillo.module.css";
+import type { ComponentType } from "react";
 
 interface BravoMurilloPageProps {
-  cookiesModalClosed: boolean;
   loadingMessages: boolean;
   mapLocale: string;
 }
 
-// Define el componente funcional BravoMurilloPage.
-const BravoMurilloPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: BravoMurilloPageProps) => {
-  let restaurante = "bravo-murillo";
-  const intl = useIntl(); // Utiliza el hook de internacionalización para obtener funciones de traducción.
+// Define el tipo del componente para incluir `pageTitletext`
+type BravoMurilloComponent = ComponentType<BravoMurilloPageProps> & { pageTitletext?: string };
 
+const BravoMurilloPage: BravoMurilloComponent = ({ loadingMessages, mapLocale }) => {
+  let restaurante = "bravo-murillo";
+  const intl = useIntl();
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
 
   useVisitedPageTracking(restaurante);
@@ -33,18 +35,16 @@ const BravoMurilloPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: Br
     return <Loader />;
   }
 
-  // Devuelve el JSX que construye la UI de la página.
   return (
     <div className="pageContainer">
-      <div>
-        <AnimatedTitle textName="bravo-murillo" cookiesModalClosed={cookiesModalClosed} />
-      </div>
-      <div>
-        <Carousel carouselType="bravo-murillo" />
-      </div>
+      <div>{intl.formatMessage({ id: "bravo-murillo_Texto" })}</div>
       <br></br>
       <div>
         <Localization localizationName="bravo-murillo" />
+      </div>
+      <br></br>
+      <div>
+        <Carousel carouselType="bravo-murillo" />
       </div>
       <br></br>
       <div>
@@ -64,4 +64,7 @@ const BravoMurilloPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: Br
   );
 };
 
-export default BravoMurilloPage; // Exporta BravoMurilloPage para que pueda ser utilizado en otros lugares de la aplicación.
+// Define `pageTitletext` como una propiedad estática del componente `BravoMurilloPage`
+BravoMurilloPage.pageTitletext = "bravo-murillo";
+
+export default BravoMurilloPage;

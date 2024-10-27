@@ -1,26 +1,29 @@
+// pages/san-bernardo.tsx
+
 import React from "react";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import AnimatedTitle from "../components/AnimatedTitle";
 import Map from "../components/Map";
 import Carousel from "../components/Carousel";
 import Localization from "../components/Localization";
 import Transport from "../components/Transport";
 import styles from "../styles/san-bernardo.module.css";
+import type { ComponentType } from "react";
 
 interface SanBernardoProps {
-  cookiesModalClosed: boolean;
   loadingMessages: boolean;
   mapLocale: string;
 }
 
-const SanBernardo = ({ loadingMessages, mapLocale, cookiesModalClosed }: SanBernardoProps) => {
+// Define el tipo de componente para incluir `pageTitletext`
+type SanBernardoComponent = ComponentType<SanBernardoProps> & { pageTitletext?: string };
+
+const SanBernardo: SanBernardoComponent = ({ loadingMessages, mapLocale }) => {
   let restaurante = "san-bernardo";
   const intl = useIntl();
-
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
 
   useVisitedPageTracking(restaurante);
@@ -34,15 +37,14 @@ const SanBernardo = ({ loadingMessages, mapLocale, cookiesModalClosed }: SanBern
 
   return (
     <div className="pageContainer">
-      <div>
-        <AnimatedTitle textName="san-bernardo" cookiesModalClosed={cookiesModalClosed} />
-      </div>
-      <div>
-        <Carousel carouselType="san-bernardo" />
-      </div>
+      <div>{intl.formatMessage({ id: "san-bernardo_Texto" })}</div>
       <br></br>
       <div>
         <Localization localizationName="san-bernardo" />
+      </div>
+      <br></br>
+      <div>
+        <Carousel carouselType="san-bernardo" />
       </div>
       <br></br>
       <div>
@@ -61,5 +63,8 @@ const SanBernardo = ({ loadingMessages, mapLocale, cookiesModalClosed }: SanBern
     </div>
   );
 };
+
+// Define `pageTitletext` como una propiedad estática del componente `SanBernardo`
+SanBernardo.pageTitletext = "san-bernardo";
 
 export default SanBernardo;

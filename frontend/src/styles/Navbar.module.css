@@ -5,6 +5,23 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  /* min-height: 100vh; */
+  position: relative;
+  background: url("/images/navbar/fondo.jpg");
+  background-size: cover;
+  background-position: center;
+  height: 550px;
+}
+
+.navbar::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(248, 237, 209, 0.8) 90%, #f8edd1 100%);
+  pointer-events: none; /* Asegura que la capa no interfiera con el contenido interactivo */
 }
 
 /* Contenedor superior que incluye logo, textoLogo y selector */
@@ -113,7 +130,7 @@
   width: 100%;
   display: flex;
   justify-content: center;
-  background-color: #4a403a;
+  background-color: rgba(74, 64, 58, 0.5); /* Fondo semi-transparente */
   font-size: 18px;
 }
 
@@ -204,7 +221,7 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%) translateY(10px);
-  background-color: #4a403a;
+  background-color: rgba(74, 64, 58, 0.8); /* Fondo semi-transparente */
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
   z-index: 1;
   width: 160px;
@@ -236,7 +253,7 @@
   height: 0;
   border-left: 10px solid transparent;
   border-right: 10px solid transparent;
-  border-bottom: 10px solid #4a403a;
+  border-bottom: 10px solid rgba(74, 64, 58, 0.8);
   z-index: 2; /* Asegurándonos de que esté por encima del menú desplegable */
 }
 
@@ -286,6 +303,14 @@
   z-index: 10;
 }
 
+.animatedTitleContainer {
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  flex-grow: 1; /* Ocupa el espacio restante debajo del menú */
+  width: 100%;
+}
+
 /* MODO TABLET Y ESCRITORIO POCA RESOLUCION */
 @media (max-width: 1600px) {
   .navbarTop {
@@ -309,6 +334,15 @@
 
 /* MODO MOVIL */
 @media (max-width: 767px) {
+  .navbar {
+    background-image: none; /* Elimina el fondo en modo móvil */
+    height: auto; /* Ajusta la altura en móvil */
+  }
+
+  .navbar::before {
+    content: none; /* Elimina el pseudo-elemento en pantallas móviles */
+  }
+
   .navbarTop {
     width: 100%;
     flex-direction: column;
@@ -362,6 +396,7 @@
     overflow: hidden;
     transition: visibility 0s 0.3s, opacity 0.3s ease-in-out, max-height 0.3s ease-in-out;
     margin-top: -1px;
+    background-color: #4a403a;
   }
 
   .navbarMenu.showMenu {
@@ -395,6 +430,7 @@
     padding: 0px;
     transform: translateX(-50%) translateY(0px);
     transition: none; /* Elimina cualquier transición */
+    background-color: #4a403a;
   }
 
   .dropdown.show {

@@ -4,15 +4,17 @@ import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import AnimatedTitle from "../components/AnimatedTitle";
+import type { ComponentType } from "react";
 import styles from "../styles/about.module.css"; // Importa los estilos específicos para la página About
 
 interface AboutPageProps {
-  cookiesModalClosed: boolean;
   loadingMessages: boolean; // Nuevo prop para el estado de carga
 }
 
-const AboutPage = ({ cookiesModalClosed, loadingMessages }: AboutPageProps) => {
+// Define el tipo del componente para incluir `pageTitletext`
+type AboutComponent = ComponentType<AboutPageProps> & { pageTitletext?: string };
+
+const AboutPage: AboutComponent = ({ loadingMessages }: AboutPageProps) => {
   const intl = useIntl(); // Inicializa el hook de internacionalización para usar en este componente
 
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
@@ -26,10 +28,17 @@ const AboutPage = ({ cookiesModalClosed, loadingMessages }: AboutPageProps) => {
 
   return (
     <div className="pageContainer">
-      <AnimatedTitle textName="about" cookiesModalClosed={cookiesModalClosed} />
       <p>{intl.formatMessage({ id: "about_Descripcion" })}</p>
+      {isScrollButtonVisible && (
+        <button onClick={scrollToTop} className="scrollTop">
+          <img src="/images/web/flechaArriba.png" alt="Subir" />
+        </button>
+      )}
+      <br></br>
     </div>
   );
 };
+
+AboutPage.pageTitletext = "about";
 
 export default AboutPage; // Exporta el componente para ser usado en otras partes de la aplicación

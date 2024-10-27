@@ -1,32 +1,34 @@
+// pages/arenal.tsx
+
 import React from "react";
-import { useIntl } from "react-intl"; // Importa el hook useIntl para utilizar internacionalización
+import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import AnimatedTitle from "../components/AnimatedTitle";
 import Map from "../components/Map";
 import Carousel from "../components/Carousel";
 import Localization from "../components/Localization";
 import Transport from "../components/Transport";
-import styles from "../styles/arenal.module.css"; // Importa los estilos CSS específicos para la página Arenal
+import styles from "../styles/arenal.module.css";
+import type { ComponentType } from "react";
 
 interface ArenalPageProps {
-  cookiesModalClosed: boolean;
   loadingMessages: boolean;
   mapLocale: string;
 }
 
-// Define el componente funcional ArenalPage utilizando una función flecha de ES6
-const ArenalPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: ArenalPageProps) => {
+// Define el tipo del componente para incluir `pageTitletext`
+type ArenalComponent = ComponentType<ArenalPageProps> & { pageTitletext?: string };
+
+const ArenalPage: ArenalComponent = ({ loadingMessages, mapLocale }) => {
   let restaurante = "arenal";
-  const intl = useIntl(); // Inicializa el hook de internacionalización para utilizar en este componente
+  const intl = useIntl();
 
   useVisitedPageTracking(restaurante);
   useVisitedPageTrackingGA(restaurante);
 
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
-
   const locationKey = restaurante;
 
   if (loadingMessages) {
@@ -35,15 +37,14 @@ const ArenalPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: ArenalPa
 
   return (
     <div className="pageContainer">
-      <div>
-        <AnimatedTitle textName="arenal" cookiesModalClosed={cookiesModalClosed} />
-      </div>
-      <div>
-        <Carousel carouselType="arenal" />
-      </div>
+      <div>{intl.formatMessage({ id: "arenal_Texto" })}</div>
       <br></br>
       <div>
         <Localization localizationName="arenal" />
+      </div>
+      <br></br>
+      <div>
+        <Carousel carouselType="arenal" />
       </div>
       <br></br>
       <div>
@@ -63,4 +64,7 @@ const ArenalPage = ({ loadingMessages, mapLocale, cookiesModalClosed }: ArenalPa
   );
 };
 
-export default ArenalPage; // Exporta ArenalPage para que pueda ser utilizado en otros componentes o páginas de la aplicación
+// Define `pageTitletext` como una propiedad estática del componente `ArenalPage`
+ArenalPage.pageTitletext = "arenal";
+
+export default ArenalPage;

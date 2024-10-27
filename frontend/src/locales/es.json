@@ -15,6 +15,7 @@
   "inicio_Titulo_Texto1": "Bienvenido a ",
   "inicio_Titulo_Texto2": "Paraíso del Jamón",
 
+  "san-bernardo_Texto": "Ubicado en el corazón de Madrid a pocos pasos de Sol para ofrecerte una gastronomía auténtica y tradicional española.  Su proximidad a la Gran Vía y la Plaza de España permite a los visitantes disfrutar de una oferta cultural y de ocio inigualable.",
   "san-bernardo_Titulo_Texto1": "Paraíso del Jamón I",
   "san-bernardo_Titulo_Texto2": "San Bernardo",
   "san-bernardo_Metro_Titulo": "Metro",
@@ -26,6 +27,7 @@
   "san-bernardo_Aparcamiento_Titulo": "Aparcamiento",
   "san-bernardo_Aparcamiento_Descripcion": "Opciones de aparcamiento cercanas",
 
+  "bravo-murillo_Texto": "Ubicado en una de las principales arterias llena de vida del norte de Madrid es el lugar perfecto para disfrutar una cerveza en nuestra barra o nuestra gastronomia española en un salón comedor de ambiente acogedor.",
   "bravo-murillo_Titulo_Texto1": "Paraíso del Jamón II",
   "bravo-murillo_Titulo_Texto2": "Bravo Murillo",
   "bravo-murillo_Metro_Titulo": "Metro",
@@ -37,6 +39,7 @@
   "bravo-murillo_Aparcamiento_Titulo": "Aparcamiento",
   "bravo-murillo_Aparcamiento_Descripcion": "Opciones de aparcamiento cercanas",
 
+  "reina-victoria_Texto": "Con una localización excelente donde las calles están llenas de vida es el lugar ideal para hacer una pausa y saborear nuestros platos, nuestro bocadillo de calamares con una cerveza o visitar nuestro mostrador de charcuteria con una excelente calidad de embutidos ibericos.",
   "reina-victoria_Titulo_Texto1": "Paraíso del Jamón III",
   "reina-victoria_Titulo_Texto2": "Reina Victoria",
   "reina-victoria_Metro_Titulo": "Metro",
@@ -48,6 +51,7 @@
   "reina-victoria_Aparcamiento_Titulo": "Aparcamiento",
   "reina-victoria_Aparcamiento_Descripcion": "Opciones de aparcamiento cercanas",
 
+  "arenal_Texto": "Situado en el corazón del histórico barrio de Madrid combinamos tradición y calidad. Disfruta de nuestra selección de embutidos ibericos, saborea un bocadillo acompañado de una cerveza y explora nuestro variado menú en un entorno lleno de encanto y autenticidad.",
   "arenal_Titulo_Texto1": "Paraíso del Jamón IV",
   "arenal_Titulo_Texto2": "Arenal",
   "arenal_Metro_Titulo": "Metro",
@@ -189,7 +193,6 @@
   "Map_Error_Texto": "No se ha podido cargar el mapa.",
   "Map_Marker_Pais": "España",
   "Map_Marker_Texto1": "Como llegar",
-  "Map_Marker_Url": "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
   "Map_Marker_Texto2": "Ver en Google Maps",
   "Map_Marker_Telefono": "Teléfono: ",
 

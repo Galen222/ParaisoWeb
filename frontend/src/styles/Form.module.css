@@ -1,0 +1,159 @@
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form label {
+  display: block;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-weight: bold;
+  text-align: left;
+}
+
+.form select {
+  color: var(--text_color);
+}
+
+.form input,
+.form select,
+.form textarea {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.emailValid {
+  color: black;
+}
+
+.emailInvalid {
+  color: red;
+}
+
+.form textarea {
+  resize: none;
+  height: 100px;
+}
+
+.archiveText {
+  font-weight: bold;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+.fileUploadContainer {
+  text-align: center;
+  display: flex;
+  width: 100%;
+}
+
+.fileButton {
+  width: 200px;
+  color: var(--text_color);
+  --bs-btn-bg: white;
+  --bs-btn-hover-bg: #4a403a;
+  --bs-btn-hover-border-color: #4a403a;
+  --bs-btn-active-bg: #4a403a;
+  --bs-btn-active-border-color: #4a403a;
+  --bs-btn-disabled-bg: white;
+}
+
+.submitButton {
+  width: 200px;
+  --bs-btn-bg: #4a403a;
+  --bs-btn-border-color: #4a403a;
+  --bs-btn-hover-bg: #198754;
+  --bs-btn-hover-border-color: #198754;
+  --bs-btn-active-bg: #198754;
+  --bs-btn-active-border-color: #198754;
+  --bs-btn-disabled-bg: #4a403a;
+  --bs-btn-disabled-border-color: #4a403a;
+}
+
+.fileNameBox {
+  flex-grow: 1;
+  margin-left: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f8f8f8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  font-size: 16px;
+}
+
+.customCheckbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.checkboxLabelContainer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.hiddenCheckbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.checkboxControl {
+  width: 18px;
+  height: 18px;
+  margin-right: 5px;
+  background-color: white;
+  border: 2px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  position: relative;
+}
+
+.checkText {
+  font-weight: bold;
+  margin: 0;
+  transform: translateY(-2px);
+}
+
+/* Responsive design */
+@media (max-width: 1024px) {
+  .fileUploadContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .fileButton {
+    margin-bottom: 10px;
+  }
+
+  .fileNameBox {
+    margin-left: 0;
+  }
+
+  .checkText {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .checkText {
+    transform: translateY(-3px);
+  }
+}
