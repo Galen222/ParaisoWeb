@@ -17,6 +17,8 @@
 
   "inicio_Titulo_Texto1": "Bienvenido a ",
   "inicio_Titulo_Texto2": "Paraíso del Jamón",
+  "inicio_Texto1": "¡Un paraíso cerca de usted!",
+  "inicio_Texto2": "En nuestro sitio Web podrá encontrar información sobre nuestros restaurantes, carta, conocer nuestra historia, ver los embutidos ibericos de nuestra charcutería o ponerse en contacto con nosotros",
 
   "san-bernardo_Texto": "Ubicado en el corazón de Madrid a pocos pasos de Sol para ofrecerte una gastronomía auténtica y tradicional española.  Su proximidad a la Gran Vía y la Plaza de España permite a los visitantes disfrutar de una oferta cultural y de ocio inigualable.",
   "san-bernardo_Titulo_Texto1": "Paraíso del Jamón I",
@@ -69,7 +71,7 @@
   "reservas_Titulo_Texto1": "Reservar en",
   "reservas_Titulo_Texto2": "Paraíso del Jamón",
   "reservas_Texto1": "Aunque normalmente no reservamos mesa para el horario de comidas si son un grupo numeroso o quieren realizar una celebración pueden ponerse en contacto con nosotros para reservar y disfrutar de de nuestros deliciosos platos y embutidos.",
-  "reservas_Texto2": "Por favor, llamen al restaurante donde quieren reservar e indiquen que quieren hablar con el encargado. Los números de telefono son los siguientes y puede encontrar más información sobre cada restaurante en la sección Restaurantes.",
+  "reservas_Texto2": "Por favor, llame al restaurante donde quieren reservar e indique que quiere hablar con el encargado. Los números de telefono son los siguientes y puede encontrar más información sobre cada restaurante en la sección Restaurantes.",
 
   "carta_Titulo_Texto1": "Carta de",
   "carta_Titulo_Texto2": "Paraíso del Jamón",
@@ -204,12 +206,16 @@
   "Map_Marker_Texto2": "Ver en Google Maps",
   "Map_Marker_Telefono": "Teléfono: ",
 
-  "carousel_Inicio_Alt1": "foto 1",
-  "carousel_Inicio_Alt2": "foto 2",
-  "carousel_Inicio_Alt3": "foto 3",
-  "carousel_Inicio_Texto1": "Especialistas en jamones",
-  "carousel_Inicio_Texto2": "Gran variedad de productos en charcuteria",
-  "carousel_Inicio_Texto3": "menu diario y carta",
+  "carousel_Inicio_Alt1": "Foto desayunos",
+  "carousel_Inicio_Alt2": "Foto bandeja paraíso",
+  "carousel_Inicio_Alt3": "Foto raciones",
+  "carousel_Inicio_Alt4": "Foto raciones",
+  "carousel_Inicio_Alt5": "Foto raciones",
+  "carousel_Inicio_Alt6": "Foto platos combinados",
+  "carousel_Inicio_Alt7": "Foto bocadillos",
+  "carousel_Inicio_Texto1": "Disfruta de nuestros deliciosos desayunos con ofertas especiales",
+  "carousel_Inicio_Texto2": "Disponemos de gran variedad de raciones para todos los gustos",
+  "carousel_Inicio_Texto3": "Bocadillos de gran tamaño frios o calientes para consumir en el local o llevarte donde quieras",
 
   "politicaCookies_Principal_Titulo": "Política de Cookies",
   "politicaCookies_Principal_Texto": "PACAVA S.A informa acerca del uso de las cookies en su sitio web www.paraisodeljamon.com",

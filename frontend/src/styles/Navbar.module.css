@@ -340,7 +340,7 @@
 /* MODO MOVIL */
 @media (max-width: 767px) {
   .navbar {
-    background-image: none; /* Elimina el fondo en modo móvil */
+    /* background-image: none; */
     height: auto; /* Ajusta la altura en móvil */
   }
 

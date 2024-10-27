@@ -12,30 +12,38 @@ export const slidesData = (intl: IntlShape): { [key: string]: Slide[] } => ({
   inicio: [
     {
       type: "image",
-      src: "/images/carousel/inicio/carousel-inicio-1.jpg",
+      src: "/images/carousel/inicio/carousel-inicio-1.png",
       alt: intl.formatMessage({ id: "carousel_Inicio_Alt1" }),
     },
     {
-      type: "text",
-      content: intl.formatMessage({ id: "carousel_Inicio_Texto1" }),
-    },
-    {
       type: "image",
-      src: "/images/carousel/inicio/carousel-inicio-2.jpg",
+      src: "/images/carousel/inicio/carousel-inicio-2.png",
       alt: intl.formatMessage({ id: "carousel_Inicio_Alt2" }),
     },
     {
-      type: "text",
-      content: intl.formatMessage({ id: "carousel_Inicio_Texto2" }),
-    },
-    {
       type: "image",
-      src: "/images/carousel/inicio/carousel-inicio-3.jpg",
+      src: "/images/carousel/inicio/carousel-inicio-3.png",
       alt: intl.formatMessage({ id: "carousel_Inicio_Alt3" }),
     },
     {
-      type: "text",
-      content: intl.formatMessage({ id: "carousel_Inicio_Texto3" }),
+      type: "image",
+      src: "/images/carousel/inicio/carousel-inicio-4.png",
+      alt: intl.formatMessage({ id: "carousel_Inicio_Alt4" }),
+    },
+    {
+      type: "image",
+      src: "/images/carousel/inicio/carousel-inicio-5.png",
+      alt: intl.formatMessage({ id: "carousel_Inicio_Alt5" }),
+    },
+    {
+      type: "image",
+      src: "/images/carousel/inicio/carousel-inicio-6.png",
+      alt: intl.formatMessage({ id: "carousel_Inicio_Alt6" }),
+    },
+    {
+      type: "image",
+      src: "/images/carousel/inicio/carousel-inicio-7.png",
+      alt: intl.formatMessage({ id: "carousel_Inicio_Alt7" }),
     },
   ],
   "san-bernardo": [

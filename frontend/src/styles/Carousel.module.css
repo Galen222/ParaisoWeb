@@ -15,10 +15,17 @@
 .text {
   width: 100%;
   height: auto;
-  padding: 20px;
+  /* padding: 20px; */
   text-align: center;
   display: flex;
   justify-content: center; /* Centrar horizontalmente */
   align-items: center; /* Centrar verticalmente */
-  border: 1px solid #4a403a; /* Borde de 1px */
+  /* border: 1px solid #4a403a; */
+}
+
+/* MODO MOVIL */
+@media (max-width: 767px) {
+  .carouselContainer {
+    width: 90%;
+  }
 }
