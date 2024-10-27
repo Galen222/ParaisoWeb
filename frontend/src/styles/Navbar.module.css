@@ -50,7 +50,12 @@
 }
 
 .textLogo {
-  width: 100%;
+  font-family: "Playfair Display SC", serif;
+  font-weight: 700;
+  font-size: 40px;
+  color: rgb(197, 12, 12); /* Rojo oscuro para el texto */
+  text-align: center;
+  text-shadow: 1px 1px 4px rgba(250, 26, 26, 0.8);
 }
 
 .flagContainer {
@@ -368,6 +373,7 @@
     margin-top: 15px;
     justify-content: space-between;
     background-color: #4a403a;
+    /* background-color: rgba(74, 64, 58, 0.5); */
     align-items: center;
     padding: 10px 0px;
   }
@@ -419,7 +425,7 @@
     text-align: center;
     padding: 10px;
     margin: 0px;
-    border-bottom: 1px solid rgb(99, 94, 94);
+    /* border-bottom: 1px solid rgb(99, 94, 94); */
   }
 
   .dropdown {
@@ -431,6 +437,7 @@
     transform: translateX(-50%) translateY(0px);
     transition: none; /* Elimina cualquier transición */
     background-color: #4a403a;
+    /* background-color: rgba(74, 64, 58, 0.8); */
   }
 
   .dropdown.show {

@@ -1,8 +1,9 @@
 .animationContainer {
   width: 100%; /* Asegura que el contenedor no se expanda más allá del ancho de la pantalla */
   position: relative; /* Asegura que el contenedor mantenga su posición en relación a su padre */
-  padding-bottom: 30px;
+  /* padding-bottom: 30px; */
   text-align: center;
+  align-items: center; /* Centra verticalmente */
 }
 
 .animationTime {

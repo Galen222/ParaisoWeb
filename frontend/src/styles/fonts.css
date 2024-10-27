@@ -4,3 +4,10 @@
   font-weight: normal;
   font-style: normal;
 }
+
+@font-face {
+  font-family: "Playfair Display SC";
+  src: url("/fonts/PlayfairDisplaySC-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
