@@ -11,8 +11,8 @@ interface AboutPageProps {
   loadingMessages: boolean; // Nuevo prop para el estado de carga
 }
 
-// Define el tipo del componente para incluir `pageTitletext`
-type AboutPageComponent = ComponentType<AboutPageProps> & { pageTitletext?: string };
+// Define el tipo del componente para incluir `pageTitleText`
+type AboutPageComponent = ComponentType<AboutPageProps> & { pageTitleText?: string };
 
 const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
   const intl = useIntl(); // Inicializa el hook de internacionalización para usar en este componente
@@ -39,6 +39,6 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
   );
 };
 
-AboutPage.pageTitletext = "about";
+AboutPage.pageTitleText = "about";
 
 export default AboutPage; // Exporta el componente para ser usado en otras partes de la aplicación

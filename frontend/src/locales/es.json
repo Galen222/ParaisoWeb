@@ -71,17 +71,20 @@
   "reservas_Texto1": "Aunque normalmente no reservamos mesa para el horario de comidas si son un grupo numeroso o quieren realizar una celebración pueden ponerse en contacto con nosotros para reservar y disfrutar de de nuestros deliciosos platos y embutidos.",
   "reservas_Texto2": "Por favor, llamen al restaurante donde quieren reservar e indiquen que quieren hablar con el encargado. Los números de telefono son los siguientes y puede encontrar más información sobre cada restaurante en la sección Restaurantes.",
 
-  "carta-menu_Titulo": "Carta del Restaurante",
+  "carta_Titulo_Texto1": "Carta de",
+  "carta_Titulo_Texto2": "Paraíso del Jamón",
   "carta-menu_Descripcion": "Explora nuestra carta y menu para ver todos los platos que ofrecemos.",
 
-  "charcuteria_Titulo": "Nuestra Charcutería",
+  "charcuteria_Titulo_Texto1": "Charcutería de",
+  "charcuteria_Titulo_Texto2": "Paraíso del Jamón",
   "charcuteria_Descripcion": "Descubre los mejores embutidos y jamones seleccionados con cuidado.",
 
   "about_Titulo_Texto1": "Conoce sobre",
   "about_Titulo_Texto2": "Paraíso del Jamón",
   "about_Descripcion": "Conoce más sobre la historia y la filosofía de Paraíso de Jamón.",
 
-  "blog_Titulo": "Blog de Paraíso de Jamón",
+  "blog_Titulo_Texto1": "Blog de",
+  "blog_Titulo_Texto2": "Paraíso del Jamón",
   "blog_Descripcion": "Lee las últimas noticias y artículos sobre nuestros productos y eventos.",
 
   "contacto_Titulo_Texto1": "Contactar con",

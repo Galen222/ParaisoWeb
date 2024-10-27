@@ -71,17 +71,20 @@
   "reservas_Texto1": "Although we usually don't take lunch reservations, if you're a large group or planning a celebration, feel free to contact us to reserve and enjoy our delicious dishes and cured meats.",
   "reservas_Texto2": "Please call the restaurant where you'd like to make a reservation and ask to speak with the manager. The phone numbers are listed below, and you can find more information about each restaurant in the Restaurants section.",
 
-  "carta-menu_Titulo": "Restaurant Menu",
+  "carta_Titulo_Texto1": "Menu of",
+  "carta_Titulo_Texto2": "Paraíso del Jamón",
   "carta-menu_Descripcion": "Explore our menu to see all the dishes we offer.",
 
-  "charcuteria_Titulo": "Our Charcuterie",
+  "charcuteria_Titulo_Texto1": "Charcuterie of",
+  "charcuteria_Titulo_Texto2": "Paraíso del Jamón",
   "charcuteria_Descripcion": "Discover the best sausages and hams carefully selected.",
 
   "about_Titulo_Texto1": "Learn about",
   "about_Titulo_Texto2": "Paraíso del Jamón",
   "about_Descripcion": "Learn more about the history and philosophy of Paraíso del Jamón.",
 
-  "blog_Titulo": "Paraíso del Jamón Blog",
+  "blog_Titulo_Texto1": "Blog of",
+  "blog_Titulo_Texto2": "Paraíso del Jamón",
   "blog_Descripcion": "Read the latest news and articles about our products and events.",
 
   "contacto_Titulo_Texto1": "Contact",
