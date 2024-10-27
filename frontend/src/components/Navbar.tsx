@@ -13,10 +13,10 @@ interface NavbarProps {
   onLocaleChange: (locale: string) => void;
   loadingMessages: boolean;
   cookiesModalClosed: boolean;
-  pageTitletext: string;
+  pageTitleText: string;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookiesModalClosed, pageTitletext }) => {
+const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookiesModalClosed, pageTitleText }) => {
   const intl = useIntl();
   const deviceType = useDeviceType();
   const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();
@@ -144,7 +144,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
         )}
       </div>
       <div className={styles.animatedTitleContainer}>
-        <AnimatedTitle key={pageTitletext} pageTitletext={pageTitletext} cookiesModalClosed={cookiesModalClosed} />
+        <AnimatedTitle key={pageTitleText} pageTitleText={pageTitleText} cookiesModalClosed={cookiesModalClosed} />
       </div>
     </nav>
   );

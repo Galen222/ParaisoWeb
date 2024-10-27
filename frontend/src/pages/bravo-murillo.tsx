@@ -18,10 +18,10 @@ interface BravoMurilloPageProps {
   mapLocale: string;
 }
 
-// Define el tipo del componente para incluir `pageTitletext`
-type BravoMurilloComponent = ComponentType<BravoMurilloPageProps> & { pageTitletext?: string };
+// Define el tipo del componente para incluir `pageTitleText`
+type BravoMurilloPageComponent = ComponentType<BravoMurilloPageProps> & { pageTitleText?: string };
 
-const BravoMurilloPage: BravoMurilloComponent = ({ loadingMessages, mapLocale }) => {
+const BravoMurilloPage: BravoMurilloPageComponent = ({ loadingMessages, mapLocale }) => {
   let restaurante = "bravo-murillo";
   const intl = useIntl();
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
@@ -64,7 +64,7 @@ const BravoMurilloPage: BravoMurilloComponent = ({ loadingMessages, mapLocale })
   );
 };
 
-// Define `pageTitletext` como una propiedad estática del componente `BravoMurilloPage`
-BravoMurilloPage.pageTitletext = "bravo-murillo";
+// Define `pageTitleText` como una propiedad estática del componente `BravoMurilloPage`
+BravoMurilloPage.pageTitleText = "bravo-murillo";
 
 export default BravoMurilloPage;

@@ -13,15 +13,15 @@ import Transport from "../components/Transport";
 import styles from "../styles/san-bernardo.module.css";
 import type { ComponentType } from "react";
 
-interface SanBernardoProps {
+interface SanBernardoPageProps {
   loadingMessages: boolean;
   mapLocale: string;
 }
 
-// Define el tipo de componente para incluir `pageTitletext`
-type SanBernardoComponent = ComponentType<SanBernardoProps> & { pageTitletext?: string };
+// Define el tipo de componente para incluir `pageTitleText`
+type SanBernardoPageComponent = ComponentType<SanBernardoPageProps> & { pageTitleText?: string };
 
-const SanBernardo: SanBernardoComponent = ({ loadingMessages, mapLocale }) => {
+const SanBernardoPage: SanBernardoPageComponent = ({ loadingMessages, mapLocale }) => {
   let restaurante = "san-bernardo";
   const intl = useIntl();
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
@@ -64,7 +64,7 @@ const SanBernardo: SanBernardoComponent = ({ loadingMessages, mapLocale }) => {
   );
 };
 
-// Define `pageTitletext` como una propiedad estática del componente `SanBernardo`
-SanBernardo.pageTitletext = "san-bernardo";
+// Define `pageTitleText` como una propiedad estática del componente `SanBernardo`
+SanBernardoPage.pageTitleText = "san-bernardo";
 
-export default SanBernardo;
+export default SanBernardoPage;

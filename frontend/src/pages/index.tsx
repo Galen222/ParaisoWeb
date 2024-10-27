@@ -14,8 +14,8 @@ interface HomeProps {
   loadingMessages: boolean;
 }
 
-// Define el tipo del componente incluyendo `pageTitletext`
-type HomeComponent = ComponentType<HomeProps> & { pageTitletext?: string };
+// Define el tipo del componente incluyendo `pageTitleText`
+type HomeComponent = ComponentType<HomeProps> & { pageTitleText?: string };
 
 const Home: HomeComponent = ({ loadingMessages }) => {
   const intl = useIntl();
@@ -42,7 +42,7 @@ const Home: HomeComponent = ({ loadingMessages }) => {
   );
 };
 
-// Define `pageTitletext` como una propiedad estática de `Home`
-Home.pageTitletext = "inicio";
+// Define `pageTitleText` como una propiedad estática de `Home`
+Home.pageTitleText = "inicio";
 
 export default Home;

@@ -22,9 +22,9 @@ import Cookie from "../components/Cookie";
 import { useCookieLogic } from "../hooks/useCookieLogic";
 import Loader from "../components/Loader";
 
-// Extiende AppProps e incluye `pageTitletext` opcional
+// Extiende AppProps e incluye `pageTitleText` opcional
 interface CustomAppProps extends NextAppProps {
-  Component: NextAppProps["Component"] & { pageTitletext?: string };
+  Component: NextAppProps["Component"] & { pageTitleText?: string };
 }
 
 function MainComponent({ Component, pageProps, router }: CustomAppProps) {
@@ -48,7 +48,7 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps) {
     return <Loader />;
   }
 
-  const pageTitletext = Component.pageTitletext || "inicio";
+  const pageTitleText = Component.pageTitleText || "default";
 
   return (
     <>
@@ -72,7 +72,7 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps) {
               onLocaleChange={handleLocaleChange}
               loadingMessages={loadingMessages}
               cookiesModalClosed={cookiesModalClosed}
-              pageTitletext={pageTitletext}
+              pageTitleText={pageTitleText}
             />
             <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} mapLocale={mapLocale} />
             <Footer loadingMessages={loadingMessages} />

@@ -18,10 +18,10 @@ interface ArenalPageProps {
   mapLocale: string;
 }
 
-// Define el tipo del componente para incluir `pageTitletext`
-type ArenalComponent = ComponentType<ArenalPageProps> & { pageTitletext?: string };
+// Define el tipo del componente para incluir `pageTitleText`
+type ArenalPageComponent = ComponentType<ArenalPageProps> & { pageTitleText?: string };
 
-const ArenalPage: ArenalComponent = ({ loadingMessages, mapLocale }) => {
+const ArenalPage: ArenalPageComponent = ({ loadingMessages, mapLocale }) => {
   let restaurante = "arenal";
   const intl = useIntl();
 
@@ -64,7 +64,7 @@ const ArenalPage: ArenalComponent = ({ loadingMessages, mapLocale }) => {
   );
 };
 
-// Define `pageTitletext` como una propiedad estática del componente `ArenalPage`
-ArenalPage.pageTitletext = "arenal";
+// Define `pageTitleText` como una propiedad estática del componente `ArenalPage`
+ArenalPage.pageTitleText = "arenal";
 
 export default ArenalPage;

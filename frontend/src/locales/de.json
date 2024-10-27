@@ -12,6 +12,9 @@
   "app_CookieAccept": "Benutzerdefinierte Cookies erfolgreich akzeptiert",
   "app_CookieDenied": "Cookies erfolgreich abgelehnt",
 
+  "default_Titulo_Texto1": "Ein Paradies",
+  "default_Titulo_Texto2": "in Ihrer Nähe!",
+
   "inicio_Titulo_Texto1": "Willkommen im ",
   "inicio_Titulo_Texto2": "Paraíso del Jamón",
 
@@ -63,8 +66,10 @@
   "arenal_Aparcamiento_Titulo": "Parken",
   "arenal_Aparcamiento_Descripcion": "Nahegelegene Parkmöglichkeiten",
 
-  "reservas_Titulo": "Eine Reservierung machen",
-  "reservas_Descripcion": "Reservieren Sie einen Tisch, um unsere köstlichen Gerichte und Würste zu genießen.",
+  "reservas_Titulo_Texto1": "Reservieren bei",
+  "reservas_Titulo_Texto2": "Paraíso del Jamón",
+  "reservas_Texto1": "Normalerweise nehmen wir zur Mittagszeit keine Tischreservierungen an, aber wenn Sie eine größere Gruppe sind oder eine Feier planen, können Sie uns gerne kontaktieren, um zu reservieren und unsere köstlichen Gerichte und Wurstwaren zu genießen.",
+  "reservas_Texto2": "Bitte rufen Sie das Restaurant an, in dem Sie reservieren möchten, und bitten Sie darum, mit dem Verantwortlichen zu sprechen. Die Telefonnummern sind unten aufgeführt, und weitere Informationen zu jedem Restaurant finden Sie im Bereich Restaurants.",
 
   "carta-menu_Titulo": "Restaurant-Speisekarte",
   "carta-menu_Descripcion": "Entdecken Sie unsere Speisekarte, um alle angebotenen Gerichte zu sehen.",

@@ -15,7 +15,7 @@ interface ContactPageProps {
   loadingMessages: boolean;
 }
 
-type ContactPageComponent = ComponentType<ContactPageProps> & { pageTitletext?: string };
+type ContactPageComponent = ComponentType<ContactPageProps> & { pageTitleText?: string };
 
 const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps) => {
   const intl = useIntl();
@@ -70,6 +70,6 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
   );
 };
 
-ContactPage.pageTitletext = "contacto";
+ContactPage.pageTitleText = "contacto";
 
 export default ContactPage;

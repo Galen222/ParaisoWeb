@@ -18,10 +18,10 @@ interface ReinaVictoriaPageProps {
   mapLocale: string;
 }
 
-// Define el tipo del componente para incluir `pageTitletext`
-type ReinaVictoriaComponent = ComponentType<ReinaVictoriaPageProps> & { pageTitletext?: string };
+// Define el tipo del componente para incluir `pageTitleText`
+type ReinaVictoriaPageComponent = ComponentType<ReinaVictoriaPageProps> & { pageTitleText?: string };
 
-const ReinaVictoriaPage: ReinaVictoriaComponent = ({ loadingMessages, mapLocale }) => {
+const ReinaVictoriaPage: ReinaVictoriaPageComponent = ({ loadingMessages, mapLocale }) => {
   let restaurante = "reina-victoria";
   const intl = useIntl();
 
@@ -64,7 +64,7 @@ const ReinaVictoriaPage: ReinaVictoriaComponent = ({ loadingMessages, mapLocale 
   );
 };
 
-// Define `pageTitletext` como una propiedad estática del componente `ReinaVictoriaPage`
-ReinaVictoriaPage.pageTitletext = "reina-victoria";
+// Define `pageTitleText` como una propiedad estática del componente `ReinaVictoriaPage`
+ReinaVictoriaPage.pageTitleText = "reina-victoria";
 
 export default ReinaVictoriaPage;

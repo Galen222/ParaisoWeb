@@ -12,6 +12,9 @@
   "app_CookieAccept": "Custom cookies successfully accepted",
   "app_CookieDenied": "Cookies successfully denied",
 
+  "default_Titulo_Texto1": "A Paradise",
+  "default_Titulo_Texto2": "near you!",
+
   "inicio_Titulo_Texto1": "Welcome to ",
   "inicio_Titulo_Texto2": "Paraíso del Jamón",
 
@@ -63,8 +66,10 @@
   "arenal_Aparcamiento_Titulo": "Parking",
   "arenal_Aparcamiento_Descripcion": "Nearby parking options",
 
-  "reservas_Titulo": "Make a Reservation",
-  "reservas_Descripcion": "Book a table to enjoy our delicious dishes and sausages.",
+  "reservas_Titulo_Texto1": "Reserve at",
+  "reservas_Titulo_Texto2": "Paraíso del Jamón",
+  "reservas_Texto1": "Although we usually don't take lunch reservations, if you're a large group or planning a celebration, feel free to contact us to reserve and enjoy our delicious dishes and cured meats.",
+  "reservas_Texto2": "Please call the restaurant where you'd like to make a reservation and ask to speak with the manager. The phone numbers are listed below, and you can find more information about each restaurant in the Restaurants section.",
 
   "carta-menu_Titulo": "Restaurant Menu",
   "carta-menu_Descripcion": "Explore our menu to see all the dishes we offer.",

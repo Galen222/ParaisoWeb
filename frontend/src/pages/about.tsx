@@ -12,9 +12,9 @@ interface AboutPageProps {
 }
 
 // Define el tipo del componente para incluir `pageTitletext`
-type AboutComponent = ComponentType<AboutPageProps> & { pageTitletext?: string };
+type AboutPageComponent = ComponentType<AboutPageProps> & { pageTitletext?: string };
 
-const AboutPage: AboutComponent = ({ loadingMessages }: AboutPageProps) => {
+const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
   const intl = useIntl(); // Inicializa el hook de internacionalización para usar en este componente
 
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
