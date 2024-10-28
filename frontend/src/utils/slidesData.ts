@@ -234,16 +234,4 @@ export const slidesData = (intl: IntlShape): { [key: string]: Slide[] } => ({
       alt: intl.formatMessage({ id: "carousel_SanBernardo_Alt1" }),
     },
   ],
-  "carta-menu": [
-    {
-      type: "image",
-      src: "/images/carousel/carta-menu-1.jpg",
-      alt: intl.formatMessage({ id: "carousel_CartaMenu_Alt1" }),
-    },
-    {
-      type: "text",
-      content: intl.formatMessage({ id: "carousel_CartaMenu_Texto1" }),
-    },
-    // Añade más diapositivas para "carta-menu"
-  ],
 });

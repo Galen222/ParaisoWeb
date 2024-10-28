@@ -2,7 +2,7 @@
   "Navbar_inicio": "Home",
   "Navbar_restaurantes": "Restaurants",
   "Navbar_reservas": "Reservations",
-  "Navbar_carta-menu": "Menu",
+  "Navbar_gastronomia": "Menu",
   "Navbar_charcuteria": "Charcuterie",
   "Navbar_about": "Us",
   "Navbar_blog": "Blog",
@@ -73,9 +73,9 @@
   "reservas_Texto1": "Although we usually don't take lunch reservations, if you're a large group or planning a celebration, feel free to contact us to reserve and enjoy our delicious dishes and cured meats.",
   "reservas_Texto2": "Please call the restaurant where you wish to make a reservation and ask to speak with the manager. The phone numbers are listed below, and you can find more information about each restaurant in the Restaurants section.",
 
-  "carta_Titulo_Texto1": "Menu of",
-  "carta_Titulo_Texto2": "Paraíso del Jamón",
-  "carta-menu_Descripcion": "Explore our menu to see all the dishes we offer.",
+  "gastronomia_Titulo_Texto1": "Menu of",
+  "gastronomia_Titulo_Texto2": "Paraíso del Jamón",
+  "gastronomia-menu_Descripcion": "Explore our menu to see all the dishes we offer.",
 
   "charcuteria_Titulo_Texto1": "Charcuterie of",
   "charcuteria_Titulo_Texto2": "Paraíso del Jamón",

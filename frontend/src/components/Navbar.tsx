@@ -125,8 +125,8 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
             <Link href="/reservas" onClick={closeMobileMenu}>
               {intl.formatMessage({ id: "Navbar_reservas" })}
             </Link>
-            <Link href="/carta-menu" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "Navbar_carta-menu" })}
+            <Link href="/gastronomia" onClick={closeMobileMenu}>
+              {intl.formatMessage({ id: "Navbar_gastronomia" })}
             </Link>
             <Link href="/charcuteria" onClick={closeMobileMenu}>
               {intl.formatMessage({ id: "Navbar_charcuteria" })}

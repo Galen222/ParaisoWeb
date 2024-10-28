@@ -6,20 +6,20 @@ import Loader from "../components/Loader";
 import type { ComponentType } from "react";
 import useScrollToTop from "../hooks/useScrollToTop";
 import Carousel from "../components/Carousel";
-import styles from "../styles/carta.module.css"; // Importa los estilos específicos para la página 'Carta'.
+import styles from "../styles/gastronomia.module.css"; // Importa los estilos específicos para la página 'Gastronomia'.
 
-interface CartaPageProps {
+interface GastronomiaPageProps {
   loadingMessages: boolean; // Nuevo prop para el estado de carga
 }
 
-type CartaPageComponent = ComponentType<CartaPageProps> & { pageTitleText?: string };
+type GastronomiaPageComponent = ComponentType<GastronomiaPageProps> & { pageTitleText?: string };
 
-// Define el componente funcional CartaPage utilizando una función flecha.
-const CartaPage: CartaPageComponent = ({ loadingMessages }: CartaPageProps) => {
+// Define el componente funcional GastronomiaPage utilizando una función flecha.
+const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: GastronomiaPageProps) => {
   const intl = useIntl(); // Inicializa el hook de internacionalización para usarlo en este componente.
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
-  useVisitedPageTracking("carta-menu");
-  useVisitedPageTrackingGA("carta-menu");
+  useVisitedPageTracking("gastronomia");
+  useVisitedPageTrackingGA("gastronomia");
 
   if (loadingMessages) {
     return <Loader />;
@@ -28,7 +28,7 @@ const CartaPage: CartaPageComponent = ({ loadingMessages }: CartaPageProps) => {
   // Renderiza el contenido del componente.
   return (
     <div className="pageContainer">
-      <p>{intl.formatMessage({ id: "carta-menu_Descripcion" })}</p>
+      <p>{intl.formatMessage({ id: "gastronomia-menu_Descripcion" })}</p>
       {isScrollButtonVisible && (
         <button onClick={scrollToTop} className="scrollTop">
           <img src="/images/web/flechaArriba.png" alt="Subir" />
@@ -39,6 +39,6 @@ const CartaPage: CartaPageComponent = ({ loadingMessages }: CartaPageProps) => {
   );
 };
 
-CartaPage.pageTitleText = "carta";
+GastronomiaPage.pageTitleText = "gastronomia";
 
-export default CartaPage; // Exporta el componente CartaPage para su uso en otras partes de la aplicación.
+export default GastronomiaPage; // Exporta el componente GastronomiaPage para su uso en otras partes de la aplicación.

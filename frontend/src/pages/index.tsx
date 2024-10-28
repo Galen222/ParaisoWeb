@@ -31,7 +31,8 @@ const Home: HomeComponent = ({ loadingMessages }) => {
   return (
     <div className="pageContainer">
       <div>
-        <h2 className="text-center">{intl.formatMessage({ id: "inicio_Texto1" })}</h2>
+        <h1 className="text-center">{intl.formatMessage({ id: "inicio_Texto1" })}</h1>
+        <br></br>
         <p>{intl.formatMessage({ id: "inicio_Texto2" })}</p>
       </div>
       <div>
