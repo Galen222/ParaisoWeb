@@ -18,7 +18,7 @@
   "inicio_Titulo_Texto1": "Willkommen im ",
   "inicio_Titulo_Texto2": "Paraíso del Jamón",
   "inicio_Texto1": "Ein Paradies in Ihrer Nähe!",
-  "inicio_Texto2": "Auf unserer Website finden Sie Informationen über unsere Restaurants, die Speisekarte, unsere Geschichte, unsere iberischen Wurstwaren in der Feinkostabteilung und können mit uns in Kontakt treten.",
+  "inicio_Texto2": "Auf unserer Website finden Sie Informationen über unsere Restaurants, unsere Gastronomie, unsere Geschichte, unsere iberischen Wurstwaren in der Feinkostabteilung und können mit uns in Kontakt treten.",
 
   "san-bernardo_Texto": "Im Herzen Madrids gelegen, nur wenige Schritte von Sol entfernt, bietet es Ihnen authentische und traditionelle spanische Küche. Die Nähe zur Gran Vía und zur Plaza de España ermöglicht es den Besuchern, ein unvergleichliches Kultur- und Freizeitangebot zu genießen.",
   "san-bernardo_Titulo_Texto1": "Paraíso del Jamón I",
@@ -73,7 +73,7 @@
   "reservas_Texto1": "Normalerweise nehmen wir zur Mittagszeit keine Tischreservierungen an, aber wenn Sie eine größere Gruppe sind oder eine Feier planen, können Sie uns gerne kontaktieren, um zu reservieren und unsere köstlichen Gerichte und Wurstwaren zu genießen.",
   "reservas_Texto2": "Bitte rufen Sie das Restaurant an, in dem Sie reservieren möchten, und bitten Sie darum, mit dem Verantwortlichen zu sprechen. Die Telefonnummern sind unten aufgeführt, und weitere Informationen zu jedem Restaurant finden Sie im Bereich Restaurants.",
 
-  "gastronomia_Titulo_Texto1": "Speisekarte von",
+  "gastronomia_Titulo_Texto1": "Gastronomie von",
   "gastronomia_Titulo_Texto2": "Paraíso del Jamón",
   "gastronomia-menu_Descripcion": "Entdecken Sie unsere Speisekarte, um alle angebotenen Gerichte zu sehen.",
 
@@ -114,7 +114,7 @@
   "contacto_Informacion_bravo-murillo_Telefono_Texto": "Telefon: ",
   "contacto_Informacion_bravo-murillo_Telefono_Numero": "+34 553 97 83",
   "contacto_Informacion_bravo-murillo_Horario_Texto": "Öffnungszeiten: ",
-  "contacto_Informacion_bravo-murillo_Horario_Numero": "Montag bis Sonntag von 7:00 Uhr bis 24:00 Uhr.",
+  "contacto_Informacion_bravo-murillo_Horario_Numero": "Montag bis Sonntag von 7:00 Uhr bis 24:00 Uhr. Montags geschlossen.",
   "contacto_Informacion_reina-victoria_Titulo": "Paraiso del Jamón III",
   "contacto_Informacion_reina-victoria_Direccion_Texto": "Adresse: ",
   "contacto_Informacion_reina-victoria_Direccion_Calle": "Reina Victoria, 3, 28003 Madrid, Spanien",

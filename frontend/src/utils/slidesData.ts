@@ -234,4 +234,55 @@ export const slidesData = (intl: IntlShape): { [key: string]: Slide[] } => ({
       alt: intl.formatMessage({ id: "carousel_SanBernardo_Alt1" }),
     },
   ],
+  gastronomia1: [
+    {
+      type: "image",
+      src: "/images/gastronomia/raciones1.png",
+      alt: intl.formatMessage({ id: "carousel_SanBernardo_Alt1" }),
+    },
+    {
+      type: "image",
+      src: "/images/gastronomia/raciones2.png",
+      alt: intl.formatMessage({ id: "carousel_SanBernardo_Alt1" }),
+    },
+    {
+      type: "image",
+      src: "/images/gastronomia/raciones3.png",
+      alt: intl.formatMessage({ id: "carousel_SanBernardo_Alt2" }),
+    },
+  ],
+  gastronomia2: [
+    {
+      type: "image",
+      src: "/images/gastronomia/combinados1.png",
+      alt: intl.formatMessage({ id: "carousel_SanBernardo_Alt1" }),
+    },
+    {
+      type: "image",
+      src: "/images/gastronomia/combinados2.png",
+      alt: intl.formatMessage({ id: "carousel_SanBernardo_Alt1" }),
+    },
+    {
+      type: "image",
+      src: "/images/gastronomia/combinados3.png",
+      alt: intl.formatMessage({ id: "carousel_SanBernardo_Alt2" }),
+    },
+  ],
+  gastronomia3: [
+    {
+      type: "image",
+      src: "/images/gastronomia/bocadillos1.png",
+      alt: intl.formatMessage({ id: "carousel_SanBernardo_Alt1" }),
+    },
+    {
+      type: "image",
+      src: "/images/gastronomia/bocadillos2.png",
+      alt: intl.formatMessage({ id: "carousel_SanBernardo_Alt1" }),
+    },
+    {
+      type: "image",
+      src: "/images/gastronomia/bocadillos3.png",
+      alt: intl.formatMessage({ id: "carousel_SanBernardo_Alt2" }),
+    },
+  ],
 });

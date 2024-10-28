@@ -18,7 +18,7 @@
   "inicio_Titulo_Texto1": "Welcome to ",
   "inicio_Titulo_Texto2": "Paraíso del Jamón",
   "inicio_Texto1": "A paradise near you!",
-  "inicio_Texto2": "On our website, you can find information about our restaurants, menu, learn about our history, see the Iberian cured meats in our charcuterie, or contact us.",
+  "inicio_Texto2": "On our website, you can find information about our restaurants, Gastronomy, learn about our history, see the Iberian cured meats in our charcuterie, or contact us.",
 
   "san-bernardo_Texto": "Located in the heart of Madrid, just steps from Sol, offering you authentic and traditional Spanish cuisine. Its proximity to Gran Vía and Plaza de España allows visitors to enjoy an unmatched cultural and leisure offer.",
   "san-bernardo_Titulo_Texto1": "Paraíso del Jamón I",
@@ -73,7 +73,7 @@
   "reservas_Texto1": "Although we usually don't take lunch reservations, if you're a large group or planning a celebration, feel free to contact us to reserve and enjoy our delicious dishes and cured meats.",
   "reservas_Texto2": "Please call the restaurant where you wish to make a reservation and ask to speak with the manager. The phone numbers are listed below, and you can find more information about each restaurant in the Restaurants section.",
 
-  "gastronomia_Titulo_Texto1": "Menu of",
+  "gastronomia_Titulo_Texto1": "Gastronomy of",
   "gastronomia_Titulo_Texto2": "Paraíso del Jamón",
   "gastronomia-menu_Descripcion": "Explore our menu to see all the dishes we offer.",
 
@@ -114,7 +114,7 @@
   "contacto_Informacion_bravo-murillo_Telefono_Texto": "Phone: ",
   "contacto_Informacion_bravo-murillo_Telefono_Numero": "+34 553 97 83",
   "contacto_Informacion_bravo-murillo_Horario_Texto": "Hours: ",
-  "contacto_Informacion_bravo-murillo_Horario_Numero": "Monday to Sunday from 7:00 AM to 12:00 AM.",
+  "contacto_Informacion_bravo-murillo_Horario_Numero": "Monday to Sunday from 7:00 AM to 12:00 AM. Closed on Mondays.",
   "contacto_Informacion_reina-victoria_Titulo": "Paraiso del Jamón III",
   "contacto_Informacion_reina-victoria_Direccion_Texto": "Address: ",
   "contacto_Informacion_reina-victoria_Direccion_Calle": "Reina Victoria, 3, 28003 Madrid, Spain",

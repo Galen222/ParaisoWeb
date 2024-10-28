@@ -1,0 +1,45 @@
+/* Contenedor de imágenes para escritorio */
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 20px;
+}
+
+.responsiveImage {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.responsiveImage:hover {
+  transform: scale(1.15);
+}
+
+/* Ocultar el carrusel en modo escritorio en la página de gastronomía */
+.mobileCarousel {
+  display: none !important;
+}
+
+/* MODO TABLET */
+@media (max-width: 1024px) {
+  .downloadMenuButton {
+    width: 300px;
+  }
+}
+
+/* MODO MOVIL */
+@media (max-width: 767px) {
+  /* Ocultar las imágenes en línea en móvil */
+  .imageContainer {
+    display: none;
+  }
+
+  /* Mostrar el carrusel solo en móvil en la página de gastronomía */
+  .mobileCarousel {
+    display: block !important;
+  }
+}

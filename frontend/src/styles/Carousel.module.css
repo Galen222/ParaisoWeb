@@ -22,10 +22,16 @@
   align-items: center; /* Centrar verticalmente */
   /* border: 1px solid #4a403a; */
 }
-
+/* Asegurar que solo se muestren los carousels específicos */
+.carouselContainer {
+  display: none;
+}
 /* MODO MOVIL */
 @media (max-width: 767px) {
   .carouselContainer {
     width: 90%;
+  }
+  .carouselContainer {
+    display: block;
   }
 }
