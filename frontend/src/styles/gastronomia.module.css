@@ -1,4 +1,15 @@
-/* Contenedor de imágenes para escritorio */
+.downloadMenuButton {
+  width: 400px;
+  --bs-btn-bg: #4a403a;
+  --bs-btn-border-color: #4a403a;
+  --bs-btn-hover-bg: #198754;
+  --bs-btn-hover-border-color: #198754;
+  --bs-btn-active-bg: #198754;
+  --bs-btn-active-border-color: #198754;
+  --bs-btn-disabled-bg: #4a403a;
+  --bs-btn-disabled-border-color: #4a403a;
+}
+
 .imageContainer {
   display: flex;
   justify-content: center;
@@ -33,6 +44,9 @@
 
 /* MODO MOVIL */
 @media (max-width: 767px) {
+  .downloadMenuButton {
+    width: 300px;
+  }
   /* Ocultar las imágenes en línea en móvil */
   .imageContainer {
     display: none;
