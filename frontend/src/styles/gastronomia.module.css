@@ -32,7 +32,7 @@
 
 /* Ocultar el carrusel en modo escritorio en la página de gastronomía */
 .mobileCarousel {
-  display: none !important;
+  display: none;
 }
 
 /* MODO TABLET */
@@ -54,6 +54,6 @@
 
   /* Mostrar el carrusel solo en móvil en la página de gastronomía */
   .mobileCarousel {
-    display: block !important;
+    display: block;
   }
 }
