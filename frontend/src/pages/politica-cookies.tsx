@@ -59,7 +59,7 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
   };
 
   const mobileTable = (
-    <table className="table table-dark table-striped-columns">
+    <table className="table table-dark table-striped-columns rounded-3 overflow-hidden">
       <tbody>
         {Array.from({ length: 4 }, (_, i) => (
           <React.Fragment key={i}>
@@ -91,7 +91,7 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
   );
 
   const desktopTable = (
-    <table className="table table-dark table-striped-columns">
+    <table className="table table-dark table-striped-columns rounded-3 overflow-hidden">
       <thead>
         <tr>
           <th>Nombre</th>

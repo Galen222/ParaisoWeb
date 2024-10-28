@@ -20,7 +20,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0) 60%, rgba(248, 237, 209, 0.8) 90%, #f8edd1 100%);
+  background: linear-gradient(to bottom, rgba(241, 238, 227, 0) 60%, rgba(241, 238, 227, 0.8) 90%, #f1eee3 100%);
   pointer-events: none; /* Asegura que la capa no interfiera con el contenido interactivo */
 }
 
@@ -343,11 +343,11 @@
     /* background-image: none; */
     height: auto; /* Ajusta la altura en móvil */
   }
-
+  /*
   .navbar::before {
-    content: none; /* Elimina el pseudo-elemento en pantallas móviles */
+    content: none;
   }
-
+*/
   .navbarTop {
     width: 100%;
     flex-direction: column;
