@@ -17,7 +17,7 @@
 
 .animationFont {
   white-space: nowrap; /* Evita que el texto se rompa en múltiples líneas */
-  font-size: 90px;
+  font-size: 86px;
   color: white;
 }
 
@@ -35,6 +35,7 @@
 /* MODO MOVIL */
 @media (max-width: 767px) {
   .animationFont {
-    font-size: 40px;
+    font-size: 36px;
+    color: #4a403a;
   }
 }

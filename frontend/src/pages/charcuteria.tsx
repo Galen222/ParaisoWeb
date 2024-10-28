@@ -28,13 +28,16 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
   // Renderiza la interfaz de usuario para la página de Charcutería.
   return (
     <div className="pageContainer">
-      <p>{intl.formatMessage({ id: "charcuteria_Descripcion" })}</p>
-      {isScrollButtonVisible && (
-        <button onClick={scrollToTop} className="scrollTop">
-          <img src="/images/web/flechaArriba.png" alt="Subir" />
-        </button>
-      )}
-      <br></br>
+      <div>
+        <p>{intl.formatMessage({ id: "charcuteria_Descripcion" })}</p>
+      </div>
+      <div className="mb-25p">
+        {isScrollButtonVisible && (
+          <button onClick={scrollToTop} className="scrollTop">
+            <img src="/images/web/flechaArriba.png" alt="Subir" />
+          </button>
+        )}
+      </div>
     </div>
   );
 };

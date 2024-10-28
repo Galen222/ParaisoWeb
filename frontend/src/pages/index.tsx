@@ -31,18 +31,21 @@ const Home: HomeComponent = ({ loadingMessages }) => {
   return (
     <div className="pageContainer">
       <div>
-        <h1 className="text-center">{intl.formatMessage({ id: "inicio_Texto1" })}</h1>
-        <br></br>
-        <p>{intl.formatMessage({ id: "inicio_Texto2" })}</p>
+        <h1 className="text-center">{intl.formatMessage({ id: "inicio_Titulo1" })}</h1>
+      </div>
+      <div className="mt-25p">
+        <p className="ti-20p">{intl.formatMessage({ id: "inicio_Texto1" })}</p>
       </div>
       <div>
         <Carousel carouselType="inicio" />
       </div>
-      {isScrollButtonVisible && (
-        <button onClick={scrollToTop} className="scrollTop">
-          <img src="/images/web/flechaArriba.png" alt="Subir" />
-        </button>
-      )}
+      <div className="mb-25p">
+        {isScrollButtonVisible && (
+          <button onClick={scrollToTop} className="scrollTop">
+            <img src="/images/web/flechaArriba.png" alt="Subir" />
+          </button>
+        )}
+      </div>
     </div>
   );
 };

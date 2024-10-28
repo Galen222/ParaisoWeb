@@ -41,7 +41,7 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
           <li>{intl.formatMessage({ id: "politicaPrivacidad_DatosIdentificativos_Punto1" })}</li>
           <li>{intl.formatMessage({ id: "politicaPrivacidad_DatosIdentificativos_Punto2" })}</li>
           <li>{intl.formatMessage({ id: "politicaPrivacidad_DatosIdentificativos_Punto3" })}</li>
-          <li>{intl.formatMessage({ id: "politicaPrivacidad_DatosIdentificativos_Punto4" })}</li>
+          {/*<li>{intl.formatMessage({ id: "politicaPrivacidad_DatosIdentificativos_Punto4" })}</li> */}
           <li>{intl.formatMessage({ id: "politicaPrivacidad_DatosIdentificativos_Punto5" })}</li>
           <li>{intl.formatMessage({ id: "politicaPrivacidad_DatosIdentificativos_Punto6" })}</li>
           <li>

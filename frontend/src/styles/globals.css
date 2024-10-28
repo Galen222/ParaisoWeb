@@ -60,6 +60,10 @@ body {
   margin-bottom: 10px;
 }
 
+.mb-25p {
+  margin-bottom: 25px;
+}
+
 .mb-40p {
   margin-bottom: 40px;
 }
@@ -136,20 +140,20 @@ body {
     width: 100%;
   }
 }
+
 /* MODO MOVIL */
 @media (max-width: 767px) {
   .pageContainer h3 {
     font-weight: bold;
     text-align: center;
   }
-}
+  .ti-20p {
+    text-indent: 0px;
+  }
 
-.ti-20p {
-  text-indent: 0px;
-}
-
-.slick-dots {
-  bottom: 15px; /* Ajusta este valor según lo cerca que quieras los puntos de la imagen */
+  .slick-dots {
+    bottom: 15px; /* Ajusta este valor según lo cerca que quieras los puntos de la imagen */
+  }
 }
 
 /* MODO MOVIL PANTALLA PEQUEÑA */

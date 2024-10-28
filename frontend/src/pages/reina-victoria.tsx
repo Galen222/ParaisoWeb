@@ -38,28 +38,25 @@ const ReinaVictoriaPage: ReinaVictoriaPageComponent = ({ loadingMessages, mapLoc
   return (
     <div className="pageContainer">
       <div>{intl.formatMessage({ id: "reina-victoria_Texto" })}</div>
-      <br></br>
-      <div>
+      <div className="mt-25p">
         <Localization localizationName="reina-victoria" />
       </div>
-      <br></br>
-      <div>
+      <div className="mt-25p">
         <Carousel carouselType="reina-victoria" />
       </div>
-      <br></br>
-      <div>
+      <div className="mt-25p">
         <Transport transportName="reina-victoria" />
       </div>
-      <br></br>
-      <div>
+      <div className="mt-25p">
         <Map locationKey={locationKey} mapLocale={mapLocale} />
       </div>
-      {isScrollButtonVisible && (
-        <button onClick={scrollToTop} className="scrollTop">
-          <img src="/images/web/flechaArriba.png" alt="Subir" />
-        </button>
-      )}
-      <br></br>
+      <div className="mb-25p">
+        {isScrollButtonVisible && (
+          <button onClick={scrollToTop} className="scrollTop">
+            <img src="/images/web/flechaArriba.png" alt="Subir" />
+          </button>
+        )}
+      </div>
     </div>
   );
 };

@@ -30,22 +30,22 @@ const Reservas: ReservasPageComponent = ({ loadingMessages }: ReservasProps) => 
   return (
     <div className="pageContainer">
       <div>
-        <p>{intl.formatMessage({ id: "reservas_Texto1" })}</p>
-        <p>{intl.formatMessage({ id: "reservas_Texto2" })}</p>
+        <p className="ti-20p">{intl.formatMessage({ id: "reservas_Texto1" })}</p>
+        <p className="ti-20p">{intl.formatMessage({ id: "reservas_Texto2" })}</p>
       </div>
-      <br></br>
-      <div>
+      <div className="mt-25p">
         <Localization localizationName="san-bernardo" />
         <Localization localizationName="bravo-murillo" />
         <Localization localizationName="reina-victoria" />
         <Localization localizationName="arenal" />
       </div>
-      {isScrollButtonVisible && (
-        <button onClick={scrollToTop} className="scrollTop">
-          <img src="/images/web/flechaArriba.png" alt="Subir" />
-        </button>
-      )}
-      <br></br>
+      <div className="mb-25p">
+        {isScrollButtonVisible && (
+          <button onClick={scrollToTop} className="scrollTop">
+            <img src="/images/web/flechaArriba.png" alt="Subir" />
+          </button>
+        )}
+      </div>
     </div>
   );
 };
