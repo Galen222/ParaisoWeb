@@ -39,7 +39,7 @@ const Home: HomeComponent = ({ loadingMessages }) => {
       <div>
         <Carousel carouselType="inicio" />
       </div>
-      <div className="mb-25p">
+      <div>
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />

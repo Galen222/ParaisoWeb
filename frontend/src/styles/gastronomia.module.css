@@ -46,9 +46,6 @@
 
 /* MODO MOVIL */
 @media (max-width: 767px) {
-  .downloadMenuButton {
-    width: 300px;
-  }
   /* Ocultar las imágenes en línea en móvil */
   .imageContainer {
     display: none;

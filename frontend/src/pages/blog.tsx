@@ -30,7 +30,7 @@ const BlogPage = ({ loadingMessages }: BlogPageProps) => {
       <div>
         <p>{intl.formatMessage({ id: "blog_Descripcion" })}</p>
       </div>
-      <div className="mb-25p">
+      <div>
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />

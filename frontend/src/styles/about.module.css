@@ -1,1 +1,44 @@
+.listas {
+  margin-left: 40px;
+  margin-right: 60px;
+}
 
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 20px;
+  margin-top: 10px;
+  margin-bottom: 25px;
+}
+
+.responsiveImage {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.responsiveImage:hover {
+  transform: scale(1.15);
+}
+
+/* Ocultar el carrusel en modo escritorio en la página de gastronomía */
+.mobileCarousel {
+  display: none;
+}
+
+/* MODO MOVIL */
+@media (max-width: 767px) {
+  /* Ocultar las imágenes en línea en móvil */
+  .imageContainer {
+    display: none;
+  }
+
+  /* Mostrar el carrusel solo en móvil en la página de gastronomía */
+  .mobileCarousel {
+    display: block;
+  }
+}

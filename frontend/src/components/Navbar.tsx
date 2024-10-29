@@ -86,11 +86,11 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
         ) : (
           <div className={styles.links}>
             <Link href="/" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "Navbar_inicio" })}
+              {intl.formatMessage({ id: "navbar_inicio" })}
             </Link>
             {!isMobile ? (
               <div className={styles.linksDropdown} onMouseEnter={openRestaurantsMenu} onMouseLeave={closeRestaurantsMenu} onClick={handleDropdownClick}>
-                <span className={styles.noLink}>{intl.formatMessage({ id: "Navbar_restaurantes" })}</span>
+                <span className={styles.noLink}>{intl.formatMessage({ id: "navbar_restaurantes" })}</span>
                 <div className={`${styles.dropdown} ${restaurantsMenu ? styles.show : styles.hide}`}>
                   <Link href="/san-bernardo" onClick={closeRestaurantsMenu}>
                     San Bernardo
@@ -123,22 +123,22 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
               </div>
             )}
             <Link href="/reservas" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "Navbar_reservas" })}
+              {intl.formatMessage({ id: "navbar_reservas" })}
             </Link>
             <Link href="/gastronomia" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "Navbar_gastronomia" })}
+              {intl.formatMessage({ id: "navbar_gastronomia" })}
             </Link>
             <Link href="/charcuteria" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "Navbar_charcuteria" })}
+              {intl.formatMessage({ id: "navbar_charcuteria" })}
             </Link>
             <Link href="/about" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "Navbar_about" })}
+              {intl.formatMessage({ id: "navbar_about" })}
             </Link>
             <Link href="/blog" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "Navbar_blog" })}
+              {intl.formatMessage({ id: "navbar_blog" })}
             </Link>
             <Link href="/contacto" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "Navbar_contacto" })}
+              {intl.formatMessage({ id: "navbar_contacto" })}
             </Link>
           </div>
         )}

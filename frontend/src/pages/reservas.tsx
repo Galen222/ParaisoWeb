@@ -39,7 +39,7 @@ const Reservas: ReservasPageComponent = ({ loadingMessages }: ReservasProps) => 
         <Localization localizationName="reina-victoria" />
         <Localization localizationName="arenal" />
       </div>
-      <div className="mb-25p">
+      <div>
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />

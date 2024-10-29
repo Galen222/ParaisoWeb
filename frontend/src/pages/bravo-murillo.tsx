@@ -50,7 +50,7 @@ const BravoMurilloPage: BravoMurilloPageComponent = ({ loadingMessages, mapLocal
       <div className="mt-25p">
         <Map locationKey={locationKey} mapLocale={mapLocale} />
       </div>
-      <div className="mb-25p">
+      <div>
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />

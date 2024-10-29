@@ -104,9 +104,9 @@ const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: Gastrono
         <h3 className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo3" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto3" })}</p>
         <div className={`${styles.imageContainer}`}>
-          <img src="/images/gastronomia/raciones1.png" alt="Gastronomia 1" className={styles.responsiveImage} />
-          <img src="/images/gastronomia/raciones2.png" alt="Gastronomia 2" className={styles.responsiveImage} />
-          <img src="/images/gastronomia/raciones3.png" alt="Gastronomia 3" className={styles.responsiveImage} />
+          <img src="/images/gastronomia/raciones1.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt1" })} className={styles.responsiveImage} />
+          <img src="/images/gastronomia/raciones2.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt2" })} className={styles.responsiveImage} />
+          <img src="/images/gastronomia/raciones3.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt3" })} className={styles.responsiveImage} />
         </div>
         <div className={styles.mobileCarousel}>
           <Carousel carouselType="gastronomia1" />
@@ -116,9 +116,9 @@ const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: Gastrono
         <h3 className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo4" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto4" })}</p>
         <div className={`${styles.imageContainer}`}>
-          <img src="/images/gastronomia/combinados1.png" alt="Gastronomia 1" className={styles.responsiveImage} />
-          <img src="/images/gastronomia/combinados2.png" alt="Gastronomia 2" className={styles.responsiveImage} />
-          <img src="/images/gastronomia/combinados3.png" alt="Gastronomia 3" className={styles.responsiveImage} />
+          <img src="/images/gastronomia/combinados1.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt4" })} className={styles.responsiveImage} />
+          <img src="/images/gastronomia/combinados2.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt5" })} className={styles.responsiveImage} />
+          <img src="/images/gastronomia/combinados3.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt6" })} className={styles.responsiveImage} />
         </div>
         <div className={styles.mobileCarousel}>
           <Carousel carouselType="gastronomia2" />
@@ -128,15 +128,15 @@ const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: Gastrono
         <h3 className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo5" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto5" })}</p>
         <div className={`${styles.imageContainer}`}>
-          <img src="/images/gastronomia/bocadillos1.png" alt="Gastronomia 1" className={styles.responsiveImage} />
-          <img src="/images/gastronomia/bocadillos2.png" alt="Gastronomia 2" className={styles.responsiveImage} />
-          <img src="/images/gastronomia/bocadillos3.png" alt="Gastronomia 3" className={styles.responsiveImage} />
+          <img src="/images/gastronomia/bocadillos1.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt7" })} className={styles.responsiveImage} />
+          <img src="/images/gastronomia/bocadillos2.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt8" })} className={styles.responsiveImage} />
+          <img src="/images/gastronomia/bocadillos3.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt9" })} className={styles.responsiveImage} />
         </div>
         <div className={styles.mobileCarousel}>
           <Carousel carouselType="gastronomia3" />
         </div>
       </div>
-      <div className="mb-25p">
+      <div>
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
