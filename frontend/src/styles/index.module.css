@@ -5,6 +5,7 @@
   background-position: center;
   border-radius: 10px;
   margin-top: 40px;
+  margin-bottom: 40px;
   box-sizing: border-box;
   display: flex;
   justify-content: center;
@@ -213,7 +214,7 @@
   }
 
   .restaurantesHighlight,
-  .nosotrosHightlight {
+  .nosotrosHighlight {
     font-size: 36px;
   }
 
