@@ -10,3 +10,19 @@
 .link:hover {
   text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
 }
+
+/* MODO MOVIL */
+@media (max-width: 767px) {
+  /* Reducir los márgenes laterales del contenedor ul */
+  .listas {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  /* Aumentar el ancho de los elementos li */
+  .listas li {
+    width: 100%; /* Asegura que cada li ocupe todo el ancho disponible */
+    padding-left: 0; /* Elimina padding adicional si existe */
+    padding-right: 0;
+  }
+}
