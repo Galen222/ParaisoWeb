@@ -39,33 +39,43 @@ const Home: HomeComponent = ({ loadingMessages }) => {
       <div>
         <Carousel carouselType="inicio" />
       </div>
-      {/* Nuevo Marco para Restaurantes */}
-      <div className={styles.restaurantsContainer}>
-        <div className={styles.frameContent}>
-          <div className={styles.textSection}>
-            <h1 className={styles.title}>
-              {intl.formatMessage({ id: "inicio_Restaurantes_Texto1" })}
-              <br />
-              <span className={styles.highlight}>{intl.formatMessage({ id: "inicio_Restaurantes_Texto2" })}</span>
-            </h1>
+      {/* Banner para Restaurantes */}
+      <div className={styles.restaurantesContainer}>
+        <div className={styles.restaurantesframeContent}>
+          <div className={styles.restaurantesTextSection}>
+            <h1 className={styles.restaurantesTitle}>{intl.formatMessage({ id: "inicio_Restaurantes_Texto1" })}</h1>
+            <h1 className={styles.restaurantesHighlight}>{intl.formatMessage({ id: "inicio_Restaurantes_Texto2" })}</h1>
           </div>
-          <div className={styles.buttonsSection}>
+          <div className={styles.restaurantesButtonsSection}>
             <Link href="/san-bernardo" passHref>
-              <button className={`btn btn-primary mx-auto ${styles.restaurantButton}`}>San Bernardo</button>
+              <button className={`btn btn-primary mx-auto ${styles.inicioButton}`}>San Bernardo</button>
             </Link>
             <Link href="/bravo-murillo" passHref>
-              <button className={`btn btn-primary mx-auto ${styles.restaurantButton}`}>Bravo Murillo</button>
+              <button className={`btn btn-primary mx-auto ${styles.inicioButton}`}>Bravo Murillo</button>
             </Link>
             <Link href="/reina-victoria" passHref>
-              <button className={`btn btn-primary mx-auto ${styles.restaurantButton}`}>Reina Victoria</button>
+              <button className={`btn btn-primary mx-auto ${styles.inicioButton}`}>Reina Victoria</button>
             </Link>
             <Link href="/arenal" passHref>
-              <button className={`btn btn-primary mx-auto ${styles.restaurantButton}`}>Arenal</button>
+              <button className={`btn btn-primary mx-auto ${styles.inicioButton}`}>Arenal</button>
             </Link>
           </div>
         </div>
       </div>
-      {/* Fin del Nuevo Marco */}
+      {/* Banner para Gastronomia */}
+      <div className={styles.gastronomiaContainer}>
+        <div className={styles.gastronomiaframeContent}>
+          <div className={styles.gastronomiaButtonsSection}>
+            <Link href="/gastronomia" passHref>
+              <button className={`btn btn-primary mx-auto ${styles.inicioButton}`}>{intl.formatMessage({ id: "inicio_Gastronomia_Texto1" })}</button>
+            </Link>
+          </div>
+          <div className={styles.gastronomiaTextSection}>
+            <h1 className={styles.gastronomiaTitle}>{intl.formatMessage({ id: "inicio_Gastronomia_Texto2" })}</h1>
+            <h1 className={styles.gastronomiaHighlight}>{intl.formatMessage({ id: "inicio_Gastronomia_Texto3" })}</h1>
+          </div>
+        </div>
+      </div>
       <div>
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollTop">

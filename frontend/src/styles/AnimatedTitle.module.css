@@ -19,6 +19,7 @@
   white-space: nowrap; /* Evita que el texto se rompa en múltiples líneas */
   font-size: 86px;
   color: white;
+  text-shadow: 1px 1px 2px #4a403a, -1px -1px 2px #4a403a, 1px -1px 2px #4a403a, -1px 1px 2px #4a403a;
 }
 
 /* MODO TABLET */
@@ -37,5 +38,6 @@
   .animationFont {
     font-size: 36px;
     color: #4a403a;
+    text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white;
   }
 }

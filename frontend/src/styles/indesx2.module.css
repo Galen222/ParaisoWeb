@@ -8,6 +8,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 
 .restaurantesContainer {
@@ -22,24 +24,19 @@
   margin-right: auto; /* Centrado horizontal */
 }
 
-.restaurantesframeContent,
-.gastronomiaframeContent {
+.frameContent {
   width: 100%;
-  max-width: 1200px;
+  max-width: 1200px; /* Ajusta según tus necesidades */
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   position: relative;
   box-sizing: border-box;
-  padding-top: 30px;
-  padding-bottom: 30px;
-  /* background-color: chartreuse; */
 }
 
 /* Divisor Vertical */
-.restaurantesframeContent::before,
-.gastronomiaframeContent::before {
+.frameContent::before {
   content: "";
   position: absolute;
   background-color: rgba(255, 255, 255, 0.5);
@@ -53,28 +50,15 @@
 .restaurantesTextSection,
 .gastronomiaTextSection {
   flex: 1;
-  flex-direction: column;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
   color: white;
   text-shadow: 1px 1px 2px #4a403a, -1px -1px 2px #4a403a, 1px -1px 2px #4a403a, -1px 1px 2px #4a403a;
-  /* background-color: chocolate; */
-}
-
-.restaurantesButtonsSection,
-.gastronomiaButtonsSection {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  text-align: center;
   justify-content: center;
-  align-items: center;
-  /* background-color: blueviolet; */
 }
 
 .restaurantesTitle {
   font-size: 40px;
+  line-height: 1.2;
 }
 
 .gastronomiaTitle {
@@ -94,6 +78,16 @@
   font-size: 40px;
 }
 
+.restaurantesButtonsSection,
+.gastronomiaButtonsSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+}
+
 .inicioButton {
   width: 150px; /* Tamaño fijo */
   max-width: 200px;
@@ -110,11 +104,11 @@
 /* Modo Tablet */
 @media (max-width: 1024px) {
   .restaurantesTitle {
-    font-size: 40px;
+    font-size: 36px;
   }
 
   .restauranteshighlight {
-    font-size: 46px;
+    font-size: 40px;
   }
 
   .gastronomiaTitle {
@@ -122,30 +116,19 @@
   }
 
   .gastronomiaHighlight {
-    font-size: 36px;
+    font-size: 34px;
   }
 }
 
 /* Modo Móvil */
 @media (max-width: 767px) {
-  .restaurantesframeContent,
-  .gastronomiaframeContent {
+  .frameContent {
     flex-direction: column;
     border-top: none;
-    padding: 0;
-  }
-
-  .restaurantesframeContent {
-    height: 300px;
-  }
-
-  .gastronomiaframeContent {
-    height: 250px;
   }
 
   /* Divisor horizontal */
-  .restaurantesframeContent::before,
-  .gastronomiaframeContent::before {
+  .frameContent::before {
     width: 100%;
     height: 2px;
     top: 50%;
@@ -154,38 +137,20 @@
   }
 
   .restaurantesTextSection,
-  .gastronomiaTextSection,
-  .restaurantesButtonsSection,
-  .gastronomiaButtonsSection {
-    flex: 0 0 50%; /* Cada sección ocupa el 50% del contenedor */
-    display: flex; /* Asegura que el contenido interno se alinee correctamente */
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .restaurantesTextSection,
   .gastronomiaTextSection {
     color: #4a403a;
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white;
-  }
-
-  .restaurantesButtonsSection {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    padding-top: 20px;
-    padding-bottom: 20px;
-  }
-
-  .gastronomiaButtonsSection {
-    display: flex;
-    flex: 1;
     text-align: center;
     justify-content: center;
-    align-items: center;
   }
+
+  .restaurantesTextSection {
+    padding-bottom: 50px;
+  }
+
   .restaurantesTitle {
     font-size: 30px;
+    line-height: normal;
   }
 
   .restauranteshighlight {
@@ -193,11 +158,28 @@
   }
 
   .gastronomiaTitle {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .gastronomiaHighlight {
-    font-size: 34px;
+    font-size: 28px;
+  }
+
+  .restaurantesButtonsSection {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    justify-items: center;
+  }
+
+  .gastronomiaButtonsSection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .inicioButton {
+    max-width: 100%;
   }
 }
 
