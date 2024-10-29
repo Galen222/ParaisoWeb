@@ -44,9 +44,9 @@
   position: absolute;
   background-color: rgba(255, 255, 255, 0.5);
   width: 2px;
-  height: 100%;
+  height: 90%;
   left: 50%;
-  top: 0;
+  top: 5%;
   transform: translateX(-50%);
 }
 
@@ -146,10 +146,10 @@
   /* Divisor horizontal */
   .restaurantesframeContent::before,
   .gastronomiaframeContent::before {
-    width: 100%;
+    width: 90%;
     height: 2px;
     top: 50%;
-    left: 0;
+    left: 5%;
     transform: translateY(-50%);
   }
 
