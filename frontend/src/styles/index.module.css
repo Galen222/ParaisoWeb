@@ -1,5 +1,6 @@
 .restaurantesContainer,
-.gastronomiaContainer {
+.gastronomiaContainer,
+.nosotrosContainer {
   background-size: cover;
   background-position: center;
   border-radius: 10px;
@@ -22,8 +23,14 @@
   margin-right: auto; /* Centrado horizontal */
 }
 
-.restaurantesframeContent,
-.gastronomiaframeContent {
+.nosotrosContainer {
+  width: 100%;
+  background-image: url("/images/inicio/fondoabout.png");
+}
+
+.restaurantesFrameContent,
+.gastronomiaFrameContent,
+.nosotrosFrameContent {
   width: 100%;
   max-width: 1200px;
   display: flex;
@@ -38,8 +45,9 @@
 }
 
 /* Divisor Vertical */
-.restaurantesframeContent::before,
-.gastronomiaframeContent::before {
+.restaurantesFrameContent::before,
+.gastronomiaFrameContent::before,
+.nosotrosFrameContent::before {
   content: "";
   position: absolute;
   background-color: rgba(255, 255, 255, 0.5);
@@ -51,7 +59,8 @@
 }
 
 .restaurantesTextSection,
-.gastronomiaTextSection {
+.gastronomiaTextSection,
+.nosotrosTextSection {
   flex: 1;
   flex-direction: column;
   text-align: center;
@@ -63,7 +72,8 @@
 }
 
 .restaurantesButtonsSection,
-.gastronomiaButtonsSection {
+.gastronomiaButtonsSection,
+.nosotrosButtonsSection {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -73,7 +83,8 @@
   /* background-color: blueviolet; */
 }
 
-.restaurantesTitle {
+.restaurantesTitle,
+.nosotrosTitle {
   font-size: 40px;
 }
 
@@ -82,11 +93,13 @@
 }
 
 .restaurantesHighlight,
-.gastronomiaHighlight {
+.gastronomiaHighlight,
+.nosotrosHighlight {
   font-weight: bold;
 }
 
-.restaurantesHighlight {
+.restaurantesHighlight,
+.nosotrosHighlight {
   font-size: 50px;
 }
 
@@ -109,11 +122,13 @@
 
 /* Modo Tablet */
 @media (max-width: 1024px) {
-  .restaurantesTitle {
+  .restaurantesTitle,
+  .nosotrosTitle {
     font-size: 40px;
   }
 
-  .restauranteshighlight {
+  .restaurantesHighlight,
+  .nosotrosHighlight {
     font-size: 46px;
   }
 
@@ -128,24 +143,27 @@
 
 /* Modo Móvil */
 @media (max-width: 767px) {
-  .restaurantesframeContent,
-  .gastronomiaframeContent {
+  .restaurantesFrameContent,
+  .gastronomiaFrameContent,
+  .nosotrosFrameContent {
     flex-direction: column;
     border-top: none;
     padding: 0;
   }
 
-  .restaurantesframeContent {
+  .restaurantesFrameContent,
+  .nosotrosFrameContent {
     height: 300px;
   }
 
-  .gastronomiaframeContent {
+  .gastronomiaFrameContent {
     height: 250px;
   }
 
   /* Divisor horizontal */
-  .restaurantesframeContent::before,
-  .gastronomiaframeContent::before {
+  .restaurantesFrameContent::before,
+  .gastronomiaFrameContent::before,
+  .nosotrosFrameContent::before {
     width: 90%;
     height: 2px;
     top: 50%;
@@ -156,7 +174,9 @@
   .restaurantesTextSection,
   .gastronomiaTextSection,
   .restaurantesButtonsSection,
-  .gastronomiaButtonsSection {
+  .gastronomiaButtonsSection,
+  .nosotrosTextSection,
+  .nosotrosButtonsSection {
     flex: 0 0 50%; /* Cada sección ocupa el 50% del contenedor */
     display: flex; /* Asegura que el contenido interno se alinee correctamente */
     flex-direction: column;
@@ -165,7 +185,8 @@
   }
 
   .restaurantesTextSection,
-  .gastronomiaTextSection {
+  .gastronomiaTextSection,
+  .nosotrosTextSection {
     color: #4a403a;
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white;
   }
@@ -177,18 +198,22 @@
     padding-bottom: 20px;
   }
 
-  .gastronomiaButtonsSection {
+  .gastronomiaButtonsSection,
+  .nosotrosButtonsSection {
     display: flex;
     flex: 1;
     text-align: center;
     justify-content: center;
     align-items: center;
   }
-  .restaurantesTitle {
+
+  .restaurantesTitle,
+  .nosotrosTitle {
     font-size: 30px;
   }
 
-  .restauranteshighlight {
+  .restaurantesHighlight,
+  .nosotrosHightlight {
     font-size: 36px;
   }
 
@@ -203,11 +228,13 @@
 
 /* Modo Móvil Pantalla Pequeña */
 @media (max-width: 385px) {
-  .restaurantesTitle {
+  .restaurantesTitle,
+  .nosotrosTitle {
     font-size: 20px;
   }
 
-  .restauranteshighlight {
+  .restaurantesHighlight,
+  .nosotrosHightlight {
     font-size: 24px;
   }
   .gastronomiaTitle {

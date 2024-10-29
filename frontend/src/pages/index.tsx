@@ -41,7 +41,7 @@ const Home: HomeComponent = ({ loadingMessages }) => {
       </div>
       {/* Banner para Restaurantes */}
       <div className={styles.restaurantesContainer}>
-        <div className={styles.restaurantesframeContent}>
+        <div className={styles.restaurantesFrameContent}>
           <div className={styles.restaurantesTextSection}>
             <h1 className={styles.restaurantesTitle}>{intl.formatMessage({ id: "inicio_Restaurantes_Texto1" })}</h1>
             <h1 className={styles.restaurantesHighlight}>{intl.formatMessage({ id: "inicio_Restaurantes_Texto2" })}</h1>
@@ -64,7 +64,7 @@ const Home: HomeComponent = ({ loadingMessages }) => {
       </div>
       {/* Banner para Gastronomia */}
       <div className={styles.gastronomiaContainer}>
-        <div className={styles.gastronomiaframeContent}>
+        <div className={styles.gastronomiaFrameContent}>
           <div className={styles.gastronomiaButtonsSection}>
             <Link href="/gastronomia" passHref>
               <button className={`btn btn-primary mx-auto ${styles.inicioButton}`}>{intl.formatMessage({ id: "inicio_Gastronomia_Texto1" })}</button>
@@ -73,6 +73,20 @@ const Home: HomeComponent = ({ loadingMessages }) => {
           <div className={styles.gastronomiaTextSection}>
             <h1 className={styles.gastronomiaTitle}>{intl.formatMessage({ id: "inicio_Gastronomia_Texto2" })}</h1>
             <h1 className={styles.gastronomiaHighlight}>{intl.formatMessage({ id: "inicio_Gastronomia_Texto3" })}</h1>
+          </div>
+        </div>
+      </div>
+      {/* Banner para Nosotros */}
+      <div className={styles.nosotrosContainer}>
+        <div className={styles.nosotrosFrameContent}>
+          <div className={styles.nosotrosTextSection}>
+            <h1 className={styles.nosotrosTitle}>{intl.formatMessage({ id: "inicio_About_Texto1" })}</h1>
+            <h1 className={styles.nosotrosHighlight}>{intl.formatMessage({ id: "inicio_About_Texto2" })}</h1>
+          </div>
+          <div className={styles.nosotrosButtonsSection}>
+            <Link href="/about" passHref>
+              <button className={`btn btn-primary mx-auto ${styles.inicioButton}`}>{intl.formatMessage({ id: "inicio_About_Texto3" })}</button>
+            </Link>
           </div>
         </div>
       </div>
