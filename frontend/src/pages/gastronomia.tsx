@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { useIntl } from "react-intl"; // Hook para internacionalización
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
 import type { ComponentType } from "react";
 import { toast, Slide } from "react-toastify";
@@ -26,9 +26,13 @@ const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: Gastrono
   useVisitedPageTracking("gastronomia"); // Tracking personalizado
   useVisitedPageTrackingGA("gastronomia"); // Tracking para Google Analytics
 
+  // Seguimiento del botón
+  const trackButtonClick = useButtonClickTrackingGA();
+
   // Función para manejar el clic en el enlace de descarga
   const handleDownloadMenu = async () => {
     setIsPushingDownloadMenuFile(true);
+    trackButtonClick("Descargar Carta");
     try {
       // Obtener el archivo PDF desde la carpeta public
       const response = await fetch("/files/cartaparaiso.pdf", {

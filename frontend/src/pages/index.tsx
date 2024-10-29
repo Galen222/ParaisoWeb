@@ -1,5 +1,6 @@
 // pages/index.tsx
 import React from "react";
+import Link from "next/link";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
@@ -10,7 +11,6 @@ import styles from "../styles/index.module.css";
 import type { ComponentType } from "react";
 
 interface HomeProps {
-  cookiesModalClosed: boolean;
   loadingMessages: boolean;
 }
 
@@ -39,6 +39,33 @@ const Home: HomeComponent = ({ loadingMessages }) => {
       <div>
         <Carousel carouselType="inicio" />
       </div>
+      {/* Nuevo Marco para Restaurantes */}
+      <div className={styles.restaurantsContainer}>
+        <div className={styles.frameContent}>
+          <div className={styles.textSection}>
+            <h1 className={styles.title}>
+              {intl.formatMessage({ id: "inicio_Restaurantes_Texto1" })}
+              <br />
+              <span className={styles.highlight}>{intl.formatMessage({ id: "inicio_Restaurantes_Texto2" })}</span>
+            </h1>
+          </div>
+          <div className={styles.buttonsSection}>
+            <Link href="/san-bernardo" passHref>
+              <button className={`btn btn-primary mx-auto ${styles.restaurantButton}`}>San Bernardo</button>
+            </Link>
+            <Link href="/bravo-murillo" passHref>
+              <button className={`btn btn-primary mx-auto ${styles.restaurantButton}`}>Bravo Murillo</button>
+            </Link>
+            <Link href="/reina-victoria" passHref>
+              <button className={`btn btn-primary mx-auto ${styles.restaurantButton}`}>Reina Victoria</button>
+            </Link>
+            <Link href="/arenal" passHref>
+              <button className={`btn btn-primary mx-auto ${styles.restaurantButton}`}>Arenal</button>
+            </Link>
+          </div>
+        </div>
+      </div>
+      {/* Fin del Nuevo Marco */}
       <div>
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollTop">

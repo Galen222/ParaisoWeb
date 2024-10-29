@@ -36,8 +36,16 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
     <div className="pageContainer">
       <div>
         <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto1" })}</p>
-        <p className="fw-bold ti-20p">{intl.formatMessage({ id: "contacto_Texto2" })}</p>
-        <p className="fw-bold ti-20p">{intl.formatMessage({ id: "contacto_Texto3" })}</p>
+        <p className="ti-20p">
+          {intl.formatMessage({ id: "contacto_Texto2a" })}
+          <span className="fw-bold">{intl.formatMessage({ id: "contacto_Texto2b" })}</span>
+          {intl.formatMessage({ id: "contacto_Texto2c" })}
+        </p>
+        <p className="ti-20p">
+          {intl.formatMessage({ id: "contacto_Texto3a" })}
+          <span className="fw-bold">{intl.formatMessage({ id: "contacto_Texto3b" })}</span>
+          {intl.formatMessage({ id: "contacto_Texto3c" })}
+        </p>
         <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto4" })}</p>
       </div>
       <div className={styles.formContainer}>
