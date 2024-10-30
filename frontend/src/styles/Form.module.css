@@ -152,6 +152,14 @@
   }
 }
 
+.link {
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 767px) {
   .checkText {
     transform: translateY(-3px);
