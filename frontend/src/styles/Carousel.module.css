@@ -14,13 +14,13 @@
 
 .text {
   width: 100%;
-  height: auto;
+  height: 100%;
   /* padding: 20px; */
   text-align: center;
   display: flex;
-  justify-content: center; /* Centrar horizontalmente */
-  align-items: center; /* Centrar verticalmente */
-  /* border: 1px solid #4a403a; */
+  text-align: center;
+  justify-content: center;
+  align-items: center;
 }
 
 /* MODO MOVIL */
