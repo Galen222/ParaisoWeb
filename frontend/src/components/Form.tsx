@@ -90,28 +90,72 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
 
   const trackButtonClick = useButtonClickTrackingGA();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trackButtonClick("Enviar Formulario");
-    toast.success(intl.formatMessage({ id: "contacto_Formulario" }), {
-      position: "top-center",
-      autoClose: 4000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      theme: "dark",
-      transition: Slide,
-    });
-    setFormData({
-      name: "",
-      reason: "",
-      email: "",
-      message: "",
-      file: null,
-    });
-    setIsPrivacyChecked(false);
-    onSubmit();
+
+    const data = new FormData();
+    data.append("name", formData.name);
+    data.append("reason", formData.reason);
+    data.append("email", formData.email);
+    data.append("message", formData.message);
+    if (formData.file) {
+      data.append("file", formData.file);
+    }
+
+    try {
+      const response = await fetch("http://localhost:8000/api/contact", {
+        method: "POST",
+        body: data,
+      });
+
+      if (!response.ok) {
+        // Manejo de errores cuando la respuesta no es exitosa
+        let errorMessage = "Error al enviar el formulario";
+        try {
+          const errorData = await response.json();
+          console.error("Error del servidor:", errorData);
+        } catch (e) {
+          // El servidor no devolvió un JSON válido
+          console.error("Error al parsear la respuesta del servidor:", e);
+        }
+        throw new Error(errorMessage);
+      }
+
+      // Éxito
+      toast.success(intl.formatMessage({ id: "contacto_Formulario_Ok" }), {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "dark",
+        transition: Slide,
+      });
+      // Restablecer el formulario
+      setFormData({
+        name: "",
+        reason: "",
+        email: "",
+        message: "",
+        file: null,
+      });
+      setIsPrivacyChecked(false);
+      onSubmit();
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error(intl.formatMessage({ id: "contacto_Formulario_Error" }), {
+        position: "top-center",
+        autoClose: 4000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: false,
+        draggable: true,
+        theme: "dark",
+        transition: Slide,
+      });
+    }
   };
 
   const CheckFormComplete = () => {
