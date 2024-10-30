@@ -18,7 +18,7 @@
 }
 
 .gastronomiaContainer {
-  width: 80%;
+  width: 100%;
   background-image: url("/images/inicio/fondogastronomia.jpg");
   margin-left: auto; /* Centrado horizontal */
   margin-right: auto; /* Centrado horizontal */

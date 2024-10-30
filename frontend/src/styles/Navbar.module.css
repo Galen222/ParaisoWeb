@@ -11,6 +11,7 @@
   background: linear-gradient(to bottom, rgba(241, 238, 227, 0) 50%, rgba(241, 238, 227, 0.6) 80%, rgba(241, 238, 227, 0.9) 95%, #f1eee3 100%),
     url("/images/navbar/fondo.jpg");
   background-size: cover;
+  -webkit-background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   height: 550px;
