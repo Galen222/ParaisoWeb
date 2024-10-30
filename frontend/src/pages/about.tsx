@@ -34,12 +34,15 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
       </div>
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "about_Titulo2" })}</h3>
-        <p className="ti-20p">{intl.formatMessage({ id: "about_Texto2" })}</p>
+        <p className="ti-20p">{intl.formatMessage({ id: "about_Texto2a" })}</p>
+        <p className="ti-20p">{intl.formatMessage({ id: "about_Texto2b" })}</p>
         <div className={`${styles.imageContainer}`}>
           <img src="/images/about/nosotros1.png" alt={intl.formatMessage({ id: "about_Carousel_Alt1" })} className={styles.responsiveImage} />
           <img src="/images/about/nosotros2.png" alt={intl.formatMessage({ id: "about_Carousel_Alt2" })} className={styles.responsiveImage} />
           <img src="/images/about/nosotros3.png" alt={intl.formatMessage({ id: "about_Carousel_Alt3" })} className={styles.responsiveImage} />
         </div>
+        <p className="ti-20p">{intl.formatMessage({ id: "about_Texto2c" })}</p>
+        <p className="ti-20p">{intl.formatMessage({ id: "about_Texto2d" })}</p>
         <div className={styles.mobileCarousel}>
           <Carousel carouselType="about1" />
         </div>
