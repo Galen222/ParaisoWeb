@@ -1,0 +1,248 @@
+.restaurantesContainer,
+.gastronomiaContainer,
+.nosotrosContainer {
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.restaurantesContainer {
+  width: 100%;
+  background-image: url("/images/inicio/fondorestaurantes.jpg");
+}
+
+.gastronomiaContainer {
+  width: 100%;
+  background-image: url("/images/inicio/fondogastronomia.jpg");
+  margin-left: auto; /* Centrado horizontal */
+  margin-right: auto; /* Centrado horizontal */
+}
+
+.nosotrosContainer {
+  width: 100%;
+  background-image: url("/images/inicio/fondoabout.jpg");
+}
+
+.restaurantesFrameContent,
+.gastronomiaFrameContent,
+.nosotrosFrameContent {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  box-sizing: border-box;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  /* background-color: chartreuse; */
+}
+
+/* Divisor Vertical */
+.restaurantesFrameContent::before,
+.gastronomiaFrameContent::before,
+.nosotrosFrameContent::before {
+  content: "";
+  position: absolute;
+  background-color: rgba(255, 255, 255, 0.5);
+  width: 2px;
+  height: 90%;
+  left: 50%;
+  top: 5%;
+  transform: translateX(-50%);
+}
+
+.restaurantesTextSection,
+.gastronomiaTextSection,
+.nosotrosTextSection {
+  flex: 1;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  text-shadow: 1px 1px 2px #4a403a, -1px -1px 2px #4a403a, 1px -1px 2px #4a403a, -1px 1px 2px #4a403a;
+  /* background-color: chocolate; */
+}
+
+.restaurantesButtonsSection,
+.gastronomiaButtonsSection,
+.nosotrosButtonsSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  /* background-color: blueviolet; */
+}
+
+.restaurantesTitle,
+.nosotrosTitle {
+  font-size: 40px;
+}
+
+.gastronomiaTitle {
+  font-size: 34px;
+}
+
+.restaurantesHighlight,
+.gastronomiaHighlight,
+.nosotrosHighlight {
+  font-weight: bold;
+}
+
+.restaurantesHighlight,
+.nosotrosHighlight {
+  font-size: 50px;
+}
+
+.gastronomiaHighlight {
+  font-size: 40px;
+}
+
+.inicioButton {
+  width: 150px; /* Tamaño fijo */
+  max-width: 200px;
+  --bs-btn-bg: rgba(74, 64, 58, 0.8);
+  --bs-btn-border-color: rgba(74, 64, 58, 0.8);
+  --bs-btn-hover-bg: #720b0b;
+  --bs-btn-hover-border-color: #720b0b;
+  --bs-btn-active-bg: #720b0b;
+  --bs-btn-active-border-color: #720b0b;
+  --bs-btn-disabled-bg: rgba(74, 64, 58, 0.8);
+  --bs-btn-disabled-border-color: rgba(74, 64, 58, 0.8);
+}
+
+/* Modo Tablet */
+@media (max-width: 1024px) {
+  .restaurantesTitle,
+  .nosotrosTitle {
+    font-size: 40px;
+  }
+
+  .restaurantesHighlight,
+  .nosotrosHighlight {
+    font-size: 46px;
+  }
+
+  .gastronomiaTitle {
+    font-size: 30px;
+  }
+
+  .gastronomiaHighlight {
+    font-size: 36px;
+  }
+}
+
+/* Modo Móvil */
+@media (max-width: 767px) {
+  .restaurantesFrameContent,
+  .gastronomiaFrameContent,
+  .nosotrosFrameContent {
+    flex-direction: column;
+    border-top: none;
+    padding: 0;
+  }
+
+  .restaurantesFrameContent,
+  .nosotrosFrameContent {
+    height: 300px;
+  }
+
+  .gastronomiaFrameContent {
+    height: 250px;
+  }
+
+  /* Divisor horizontal */
+  .restaurantesFrameContent::before,
+  .gastronomiaFrameContent::before,
+  .nosotrosFrameContent::before {
+    width: 90%;
+    height: 2px;
+    top: 50%;
+    left: 5%;
+    transform: translateY(-50%);
+  }
+
+  .restaurantesTextSection,
+  .gastronomiaTextSection,
+  .restaurantesButtonsSection,
+  .gastronomiaButtonsSection,
+  .nosotrosTextSection,
+  .nosotrosButtonsSection {
+    flex: 0 0 50%; /* Cada sección ocupa el 50% del contenedor */
+    display: flex; /* Asegura que el contenido interno se alinee correctamente */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .restaurantesTextSection,
+  .gastronomiaTextSection,
+  .nosotrosTextSection {
+    color: #4a403a;
+    text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white;
+  }
+
+  .restaurantesButtonsSection {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .gastronomiaButtonsSection,
+  .nosotrosButtonsSection {
+    display: flex;
+    flex: 1;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .restaurantesTitle,
+  .nosotrosTitle {
+    font-size: 30px;
+  }
+
+  .restaurantesHighlight,
+  .nosotrosHighlight {
+    font-size: 36px;
+  }
+
+  .gastronomiaTitle {
+    font-size: 28px;
+  }
+
+  .gastronomiaHighlight {
+    font-size: 34px;
+  }
+}
+
+/* Modo Móvil Pantalla Pequeña */
+@media (max-width: 385px) {
+  .restaurantesTitle,
+  .nosotrosTitle {
+    font-size: 20px;
+  }
+
+  .restaurantesHighlight,
+  .nosotrosHightlight {
+    font-size: 24px;
+  }
+  .gastronomiaTitle {
+    font-size: 18px;
+  }
+
+  .gastronomiaHighlight {
+    font-size: 22px;
+  }
+}
