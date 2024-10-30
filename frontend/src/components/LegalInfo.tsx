@@ -1,7 +1,7 @@
 import React from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
-import styles from "../styles/contacto.module.css";
+import styles from "../styles/LegalInfo.module.css";
 
 const LegalInfo: React.FC = () => {
   const intl = useIntl();
