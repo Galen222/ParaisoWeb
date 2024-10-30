@@ -61,7 +61,7 @@ const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: Gastrono
         transition: Slide,
       });
     } catch (error) {
-      console.error("Error descargando el archivo:", error);
+      /* console.error("Error descargando el archivo:", error); */
       // Mostrar notificación de error
       toast.error(intl.formatMessage({ id: "gastronomia_Descargar_Carta_Error" }), {
         position: "top-center",

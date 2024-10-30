@@ -60,7 +60,7 @@ export const deleteCookies = async (
         await disableGA();
         domains.forEach((domain) => {
           document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
-          console.log(`Borrada cookie Google: ${cookieName} del dominio: ${domain}`);
+          /* console.log(`Borrada cookie Google: ${cookieName} del dominio: ${domain}`); */
         });
       }
     }

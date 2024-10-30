@@ -9,7 +9,7 @@ export function useVisitedPageTrackingGA(currentPage: string) {
   useEffect(() => {
     if (cookieConsentAnalysisGoogle) {
       ReactGA.send({ hitType: "pageview", page: "/" + currentPage, title: currentPage });
-      console.log("Pagina " + window.location.pathname + window.location.search + " añadida a log de GA4");
+      /* console.log("Pagina " + window.location.pathname + window.location.search + " añadida a log de GA4"); */
     }
   }, [cookieConsentAnalysisGoogle, currentPage]);
 }
@@ -19,7 +19,7 @@ export function useButtonClickTrackingGA() {
   const { cookieConsentAnalysisGoogle } = useCookieConsent();
 
   return (usedButton: string): void => {
-    console.log("pulsacion del boton " + usedButton + " registrada en ga4");
+    /* console.log("pulsacion del boton " + usedButton + " registrada en ga4"); */
     if (cookieConsentAnalysisGoogle) {
       ReactGA.event({
         category: "Botón",

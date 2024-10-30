@@ -8,20 +8,20 @@ export function useVisitedPageTracking(currentPage: string) {
 
   useEffect(() => {
     if (cookieConsentAnalysis) {
-      console.log("El consentimiento de cookies de analisis ha sido aceptado.");
+      /* console.log("El consentimiento de cookies de analisis ha sido aceptado."); */
 
       const visitedPageValue = getCookieValue("_visited");
       if (visitedPageValue) {
         const pagesVisited = visitedPageValue.split(",");
         if (!pagesVisited.includes(currentPage)) {
           document.cookie = `_visited=${pagesVisited.join(",")},${currentPage}; path=/; max-age=31536000; SameSite=Lax`;
-          console.log(`Se añadió ${currentPage} al valor de la cookie '_visited'.`);
+          /* .log(`Se añadió ${currentPage} al valor de la cookie '_visited'.`); */
         } else {
-          console.log(`${currentPage} ya está incluida en la cookie '_visited'. No se harán cambios.`);
+          /* console.log(`${currentPage} ya está incluida en la cookie '_visited'. No se harán cambios.`); */
         }
       } else {
         document.cookie = `_visited=${currentPage}; path=/; max-age=31536000; SameSite=Lax`;
-        console.log(`Cookie '_visited' creada con el valor de ${currentPage}.`);
+        /* console.log(`Cookie '_visited' creada con el valor de ${currentPage}.`); */
       }
     }
   }, [cookieConsentAnalysis, currentPage]);

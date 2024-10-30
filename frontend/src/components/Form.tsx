@@ -114,10 +114,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
         let errorMessage = "Error al enviar el formulario";
         try {
           const errorData = await response.json();
-          console.error("Error del servidor:", errorData);
+          /* console.error("Error del servidor:", errorData); */
         } catch (e) {
           // El servidor no devolvió un JSON válido
-          console.error("Error al parsear la respuesta del servidor:", e);
+          /* console.error("Error al parsear la respuesta del servidor:", e); */
         }
         throw new Error(errorMessage);
       }
@@ -144,7 +144,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
       setIsPrivacyChecked(false);
       onSubmit();
     } catch (error) {
-      console.error("Error:", error);
+      /* console.error("Error:", error); */
       toast.error(intl.formatMessage({ id: "contacto_Formulario_Error" }), {
         position: "top-center",
         autoClose: 4000,

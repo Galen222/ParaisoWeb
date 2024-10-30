@@ -9,7 +9,7 @@ export const initGA = () => {
     throw new Error("Google Analytics ID no está definido en las variables de entorno.");
   }
   ReactGA.initialize(analyticsId);
-  console.log("GA4 iniciado");
+  /* console.log("GA4 iniciado"); */
 };
 
 export const disableGA = async () => {
@@ -18,7 +18,7 @@ export const disableGA = async () => {
     if (analyticsId) {
       (window as any)[`ga-disable-${analyticsId}`] = true;
       gaDisabled = true;
-      console.log(`GA desactivado`);
+      /* console.log(`GA desactivado`); */
     }
   }
 };
