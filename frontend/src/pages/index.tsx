@@ -44,6 +44,7 @@ const Home: HomeComponent = ({ loadingMessages }) => {
       <Banner bannerType="restaurantes" />
       <Banner bannerType="gastronomia" />
       <Banner bannerType="nosotros" />
+      <Banner bannerType="empleo" />
 
       <div>
         {isScrollButtonVisible && (

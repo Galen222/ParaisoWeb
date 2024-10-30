@@ -1,6 +1,7 @@
 .restaurantesContainer,
 .gastronomiaContainer,
-.nosotrosContainer {
+.nosotrosContainer,
+.empleoContainer {
   background-size: cover;
   background-position: center;
   border-radius: 10px;
@@ -14,24 +15,31 @@
 
 .restaurantesContainer {
   width: 100%;
-  background-image: url("/images/inicio/fondorestaurantes.jpg");
+  background-image: url("/images/banner/fondorestaurantes.jpg");
 }
 
-.gastronomiaContainer {
+.gastronomiaContainer,
+.empleoContainer {
   width: 100%;
-  background-image: url("/images/inicio/fondogastronomia.jpg");
-  margin-left: auto; /* Centrado horizontal */
-  margin-right: auto; /* Centrado horizontal */
+  background-image: url("/images/banner/fondogastronomia.jpg");
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .nosotrosContainer {
   width: 100%;
-  background-image: url("/images/inicio/fondoabout.jpg");
+  background-image: url("/images/banner/fondoabout.jpg");
+}
+
+.empleoContainer {
+  width: 100%;
+  background-image: url("/images/banner/fondoempleo.jpg");
 }
 
 .restaurantesFrameContent,
 .gastronomiaFrameContent,
-.nosotrosFrameContent {
+.nosotrosFrameContent,
+.empleoFrameContent {
   width: 100%;
   max-width: 1200px;
   display: flex;
@@ -42,13 +50,12 @@
   box-sizing: border-box;
   padding-top: 30px;
   padding-bottom: 30px;
-  /* background-color: chartreuse; */
 }
 
-/* Divisor Vertical */
 .restaurantesFrameContent::before,
 .gastronomiaFrameContent::before,
-.nosotrosFrameContent::before {
+.nosotrosFrameContent::before,
+.empleoFrameContent::before {
   content: "";
   position: absolute;
   background-color: rgba(255, 255, 255, 0.5);
@@ -61,7 +68,8 @@
 
 .restaurantesTextSection,
 .gastronomiaTextSection,
-.nosotrosTextSection {
+.nosotrosTextSection,
+.empleoTextSection {
   flex: 1;
   flex-direction: column;
   text-align: center;
@@ -69,19 +77,18 @@
   align-items: center;
   color: white;
   text-shadow: 1px 1px 2px #4a403a, -1px -1px 2px #4a403a, 1px -1px 2px #4a403a, -1px 1px 2px #4a403a;
-  /* background-color: chocolate; */
 }
 
 .restaurantesButtonsSection,
 .gastronomiaButtonsSection,
-.nosotrosButtonsSection {
+.nosotrosButtonsSection,
+.empleoButtonsSection {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 15px;
   justify-content: center;
   align-items: center;
-  /* background-color: blueviolet; */
 }
 
 .restaurantesTitle,
@@ -89,13 +96,15 @@
   font-size: 40px;
 }
 
-.gastronomiaTitle {
+.gastronomiaTitle,
+.empleoTitle {
   font-size: 34px;
 }
 
 .restaurantesHighlight,
 .gastronomiaHighlight,
-.nosotrosHighlight {
+.nosotrosHighlight,
+.empleoHighlight {
   font-weight: bold;
 }
 
@@ -104,12 +113,13 @@
   font-size: 50px;
 }
 
-.gastronomiaHighlight {
+.gastronomiaHighlight,
+.empleoHighlight {
   font-size: 40px;
 }
 
-.inicioButton {
-  width: 150px; /* Tamaño fijo */
+.bannerButton {
+  width: 150px;
   max-width: 200px;
   --bs-btn-bg: rgba(74, 64, 58, 0.8);
   --bs-btn-border-color: rgba(74, 64, 58, 0.8);
@@ -119,6 +129,10 @@
   --bs-btn-active-border-color: #720b0b;
   --bs-btn-disabled-bg: rgba(74, 64, 58, 0.8);
   --bs-btn-disabled-border-color: rgba(74, 64, 58, 0.8);
+}
+
+.reverse {
+  flex-direction: row-reverse;
 }
 
 /* Modo Tablet */
@@ -133,11 +147,13 @@
     font-size: 46px;
   }
 
-  .gastronomiaTitle {
+  .gastronomiaTitle,
+  .empleoTitle {
     font-size: 30px;
   }
 
-  .gastronomiaHighlight {
+  .gastronomiaHighlight,
+  .empleoHighlight {
     font-size: 36px;
   }
 }
@@ -146,7 +162,8 @@
 @media (max-width: 767px) {
   .restaurantesFrameContent,
   .gastronomiaFrameContent,
-  .nosotrosFrameContent {
+  .nosotrosFrameContent,
+  .empleoFrameContent {
     flex-direction: column;
     border-top: none;
     padding: 0;
@@ -157,14 +174,15 @@
     height: 300px;
   }
 
-  .gastronomiaFrameContent {
+  .gastronomiaFrameContent,
+  .empleoFrameContent {
     height: 250px;
   }
 
-  /* Divisor horizontal */
   .restaurantesFrameContent::before,
   .gastronomiaFrameContent::before,
-  .nosotrosFrameContent::before {
+  .nosotrosFrameContent::before,
+  .empleoFrameContent::before {
     width: 90%;
     height: 2px;
     top: 50%;
@@ -174,12 +192,14 @@
 
   .restaurantesTextSection,
   .gastronomiaTextSection,
+  .nosotrosTextSection,
+  .empleoTextSection,
   .restaurantesButtonsSection,
   .gastronomiaButtonsSection,
-  .nosotrosTextSection,
-  .nosotrosButtonsSection {
-    flex: 0 0 50%; /* Cada sección ocupa el 50% del contenedor */
-    display: flex; /* Asegura que el contenido interno se alinee correctamente */
+  .nosotrosButtonsSection,
+  .empleoButtonsSection {
+    flex: 0 0 50%;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -187,7 +207,8 @@
 
   .restaurantesTextSection,
   .gastronomiaTextSection,
-  .nosotrosTextSection {
+  .nosotrosTextSection,
+  .empleoTextSection {
     color: #4a403a;
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white;
   }
@@ -200,7 +221,8 @@
   }
 
   .gastronomiaButtonsSection,
-  .nosotrosButtonsSection {
+  .nosotrosButtonsSection,
+  .empleoButtonsSection {
     display: flex;
     flex: 1;
     text-align: center;
@@ -218,12 +240,18 @@
     font-size: 36px;
   }
 
-  .gastronomiaTitle {
+  .gastronomiaTitle,
+  .empleoTitle {
     font-size: 28px;
   }
 
-  .gastronomiaHighlight {
+  .gastronomiaHighlight,
+  .empleoHighlight {
     font-size: 34px;
+  }
+
+  .reverseMobile {
+    flex-direction: column-reverse;
   }
 }
 
@@ -235,14 +263,17 @@
   }
 
   .restaurantesHighlight,
-  .nosotrosHightlight {
+  .nosotrosHighlight {
     font-size: 24px;
   }
-  .gastronomiaTitle {
+
+  .gastronomiaTitle,
+  .empleoTitle {
     font-size: 18px;
   }
 
-  .gastronomiaHighlight {
+  .gastronomiaHighlight,
+  .empleoHighlight {
     font-size: 22px;
   }
 }
