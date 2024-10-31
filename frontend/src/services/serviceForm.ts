@@ -11,8 +11,11 @@ export interface FormData {
 }
 
 // Configura la URL de la API usando variables de entorno
-// const API_URL = process.env.NEXT_PUBLIC_API_CONTACT_URL;
-const API_URL = "http://localhost:8000/api/contacto";
+const API_URL = process.env.NEXT_PUBLIC_API_CONTACTO_URL;
+
+if (!API_URL) {
+  throw new Error("La variable de entorno NEXT_PUBLIC_API_CONTACTO_URL no está definida.");
+}
 
 // Crea una instancia de axios con configuraciones predeterminadas
 const axiosInstance = axios.create({

@@ -1,5 +1,3 @@
-// frontend/src/services/charcuteriaService.ts
-
 import axios from "axios";
 
 export interface CharcuteriaProduct {
@@ -11,9 +9,12 @@ export interface CharcuteriaProduct {
   fecha: string;
 }
 
-// Configura la URL de la API usando variables de entorno
-// const API_URL = process.env.NEXT_PUBLIC_API_CHARCUTERIA_URL;
-const API_URL = "http://localhost:8000/api/charcuteria";
+// Configura la URL de la API usando variables de entorno y valida su existencia
+const API_URL = process.env.NEXT_PUBLIC_API_CHARCUTERIA_URL;
+
+if (!API_URL) {
+  throw new Error("La variable de entorno NEXT_PUBLIC_API_CHARCUTERIA_URL no está definida.");
+}
 
 export const getCharcuteriaProducts = async (): Promise<CharcuteriaProduct[]> => {
   try {
