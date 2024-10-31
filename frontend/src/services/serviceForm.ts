@@ -40,7 +40,7 @@ export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
 
   try {
     // Realiza la solicitud POST usando axios
-    const response = await axiosInstance.post("/", formData);
+    const response = await axiosInstance.post(API_URL, formData);
     return response;
   } catch (error: any) {
     // Manejo de errores con axios

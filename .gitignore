@@ -1,3 +1,8 @@
 TODO.txt
 backend/.env
 frontend/.env.production
+frontend/.env.local
+backdev.bat
+backprod.bat
+frontend/frontprod.bat
+frontend/frontdev.bat

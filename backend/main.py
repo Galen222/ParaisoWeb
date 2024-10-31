@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import contacto
 from .routers import charcuteria
+from .core.config import ENVIRONMENT  # Importa la variable de entorno
 
 # Creación de la instancia de FastAPI
 app = FastAPI()
@@ -31,5 +32,8 @@ from .models.models import Base
 
 @app.on_event("startup")
 async def startup():
+    print(f"----------------------------------------------------")
+    print(f"SERVIDOR BACKEND ARRANCADO EN MODO {ENVIRONMENT}")
+    print(f"----------------------------------------------------")    
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
