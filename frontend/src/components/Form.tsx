@@ -5,7 +5,7 @@ import { toast, Slide } from "react-toastify";
 import { useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import Link from "next/link";
 import styles from "../styles/Form.module.css";
-import { submitForm, FormData as FormServiceData } from "../services/serviceForm"; // Importa el servicio y la interfaz
+import { submitForm, FormData as FormServiceData } from "../services/formService"; // Importa el servicio y la interfaz
 
 interface FormProps {
   onSubmit: () => void;

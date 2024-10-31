@@ -124,6 +124,7 @@ body {
   .pageContainer {
     max-width: 100%;
     font-size: 22px;
+    padding: 10px;
   }
 
   .scrollTop {

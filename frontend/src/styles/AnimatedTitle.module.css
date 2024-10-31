@@ -1,5 +1,6 @@
 .animationContainer {
-  width: 100%; /* Asegura que el contenedor no se expanda más allá del ancho de la pantalla */
+  width: 96vw; /* Asegura el 96% del ancho de la pantalla */
+  max-width: 100%; /* Asegura que no exceda el ancho del dispositivo */
   position: relative; /* Asegura que el contenedor mantenga su posición en relación a su padre */
   /* padding-bottom: 30px; */
   text-align: center;
