@@ -55,6 +55,7 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps) {
       <Head>
         <title>Paraíso del Jamón</title>
         <meta name="description" content="Paraíso del Jamón" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <IntlProvider locale={locale} messages={messages}>
         <MenuProvider>
