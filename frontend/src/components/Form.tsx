@@ -1,10 +1,11 @@
-// form.tsx
+// Form.tsx
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl";
 import { toast, Slide } from "react-toastify";
 import { useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import Link from "next/link";
 import styles from "../styles/Form.module.css";
+import { submitForm, FormData as FormServiceData } from "../services/serviceForm"; // Importa el servicio y la interfaz
 
 interface FormProps {
   onSubmit: () => void;
@@ -14,12 +15,12 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
   const intl = useIntl();
   const [isPushingSend, setIsPushingSend] = useState(false);
   const [isPushingFile, setIsPushingFile] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormServiceData>({
     name: "",
     reason: "",
     email: "",
     message: "",
-    file: null as File | null,
+    file: null,
   });
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
@@ -94,33 +95,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
     e.preventDefault();
     trackButtonClick("Enviar Formulario");
 
-    const data = new FormData();
-    data.append("name", formData.name);
-    data.append("reason", formData.reason);
-    data.append("email", formData.email);
-    data.append("message", formData.message);
-    if (formData.file) {
-      data.append("file", formData.file);
-    }
-
     try {
-      const response = await fetch("http://localhost:8000/api/contact", {
-        method: "POST",
-        body: data,
-      });
-
-      if (!response.ok) {
-        // Manejo de errores cuando la respuesta no es exitosa
-        let errorMessage = "Error al enviar el formulario";
-        try {
-          const errorData = await response.json();
-          /* console.error("Error del servidor:", errorData); */
-        } catch (e) {
-          // El servidor no devolvió un JSON válido
-          /* console.error("Error al parsear la respuesta del servidor:", e); */
-        }
-        throw new Error(errorMessage);
-      }
+      await submitForm(formData); // Usa el servicio con axios
 
       // Éxito
       toast.success(intl.formatMessage({ id: "contacto_Formulario_Ok" }), {
@@ -143,8 +119,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
       });
       setIsPrivacyChecked(false);
       onSubmit();
-    } catch (error) {
-      /* console.error("Error:", error); */
+    } catch (error: any) {
       toast.error(intl.formatMessage({ id: "contacto_Formulario_Error" }), {
         position: "top-center",
         autoClose: 4000,

@@ -1,10 +1,13 @@
 # app/core/email_utils.py
-import smtplib
+import aiosmtplib
 from email.message import EmailMessage
 from fastapi import UploadFile
 from .config import settings
+import logging
 
-async def send_contact_email(
+logger = logging.getLogger(__name__)
+
+async def send_contacto_email(
     name: str,
     reason: str,
     email: str,
@@ -30,10 +33,15 @@ async def send_contact_email(
     smtp_password = settings.SMTP_PASSWORD
 
     try:
-        with smtplib.SMTP(smtp_server, smtp_port) as server:
-            server.starttls()
-            server.login(smtp_username, smtp_password)
-            server.send_message(msg)
+        await aiosmtplib.send(
+            msg,
+            hostname=smtp_server,
+            port=smtp_port,
+            start_tls=True,
+            username=smtp_username,
+            password=smtp_password,
+        )
     except Exception as e:
+        logger.error(f"Error al enviar el correo electrónico: {e}")
         print(f"Error al enviar el correo electrónico: {e}")
         raise

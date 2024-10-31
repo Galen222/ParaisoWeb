@@ -1,47 +1,56 @@
-import React from "react";
-import { useIntl } from "react-intl"; // Importa el hook useIntl para la internacionalización de texto.
-import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import Loader from "../components/Loader";
-import useScrollToTop from "../hooks/useScrollToTop";
-import type { ComponentType } from "react";
-import styles from "../styles/charcuteria.module.css"; // Importa los estilos CSS específicos para la página Charcutería.
+// frontend/src/components/Charcuteria.tsx
 
-interface CharcuteriaPageProps {
-  loadingMessages: boolean; // Nuevo prop para el estado de carga
-}
+import React, { useEffect, useState } from "react";
+import { getCharcuteriaProducts, CharcuteriaProduct } from "../services/charcuteriaService";
 
-type CharcuteriaPageComponent = ComponentType<CharcuteriaPageProps> & { pageTitleText?: string };
+const CharcuteriaPage: React.FC = () => {
+  const [products, setProducts] = useState<CharcuteriaProduct[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-// Define el componente funcional CharcuteriaPage utilizando una función flecha.
-const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: CharcuteriaPageProps) => {
-  const intl = useIntl(); // Utiliza el hook de internacionalización para obtener funciones de traducción.
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const data = await getCharcuteriaProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setError("Ocurrió un error al cargar los productos.");
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  useVisitedPageTracking("charcuteria");
-  useVisitedPageTrackingGA("charcuteria");
+    fetchProducts();
+  }, []);
 
-  if (loadingMessages) {
-    return <Loader />;
+  if (loading) {
+    return <div>Cargando productos...</div>;
   }
 
-  // Renderiza la interfaz de usuario para la página de Charcutería.
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
-    <div className="pageContainer">
-      <div>
-        <p>{intl.formatMessage({ id: "charcuteria_Descripcion" })}</p>
-      </div>
-      <div>
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
-          </button>
-        )}
+    <div>
+      <h1>Productos de Charcutería</h1>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+        {products.map((product) => (
+          <div key={product.id_producto} style={{ border: "1px solid #ccc", padding: "15px", maxWidth: "300px" }}>
+            <h3>{product.nombre}</h3>
+            {product.imagen_url && <img src={product.imagen_url} alt={product.nombre} style={{ maxWidth: "100%" }} />}
+            <p>{product.descripcion}</p>
+            {product.categoria && (
+              <p>
+                <strong>Categoría:</strong> {product.categoria}
+              </p>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-CharcuteriaPage.pageTitleText = "charcuteria";
-
-export default CharcuteriaPage; // Exporta el componente CharcuteriaPage para que pueda ser utilizado en otros lugares de la aplicación.
+export default CharcuteriaPage;

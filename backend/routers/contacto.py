@@ -1,13 +1,13 @@
-# app/routers/contact.py
+# app/routers/contacto.py
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from ..models.schemas import ContactForm
-from ..core.email_utils import send_contact_email
+from ..core.email_utils import send_contacto_email
 from pydantic import EmailStr
 
 router = APIRouter()
 
-@router.post("/contact")
-async def contact(
+@router.post("/contacto")
+async def contacto(
     name: str = Form(...),
     reason: str = Form(...),
     email: EmailStr = Form(...),
@@ -36,7 +36,7 @@ async def contact(
 
     # Enviar correo electrónico
     try:
-        await send_contact_email(name, reason, email, message, file)
+        await send_contacto_email(name, reason, email, message, file)
     except Exception:
         raise HTTPException(status_code=500, detail="Error al enviar el correo electrónico")
 
