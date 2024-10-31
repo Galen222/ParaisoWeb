@@ -69,11 +69,13 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
         <Localization localizationName="reina-victoria" />
         <Localization localizationName="arenal" />
       </div>
-      {isScrollButtonVisible && (
-        <button onClick={scrollToTop} className="scrollTop">
-          <img src="/images/web/flechaArriba.png" alt="Subir" />
-        </button>
-      )}
+      <div>
+        {isScrollButtonVisible && (
+          <button onClick={scrollToTop} className="scrollTop">
+            <img src="/images/web/flechaArriba.png" alt="Subir" />
+          </button>
+        )}
+      </div>
     </div>
   );
 };

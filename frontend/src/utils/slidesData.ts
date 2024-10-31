@@ -306,12 +306,12 @@ export const slidesData = (intl: IntlShape): { [key: string]: Slide[] } => ({
     {
       type: "image",
       src: "/images/about/nosotros4.png",
-      alt: intl.formatMessage({ id: "about_Carousel_Alt5" }),
+      alt: intl.formatMessage({ id: "about_Carousel_Alt4" }),
     },
     {
       type: "image",
       src: "/images/about/nosotros5.png",
-      alt: intl.formatMessage({ id: "about_Carousel_Alt6" }),
+      alt: intl.formatMessage({ id: "about_Carousel_Alt5" }),
     },
   ],
 });

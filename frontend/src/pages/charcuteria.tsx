@@ -1,11 +1,22 @@
 // frontend/src/components/Charcuteria.tsx
-
 import React, { useEffect, useState } from "react";
+import Loader from "../components/Loader";
+import useScrollToTop from "../hooks/useScrollToTop";
 import { getCharcuteriaProducts, CharcuteriaProduct } from "../services/charcuteriaService";
+import type { ComponentType } from "react";
+import styles from "../styles/charcuteria.module.css";
 
-const CharcuteriaPage: React.FC = () => {
+interface CharcuteriaPageProps {
+  loadingMessages: boolean;
+}
+
+type CharcuteriaPageComponent = ComponentType<CharcuteriaPageProps> & { pageTitleText?: string };
+
+const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: CharcuteriaPageProps) => {
+  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+
   const [products, setProducts] = useState<CharcuteriaProduct[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -14,43 +25,61 @@ const CharcuteriaPage: React.FC = () => {
         const data = await getCharcuteriaProducts();
         setProducts(data);
       } catch (error) {
-        console.error("Error fetching products:", error);
-        setError("Ocurrió un error al cargar los productos.");
+        console.error("Error recibiendo productos:", error);
+        setError("Error al cargar los productos.");
       } finally {
-        setLoading(false);
+        setLoadingProducts(false);
       }
     };
-
     fetchProducts();
   }, []);
 
-  if (loading) {
-    return <div>Cargando productos...</div>;
+  if (loadingProducts) {
+    return <Loader />;
   }
 
   if (error) {
     return <div>Error: {error}</div>;
   }
 
+  if (loadingMessages) {
+    return <Loader />;
+  }
+
   return (
-    <div>
-      <h1>Productos de Charcutería</h1>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
-        {products.map((product) => (
-          <div key={product.id_producto} style={{ border: "1px solid #ccc", padding: "15px", maxWidth: "300px" }}>
-            <h3>{product.nombre}</h3>
-            {product.imagen_url && <img src={product.imagen_url} alt={product.nombre} style={{ maxWidth: "100%" }} />}
-            <p>{product.descripcion}</p>
-            {product.categoria && (
-              <p>
-                <strong>Categoría:</strong> {product.categoria}
-              </p>
-            )}
+    <div className={styles.charcuteriaContainer}>
+      <div className={styles.content}>
+        {products.map((product, index) => (
+          <div className={`${styles.card}`} key={product.id_producto}>
+            <div className={styles.cardInner}>
+              <div className={styles.front} style={{ backgroundImage: `url(${product.imagen_url})` }}>
+                <p>{product.nombre}</p>
+              </div>
+              <div className={styles.back}>
+                <div>
+                  <p>{product.descripcion}</p>
+                  {product.categoria && (
+                    <p>
+                      <strong>Categoría:</strong> {product.categoria}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
           </div>
         ))}
+      </div>
+      <div>
+        {isScrollButtonVisible && (
+          <button onClick={scrollToTop} className="scrollTop">
+            <img src="/images/web/flechaArriba.png" alt="Subir" />
+          </button>
+        )}
       </div>
     </div>
   );
 };
+
+CharcuteriaPage.pageTitleText = "charcuteria";
 
 export default CharcuteriaPage;
