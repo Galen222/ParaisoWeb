@@ -21,8 +21,8 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
   const intl = useIntl();
   const [loading, setLoading] = useState(true);
 
-  useVisitedPageTracking("error");
-  useVisitedPageTrackingGA("error");
+  useVisitedPageTracking(`error_${statusCode}`);
+  useVisitedPageTrackingGA(`error_${statusCode}`);
   // Variable para almacenar el mensaje de error
   let message;
   // Utiliza un switch para determinar el mensaje basado en el código de estado
@@ -35,9 +35,6 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
       break;
     case 403:
       message = intl.formatMessage({ id: "error_Error403" }); // Mensaje para error 403
-      break;
-    case 404:
-      message = intl.formatMessage({ id: "error_Error404" }); // Mensaje para error 404
       break;
     case 408:
       message = intl.formatMessage({ id: "error_Error408" }); // Mensaje para error 408
@@ -63,14 +60,8 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
       break;
   }
 
-  // Define la lista de códigos de estado para los que existe una imagen
-  const availableStatusCodes = [404];
-
   // Verifica si hay una imagen específica para el código de estado; si no, utiliza una imagen por defecto
-  const imageFileName = availableStatusCodes.includes(statusCode) ? `${statusCode}.png` : `error.png`;
-
-  // Define la ruta de la imagen
-  const imagePath = `/images/web/${imageFileName}`;
+  const imageFileName = "/images/web/error.png";
 
   // Renderiza el componente de error
   useEffect(() => {
@@ -89,7 +80,7 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
       <p className="text-center">{message}</p> {/* Muestra el mensaje de error */}
       {/* Añade la imagen debajo del mensaje */}
       <div className={styles.imageContainer}>
-        <img src={imagePath} alt={`Error ${statusCode}`} />
+        <img src={imageFileName} alt={`Error ${statusCode}`} />
       </div>
     </div>
   );
