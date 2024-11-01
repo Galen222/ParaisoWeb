@@ -27,7 +27,7 @@
 }
 
 .emailValid {
-  color: black;
+  color: var(--text_color);
 }
 
 .emailInvalid {

@@ -1,47 +1,27 @@
-/* charcuteria.module.css */
-
 .charcuteriaContainer {
-  font-size: 18px;
   line-height: 1.5;
-  font-weight: 300;
-  color: #333;
+  color: #4a403a;
   margin: 0;
   padding: 0;
-  min-height: 100vh;
   background-attachment: fixed;
+  overflow: hidden; /* Elimina cualquier desplazamiento adicional */
 }
 
 .content {
   display: flex;
-  margin: 0 auto;
-  justify-content: center;
+  margin: 0 auto 130px auto; /* Margen inferior de 40px en escritorio */
   align-items: center;
   flex-wrap: wrap;
   max-width: 1000px;
 }
 
-.front p {
-  color: #fff; /* Asegúrate de que el color del texto sea blanco u otro que contraste */
-  text-shadow: -1px -1px 0 #333, 1px -1px 0 #333, -1px 1px 0 #333, 1px 1px 0 #333;
-}
 .card {
   width: calc(33% - 2rem);
+  max-width: 300px;
   height: 400px;
   perspective: 1000px;
   margin: 1rem;
   position: relative;
-}
-
-@media screen and (max-width: 800px) {
-  .card {
-    width: calc(50% - 2rem);
-  }
-}
-
-@media screen and (max-width: 500px) {
-  .card {
-    width: 100%;
-  }
 }
 
 .cardInner {
@@ -63,19 +43,25 @@
   height: 100%;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
-  border-radius: 6px;
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .front {
   background-size: cover;
   background-position: center;
   padding: 2rem;
-  font-size: 1.618rem;
+  font-size: 26px;
   font-weight: 600;
-  color: #fff;
+}
+
+.front p {
+  color: white;
+  text-shadow: -1px -1px 0 #4a403a, 1px -1px 0 #4a403a, -1px 1px 0 #4a403a, 1px 1px 0 #4a403a;
 }
 
 .front::before {
@@ -86,13 +72,79 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, hsl(202, 80%, 50%), hsl(222, 80%, 50%));
   opacity: 0.25;
   z-index: -1;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .back {
-  background: #fff;
+  background: white;
   transform: rotateY(180deg);
-  padding: 2em;
+  padding: 1.5em;
+  text-align: center;
+}
+
+.productName {
+  font-size: 26px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.category {
+  font-size: 24px;
+  font-weight: 400;
+  margin-top: auto;
+}
+
+.descripcion {
+  font-size: 22px;
+  font-weight: 400;
+  margin-top: auto;
+}
+
+/* Media query para 800px o menos: 2 tarjetas en horizontal y clic para volteo */
+@media screen and (max-width: 800px) {
+  .content {
+    justify-content: center; /* Centra el contenedor horizontalmente */
+  }
+  .card {
+    width: calc(50% - 2rem);
+  }
+  .cardInner {
+    cursor: pointer;
+  }
+  .card:hover .cardInner {
+    transform: none;
+  }
+}
+
+/* Media query para 500px o menos: scroll horizontal con contenedor al 90% */
+@media screen and (max-width: 500px) {
+  .charcuteriaContainer {
+    height: auto; /* Ajusta la altura al contenido */
+    overflow-y: hidden; /* Elimina cualquier desplazamiento vertical adicional */
+  }
+
+  .content {
+    justify-content: flex-start; /* Alinea el contenedor al inicio */
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    align-items: flex-start;
+    width: 90%; /* Limita el contenedor al 90% del ancho de la pantalla */
+    margin: 20px auto 130px auto; /* Agrega margen superior de 20px y sin margen inferior */
+    height: 400px; /* Limita la altura para evitar el flujo vertical */
+  }
+
+  .card {
+    flex: 0 0 auto;
+    width: 90%; /* Define el ancho relativo para el scroll */
+    max-width: 300px;
+    scroll-snap-align: start;
+    margin: 0 0.5rem; /* Espacio entre tarjetas en scroll horizontal */
+  }
 }
