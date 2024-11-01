@@ -28,11 +28,12 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
     const fetchProducts = async () => {
       try {
         // Obtiene el idioma actual desde el contexto de internacionalización
-        const idioma = intl.locale; // Esto puede ser 'es', 'en', 'de', etc.
+        const idioma = intl.locale; // Esto puede ser 'es', 'en' o 'de'
         const data = await getCharcuteriaProducts(idioma);
         setProducts(data);
       } catch (error) {
         setError(intl.formatMessage({ id: "charcuteria_Error" }));
+        /* console.error("Error recibiendo productos:", error); */
       } finally {
         setLoadingProducts(false);
       }
@@ -48,7 +49,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  if (loadingProducts) {
+  if (loadingProducts || loadingMessages) {
     return <Loader />;
   }
 
@@ -63,10 +64,6 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
         </div>
       </div>
     );
-  }
-
-  if (loadingMessages) {
-    return <Loader />;
   }
 
   return (

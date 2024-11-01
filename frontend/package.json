@@ -1,6 +1,6 @@
 {
   "name": "paraisoweb",
-  "version": "0.5.1",
+  "version": "0.5.5",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -19,6 +19,7 @@
     "react-dom": "^18",
     "react-ga4": "^2.1.0",
     "react-intl": "^6.6.8",
+    "react-markdown": "^9.0.1",
     "react-share": "^5.1.0",
     "react-slick": "^0.30.2",
     "react-toastify": "^10.0.5",

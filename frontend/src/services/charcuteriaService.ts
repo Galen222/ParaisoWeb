@@ -18,7 +18,6 @@ if (!API_URL) {
   throw new Error("La variable de entorno NEXT_PUBLIC_API_CHARCUTERIA_URL no está definida.");
 }
 
-// Agrega un parámetro 'idioma' a la función
 export const getCharcuteriaProducts = async (idioma: string): Promise<CharcuteriaProduct[]> => {
   try {
     // Incluye el idioma en la URL como query parameter

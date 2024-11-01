@@ -1,0 +1,30 @@
+.blogDetailContainer {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.blogTitle {
+  font-size: 2em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.blogAuthor,
+.blogDate {
+  color: #666;
+  font-size: 0.9em;
+}
+
+.blogImage {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  margin: 20px 0;
+}
+
+.blogContent {
+  font-size: 1.1em;
+  line-height: 1.6;
+  color: #333;
+}
