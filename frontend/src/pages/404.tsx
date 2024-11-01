@@ -28,7 +28,6 @@ const Custom404 = () => {
 
   return (
     <div className="pageContainer">
-      <h1>404</h1>
       <p className="text-center">{message}</p>
       <div className={styles.imageContainer}>
         <img src={imagePath} alt="Error 404" />
