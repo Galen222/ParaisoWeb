@@ -1,4 +1,5 @@
 // frontend/src/components/Charcuteria.tsx
+
 import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl"; // Importa el hook useIntl para internacionalización.
 import Loader from "../components/Loader";
@@ -26,23 +27,18 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const data = await getCharcuteriaProducts();
+        // Obtiene el idioma actual desde el contexto de internacionalización
+        const idioma = intl.locale; // Esto puede ser 'es', 'en', 'de', etc.
+        const data = await getCharcuteriaProducts(idioma);
         setProducts(data);
       } catch (error) {
-        /* console.error("Error recibiendo productos:", error);
-        if (error instanceof Error) {
-          setError(error.message); // Obtiene el mensaje de error si es una instancia de Error
-        } else {
-          setError(String(error)); // Convierte el valor a string si no es un Error
-        }
-        */
         setError(intl.formatMessage({ id: "charcuteria_Error" }));
       } finally {
         setLoadingProducts(false);
       }
     };
     fetchProducts();
-  }, []);
+  }, [intl.locale]); // Dependencia en el idioma para actualizar al cambiar
 
   useEffect(() => {
     const handleResize = () => {

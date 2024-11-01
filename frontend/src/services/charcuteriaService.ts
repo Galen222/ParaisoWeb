@@ -1,3 +1,5 @@
+// frontend/src/services/charcuteriaService.ts
+
 import axios from "axios";
 
 export interface CharcuteriaProduct {
@@ -16,9 +18,11 @@ if (!API_URL) {
   throw new Error("La variable de entorno NEXT_PUBLIC_API_CHARCUTERIA_URL no está definida.");
 }
 
-export const getCharcuteriaProducts = async (): Promise<CharcuteriaProduct[]> => {
+// Agrega un parámetro 'idioma' a la función
+export const getCharcuteriaProducts = async (idioma: string): Promise<CharcuteriaProduct[]> => {
   try {
-    const response = await axios.get<CharcuteriaProduct[]>(API_URL);
+    // Incluye el idioma en la URL como query parameter
+    const response = await axios.get<CharcuteriaProduct[]>(`${API_URL}?idioma=${idioma}`);
     return response.data;
   } catch (error) {
     /* console.error("Error recibiendo los productos de charcuteria:", error); */
