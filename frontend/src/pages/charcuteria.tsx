@@ -1,10 +1,12 @@
 // frontend/src/components/Charcuteria.tsx
 import React, { useEffect, useState } from "react";
+import { useIntl } from "react-intl"; // Importa el hook useIntl para internacionalización.
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { getCharcuteriaProducts, CharcuteriaProduct } from "../services/charcuteriaService";
 import type { ComponentType } from "react";
-import styles from "../styles/charcuteria.module.css";
+import CharcuteriaStyles from "../styles/charcuteria.module.css";
+import errorStyles from "../styles/error.module.css";
 
 interface CharcuteriaPageProps {
   loadingMessages: boolean;
@@ -13,6 +15,7 @@ interface CharcuteriaPageProps {
 type CharcuteriaPageComponent = ComponentType<CharcuteriaPageProps> & { pageTitleText?: string };
 
 const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: CharcuteriaPageProps) => {
+  const intl = useIntl(); // Utiliza el hook de internacionalización para obtener funciones de traducción.
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
 
   const [products, setProducts] = useState<CharcuteriaProduct[]>([]);
@@ -26,8 +29,14 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
         const data = await getCharcuteriaProducts();
         setProducts(data);
       } catch (error) {
-        /* console.error("Error recibiendo productos:", error); */
-        setError("Error al cargar los productos.");
+        /* console.error("Error recibiendo productos:", error);
+        if (error instanceof Error) {
+          setError(error.message); // Obtiene el mensaje de error si es una instancia de Error
+        } else {
+          setError(String(error)); // Convierte el valor a string si no es un Error
+        }
+        */
+        setError(intl.formatMessage({ id: "charcuteria_Error" }));
       } finally {
         setLoadingProducts(false);
       }
@@ -47,8 +56,17 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
     return <Loader />;
   }
 
+  const imageFileName = "/images/web/error.png";
+
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className={CharcuteriaStyles.errorContainer}>
+        <p className={CharcuteriaStyles.errorText}>{error}</p>
+        <div className={errorStyles.imageContainer}>
+          <img src={imageFileName} alt={"Error"} />
+        </div>
+      </div>
+    );
   }
 
   if (loadingMessages) {
@@ -56,12 +74,12 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
   }
 
   return (
-    <div className={styles.charcuteriaContainer}>
-      <div className={styles.content}>
+    <div className={CharcuteriaStyles.charcuteriaContainer}>
+      <div className={CharcuteriaStyles.content}>
         {products.map((product) => (
-          <div className={styles.card} key={product.id_producto}>
+          <div className={CharcuteriaStyles.card} key={product.id_producto}>
             <div
-              className={`${styles.cardInner}`}
+              className={`${CharcuteriaStyles.cardInner}`}
               onClick={(e) => {
                 if (isClickFlipEnabled) {
                   const target = e.currentTarget;
@@ -73,15 +91,15 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
                 }
               }}
             >
-              <div className={styles.front} style={{ backgroundImage: `url(${product.imagen_url})` }}>
+              <div className={CharcuteriaStyles.front} style={{ backgroundImage: `url(${product.imagen_url})` }}>
                 <p>{product.nombre}</p>
-                {product.categoria && <p className={styles.category}>{product.categoria}</p>}
+                {product.categoria && <p className={CharcuteriaStyles.category}>{product.categoria}</p>}
               </div>
-              <div className={styles.back}>
+              <div className={CharcuteriaStyles.back}>
                 <div>
-                  <p className={styles.productName}>{product.nombre}</p>
-                  {product.categoria && <p className={styles.category}>{product.categoria}</p>}
-                  <p className={styles.descripcion}>{product.descripcion}</p>
+                  <p className={CharcuteriaStyles.productName}>{product.nombre}</p>
+                  {product.categoria && <p className={CharcuteriaStyles.category}>{product.categoria}</p>}
+                  <p className={CharcuteriaStyles.descripcion}>{product.descripcion}</p>
                 </div>
               </div>
             </div>

@@ -60,7 +60,6 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
       break;
   }
 
-  // Verifica si hay una imagen específica para el código de estado; si no, utiliza una imagen por defecto
   const imageFileName = "/images/web/error.png";
 
   // Renderiza el componente de error
