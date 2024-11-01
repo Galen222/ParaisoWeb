@@ -21,7 +21,7 @@ export const getCharcuteriaProducts = async (): Promise<CharcuteriaProduct[]> =>
     const response = await axios.get<CharcuteriaProduct[]>(API_URL);
     return response.data;
   } catch (error) {
-    console.error("Error recibiendo los productos de charcuteria:", error);
+    /* console.error("Error recibiendo los productos de charcuteria:", error); */
     throw error;
   }
 };

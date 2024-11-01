@@ -26,7 +26,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
         const data = await getCharcuteriaProducts();
         setProducts(data);
       } catch (error) {
-        console.error("Error recibiendo productos:", error);
+        /* console.error("Error recibiendo productos:", error); */
         setError("Error al cargar los productos.");
       } finally {
         setLoadingProducts(false);

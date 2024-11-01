@@ -46,15 +46,15 @@ export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
     // Manejo de errores con axios
     if (error.response) {
       // El servidor respondió con un estado fuera del rango 2xx
-      console.error("Error del servidor:", error.response.data);
+      /* console.error("Error del servidor:", error.response.data); */
       throw new Error(error.response.data.message || "Error al enviar el formulario");
     } else if (error.request) {
       // La solicitud fue hecha pero no se recibió respuesta
-      console.error("No se recibió respuesta del servidor:", error.request);
+      /* console.error("No se recibió respuesta del servidor:", error.request); */
       throw new Error("No se pudo contactar con el servidor");
     } else {
       // Algo pasó al configurar la solicitud
-      console.error("Error al configurar la solicitud:", error.message);
+      /* console.error("Error al configurar la solicitud:", error.message); */
       throw new Error("Error al enviar el formulario");
     }
   }
