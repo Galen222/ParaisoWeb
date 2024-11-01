@@ -1,4 +1,5 @@
 # app/models/schemas.py
+
 from pydantic import BaseModel, EmailStr, validator
 from typing import Optional
 from datetime import datetime
@@ -14,15 +15,16 @@ class ContactForm(BaseModel):
         if not all(char.isalpha() or char.isspace() for char in v):
             raise ValueError('El nombre solo debe contener letras y espacios')
         return v
-    
+
 class CharcuteriaBase(BaseModel):
+    idioma: str
     nombre: str
     descripcion: str
-    imagen_url: Optional[str] = None
-    categoria: Optional[str] = None
+    imagen_url: str
+    categoria: str
 
 class CharcuteriaCreate(CharcuteriaBase):
-    pass
+    pass  # Este esquema puede usarse para crear registros nuevos
 
 class Charcuteria(CharcuteriaBase):
     id_producto: int
