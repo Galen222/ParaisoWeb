@@ -26,7 +26,8 @@
   margin-bottom: 10px;
 }
 
-.emailValid {
+.emailValid,
+.nameInput {
   color: var(--text_color);
 }
 
@@ -37,6 +38,7 @@
 .form textarea {
   resize: none;
   height: 100px;
+  color: var(--text_color);
 }
 
 .archiveText {
@@ -61,6 +63,8 @@
   --bs-btn-active-bg: #4a403a;
   --bs-btn-active-border-color: #4a403a;
   --bs-btn-disabled-bg: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19);
+  transform: translateZ(0);
 }
 
 .submitButton {
@@ -73,6 +77,8 @@
   --bs-btn-active-border-color: #198754;
   --bs-btn-disabled-bg: #4a403a;
   --bs-btn-disabled-border-color: #4a403a;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19);
+  transform: translateZ(0);
 }
 
 .fileNameBox {

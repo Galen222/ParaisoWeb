@@ -129,6 +129,8 @@
   --bs-btn-active-border-color: #720b0b;
   --bs-btn-disabled-bg: rgba(74, 64, 58, 0.8);
   --bs-btn-disabled-border-color: rgba(74, 64, 58, 0.8);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19);
+  transform: translateZ(0);
 }
 
 .reverse {

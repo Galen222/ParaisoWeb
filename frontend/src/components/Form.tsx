@@ -158,7 +158,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
           value={formData.name}
           onChange={handleValidateName}
           required
-          className={styles.input}
+          className={`${styles.input} ${styles.nameInput}`}
         />
       </div>
       <div>
