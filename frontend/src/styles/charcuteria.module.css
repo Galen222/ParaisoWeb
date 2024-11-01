@@ -127,6 +127,12 @@
   .card:hover .cardInner {
     transform: none;
   }
+
+  .errorContainer {
+    max-width: 100%;
+    font-size: 22px;
+    padding: 20px;
+  }
 }
 
 /* Media query para 500px o menos: scroll horizontal con contenedor al 90% */
