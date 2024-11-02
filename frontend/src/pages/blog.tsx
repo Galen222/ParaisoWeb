@@ -2,8 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { useFetch } from "../hooks/useFetch";
-import { getBlogPosts, BlogPost } from "../services/blogService";
+import { useFetchBlog } from "../hooks/useFetchBlog";
+import { BlogPost } from "../services/blogService";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
@@ -19,15 +19,7 @@ interface BlogPageProps {
 type BlogPageComponent = ComponentType<BlogPageProps> & { pageTitleText?: string };
 
 const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
-  const {
-    data: blogs,
-    loading: loadingBlog,
-    error,
-  } = useFetch<BlogPost[]>({
-    fetchFunction: getBlogPosts,
-    errorMessagePage: "blog",
-  });
-
+  const { data: blogs, loading: loadingBlog, error } = useFetchBlog();
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
 
   useVisitedPageTracking("blog");

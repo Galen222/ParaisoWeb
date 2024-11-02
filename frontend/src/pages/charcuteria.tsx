@@ -1,8 +1,7 @@
 // frontend/src/components/Charcuteria.tsx
 
 import React, { useState, useEffect } from "react";
-import { useFetch } from "../hooks/useFetch"; // Importa el hook personalizado
-import { getCharcuteriaProducts, CharcuteriaProduct } from "../services/charcuteriaService";
+import { useFetchCharcuteria } from "../hooks/useFetchCharcuteria";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import type { ComponentType } from "react";
@@ -16,15 +15,7 @@ interface CharcuteriaPageProps {
 type CharcuteriaPageComponent = ComponentType<CharcuteriaPageProps> & { pageTitleText?: string };
 
 const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: CharcuteriaPageProps) => {
-  const {
-    data: products,
-    loading: loadingProducts,
-    error,
-  } = useFetch<CharcuteriaProduct[]>({
-    fetchFunction: getCharcuteriaProducts,
-    errorMessagePage: "charcuteria", // Pasar 'charcuteria' en lugar de 'charcuteria_Error'
-  });
-
+  const { data: products, loading: loadingProducts, error } = useFetchCharcuteria();
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
   const [isClickFlipEnabled, setIsClickFlipEnabled] = useState<boolean>(window.innerWidth <= 800);
 
@@ -63,11 +54,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
               onClick={(e) => {
                 if (isClickFlipEnabled) {
                   const target = e.currentTarget as HTMLElement;
-                  if (target.style.transform === "rotateY(180deg)") {
-                    target.style.transform = "rotateY(0deg)";
-                  } else {
-                    target.style.transform = "rotateY(180deg)";
-                  }
+                  target.style.transform = target.style.transform === "rotateY(180deg)" ? "rotateY(0deg)" : "rotateY(180deg)";
                 }
               }}
             >

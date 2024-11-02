@@ -1,70 +1,67 @@
 // frontend/src/pages/blog/[slug].tsx
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useRouter } from "next/router";
 import { useIntl } from "react-intl";
 import Loader from "../../components/Loader";
-import { getBlogPostBySlug, BlogPost } from "../../services/blogService";
+import { useFetchBlogDetails } from "../../hooks/useFetchBlogDetails";
 import ReactMarkdown from "react-markdown";
 import errorStyles from "../../styles/error.module.css";
-import BlogStyles from "../../styles/blogDetail.module.css";
+import blogStyles from "../../styles/blogDetails.module.css";
+import type { ComponentType } from "react";
 
-const BlogDetail: React.FC = () => {
+interface BlogDetailsPageProps {
+  loadingMessages: boolean;
+}
+
+type BlogDetailsPageComponent = ComponentType<BlogDetailsPageProps> & { pageTitleText?: string };
+
+const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDetailsPageProps) => {
   const router = useRouter();
   const { slug } = router.query;
   const intl = useIntl();
-  const [blog, setBlog] = useState<BlogPost | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!slug) return;
+  // Usa el nuevo hook para obtener los detalles del post
+  const { data: blogDetails, loadingBlogDetails, error } = useFetchBlogDetails(slug as string);
 
-    const fetchBlogDetail = async () => {
-      try {
-        const idioma = intl.locale;
-        const data = await getBlogPostBySlug(slug as string, idioma);
-        setBlog(data);
-      } catch {
-        setError(intl.formatMessage({ id: "blog_Error" }));
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchBlogDetail();
-  }, [slug, intl.locale]);
-
-  if (loading) {
+  if (loadingMessages || loadingBlogDetails) {
     return <Loader />;
   }
+
+  const imageFileName = "/images/web/error.png";
 
   if (error) {
     return (
       <div className={errorStyles.errorContainer}>
         <p className={errorStyles.errorText}>{error}</p>
+        <div className={errorStyles.imageContainer}>
+          <img src={imageFileName} alt="Error" />
+        </div>
       </div>
     );
   }
 
-  if (!blog) {
-    return <p>No se encontró el blog.</p>;
-  }
-
   return (
-    <div className={BlogStyles.blogDetailContainer}>
-      <h1 className={BlogStyles.blogTitle}>{blog.titulo}</h1>
-      <p className={BlogStyles.blogAuthor}>Por {blog.autor}</p>
-      <p className={BlogStyles.blogDate}>
-        Publicado: {new Date(blog.fecha_publicacion).toLocaleDateString()}
-        {blog.fecha_actualizacion && ` | Actualizado: ${new Date(blog.fecha_actualizacion).toLocaleDateString()}`}
-      </p>
-      <img src={blog.imagen_url} alt={blog.titulo} className={BlogStyles.blogImage} />
-      {blog.imagen_url_2 && <img src={blog.imagen_url_2} alt={blog.titulo} className={BlogStyles.blogImage} />}
-      <div className={BlogStyles.blogContent}>
-        <ReactMarkdown>{blog.contenido}</ReactMarkdown>
-      </div>
+    <div className={blogStyles.blogDetailContainer}>
+      {blogDetails && (
+        <>
+          <h1 className={blogStyles.blogTitle}>{blogDetails.titulo}</h1>
+          <p className={blogStyles.blogAuthor}>Por {blogDetails.autor}</p>
+          <p className={blogStyles.blogDate}>
+            Publicado: {new Date(blogDetails.fecha_publicacion).toLocaleDateString()}
+            {blogDetails.fecha_actualizacion && ` | Actualizado: ${new Date(blogDetails.fecha_actualizacion).toLocaleDateString()}`}
+          </p>
+          <img src={blogDetails.imagen_url} alt={blogDetails.titulo} className={blogStyles.blogImage} />
+          {blogDetails.imagen_url_2 && <img src={blogDetails.imagen_url_2} alt={blogDetails.titulo} className={blogStyles.blogImage} />}
+          <div className={blogStyles.blogContent}>
+            <ReactMarkdown>{blogDetails.contenido}</ReactMarkdown>
+          </div>{" "}
+        </>
+      )}
     </div>
   );
 };
 
-export default BlogDetail;
+BlogDetailsPage.pageTitleText = "blog";
+
+export default BlogDetailsPage;

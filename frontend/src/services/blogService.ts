@@ -41,7 +41,7 @@ export const getBlogPostById = async (id: number, idioma: string): Promise<BlogP
   }
 };
 
-export const getBlogPostBySlug = async (slug: string, idioma: string): Promise<BlogPost> => {
+export const getBlogPostBySlug = async (slug: string): Promise<BlogPost> => {
   try {
     const response = await axios.get<BlogPost>(`${API_URL}/${slug}`);
     return response.data;
