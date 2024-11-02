@@ -65,16 +65,6 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
           </button>
         )}
       </div>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
     </div>
   );
 };
