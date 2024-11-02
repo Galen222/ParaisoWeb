@@ -176,6 +176,7 @@
   "blog_details_Autor": "Por ",
   "blog_details_Publicado": "Publicado: ",
   "blog_details_Actualizado": "Actualizado: ",
+  "blog_Details_Boton": "<- Volver a Blog",
   "blog_Details_Error": "No se ha podido mostrar el blog o no existe, por favor compruebe que la dirección es correcta e intentelo más tarde. Si el problema persiste puede ponerse en contacto con nosotros por medio de la sección Contacto.",
 
   "contacto_Titulo_Texto1": "Contactar con",

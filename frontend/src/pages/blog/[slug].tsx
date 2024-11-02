@@ -1,6 +1,7 @@
 // frontend/src/pages/blog/[slug].tsx
 
-import React from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useIntl } from "react-intl";
 import Loader from "../../components/Loader";
@@ -8,8 +9,9 @@ import { useFetchBlogDetails } from "../../hooks/useFetchBlogDetails";
 import useScrollToTop from "../../hooks/useScrollToTop";
 import ReactMarkdown from "react-markdown";
 import errorStyles from "../../styles/error.module.css";
-import blogStyles from "../../styles/blogDetails.module.css";
+import blogDetailsStyles from "../../styles/blogDetails.module.css";
 import type { ComponentType } from "react";
+import ShareLink from "../../components/shareLink";
 
 interface BlogDetailsPageProps {
   loadingMessages: boolean;
@@ -22,9 +24,14 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
   const { slug } = router.query;
   const intl = useIntl();
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+  const [isPushingBack, setIsPushingBack] = useState(false); // Estado para animaciones
 
   // Usa el nuevo hook para obtener los detalles del post
   const { data: blogDetails, loadingBlogDetails, error } = useFetchBlogDetails(slug as string);
+
+  const handleBack = async () => {
+    setIsPushingBack(true);
+  };
 
   if (loadingMessages || loadingBlogDetails) {
     return <Loader />;
@@ -44,30 +51,46 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
   }
 
   return (
-    <div className={blogStyles.blogDetailsContainer}>
+    <div className={blogDetailsStyles.blogDetailsContainer}>
       {blogDetails && (
         <div>
           <div className="mt-25p">
-            <h1 className={blogStyles.blogTitle}>{blogDetails.titulo}</h1>
+            <h1 className={blogDetailsStyles.blogTitle}>{blogDetails.titulo}</h1>
           </div>
           <div className="mt-25p">
-            <p className={blogStyles.blogAuthor}>
+            <p className={blogDetailsStyles.blogAuthor}>
               {intl.formatMessage({ id: "blog_details_Autor" })} {blogDetails.autor}
             </p>
-            <p className={blogStyles.blogDate}>
+            <p className={blogDetailsStyles.blogDate}>
               {intl.formatMessage({ id: "blog_details_Publicado" })} {new Date(blogDetails.fecha_publicacion).toLocaleDateString()}
               {blogDetails.fecha_actualizacion &&
                 ` | ${intl.formatMessage({ id: "blog_details_Actualizado" })} ${new Date(blogDetails.fecha_actualizacion).toLocaleDateString()}`}
             </p>
           </div>
           <div className="mt-25p">
-            <img src={blogDetails.imagen_url} alt={blogDetails.titulo} className={blogStyles.blogImage} />
+            <ShareLink url={typeof window !== "undefined" ? window.location.href : ""} title={blogDetails.titulo} />
           </div>
-          <div className={`mt-25p ${blogStyles.blogText}`}>
+          <div className="mt-25p">
+            <img src={blogDetails.imagen_url} alt={blogDetails.titulo} className={blogDetailsStyles.blogImage} />
+          </div>
+          <div className={`mt-25p ${blogDetailsStyles.blogText}`}>
             <ReactMarkdown>{blogDetails.contenido}</ReactMarkdown>
           </div>
           <div className="mt-25p">
-            {blogDetails.imagen_url_2 && <img src={blogDetails.imagen_url_2} alt={blogDetails.titulo} className={blogStyles.blogImage} />}
+            {blogDetails.imagen_url_2 && <img src={blogDetails.imagen_url_2} alt={blogDetails.titulo} className={blogDetailsStyles.blogImage} />}
+          </div>
+          <div>
+            <ShareLink url={typeof window !== "undefined" ? window.location.href : ""} title={blogDetails.titulo} />
+          </div>
+          <div className="text-center mt-25p">
+            <Link href="/blog">
+              <button
+                className={`btn btn-outline-secondary mx-auto ${blogDetailsStyles.backButton} ${isPushingBack ? "animate-push" : ""}`}
+                onAnimationEnd={() => setIsPushingBack(false)} // Resetea el estado de animación
+              >
+                {intl.formatMessage({ id: "blog_Details_Boton" })} {/* Texto del botón */}
+              </button>
+            </Link>
           </div>
         </div>
       )}
