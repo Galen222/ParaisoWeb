@@ -1,10 +1,10 @@
 // frontend/src/components/Charcuteria.tsx
 
-import React, { useEffect, useState } from "react";
-import { useIntl } from "react-intl"; // Importa el hook useIntl para internacionalización.
+import React, { useState, useEffect } from "react";
+import { useFetch } from "../hooks/useFetch"; // Importa el hook personalizado
+import { getCharcuteriaProducts, CharcuteriaProduct } from "../services/charcuteriaService";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import { getCharcuteriaProducts, CharcuteriaProduct } from "../services/charcuteriaService";
 import type { ComponentType } from "react";
 import CharcuteriaStyles from "../styles/charcuteria.module.css";
 import errorStyles from "../styles/error.module.css";
@@ -16,30 +16,17 @@ interface CharcuteriaPageProps {
 type CharcuteriaPageComponent = ComponentType<CharcuteriaPageProps> & { pageTitleText?: string };
 
 const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: CharcuteriaPageProps) => {
-  const intl = useIntl(); // Utiliza el hook de internacionalización para obtener funciones de traducción.
+  const {
+    data: products,
+    loading: loadingProducts,
+    error,
+  } = useFetch<CharcuteriaProduct[]>({
+    fetchFunction: getCharcuteriaProducts,
+    errorMessagePage: "charcuteria", // Pasar 'charcuteria' en lugar de 'charcuteria_Error'
+  });
+
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
-
-  const [products, setProducts] = useState<CharcuteriaProduct[]>([]);
-  const [loadingProducts, setLoadingProducts] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [isClickFlipEnabled, setIsClickFlipEnabled] = useState<boolean>(window.innerWidth <= 800);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        // Obtiene el idioma actual desde el contexto de internacionalización
-        const idioma = intl.locale; // Esto puede ser 'es', 'en' o 'de'
-        const data = await getCharcuteriaProducts(idioma);
-        setProducts(data);
-      } catch (error) {
-        setError(intl.formatMessage({ id: "charcuteria_Error" }));
-        /* console.error("Error recibiendo productos:", error); */
-      } finally {
-        setLoadingProducts(false);
-      }
-    };
-    fetchProducts();
-  }, [intl.locale]); // Dependencia en el idioma para actualizar al cambiar
 
   useEffect(() => {
     const handleResize = () => {
@@ -60,7 +47,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
       <div className={CharcuteriaStyles.errorContainer}>
         <p className={CharcuteriaStyles.errorText}>{error}</p>
         <div className={errorStyles.imageContainer}>
-          <img src={imageFileName} alt={"Error"} />
+          <img src={imageFileName} alt="Error" />
         </div>
       </div>
     );
@@ -69,13 +56,13 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
   return (
     <div className={CharcuteriaStyles.charcuteriaContainer}>
       <div className={CharcuteriaStyles.content}>
-        {products.map((product) => (
+        {products?.map((product) => (
           <div className={CharcuteriaStyles.card} key={product.id_producto}>
             <div
-              className={`${CharcuteriaStyles.cardInner}`}
+              className={CharcuteriaStyles.cardInner}
               onClick={(e) => {
                 if (isClickFlipEnabled) {
-                  const target = e.currentTarget;
+                  const target = e.currentTarget as HTMLElement;
                   if (target.style.transform === "rotateY(180deg)") {
                     target.style.transform = "rotateY(0deg)";
                   } else {

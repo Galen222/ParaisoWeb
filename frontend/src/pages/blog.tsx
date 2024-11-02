@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from "react";
+// frontend/src/components/blog.tsx
+
+import React from "react";
 import Link from "next/link";
-import { useIntl } from "react-intl";
-import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import { useFetch } from "../hooks/useFetch"; // Importa el hook personalizado
+import { getBlogPosts, BlogPost } from "../services/blogService";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
+import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import type { ComponentType } from "react";
-import { getBlogPosts, BlogPost } from "../services/blogService";
-import ReactMarkdown from "react-markdown";
 import errorStyles from "../styles/error.module.css";
 import BlogStyles from "../styles/blog.module.css";
 
@@ -18,46 +19,41 @@ interface BlogPageProps {
 type BlogPageComponent = ComponentType<BlogPageProps> & { pageTitleText?: string };
 
 const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
-  const intl = useIntl();
+  const {
+    data: blogs,
+    loading: loadingBlog,
+    error,
+  } = useFetch<BlogPost[]>({
+    fetchFunction: getBlogPosts,
+    errorMessagePage: "blog",
+  });
+
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
-  const [blogs, setBlog] = useState<BlogPost[]>([]);
-  const [loadingBlog, setLoadingBlog] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   useVisitedPageTracking("blog");
   useVisitedPageTrackingGA("blog");
-
-  useEffect(() => {
-    const fetchBlog = async () => {
-      try {
-        const idioma = intl.locale;
-        const data = await getBlogPosts(idioma);
-        setBlog(data);
-      } catch (error) {
-        setError(intl.formatMessage({ id: "blog_Error" }));
-      } finally {
-        setLoadingBlog(false);
-      }
-    };
-    fetchBlog();
-  }, [intl.locale]);
 
   if (loadingMessages || loadingBlog) {
     return <Loader />;
   }
 
+  const imageFileName = "/images/web/error.png";
+
   if (error) {
     return (
       <div className={errorStyles.errorContainer}>
         <p className={errorStyles.errorText}>{error}</p>
+        <div className={errorStyles.imageContainer}>
+          <img src={imageFileName} alt="Error" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="pageContainer">
+    <div className={BlogStyles.blogContainer}>
       <div className={BlogStyles.blogGrid}>
-        {blogs.map((blog) => (
+        {blogs?.map((blog) => (
           <Link
             href={`/blog/${blog.id_noticia}-${encodeURIComponent(blog.titulo.toLowerCase().replace(/\s+/g, "-").substring(0, 30))}`}
             key={blog.id_noticia}

@@ -1,3 +1,9 @@
+.blogContainer {
+  color: #4a403a;
+  margin: 0;
+  padding: 0;
+}
+
 .blogGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
