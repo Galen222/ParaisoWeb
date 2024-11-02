@@ -1,4 +1,4 @@
-/* Estilos generales del navbar */
+/* Navbar.module.css */
 .navbar {
   width: 100%;
   display: flex;
@@ -474,6 +474,7 @@
   }
 
   .animatedTitleContainer {
+    width: 100vw; /* Asegura que tome todo el ancho de la ventana en móviles */
     padding-top: 10px;
     padding-bottom: 10px;
   }

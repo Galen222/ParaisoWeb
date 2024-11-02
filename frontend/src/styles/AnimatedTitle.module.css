@@ -40,5 +40,6 @@
     font-size: 36px;
     color: #4a403a;
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white;
+    overflow: visible; /* Permitir que el contenido no se corte */
   }
 }
