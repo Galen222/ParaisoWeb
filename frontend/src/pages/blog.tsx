@@ -1,8 +1,8 @@
-// frontend/src/components/blog.tsx
+// frontend/src/pages/blog.tsx
 
 import React from "react";
 import Link from "next/link";
-import { useFetch } from "../hooks/useFetch"; // Importa el hook personalizado
+import { useFetch } from "../hooks/useFetch";
 import { getBlogPosts, BlogPost } from "../services/blogService";
 import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
@@ -54,11 +54,7 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
     <div className={BlogStyles.blogContainer}>
       <div className={BlogStyles.blogGrid}>
         {blogs?.map((blog) => (
-          <Link
-            href={`/blog/${blog.id_noticia}-${encodeURIComponent(blog.titulo.toLowerCase().replace(/\s+/g, "-").substring(0, 30))}`}
-            key={blog.id_noticia}
-            passHref
-          >
+          <Link href={`/blog/${blog.slug}`} key={blog.id_noticia} passHref>
             <div className={BlogStyles.blogCard}>
               <img src={blog.imagen_url} alt={blog.titulo} className={BlogStyles.blogImage} />
               <div className={BlogStyles.blogContent}>

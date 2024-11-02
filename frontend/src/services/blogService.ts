@@ -5,6 +5,7 @@ import axios from "axios";
 export interface BlogPost {
   id_noticia: number;
   idioma: string;
+  slug: string;
   titulo: string;
   contenido: string;
   autor: string;
@@ -36,6 +37,15 @@ export const getBlogPostById = async (id: number, idioma: string): Promise<BlogP
     return response.data;
   } catch (error) {
     /* console.error("Error recibiendo el blog: ", error); */
+    throw error;
+  }
+};
+
+export const getBlogPostBySlug = async (slug: string, idioma: string): Promise<BlogPost> => {
+  try {
+    const response = await axios.get<BlogPost>(`${API_URL}/${slug}`);
+    return response.data;
+  } catch (error) {
     throw error;
   }
 };

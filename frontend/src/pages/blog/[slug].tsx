@@ -1,36 +1,38 @@
+// frontend/src/pages/blog/[slug].tsx
+
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useIntl } from "react-intl";
-import Loader from "../components/Loader";
-import { getBlogPostById, BlogPost } from "../services/blogService";
+import Loader from "../../components/Loader";
+import { getBlogPostBySlug, BlogPost } from "../../services/blogService";
 import ReactMarkdown from "react-markdown";
-import errorStyles from "../styles/error.module.css";
-import BlogStyles from "../styles/blogDetail.module.css";
+import errorStyles from "../../styles/error.module.css";
+import BlogStyles from "../../styles/blogDetail.module.css";
 
 const BlogDetail: React.FC = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const { slug } = router.query;
   const intl = useIntl();
   const [blog, setBlog] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!slug) return;
+
     const fetchBlogDetail = async () => {
-      if (!id) return;
       try {
         const idioma = intl.locale;
-        const blogId = parseInt((id as string).split("-")[0], 10); // Obtiene el ID de la URL
-        const data = await getBlogPostById(blogId, idioma);
+        const data = await getBlogPostBySlug(slug as string, idioma);
         setBlog(data);
-      } catch (error) {
+      } catch {
         setError(intl.formatMessage({ id: "blog_Error" }));
       } finally {
         setLoading(false);
       }
     };
     fetchBlogDetail();
-  }, [id, intl.locale]);
+  }, [slug, intl.locale]);
 
   if (loading) {
     return <Loader />;
