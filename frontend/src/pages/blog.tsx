@@ -44,13 +44,15 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
 
   return (
     <div className={BlogStyles.blogContainer}>
-      <div className={BlogStyles.blogGrid}>
+      <div className={BlogStyles.content}>
         {blogs?.map((blog) => (
-          <Link href={`/blog/${blog.slug}`} key={blog.id_noticia} passHref>
+          <Link className={BlogStyles.blogLink} href={`/blog/${blog.slug}`} key={blog.id_noticia} passHref>
             <div className={BlogStyles.blogCard}>
-              <img src={blog.imagen_url} alt={blog.titulo} className={BlogStyles.blogImage} />
-              <div className={BlogStyles.blogContent}>
-                <h2>{blog.titulo}</h2>
+              <div className={BlogStyles.imageContainer}>
+                <img src={blog.imagen_url} alt={blog.titulo} className={BlogStyles.blogImage} />
+              </div>
+              <div className={BlogStyles.blogText}>
+                <p>{blog.titulo}</p>
               </div>
             </div>
           </Link>
@@ -63,6 +65,16 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
           </button>
         )}
       </div>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </div>
   );
 };

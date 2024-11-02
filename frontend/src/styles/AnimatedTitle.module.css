@@ -25,11 +25,7 @@
 
 /* MODO TABLET */
 @media (max-width: 1024px) {
-  .animationContainer {
-    overflow: hidden; /* Esto oculta cualquier desbordamiento horizontal */
-  }
   .animationFont {
-    overflow: hidden; /* Oculta cualquier contenido que se desborde */
     font-size: 60px;
   }
 }

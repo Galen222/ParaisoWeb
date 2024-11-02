@@ -173,6 +173,8 @@
   "blog_Titulo_Texto2": "Paraíso del Jamón",
   "blog_Error": "The blog could not be displayed. Please try again later. If the problem persists, you can contact us through the Contact section.",
 
+  "blog_Details_Error": "The blog could not be displayed or does not exist. Please check that the address is correct and try again later. If the problem persists, you can contact us through the Contact section.",
+
   "contacto_Titulo_Texto1": "Contact",
   "contacto_Titulo_Texto2": "Paraíso del Jamón",
   "contacto_Texto1": "If you have any questions or comments, feel free to contact us. Whether you need more information about our products or services, have a suggestion, or want to share your concerns, we are here to help.",

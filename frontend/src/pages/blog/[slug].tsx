@@ -42,7 +42,7 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
   }
 
   return (
-    <div className={blogStyles.blogDetailContainer}>
+    <div className={blogStyles.blogDetailsContainer}>
       {blogDetails && (
         <>
           <h1 className={blogStyles.blogTitle}>{blogDetails.titulo}</h1>
@@ -58,6 +58,12 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
           </div>{" "}
         </>
       )}
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
     </div>
   );
 };

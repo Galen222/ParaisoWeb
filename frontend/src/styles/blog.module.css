@@ -1,46 +1,91 @@
 .blogContainer {
-  color: #4a403a;
   margin: 0;
   padding: 0;
+  background-attachment: fixed;
+  overflow: hidden;
 }
 
-.blogGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
+.content {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  margin: 0 auto 130px auto;
+  max-width: 1000px;
+  margin-top: 20px;
 }
 
 .blogCard {
+  max-width: 370px;
+  height: 500px;
+  margin: 1rem;
+  position: relative;
   border: 1px solid #ddd;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.blogCard:hover {
-  transform: scale(1.02);
+.imageContainer {
+  width: 100%;
+  height: 60%; /* Asegura que la imagen ocupe siempre el 60% de la tarjeta */
+  overflow: hidden; /* Oculta el exceso de la imagen al hacer zoom */
 }
 
 .blogImage {
   width: 100%;
-  height: 200px;
+  height: 100%;
   object-fit: cover;
+  transition: transform 0.4s ease-in-out; /* Suavizado de transición solo para la imagen */
 }
 
-.blogContent {
-  padding: 15px;
+.blogCard:hover .blogImage {
+  transform: scale(1.1); /* Escala solo la imagen al pasar el ratón */
 }
 
-.blogTitle {
+/* Quita cualquier subrayado en el enlace */
+.blogLink {
+  text-decoration: none;
+  color: white;
+  text-shadow: -1px -1px 0 #4a403a, 1px -1px 0 #4a403a, -1px 1px 0 #4a403a, 1px 1px 0 #4a403a;
+  font-size: 34px;
   font-size: 1.5em;
-  color: #333;
-  margin-bottom: 10px;
+  margin-top: 20px;
 }
 
-.blogAuthor,
-.blogDate {
-  font-size: 0.9em;
-  color: #666;
+.blogText {
+  width: 100%;
+  background-color: rgba(175, 36, 36, 0.904);
+  padding: 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* Media queries para dispositivos móviles */
+@media screen and (max-width: 800px) {
+  .content {
+    flex-direction: column;
+    align-items: center;
+  }
+  .blogCard {
+    width: 90%;
+    max-width: 450px;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .content {
+    flex-direction: column;
+    align-items: center;
+  }
+  .blogCard {
+    width: 90%;
+    max-width: 400px;
+  }
 }
