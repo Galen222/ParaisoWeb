@@ -35,6 +35,7 @@ class Blog(Base):
 
     id_noticia = Column(Integer, index=True, nullable=False)
     idioma = Column(String(5), nullable=False)
+    slug = Column(String(150), nullable=False)
     titulo = Column(String(150), nullable=False)
     contenido = Column(Text, nullable=False)
     autor = Column(String(150), nullable=False)

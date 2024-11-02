@@ -37,6 +37,7 @@ class Charcuteria(CharcuteriaBase):
 # Esquemas para la tabla blog
 class BlogBase(BaseModel):
     idioma: str
+    slug: str
     titulo: str
     contenido: str
     autor: str
