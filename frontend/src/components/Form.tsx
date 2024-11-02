@@ -15,6 +15,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
   const intl = useIntl();
   const [isPushingSend, setIsPushingSend] = useState(false);
   const [isPushingFile, setIsPushingFile] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [formData, setFormData] = useState<FormServiceData>({
     name: "",
     reason: "",
@@ -94,9 +96,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trackButtonClick("Enviar Formulario");
+    setIsSubmitting(true); // Comienza el envío
 
     try {
-      await submitForm(formData); // Usa el servicio con axios
+      await submitForm(formData); // Enviar el formulario
 
       // Éxito
       toast.success(intl.formatMessage({ id: "contacto_Formulario_Ok" }), {
@@ -120,6 +123,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
       setIsPrivacyChecked(false);
       onSubmit();
     } catch (error: any) {
+      // Error
       toast.error(intl.formatMessage({ id: "contacto_Formulario_Error" }), {
         position: "top-center",
         autoClose: 4000,
@@ -130,6 +134,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
         theme: "dark",
         transition: Slide,
       });
+    } finally {
+      setIsSubmitting(false); // Finaliza el envío
     }
   };
 
@@ -234,11 +240,11 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
       <button
         type="submit"
         className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${isPushingSend ? "animate-push" : ""}`}
-        disabled={!CheckFormComplete()}
+        disabled={!CheckFormComplete() || isSubmitting} // Desactiva el botón si se está enviando
         onClick={() => setIsPushingSend(true)}
         onAnimationEnd={() => setIsPushingSend(false)}
       >
-        {intl.formatMessage({ id: "contacto_BotonEnviar" })}
+        {isSubmitting ? intl.formatMessage({ id: "contacto_BotonEnviando" }) : intl.formatMessage({ id: "contacto_BotonEnviar" })}
       </button>
     </form>
   );

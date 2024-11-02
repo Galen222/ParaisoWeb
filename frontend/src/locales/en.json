@@ -234,6 +234,7 @@
   "contacto_BotonSubirArchivo": "Select File",
   "contacto_Archivo": "No file selected",
   "contacto_BotonEnviar": "Send",
+  "contacto_BotonEnviando": "Sending...",
   "contacto_ArchivoNoJPG-PDF": "Please upload a file in JPG or PDF format.",
   "contacto_ArchivoGrande": "Please upload a file with a maximum size of 10MB",
   "contacto_PoliticaPrivacidad_1": "I have read and accept the ",

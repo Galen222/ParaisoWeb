@@ -234,6 +234,7 @@
   "contacto_BotonSubirArchivo": "Seleccionar archivo",
   "contacto_Archivo": "Ningun archivo seleccionado",
   "contacto_BotonEnviar": "Enviar",
+  "contacto_BotonEnviando": "Enviando...",
   "contacto_ArchivoNoJPG-PDF": "Por favor, suba un archivo en formato JPG o PDF.",
   "contacto_ArchivoGrande": "Por favor, suba un archivo de tamaño máximo de 10MB",
   "contacto_PoliticaPrivacidad_1": "He leído y acepto la ",

@@ -234,6 +234,7 @@
   "contacto_BotonSubirArchivo": "Datei auswählen",
   "contacto_Archivo": "Keine Datei ausgewählt",
   "contacto_BotonEnviar": "Senden",
+  "contacto_BotonEnviando": "Wird gesendet...",
   "contacto_ArchivoNoJPG-PDF": "Bitte laden Sie eine Datei im JPG- oder PDF-Format hoch.",
   "contacto_ArchivoGrande": "Bitte laden Sie eine Datei mit einer maximalen Größe von 10MB hoch",
   "contacto_PoliticaPrivacidad_1": "Ich habe die ",

@@ -31,7 +31,7 @@
 }
 
 .responsiveImage:hover {
-  transform: scale(1.15);
+  transform: scale(1.12);
 }
 
 /* Ocultar el carrusel en modo escritorio en la página de gastronomía */
