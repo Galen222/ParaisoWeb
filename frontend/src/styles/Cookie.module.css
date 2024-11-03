@@ -1,199 +1,227 @@
+/* Fondo de la modal de cookies */
 .cookieModalBackdrop {
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-end;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 15;
+  display: flex; /* Utiliza flexbox para alinear el contenido */
+  justify-content: flex-end; /* Alinea horizontalmente al final (derecha) */
+  align-items: flex-end; /* Alinea verticalmente al final (abajo) */
+  position: fixed; /* Posiciona el fondo de manera fija en la ventana gráfica */
+  top: 0; /* Posiciona en la parte superior */
+  left: 0; /* Posiciona en la parte izquierda */
+  width: 100%; /* Ancho completo de la ventana gráfica */
+  height: 100%; /* Altura completa de la ventana gráfica */
+  background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente negro para oscurecer el contenido detrás */
+  z-index: 15; /* Asegura que el fondo esté por encima de otros elementos */
 }
 
+/* Modal de cookies */
 .cookieModal {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 90%;
-  max-width: 680px;
-  margin: 20px;
+  background: white; /* Fondo blanco para la modal */
+  padding: 20px; /* Espaciado interno de 20 píxeles */
+  border-radius: 10px; /* Bordes redondeados de 10 píxeles */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidad */
+  width: 90%; /* Ancho del 90% del contenedor padre */
+  max-width: 680px; /* Ancho máximo de 680 píxeles */
+  margin: 20px; /* Márgen de 20 píxeles alrededor del modal */
 }
 
+/* Párrafos dentro del modal de cookies */
 .cookieModal p {
-  font-size: 14px;
+  font-size: 14px; /* Tamaño de fuente de 14 píxeles */
 }
 
+/* Span dentro del modal de cookies */
 .cookieModal span {
-  font-size: 16px;
+  font-size: 16px; /* Tamaño de fuente de 16 píxeles */
 }
 
+/* Contenedor para el interruptor (switch) */
 .switchContainer {
-  margin-bottom: 20px;
+  margin-bottom: 20px; /* Márgen inferior de 20 píxeles */
 }
 
+/* Estilo para cada interruptor */
 .switch {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
+  display: flex; /* Utiliza flexbox para alinear el interruptor y su etiqueta */
+  align-items: center; /* Centra verticalmente los elementos dentro del interruptor */
+  margin-bottom: 10px; /* Márgen inferior de 10 píxeles */
 }
 
+/* Checkbox oculto para accesibilidad */
 .hiddenCheckbox {
-  position: absolute;
-  opacity: 0;
-  width: 0;
-  height: 0;
-  margin: 0;
-  padding: 0;
-  border: none;
+  position: absolute; /* Posiciona de manera absoluta */
+  opacity: 0; /* Hace el checkbox completamente transparente */
+  width: 0; /* Ancho de 0 para ocultarlo */
+  height: 0; /* Altura de 0 para ocultarlo */
+  margin: 0; /* Elimina márgenes */
+  padding: 0; /* Elimina padding */
+  border: none; /* Elimina el borde */
 }
 
+/* Estilo para el deslizador (slider) del interruptor */
 .slider {
-  position: relative;
-  width: 40px;
-  height: 20px;
-  background-color: #ccc;
-  border-radius: 34px;
-  cursor: pointer;
-  transition: 0.4s;
-  margin-right: 10px;
-  margin-left: 15px;
+  position: relative; /* Posicionamiento relativo para el pseudo-elemento */
+  width: 40px; /* Ancho de 40 píxeles */
+  height: 20px; /* Altura de 20 píxeles */
+  background-color: #ccc; /* Color de fondo gris claro */
+  border-radius: 34px; /* Bordes completamente redondeados */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el deslizador */
+  transition: 0.4s; /* Transición suave para los cambios */
+  margin-right: 10px; /* Márgen derecho de 10 píxeles */
+  margin-left: 15px; /* Márgen izquierdo de 15 píxeles */
 }
 
+/* Pseudo-elemento antes del deslizador para la bola */
 .slider:before {
-  position: absolute;
-  content: "";
-  height: 14px;
-  width: 14px;
-  left: 3px;
-  bottom: 3px;
-  background-color: white;
-  border-radius: 50%;
-  transition: 0.4s;
+  position: absolute; /* Posicionamiento absoluto dentro del deslizador */
+  content: ""; /* Contenido vacío para crear la bola */
+  height: 14px; /* Altura de 14 píxeles */
+  width: 14px; /* Ancho de 14 píxeles */
+  left: 3px; /* Posiciona a 3 píxeles desde la izquierda */
+  bottom: 3px; /* Posiciona a 3 píxeles desde abajo */
+  background-color: white; /* Color de fondo blanco para la bola */
+  border-radius: 50%; /* Hace que la bola sea completamente circular */
+  transition: 0.4s; /* Transición suave para los cambios */
 }
 
+/* Estilo cuando el checkbox está marcado */
 input:checked + .slider {
-  background-color: #198754;
+  background-color: #198754; /* Cambia el color de fondo a verde cuando está activo */
 }
 
+/* Transformación de la bola cuando el checkbox está marcado */
 input:checked + .slider:before {
-  transform: translateX(20px);
+  transform: translateX(20px); /* Mueve la bola 20 píxeles a la derecha */
 }
 
+/* Contenedor para los botones de aceptación y cancelación */
 .buttonContainer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 25px;
+  display: flex; /* Utiliza flexbox para organizar los botones */
+  justify-content: space-between; /* Distribuye el espacio uniformemente entre los botones */
+  margin-top: 25px; /* Márgen superior de 25 píxeles */
 }
 
+/* Botón de aceptar cookies */
 .acceptButton {
-  width: 200px;
-  --bs-btn-bg: #4a403a;
-  --bs-btn-border-color: #4a403a;
-  --bs-btn-hover-bg: #198754;
-  --bs-btn-hover-border-color: #198754;
-  --bs-btn-active-bg: #198754;
-  --bs-btn-active-border-color: #198754;
-  --bs-btn-disabled-bg: #4a403a;
-  --bs-btn-disabled-border-color: #4a403a;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19);
-  transform: translateZ(0);
+  width: 200px; /* Ancho fijo de 200 píxeles */
+  --bs-btn-bg: #4a403a; /* Variable CSS para el color de fondo */
+  --bs-btn-border-color: #4a403a; /* Variable CSS para el color del borde */
+  --bs-btn-hover-bg: #198754; /* Variable CSS para el color de fondo al pasar el ratón */
+  --bs-btn-hover-border-color: #198754; /* Variable CSS para el color del borde al pasar el ratón */
+  --bs-btn-active-bg: #198754; /* Variable CSS para el color de fondo al activar el botón */
+  --bs-btn-active-border-color: #198754; /* Variable CSS para el color del borde al activar el botón */
+  --bs-btn-disabled-bg: #4a403a; /* Variable CSS para el color de fondo cuando está deshabilitado */
+  --bs-btn-disabled-border-color: #4a403a; /* Variable CSS para el color del borde cuando está deshabilitado */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19); /* Sombra para dar efecto de profundidad */
+  transform: translateZ(0); /* Optimiza el rendimiento de la animación */
 }
 
+/* Botón de cancelar cookies */
 .cancelButton {
-  width: 200px;
-  --bs-btn-bg: #4a403a;
-  --bs-btn-border-color: #4a403a;
-  --bs-btn-hover-bg: #dc3545;
-  --bs-btn-hover-border-color: #dc3545;
-  --bs-btn-active-bg: #dc3545;
-  --bs-btn-active-border-color: #dc3545;
-  --bs-btn-disabled-bg: #4a403a;
-  --bs-btn-disabled-border-color: #4a403a;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19);
-  transform: translateZ(0);
+  width: 200px; /* Ancho fijo de 200 píxeles */
+  --bs-btn-bg: #4a403a; /* Variable CSS para el color de fondo */
+  --bs-btn-border-color: #4a403a; /* Variable CSS para el color del borde */
+  --bs-btn-hover-bg: #dc3545; /* Variable CSS para el color de fondo al pasar el ratón */
+  --bs-btn-hover-border-color: #dc3545; /* Variable CSS para el color del borde al pasar el ratón */
+  --bs-btn-active-bg: #dc3545; /* Variable CSS para el color de fondo al activar el botón */
+  --bs-btn-active-border-color: #dc3545; /* Variable CSS para el color del borde al activar el botón */
+  --bs-btn-disabled-bg: #4a403a; /* Variable CSS para el color de fondo cuando está deshabilitado */
+  --bs-btn-disabled-border-color: #4a403a; /* Variable CSS para el color del borde cuando está deshabilitado */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19); /* Sombra para dar efecto de profundidad */
+  transform: translateZ(0); /* Optimiza el rendimiento de la animación */
 }
 
+/* Estilo para los enlaces dentro del modal */
 .link {
-  display: block;
-  margin-top: 20px;
-  text-align: center;
-  text-decoration: none;
+  display: block; /* Muestra el enlace como un bloque para ocupar toda la línea */
+  margin-top: 20px; /* Márgen superior de 20 píxeles */
+  text-align: center; /* Centra el texto del enlace */
+  text-decoration: none; /* Elimina el subrayado del enlace */
 }
 
+/* Efecto al pasar el ratón sobre los enlaces */
 .link:hover {
-  text-decoration: underline;
+  text-decoration: underline; /* Agrega subrayado al pasar el ratón para indicar interactividad */
 }
 
-/* MODO TABLET */
+/* Media Queries para dispositivos tipo tablet */
 @media (max-width: 1024px) {
+  /* Ajustes del fondo de la modal en tablet */
   .cookieModalBackdrop {
-    justify-content: center;
+    justify-content: center; /* Centra el contenido horizontalmente */
   }
 
+  /* Ajustes del modal en tablet */
   .cookieModal {
-    text-align: justify;
-    max-width: 580px;
+    text-align: justify; /* Justifica el texto dentro del modal */
+    max-width: 580px; /* Reduce el ancho máximo a 580 píxeles */
   }
 
+  /* Ajustes del deslizador en tablet */
   .slider {
-    margin-left: 5px;
+    margin-left: 5px; /* Reduce el margen izquierdo a 5 píxeles */
   }
 
+  /* Ajustes de los botones en tablet */
   .acceptButton,
   .cancelButton {
-    width: 170px;
+    width: 170px; /* Reduce el ancho de los botones a 170 píxeles */
   }
 }
 
-/* MODO MOVIL */
+/* Media Queries para dispositivos móviles */
 @media (max-width: 767px) {
+  /* Ajustes del modal en dispositivos móviles */
   .cookieModal {
-    padding: 20px;
-    margin: 10 auto;
+    padding: 20px; /* Espaciado interno de 20 píxeles */
+    margin: 10px auto; /* Márgen superior e inferior de 10 píxeles y centrado horizontal */
   }
 
+  /* Ajustes del contenedor del interruptor en móvil */
   .switchContainer {
-    margin-bottom: 10px;
+    margin-bottom: 10px; /* Reduce el margen inferior a 10 píxeles */
   }
 
+  /* Ajustes de los spans dentro del modal en móvil */
   .cookieModal span {
-    font-size: 14px;
-    text-align: left;
+    font-size: 14px; /* Reduce el tamaño de fuente a 14 píxeles */
+    text-align: left; /* Alinea el texto a la izquierda */
   }
 
+  /* Ajustes del deslizador en móvil */
   .slider {
-    width: 30px;
+    width: 30px; /* Reduce el ancho del deslizador a 30 píxeles */
   }
 
+  /* Ajustes de la bola del deslizador cuando está marcado en móvil */
   input:checked + .slider:before {
-    transform: translateX(10px);
+    transform: translateX(10px); /* Mueve la bola 10 píxeles a la derecha */
   }
 
+  /* Ajustes del contenedor de botones en móvil */
   .buttonContainer {
-    flex-direction: column;
-    margin-top: 15px;
-    align-items: center;
+    flex-direction: column; /* Cambia la dirección a columna para apilar los botones */
+    margin-top: 15px; /* Reduce el margen superior a 15 píxeles */
+    align-items: center; /* Centra los botones horizontalmente */
   }
 
+  /* Ajustes de los botones en móvil */
   .acceptButton,
   .cancelButton {
-    width: 250px;
-    font-size: 14px;
-    margin-bottom: 10px;
+    width: 250px; /* Aumenta el ancho de los botones a 250 píxeles */
+    font-size: 14px; /* Reduce el tamaño de fuente a 14 píxeles */
+    margin-bottom: 10px; /* Añade un margen inferior de 10 píxeles */
   }
 
+  /* Orden de los botones en móvil */
   .acceptButton:first-child {
-    order: 1;
+    order: 1; /* Coloca el botón de aceptar en primer lugar */
   }
 
   .acceptButton:nth-child(2) {
-    order: 2;
+    order: 2; /* Coloca el botón de aceptar en segundo lugar */
   }
 
   .cancelButton {
-    order: 3;
-    margin-bottom: 0;
+    order: 3; /* Coloca el botón de cancelar en tercer lugar */
+    margin-bottom: 0; /* Elimina el margen inferior */
   }
 }

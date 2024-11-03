@@ -1,95 +1,106 @@
+/* Contenedor principal del blog */
 .blogContainer {
-  margin: 0;
-  padding: 0;
-  background-attachment: fixed;
-  overflow: hidden;
+  margin: 0; /* Elimina los márgenes predeterminados */
+  padding: 0; /* Elimina el padding predeterminado */
+  background-attachment: fixed; /* Fija la imagen de fondo al viewport para crear un efecto parallax */
+  overflow: hidden; /* Oculta cualquier contenido que exceda los límites del contenedor */
 }
 
+/* Contenedor para el contenido de las tarjetas del blog */
 .content {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  margin: 0 auto 130px auto;
-  max-width: 1000px;
-  margin-top: 20px;
-  margin-bottom: 130px;
+  display: flex; /* Utiliza flexbox para organizar las tarjetas en una fila */
+  flex-wrap: wrap; /* Permite que las tarjetas se envuelvan a la siguiente línea si no caben en una sola fila */
+  justify-content: space-around; /* Distribuye el espacio uniformemente alrededor de las tarjetas */
+  margin: 0 auto 130px auto; /* Márgenes superior de 0, laterales automáticos para centrar y margen inferior de 130 píxeles */
+  max-width: 1000px; /* Ancho máximo de 1000 píxeles para limitar el ancho del contenido */
+  margin-top: 20px; /* Márgen superior de 20 píxeles */
+  margin-bottom: 130px; /* Márgen inferior de 130 píxeles */
 }
 
+/* Estilo para cada tarjeta del blog */
 .blogCard {
-  max-width: 370px;
-  min-width: 260px;
-  height: 500px;
-  margin: 1rem;
-  position: relative;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  max-width: 370px; /* Ancho máximo de 370 píxeles */
+  min-width: 260px; /* Ancho mínimo de 260 píxeles */
+  height: 500px; /* Altura fija de 500 píxeles */
+  margin: 1rem; /* Márgen de 1 rem alrededor de cada tarjeta */
+  position: relative; /* Posicionamiento relativo para permitir posicionamiento absoluto de elementos internos */
+  border: 1px solid #ddd; /* Borde gris claro de 1 píxel */
+  border-radius: 10px; /* Bordes redondeados de 10 píxeles */
+  overflow: hidden; /* Oculta el contenido que excede los límites de la tarjeta */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidad */
+  display: flex; /* Utiliza flexbox para organizar el contenido interno */
+  flex-direction: column; /* Dispone los elementos internos en una columna */
+  align-items: center; /* Centra los elementos horizontalmente */
 }
 
+/* Contenedor para la imagen dentro de la tarjeta del blog */
 .imageContainer {
-  width: 100%;
-  height: 60%; /* Asegura que la imagen ocupe siempre el 60% de la tarjeta */
-  overflow: hidden; /* Oculta el exceso de la imagen al hacer zoom */
+  width: 100%; /* Ancho completo del contenedor padre */
+  height: 60%; /* La imagen ocupa el 60% de la altura de la tarjeta */
+  overflow: hidden; /* Oculta cualquier parte de la imagen que exceda el contenedor */
 }
 
+/* Estilo para la imagen del blog */
 .blogImage {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s ease-in-out; /* Suavizado de transición solo para la imagen */
+  width: 100%; /* Ancho completo de la imagen */
+  height: 100%; /* Altura completa del contenedor */
+  object-fit: cover; /* Ajusta la imagen para cubrir todo el contenedor sin distorsionar */
+  transition: transform 0.4s ease-in-out; /* Transición suave para la transformación de la imagen */
 }
 
+/* Efecto al pasar el ratón sobre la tarjeta del blog */
 .blogCard:hover .blogImage {
-  transform: scale(1.1); /* Escala solo la imagen al pasar el ratón */
+  transform: scale(1.1); /* Escala la imagen al 110% de su tamaño original */
 }
 
-/* Quita cualquier subrayado en el enlace */
+/* Enlace dentro de la tarjeta del blog */
 .blogLink {
-  text-decoration: none;
-  color: white;
-  text-shadow: -1px -1px 0 #4a403a, 1px -1px 0 #4a403a, -1px 1px 0 #4a403a, 1px 1px 0 #4a403a;
-  font-size: 34px;
-  margin-top: 20px;
+  text-decoration: none; /* Elimina el subrayado del enlace */
+  color: white; /* Color del texto blanco */
+  text-shadow: -1px -1px 0 #4a403a, /* Sombra del texto para mejorar la legibilidad */ 1px -1px 0 #4a403a, -1px 1px 0 #4a403a, 1px 1px 0 #4a403a;
+  font-size: 34px; /* Tamaño de fuente de 34 píxeles */
+  margin-top: 20px; /* Márgen superior de 20 píxeles */
 }
 
+/* Sección de texto dentro de la tarjeta del blog */
 .blogText {
-  width: 100%;
-  background-color: rgba(175, 36, 36, 0.904);
-  padding: 15px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
+  width: 100%; /* Ancho completo del contenedor padre */
+  background-color: rgba(175, 36, 36, 0.904); /* Fondo semi-transparente en tono rojo */
+  padding: 15px; /* Espaciado interno de 15 píxeles */
+  flex: 1; /* Permite que la sección de texto crezca para ocupar el espacio disponible */
+  display: flex; /* Utiliza flexbox para organizar el contenido interno */
+  flex-direction: column; /* Dispone los elementos internos en una columna */
+  justify-content: center; /* Centra los elementos verticalmente */
+  align-items: center; /* Centra los elementos horizontalmente */
+  text-align: center; /* Centra el texto dentro de la sección */
+}
+
+/* Media queries para dispositivos tipo tablet */
+@media screen and (max-width: 800px) {
+  .content {
+    flex-direction: column; /* Cambia la dirección a columna para apilar las tarjetas verticalmente */
+    align-items: center; /* Centra las tarjetas horizontalmente */
+  }
+
+  .blogCard {
+    width: 90%; /* Ancho del 90% del contenedor padre */
+    max-width: 450px; /* Ancho máximo de 450 píxeles */
+  }
 }
 
 /* Media queries para dispositivos móviles */
-@media screen and (max-width: 800px) {
-  .content {
-    flex-direction: column;
-    align-items: center;
-  }
-  .blogCard {
-    width: 90%;
-    max-width: 450px;
-  }
-}
-
 @media screen and (max-width: 500px) {
   .content {
-    flex-direction: column;
-    align-items: center;
+    flex-direction: column; /* Mantiene la dirección de columna */
+    align-items: center; /* Centra las tarjetas horizontalmente */
   }
+
   .blogCard {
-    width: 90%;
-    max-width: 400px;
+    width: 90%; /* Ancho del 90% del contenedor padre */
+    max-width: 400px; /* Ancho máximo de 400 píxeles */
   }
+
   .blogLink {
-    font-size: 30px;
+    font-size: 30px; /* Reduce el tamaño de fuente a 30 píxeles para mejorar la legibilidad en pantallas pequeñas */
   }
 }

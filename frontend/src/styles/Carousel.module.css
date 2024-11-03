@@ -1,31 +1,34 @@
+/* Contenedor principal del carrusel */
 .carouselContainer {
-  width: 80%;
-  margin: 0 auto; /* Centrar el carrusel en el contenedor */
-  border-radius: 10px;
-  overflow: hidden;
-  line-height: 0;
+  width: 80%; /* Ancho del 80% del contenedor padre */
+  margin: 0 auto; /* Centra el carrusel horizontalmente dentro del contenedor */
+  border-radius: 10px; /* Bordes redondeados de 10 píxeles para suavizar la apariencia */
+  overflow: hidden; /* Oculta cualquier contenido que exceda los límites del contenedor */
+  line-height: 0; /* Elimina el espacio vertical entre líneas dentro del contenedor */
 }
 
+/* Estilo para las imágenes dentro del carrusel */
 .image {
-  width: 100%;
-  height: auto;
-  display: block;
+  width: 100%; /* Ancho completo de la imagen para que ocupe todo el contenedor */
+  height: auto; /* Altura automática para mantener la proporción de la imagen */
+  display: block; /* Muestra la imagen como un bloque para eliminar espacios blancos alrededor */
 }
 
+/* Contenedor de texto dentro del carrusel */
 .text {
-  width: 100%;
-  height: 100%;
-  /* padding: 20px; */
-  text-align: center;
-  display: flex;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
+  width: 100%; /* Ancho completo del contenedor de texto */
+  height: 100%; /* Altura completa del contenedor padre */
+  /* padding: 20px; */ /* Espaciado interno de 20 píxeles, actualmente comentado */
+  text-align: center; /* Centra el texto horizontalmente */
+  display: flex; /* Utiliza flexbox para alinear el contenido */
+  justify-content: center; /* Centra el contenido horizontalmente */
+  align-items: center; /* Centra el contenido verticalmente */
 }
 
-/* MODO MOVIL */
+/* Estilos responsivos para dispositivos móviles */
 @media (max-width: 767px) {
+  /* Ajustes del contenedor del carrusel en dispositivos móviles */
   .carouselContainer {
-    width: 90%;
+    width: 90%; /* Aumenta el ancho al 90% para aprovechar mejor el espacio en pantallas pequeñas */
   }
 }

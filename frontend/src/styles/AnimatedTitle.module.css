@@ -1,41 +1,44 @@
+/* Contenedor para las animaciones */
 .animationContainer {
-  width: 96vw; /* Asegura el 96% del ancho de la pantalla */
-  max-width: 100%; /* Asegura que no exceda el ancho del dispositivo */
-  position: relative; /* Asegura que el contenedor mantenga su posición en relación a su padre */
-  /* padding-bottom: 30px; */
-  text-align: center;
-  align-items: center; /* Centra verticalmente */
+  width: 96vw; /* Asegura que el contenedor ocupe el 96% del ancho de la ventana gráfica */
+  max-width: 100%; /* Evita que el contenedor exceda el ancho del dispositivo */
+  position: relative; /* Posicionamiento relativo para que los elementos hijos puedan posicionarse de manera absoluta respecto a este contenedor */
+  /* padding-bottom: 30px; */ /* Padding inferior comentado, posiblemente para ajustes futuros */
+  text-align: center; /* Centra el texto horizontalmente dentro del contenedor */
+  align-items: center; /* Centra los elementos verticalmente cuando se usa flexbox */
 }
 
+/* Contenedor para la temporización de animaciones */
 .animationTime {
-  --animate-duration: 1s;
-  --animate-delay: 0.5s;
-  display: flex; /* Usar flex para manejar la disposición de los elementos */
-  flex-direction: column; /* Esto organiza los elementos verticalmente */
+  --animate-duration: 1s; /* Duración de la animación definida mediante una variable CSS */
+  --animate-delay: 0.5s; /* Retardo antes de que comience la animación, definido mediante una variable CSS */
+  display: flex; /* Utiliza flexbox para organizar los elementos internos */
+  flex-direction: column; /* Organiza los elementos de forma vertical */
   align-items: center; /* Centra los elementos horizontalmente */
-  justify-content: center;
+  justify-content: center; /* Centra los elementos verticalmente */
 }
 
+/* Estilo para la fuente utilizada en las animaciones */
 .animationFont {
-  white-space: nowrap; /* Evita que el texto se rompa en múltiples líneas */
-  font-size: 86px;
-  color: white;
-  text-shadow: 1px 1px 2px #4a403a, -1px -1px 2px #4a403a, 1px -1px 2px #4a403a, -1px 1px 2px #4a403a;
+  white-space: nowrap; /* Evita que el texto se divida en múltiples líneas */
+  font-size: 86px; /* Tamaño de fuente grande para destacar el texto */
+  color: white; /* Color del texto blanco */
+  text-shadow: 1px 1px 2px #4a403a, -1px -1px 2px #4a403a, 1px -1px 2px #4a403a, -1px 1px 2px #4a403a; /* Sombra múltiple para mejorar la legibilidad y darle profundidad al texto */
 }
 
-/* MODO TABLET */
+/* Estilos para dispositivos tipo tablet */
 @media (max-width: 1024px) {
   .animationFont {
-    font-size: 60px;
+    font-size: 60px; /* Reduce el tamaño de fuente a 60 píxeles para adaptarse a pantallas más pequeñas */
   }
 }
 
-/* MODO MOVIL */
+/* Estilos para dispositivos móviles */
 @media (max-width: 767px) {
   .animationFont {
-    font-size: 36px;
-    color: #4a403a;
-    text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white;
-    overflow: visible; /* Permitir que el contenido no se corte */
+    font-size: 36px; /* Reduce aún más el tamaño de fuente a 36 píxeles para dispositivos móviles */
+    color: #4a403a; /* Cambia el color del texto a un tono marrón oscuro para mejor contraste */
+    text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white; /* Sombra blanca para mejorar la legibilidad sobre fondos oscuros */
+    overflow: visible; /* Permite que el contenido no se corte y se muestre completamente */
   }
 }

@@ -1,28 +1,31 @@
+/* Estilo de lista con márgenes laterales */
 .listas {
-  margin-left: 40px;
-  margin-right: 60px;
+  margin-left: 40px; /* Márgen izquierdo de 40 píxeles */
+  margin-right: 60px; /* Márgen derecho de 60 píxeles */
 }
 
+/* Estilo básico para enlaces */
 .link {
-  text-decoration: none; /* Opcional: eliminar el subrayado de los enlaces */
+  text-decoration: none; /* Elimina el subrayado predeterminado de los enlaces */
 }
 
+/* Efecto hover para enlaces */
 .link:hover {
-  text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
+  text-decoration: underline; /* Agrega subrayado al pasar el ratón, indicando interactividad */
 }
 
-/* MODO MOVIL */
+/* Modo móvil para dispositivos con ancho máximo de 767px */
 @media (max-width: 767px) {
-  /* Reducir los márgenes laterales del contenedor ul */
+  /* Ajustes de márgenes en listas para pantallas pequeñas */
   .listas {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 20px; /* Reduce el margen izquierdo a 20 píxeles */
+    margin-right: 20px; /* Reduce el margen derecho a 20 píxeles */
   }
 
-  /* Aumentar el ancho de los elementos li */
+  /* Asegura que cada elemento de lista ocupe el ancho completo en móvil */
   .listas li {
-    width: 100%; /* Asegura que cada li ocupe todo el ancho disponible */
-    padding-left: 0; /* Elimina padding adicional si existe */
-    padding-right: 0;
+    width: 100%; /* Ancho completo para cada elemento de lista */
+    padding-left: 0; /* Elimina padding izquierdo adicional */
+    padding-right: 0; /* Elimina padding derecho adicional */
   }
 }

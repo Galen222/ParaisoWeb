@@ -1,125 +1,138 @@
+/* Contenedor principal para la sección de charcutería */
 .charcuteriaContainer {
-  line-height: 1.5;
-  color: #4a403a;
-  margin: 0;
-  padding: 0;
-  background-attachment: fixed;
+  line-height: 1.5; /* Altura de línea de 1.5 para mejorar la legibilidad del texto */
+  color: #4a403a; /* Color de texto en tono marrón oscuro */
+  margin: 0; /* Elimina márgenes predeterminados */
+  padding: 0; /* Elimina padding predeterminado */
+  background-attachment: fixed; /* Fija la imagen de fondo al viewport para efecto parallax */
   overflow: hidden; /* Elimina cualquier desplazamiento adicional */
 }
 
+/* Contenedor para las tarjetas del contenido */
 .content {
-  display: flex;
-  margin: 0 auto 130px auto; /* Margen inferior de 40px en escritorio */
-  align-items: center;
-  flex-wrap: wrap;
-  max-width: 1000px;
+  display: flex; /* Utiliza flexbox para organizar las tarjetas en una fila */
+  margin: 0 auto 130px auto; /* Centra el contenedor horizontalmente y añade margen inferior de 130px */
+  align-items: center; /* Centra las tarjetas verticalmente */
+  flex-wrap: wrap; /* Permite que las tarjetas se envuelvan a la siguiente línea si no caben en una fila */
+  max-width: 1000px; /* Ancho máximo de 1000 píxeles para limitar la extensión del contenido */
 }
 
+/* Estilo para cada tarjeta */
 .card {
-  width: calc(33% - 2rem);
-  max-width: 300px;
-  height: 400px;
-  perspective: 1000px;
-  margin: 1rem;
-  position: relative;
+  width: calc(33% - 2rem); /* Define el ancho como un tercio del contenedor menos márgenes */
+  max-width: 300px; /* Ancho máximo de 300 píxeles para mantener uniformidad */
+  height: 400px; /* Altura fija de 400 píxeles */
+  perspective: 1000px; /* Define la perspectiva para el efecto 3D al girar la tarjeta */
+  margin: 1rem; /* Márgen de 1 rem alrededor de cada tarjeta */
+  position: relative; /* Posicionamiento relativo para permitir posicionamiento absoluto de elementos internos */
 }
 
+/* Contenedor interno de la tarjeta para el efecto de giro */
 .cardInner {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transition: transform 600ms ease-in-out;
-  transform-style: preserve-3d;
+  position: relative; /* Posicionamiento relativo */
+  width: 100%; /* Ancho completo del contenedor padre */
+  height: 100%; /* Altura completa del contenedor padre */
+  transition: transform 600ms ease-in-out; /* Transición suave para la transformación */
+  transform-style: preserve-3d; /* Preserva la perspectiva 3D durante la transformación */
 }
 
+/* Efecto al pasar el ratón sobre la tarjeta para girarla */
 .card:hover .cardInner {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg); /* Gira la tarjeta 180 grados en el eje Y */
 }
 
+/* Estilos para las caras frontal y trasera de la tarjeta */
 .front,
 .back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  border-radius: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  position: absolute; /* Posicionamiento absoluto para superponer las caras */
+  width: 100%; /* Ancho completo */
+  height: 100%; /* Altura completa */
+  backface-visibility: hidden; /* Oculta la cara trasera cuando está girada */
+  -webkit-backface-visibility: hidden; /* Compatibilidad con navegadores WebKit */
+  border-radius: 10px; /* Bordes redondeados de 10 píxeles */
+  display: flex; /* Utiliza flexbox para alinear el contenido */
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  flex-direction: column; /* Organiza el contenido en columna */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Sombra sutil para dar profundidad */
 }
 
+/* Estilos específicos para la cara frontal de la tarjeta */
 .front {
-  background-size: cover;
-  background-position: center;
-  padding: 2rem;
-  font-size: 26px;
-  font-weight: 600;
+  background-size: cover; /* Asegura que la imagen de fondo cubra todo el contenedor */
+  background-position: center; /* Centra la imagen de fondo */
+  padding: 2rem; /* Espaciado interno de 2 rem */
+  font-size: 26px; /* Tamaño de fuente de 26 píxeles */
+  font-weight: 600; /* Peso de fuente semi-negrita */
 }
 
+/* Estilo para los párrafos dentro de la cara frontal */
 .front p {
-  color: white;
-  text-shadow: -1px -1px 0 #4a403a, 1px -1px 0 #4a403a, -1px 1px 0 #4a403a, 1px 1px 0 #4a403a;
+  color: white; /* Color del texto en blanco */
+  text-shadow: -1px -1px 0 #4a403a, /* Sombra del texto para mejorar la legibilidad */ 1px -1px 0 #4a403a, -1px 1px 0 #4a403a, 1px 1px 0 #4a403a;
 }
 
+/* Pseudo-elemento para añadir una capa superpuesta en la cara frontal */
 .front::before {
-  position: absolute;
-  display: block;
-  content: "";
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  opacity: 0.25;
-  z-index: -1;
-  border-radius: 10px;
-  overflow: hidden;
+  position: absolute; /* Posicionamiento absoluto */
+  display: block; /* Muestra como bloque */
+  content: ""; /* Contenido vacío */
+  top: 0; /* Posición superior */
+  left: 0; /* Posición izquierda */
+  right: 0; /* Posición derecha */
+  bottom: 0; /* Posición inferior */
+  opacity: 0.25; /* Opacidad del 25% para la superposición */
+  z-index: -1; /* Coloca la superposición detrás del contenido */
+  border-radius: 10px; /* Bordes redondeados para coincidir con la tarjeta */
+  overflow: hidden; /* Oculta cualquier desbordamiento */
 }
 
+/* Estilos específicos para la cara trasera de la tarjeta */
 .back {
-  background: white;
-  transform: rotateY(180deg);
-  padding: 1.5em;
-  text-align: center;
+  background: white; /* Fondo blanco */
+  transform: rotateY(180deg); /* Gira la cara trasera para alinearla correctamente al girar la tarjeta */
+  padding: 1.5em; /* Espaciado interno de 1.5em */
+  text-align: center; /* Centra el texto */
 }
 
+/* Estilo para el nombre del producto en la cara trasera */
 .productName {
-  font-size: 26px;
-  font-weight: bold;
-  margin-bottom: 0.5rem;
+  font-size: 26px; /* Tamaño de fuente de 26 píxeles */
+  font-weight: bold; /* Fuente en negrita */
+  margin-bottom: 0.5rem; /* Márgen inferior de 0.5 rem */
 }
 
+/* Estilo para la categoría del producto en la cara trasera */
 .category {
-  font-size: 24px;
-  font-weight: 400;
-  margin-top: auto;
+  font-size: 24px; /* Tamaño de fuente de 24 píxeles */
+  font-weight: 400; /* Peso de fuente normal */
+  margin-top: auto; /* Empuja el elemento hacia la parte inferior */
 }
 
+/* Estilo para la descripción del producto en la cara trasera */
 .descripcion {
-  font-size: 22px;
-  font-weight: 400;
-  margin-top: auto;
+  font-size: 22px; /* Tamaño de fuente de 22 píxeles */
+  font-weight: 400; /* Peso de fuente normal */
+  margin-top: auto; /* Empuja el elemento hacia la parte inferior */
 }
 
-/* Media query para 800px o menos: 2 tarjetas en horizontal y clic para volteo */
+/* Media query para dispositivos con ancho máximo de 800px */
 @media screen and (max-width: 800px) {
   .content {
     justify-content: center; /* Centra el contenedor horizontalmente */
   }
   .card {
-    width: calc(50% - 2rem);
+    width: calc(50% - 2rem); /* Ajusta el ancho para mostrar 2 tarjetas por fila */
   }
   .cardInner {
-    cursor: pointer;
+    cursor: pointer; /* Cambia el cursor para indicar que es interactivo */
   }
   .card:hover .cardInner {
-    transform: none;
+    transform: none; /* Desactiva el efecto de giro en dispositivos móviles */
   }
 }
 
-/* Media query para 500px o menos: scroll horizontal con contenedor al 90% */
+/* Media query para dispositivos con ancho máximo de 500px */
 @media screen and (max-width: 500px) {
   .charcuteriaContainer {
     height: auto; /* Ajusta la altura al contenido */
@@ -128,23 +141,23 @@
 
   .content {
     justify-content: flex-start; /* Alinea el contenedor al inicio */
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    overflow-y: hidden;
-    scroll-snap-type: x mandatory;
-    align-items: flex-start;
+    display: flex; /* Asegura que sigue siendo flexbox */
+    flex-direction: row; /* Dispone las tarjetas en una fila */
+    flex-wrap: nowrap; /* Evita que las tarjetas se envuelvan */
+    overflow-x: auto; /* Habilita el desplazamiento horizontal */
+    overflow-y: hidden; /* Elimina el desplazamiento vertical */
+    scroll-snap-type: x mandatory; /* Activa el snap al desplazarse horizontalmente */
+    align-items: flex-start; /* Alinea las tarjetas al inicio verticalmente */
     width: 90%; /* Limita el contenedor al 90% del ancho de la pantalla */
-    margin: 20px auto 130px auto; /* Agrega margen superior de 20px y sin margen inferior */
+    margin: 20px auto 130px auto; /* Añade margen superior de 20px y margen inferior de 130px */
     height: 400px; /* Limita la altura para evitar el flujo vertical */
   }
 
   .card {
-    flex: 0 0 auto;
+    flex: 0 0 auto; /* Impide que las tarjetas crezcan o se encojan */
     width: 90%; /* Define el ancho relativo para el scroll */
-    max-width: 300px;
-    scroll-snap-align: start;
-    margin: 0 0.5rem; /* Espacio entre tarjetas en scroll horizontal */
+    max-width: 300px; /* Mantiene el ancho máximo */
+    scroll-snap-align: start; /* Alinea el inicio de la tarjeta al snap del scroll */
+    margin: 0 0.5rem; /* Espacio horizontal de 0.5 rem entre tarjetas */
   }
 }

@@ -1,49 +1,57 @@
+/* Contenedor principal para los detalles del blog */
 .blogDetailsContainer {
-  max-width: 900px;
-  margin: 0 auto;
-  margin-bottom: 130px;
-  text-align: justify;
-  color: var(--text_color);
-  font-size: 18px;
-  padding: 15px;
+  max-width: 900px; /* Ancho máximo de 900 píxeles para limitar la extensión del contenido */
+  margin: 0 auto; /* Centra el contenedor horizontalmente dentro de su elemento padre */
+  margin-bottom: 130px; /* Márgen inferior de 130 píxeles para separar del siguiente contenido */
+  text-align: justify; /* Justifica el texto para alinear ambos lados */
+  color: var(--text_color); /* Aplica el color de texto definido en la variable CSS */
+  font-size: 18px; /* Tamaño de fuente de 18 píxeles para una lectura cómoda */
+  padding: 15px; /* Espaciado interno de 15 píxeles alrededor del contenido */
 }
 
+/* Estilo para el título del blog */
 .blogTitle {
-  margin-bottom: 10px;
-  text-align: center;
+  margin-bottom: 10px; /* Márgen inferior de 10 píxeles para separar del contenido siguiente */
+  text-align: center; /* Centra el título horizontalmente */
 }
 
+/* Estilo para el autor del blog */
 .blogAuthor {
-  padding-top: 50px;
+  padding-top: 50px; /* Espaciado superior de 50 píxeles para separar del contenido anterior */
 }
+
+/* Estilos para el autor y la fecha del blog */
 .blogAuthor,
 .blogDate {
-  color: #666;
-  font-size: 14px;
+  color: #666; /* Color de texto gris medio para un aspecto sutil */
+  font-size: 14px; /* Tamaño de fuente de 14 píxeles para información secundaria */
 }
 
+/* Estilo para la imagen del blog */
 .blogImage {
-  width: 100%;
-  max-height: 400px;
-  object-fit: cover;
-  border-radius: 10px;
+  width: 100%; /* Ancho completo del contenedor padre */
+  max-height: 400px; /* Altura máxima de 400 píxeles para mantener la proporcionalidad */
+  object-fit: cover; /* Ajusta la imagen para cubrir todo el contenedor sin distorsionar */
+  border-radius: 10px; /* Bordes redondeados de 10 píxeles para suavizar la apariencia */
 }
 
+/* Estilo para el texto del blog */
 .blogText {
-  line-height: 1.6;
-  color: var(--text_color);
+  line-height: 1.6; /* Altura de línea de 1.6 para mejorar la legibilidad */
+  color: var(--text_color); /* Aplica el color de texto definido en la variable CSS */
 }
 
+/* Botón para regresar */
 .backButton {
-  width: 200px;
-  color: var(--text_color);
-  --bs-btn-bg: white;
-  --bs-btn-bg-border-color: #4a403a;
-  --bs-btn-hover-bg: #4a403a;
-  --bs-btn-hover-border-color: #4a403a;
-  --bs-btn-active-bg: #4a403a;
-  --bs-btn-active-border-color: #4a403a;
-  --bs-btn-disabled-bg: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19);
-  transform: translateZ(0);
+  width: 200px; /* Ancho fijo de 200 píxeles */
+  color: var(--text_color); /* Color del texto definido en la variable CSS */
+  --bs-btn-bg: white; /* Variable CSS para el color de fondo del botón */
+  --bs-btn-bg-border-color: #4a403a; /* Variable CSS para el color del borde del botón */
+  --bs-btn-hover-bg: #4a403a; /* Variable CSS para el color de fondo al pasar el ratón */
+  --bs-btn-hover-border-color: #4a403a; /* Variable CSS para el color del borde al pasar el ratón */
+  --bs-btn-active-bg: #4a403a; /* Variable CSS para el color de fondo al activar el botón */
+  --bs-btn-active-border-color: #4a403a; /* Variable CSS para el color del borde al activar el botón */
+  --bs-btn-disabled-bg: white; /* Variable CSS para el color de fondo cuando está deshabilitado */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), /* Sombra sutil para dar efecto de profundidad */ 0 6px 20px rgba(0, 0, 0, 0.19);
+  transform: translateZ(0); /* Optimiza el rendimiento de la animación */
 }

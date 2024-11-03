@@ -1,40 +1,44 @@
-/* Push */
+/* Definición de la animación 'hvr-push' para navegadores basados en WebKit */
 @-webkit-keyframes hvr-push {
   50% {
-    -webkit-transform: scale(0.8);
+    -webkit-transform: scale(0.8); /* Escala el elemento al 80% de su tamaño original */
     transform: scale(0.8);
   }
   100% {
-    -webkit-transform: scale(1);
+    -webkit-transform: scale(1); /* Restablece el tamaño original del elemento */
     transform: scale(1);
   }
 }
+
+/* Definición de la animación 'hvr-push' estándar */
 @keyframes hvr-push {
   50% {
-    -webkit-transform: scale(0.8);
+    -webkit-transform: scale(0.8); /* Escala el elemento al 80% de su tamaño original */
     transform: scale(0.8);
   }
   100% {
-    -webkit-transform: scale(1);
+    -webkit-transform: scale(1); /* Restablece el tamaño original del elemento */
     transform: scale(1);
   }
 }
 
+/* Clase 'hvr-push' que aplica estilos iniciales para la animación */
 .hvr-push {
-  display: inline-block;
-  vertical-align: middle;
-  -webkit-transform: perspective(1px) translateZ(0);
-  transform: perspective(1px) translateZ(0);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+  display: inline-block; /* Permite que el elemento se comporte como un bloque en línea */
+  vertical-align: middle; /* Alinea verticalmente el elemento en el medio */
+  -webkit-transform: perspective(1px) translateZ(0); /* Mejora el rendimiento de la animación en WebKit */
+  transform: perspective(1px) translateZ(0); /* Mejora el rendimiento de la animación */
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0); /* Define una sombra de caja mínima para activar la aceleración por hardware */
 }
 
+/* Clase 'animate-push' que aplica la animación 'hvr-push' al elemento */
 .animate-push {
-  -webkit-animation-name: hvr-push;
-  animation-name: hvr-push;
-  -webkit-animation-duration: 0.3s;
-  animation-duration: 0.3s;
-  -webkit-animation-timing-function: linear;
-  animation-timing-function: linear;
-  -webkit-animation-iteration-count: 1;
-  animation-iteration-count: 1;
+  -webkit-animation-name: hvr-push; /* Nombre de la animación para navegadores WebKit */
+  animation-name: hvr-push; /* Nombre de la animación estándar */
+  -webkit-animation-duration: 0.3s; /* Duración de la animación en WebKit */
+  animation-duration: 0.3s; /* Duración de la animación estándar */
+  -webkit-animation-timing-function: linear; /* Función de temporización lineal para WebKit */
+  animation-timing-function: linear; /* Función de temporización lineal estándar */
+  -webkit-animation-iteration-count: 1; /* Número de repeticiones de la animación en WebKit */
+  animation-iteration-count: 1; /* Número de repeticiones de la animación estándar */
 }

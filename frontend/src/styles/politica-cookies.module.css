@@ -1,54 +1,59 @@
+/* Estilo de lista con márgenes laterales */
 .listas {
-  margin-left: 40px;
-  margin-right: 60px;
+  margin-left: 40px; /* Márgen izquierdo de 40 píxeles */
+  margin-right: 60px; /* Márgen derecho de 60 píxeles */
 }
 
+/* Estilo básico para enlaces */
 .link {
-  text-decoration: none; /* Opcional: eliminar el subrayado de los enlaces */
+  text-decoration: none; /* Elimina el subrayado predeterminado de los enlaces */
 }
 
+/* Efecto hover para enlaces */
 .link:hover {
-  text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
+  text-decoration: underline; /* Agrega subrayado al pasar el ratón, indicando interactividad */
 }
 
+/* Botón de eliminación */
 .deleteButton {
-  width: 400px;
-  --bs-btn-bg: #4a403a;
-  --bs-btn-border-color: #4a403a;
-  --bs-btn-hover-bg: #dc3545;
-  --bs-btn-hover-border-color: #dc3545;
-  --bs-btn-active-bg: #dc3545;
-  --bs-btn-active-border-color: #dc3545;
-  --bs-btn-disabled-bg: #4a403a;
-  --bs-btn-disabled-border-color: #4a403a;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19);
-  transform: translateZ(0);
+  width: 400px; /* Ancho fijo de 400 píxeles */
+  --bs-btn-bg: #4a403a; /* Color de fondo predeterminado del botón */
+  --bs-btn-border-color: #4a403a; /* Color de borde predeterminado del botón */
+  --bs-btn-hover-bg: #dc3545; /* Color de fondo al pasar el ratón (rojo) */
+  --bs-btn-hover-border-color: #dc3545; /* Color de borde al pasar el ratón (rojo) */
+  --bs-btn-active-bg: #dc3545; /* Color de fondo al hacer clic */
+  --bs-btn-active-border-color: #dc3545; /* Color de borde al hacer clic */
+  --bs-btn-disabled-bg: #4a403a; /* Color de fondo cuando el botón está deshabilitado */
+  --bs-btn-disabled-border-color: #4a403a; /* Color de borde cuando el botón está deshabilitado */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19); /* Sombra para dar profundidad */
+  transform: translateZ(0); /* Optimiza el rendimiento de la animación */
 }
 
+/* Separador de filas en una tabla */
 .tableSeparator td {
-  padding: 1px 0; /* Ajusta el espaciado según necesites */
-  background-color: white; /* Ajusta el color de fondo si es necesario */
+  padding: 1px 0; /* Espaciado vertical ajustado */
+  background-color: white; /* Color de fondo blanco para las celdas */
 }
 
-/* MODO TABLET */
+/* Media Queries para dispositivos tipo tablet */
 @media (max-width: 1024px) {
   .deleteButton {
-    width: 300px;
+    width: 300px; /* Reduce el ancho del botón a 300 píxeles en tablets */
   }
 }
 
-/* MODO MOVIL */
+/* Media Queries para dispositivos móviles */
 @media (max-width: 767px) {
-  /* Reducir los márgenes laterales del contenedor ul */
+  /* Ajustes de márgenes en listas para pantallas pequeñas */
   .listas {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 20px; /* Reduce el márgen izquierdo a 20 píxeles */
+    margin-right: 20px; /* Reduce el márgen derecho a 20 píxeles */
   }
 
-  /* Aumentar el ancho de los elementos li */
+  /* Asegura que cada elemento de lista ocupe el ancho completo en móvil */
   .listas li {
-    width: 100%; /* Asegura que cada li ocupe todo el ancho disponible */
-    padding-left: 0; /* Elimina padding adicional si existe */
-    padding-right: 0;
+    width: 100%; /* Ancho completo para cada elemento de lista */
+    padding-left: 0; /* Elimina padding izquierdo adicional */
+    padding-right: 0; /* Elimina padding derecho adicional */
   }
 }

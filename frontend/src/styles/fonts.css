@@ -1,13 +1,13 @@
 @font-face {
-  font-family: "Courgette";
-  src: url("/fonts/Courgette-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
+  font-family: "Courgette"; /* Nombre de la familia de fuentes personalizada */
+  src: url("/fonts/Courgette-Regular.ttf") format("truetype"); /* Ruta al archivo de fuente y su formato */
+  font-weight: normal; /* Peso de la fuente */
+  font-style: normal; /* Estilo de la fuente */
 }
 
 @font-face {
-  font-family: "Playfair Display SC";
-  src: url("/fonts/PlayfairDisplaySC-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
+  font-family: "Playfair Display SC"; /* Nombre de la familia de fuentes personalizada */
+  src: url("/fonts/PlayfairDisplaySC-Bold.ttf") format("truetype"); /* Ruta al archivo de fuente y su formato */
+  font-weight: 700; /* Peso de la fuente (negrita) */
+  font-style: normal; /* Estilo de la fuente */
 }

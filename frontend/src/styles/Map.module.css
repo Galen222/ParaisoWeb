@@ -1,15 +1,16 @@
+/* Contenedor principal para el mapa */
 .mapContainer {
-  width: 80%;
-  height: 400px;
-  margin: 0 auto; /* Centrar el mapa */
-  border-radius: 10px;
+  width: 80%; /* Ancho del 80% del contenedor padre para crear márgenes laterales */
+  height: 400px; /* Altura fija de 400 píxeles */
+  margin: 0 auto; /* Centra el mapa horizontalmente dentro de su contenedor */
+  border-radius: 10px; /* Bordes redondeados de 10 píxeles para suavizar la apariencia */
 }
 
-/* MODO TABLET */
+/* Media Queries para dispositivos tipo tablet */
 @media (max-width: 1024px) {
   .mapContainer {
-    width: 100%;
-    height: 400px;
-    margin: 0 auto; /* Centrar el mapa */
+    width: 100%; /* Expande el mapa al ancho completo en dispositivos tipo tablet */
+    height: 400px; /* Mantiene la altura de 400 píxeles */
+    margin: 0 auto; /* Centra el mapa horizontalmente */
   }
 }

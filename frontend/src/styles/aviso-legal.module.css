@@ -1,31 +1,35 @@
+/* Estilo para la clase 'listas' que aplica márgenes laterales */
 .listas {
-  margin-left: 40px;
-  margin-right: 60px;
-}
-.listas2 {
-  margin-top: 5px;
+  margin-left: 40px; /* Márgen izquierdo de 40 píxeles */
+  margin-right: 60px; /* Márgen derecho de 60 píxeles */
 }
 
+/* Estilo para la clase 'listas2' que aplica un margen superior */
+.listas2 {
+  margin-top: 5px; /* Márgen superior de 5 píxeles */
+}
+
+/* Estilos para enlaces */
 .link {
-  text-decoration: none; /* Opcional: eliminar el subrayado de los enlaces */
+  text-decoration: none; /* Elimina el subrayado de los enlaces */
 }
 
 .link:hover {
-  text-decoration: underline; /* Opcional: agregar subrayado al pasar el ratón */
+  text-decoration: underline; /* Agrega subrayado al pasar el ratón */
 }
 
-/* MODO MOVIL */
+/* Estilos responsivos para dispositivos móviles */
 @media (max-width: 767px) {
-  /* Reducir los márgenes laterales del contenedor ul */
+  /* Reducir los márgenes laterales del contenedor 'listas' en móviles */
   .listas {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 20px; /* Márgen izquierdo reducido a 20 píxeles */
+    margin-right: 20px; /* Márgen derecho reducido a 20 píxeles */
   }
 
-  /* Aumentar el ancho de los elementos li */
+  /* Ajustar los elementos 'li' dentro de 'listas' para ocupar todo el ancho */
   .listas li {
-    width: 100%; /* Asegura que cada li ocupe todo el ancho disponible */
-    padding-left: 0; /* Elimina padding adicional si existe */
-    padding-right: 0;
+    width: 100%; /* Cada elemento 'li' ocupa todo el ancho disponible */
+    padding-left: 0; /* Elimina el padding izquierdo adicional */
+    padding-right: 0; /* Elimina el padding derecho adicional */
   }
 }

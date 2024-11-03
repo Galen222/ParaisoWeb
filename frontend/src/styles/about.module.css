@@ -1,57 +1,61 @@
+/* Estilo para la clase 'listas' que aplica márgenes laterales */
 .listas {
-  margin-left: 40px;
-  margin-right: 60px;
+  margin-left: 40px; /* Márgen izquierdo de 40 píxeles */
+  margin-right: 60px; /* Márgen derecho de 60 píxeles */
 }
 
+/* Contenedor de imágenes utilizando flexbox para alinear y espaciar las imágenes */
 .imageContainer {
-  display: flex;
-  justify-content: center;
-  flex-wrap: nowrap;
-  gap: 20px;
-  margin-top: 10px;
-  margin-bottom: 25px;
+  display: flex; /* Define un contenedor flex */
+  justify-content: center; /* Centra los elementos horizontalmente */
+  flex-wrap: nowrap; /* Evita que los elementos se envuelvan a una nueva línea */
+  gap: 20px; /* Espacio de 20 píxeles entre los elementos */
+  margin-top: 10px; /* Márgen superior de 10 píxeles */
+  margin-bottom: 25px; /* Márgen inferior de 25 píxeles */
 }
 
+/* Imagen responsive que se adapta al contenedor */
 .responsiveImage {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
-  object-fit: cover;
-  border-radius: 8px;
-  transition: transform 0.3s ease;
+  width: 100%; /* Ancho al 100% del contenedor */
+  max-width: 300px; /* Ancho máximo de 300 píxeles */
+  height: auto; /* Altura automática para mantener la proporción */
+  object-fit: cover; /* Ajusta la imagen para cubrir el contenedor sin distorsionar */
+  border-radius: 8px; /* Bordes redondeados de 8 píxeles */
+  transition: transform 0.3s ease; /* Transición suave para transformaciones */
 }
 
+/* Efecto al pasar el ratón sobre la imagen responsive */
 .responsiveImage:hover {
-  transform: scale(1.12);
+  transform: scale(1.12); /* Escala la imagen un 12% más grande */
 }
 
 /* Ocultar el carrusel en modo escritorio en la página de gastronomía */
 .mobileCarousel {
-  display: none;
+  display: none; /* No se muestra el carrusel en escritorio */
 }
 
-/* MODO MOVIL */
+/* Estilos para dispositivos móviles */
 @media (max-width: 767px) {
-  /* Reducir los márgenes laterales del contenedor ul */
+  /* Reducir los márgenes laterales del contenedor 'listas' en móvil */
   .listas {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 20px; /* Márgen izquierdo reducido a 20 píxeles */
+    margin-right: 20px; /* Márgen derecho reducido a 20 píxeles */
   }
 
-  /* Aumentar el ancho de los elementos li */
+  /* Aumentar el ancho de los elementos 'li' dentro de 'listas' */
   .listas li {
-    width: 100%; /* Asegura que cada li ocupe todo el ancho disponible */
-    padding-left: 0; /* Elimina padding adicional si existe */
-    padding-right: 0;
+    width: 100%; /* Cada elemento 'li' ocupa todo el ancho disponible */
+    padding-left: 0; /* Elimina el padding izquierdo adicional */
+    padding-right: 0; /* Elimina el padding derecho adicional */
   }
 
-  /* Ocultar las imágenes en línea en móvil */
+  /* Ocultar el contenedor de imágenes en modo móvil */
   .imageContainer {
-    display: none;
+    display: none; /* No se muestran las imágenes en línea en móvil */
   }
 
-  /* Mostrar el carrusel solo en móvil en la página de gastronomía */
+  /* Mostrar el carrusel solo en dispositivos móviles en la página de gastronomía */
   .mobileCarousel {
-    display: block;
+    display: block; /* Se muestra el carrusel en móvil */
   }
 }

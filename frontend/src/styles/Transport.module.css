@@ -1,45 +1,50 @@
+/* Contenedor principal de transporte */
 .transportContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  margin-top: 20px;
+  display: flex; /* Utiliza flexbox para organizar los elementos */
+  flex-wrap: wrap; /* Permite que los elementos se ajusten a múltiples líneas */
+  justify-content: space-around; /* Distribuye los elementos con espacio alrededor */
+  margin-top: 20px; /* Añade un margen superior de 20 píxeles */
 }
 
+/* Estilo para cada elemento de transporte */
 .transportItem {
-  flex: 1 1 200px;
-  text-align: center;
-  margin: 10px;
+  flex: 1 1 200px; /* Permite que el elemento crezca y se ajuste a un mínimo de 200px */
+  text-align: center; /* Centra el contenido del elemento */
+  margin: 10px; /* Añade un margen alrededor de cada elemento */
   object-fit: contain; /* Asegura que las imágenes mantengan su proporción original */
 }
 
+/* Estilo para imágenes dentro de los elementos de transporte */
 .transportItem img {
-  width: 70px;
-  height: auto; /* La altura se ajusta automáticamente */
+  width: 70px; /* Define un ancho fijo de 70 píxeles para las imágenes */
+  height: auto; /* La altura se ajusta automáticamente para mantener la proporción */
 }
 
+/* Estilo para títulos (h4) dentro de los elementos de transporte */
 .transportItem h4 {
-  margin-top: 10px;
-  font-weight: bold;
+  margin-top: 10px; /* Añade un margen superior de 10 píxeles */
+  font-weight: bold; /* Hace que el texto sea negrita */
 }
 
+/* Estilo para párrafos dentro de los elementos de transporte */
 .transportItem p {
-  margin-top: 5px;
+  margin-top: 5px; /* Añade un margen superior de 5 píxeles */
 }
 
-/* MODO MOVIL */
+/* Modo móvil para dispositivos con ancho máximo de 767px */
 @media (max-width: 767px) {
   .transportContainer {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    padding: 0;
+    flex-direction: column; /* Cambia a una disposición en columna para pantallas pequeñas */
+    align-items: center; /* Centra los elementos horizontalmente */
+    justify-content: center; /* Centra los elementos verticalmente */
+    width: 100%; /* Asegura que el contenedor ocupe todo el ancho */
+    padding: 0; /* Elimina cualquier padding */
     margin: 0; /* Elimina cualquier margen extra del contenedor */
   }
 
   .transportItem {
-    width: 100%;
-    margin: -20px 0 0 0; /* Aplica margen negativo para reducir el espacio vertical entre elementos*/
-    padding: 0; /* Asegúrate de que no haya relleno extra */
+    width: 100%; /* Ancho completo para cada elemento */
+    margin: -20px 0 0 0; /* Margen negativo superior para reducir el espacio vertical entre elementos */
+    padding: 0; /* Elimina cualquier relleno adicional */
   }
 }

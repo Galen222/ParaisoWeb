@@ -1,162 +1,189 @@
+/* Definición de variables CSS a nivel raíz */
 :root {
-  --text_color: #4a403a;
+  --text_color: #4a403a; /* Color de texto principal definido como un tono marrón oscuro */
 }
 
+/* Estilos generales para el cuerpo de la página */
 body {
-  font-family: "Courgette", sans-serif;
-  background-color: #f1eee3;
-  margin: 0;
-  overflow-x: hidden;
+  font-family: "Courgette", sans-serif; /* Fuente principal de la página */
+  background-color: #f1eee3; /* Color de fondo claro */
+  margin: 0; /* Elimina el margen por defecto del navegador */
+  overflow-x: hidden; /* Evita el desplazamiento horizontal */
 }
 
+/* Contenedor principal de la página */
 .pageContainer {
-  max-width: 50%;
-  margin: auto;
-  padding: 20px;
-  text-align: justify;
-  margin-bottom: 90px;
-  font-size: 18px;
-  color: var(--text_color);
+  max-width: 50%; /* Ancho máximo del 50% del contenedor padre */
+  margin: auto; /* Centra el contenedor horizontalmente */
+  padding: 20px; /* Espaciado interno de 20 píxeles */
+  text-align: justify; /* Justifica el texto dentro del contenedor */
+  margin-bottom: 90px; /* Márgen inferior de 90 píxeles */
+  font-size: 18px; /* Tamaño de fuente de 18 píxeles */
+  color: var(--text_color); /* Color de texto usando la variable definida */
 }
 
+/* Estilos para los títulos h1 dentro del contenedor principal */
 .pageContainer h1 {
-  text-align: center;
+  text-align: center; /* Centra el texto del h1 */
 }
 
+/* Estilos para las tablas dentro del contenedor principal */
 .pageContainer table {
-  font-size: 16px;
+  font-size: 16px; /* Tamaño de fuente de 16 píxeles para las tablas */
 }
 
+/* Alineación vertical para celdas de tablas */
 .table td,
 .table th {
-  vertical-align: middle;
+  vertical-align: middle; /* Alinea el contenido verticalmente en el medio */
 }
 
+/* Clase para elementos en línea */
 .d-inline {
-  display: inline;
+  display: inline; /* Muestra el elemento como inline */
 }
 
+/* Clases utilitarias para tamaños de fuente */
 .fs-16p {
-  font-size: 16px !important;
+  font-size: 16px !important; /* Fuerza el tamaño de fuente a 16 píxeles */
 }
 
 .fs-14p {
-  font-size: 14px !important;
+  font-size: 14px !important; /* Fuerza el tamaño de fuente a 14 píxeles */
 }
 
+/* Clase utilitaria para indentación de texto */
 .ti-20p {
-  text-indent: 20px;
+  text-indent: 20px; /* Indenta el texto 20 píxeles */
 }
 
+/* Clases utilitarias para márgenes superiores */
 .mt-15p {
-  margin-top: 15px;
+  margin-top: 15px; /* Márgen superior de 15 píxeles */
 }
 
 .mt-25p {
-  margin-top: 25px;
+  margin-top: 25px; /* Márgen superior de 25 píxeles */
 }
 
+/* Clases utilitarias para márgenes inferiores */
 .mb-10p {
-  margin-bottom: 10px;
+  margin-bottom: 10px; /* Márgen inferior de 10 píxeles */
 }
 
 .mb-40p {
-  margin-bottom: 40px;
+  margin-bottom: 40px; /* Márgen inferior de 40 píxeles */
 }
 
+/* Clase utilitaria para ancho máximo */
 .mw-600p {
-  max-width: 600px;
+  max-width: 600px; /* Ancho máximo de 600 píxeles */
 }
 
+/* Botón para desplazarse al inicio de la página */
 .scrollTop {
-  position: fixed;
-  right: calc(25% + 20px);
-  bottom: 70px; /* Separación de 70px desde el fondo para evitar superposición con el footer */
-  height: 40px;
-  width: 40px;
-  text-align: center;
-  line-height: 40px;
-  background: rgba(74, 64, 58, 0.5); /* Corregido para usar rgba para la transparencia */
-  border-radius: 20px; /* Esto hará que el botón sea perfectamente redondo */
-  cursor: pointer;
-  z-index: 6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.scrollTop:hover {
-  background: #4a403a; /* Corregido para usar rgba para la transparencia */
+  position: fixed; /* Posicionamiento fijo en la ventana */
+  right: calc(25% + 20px); /* Posicionado a la derecha con cálculo dinámico */
+  bottom: 70px; /* Separación de 70 píxeles desde el fondo */
+  height: 40px; /* Altura de 40 píxeles */
+  width: 40px; /* Ancho de 40 píxeles */
+  text-align: center; /* Centra el texto horizontalmente */
+  line-height: 40px; /* Centra el texto verticalmente */
+  background: rgba(74, 64, 58, 0.5); /* Fondo semi-transparente */
+  border-radius: 20px; /* Bordes redondeados para formar un círculo */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+  z-index: 6; /* Nivel de apilamiento para sobreponerse a otros elementos */
+  display: flex; /* Usa flexbox para centrar el contenido */
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra horizontalmente */
 }
 
+/* Efecto al pasar el ratón sobre el botón de desplazamiento */
+.scrollTop:hover {
+  background: #4a403a; /* Cambia el fondo a color marrón oscuro */
+}
+
+/* Estilos para la imagen dentro del botón de desplazamiento */
 .scrollTop img {
-  width: 20px; /* Ajusta el tamaño de la imagen según necesario */
+  width: 20px; /* Ancho de la imagen ajustado a 20 píxeles */
   height: auto; /* Mantiene la proporción de la imagen */
 }
 
+/* Contenedor de notificaciones Toastify */
 .Toastify__toast-container {
-  font-family: Arial, Helvetica, sans-serif;
-  width: 420px;
+  font-family: Arial, Helvetica, sans-serif; /* Fuente para las notificaciones */
+  width: 420px; /* Ancho fijo de 420 píxeles */
 }
 
+/* Estilos para las notificaciones Toastify */
 .Toastify__toast {
-  background-color: #4a403a;
+  background-color: #4a403a; /* Fondo marrón oscuro para las notificaciones */
 }
 
-/* Ajustar los puntos del carrusel */
+/* Ajustes de los puntos del carrusel Slick */
 .slick-dots {
-  bottom: 30px; /* Ajusta este valor según lo cerca que quieras los puntos de la imagen */
-  color: #4a403a;
+  bottom: 30px; /* Posiciona los puntos a 30 píxeles desde el fondo */
+  color: #4a403a; /* Color de los puntos marrón oscuro */
 }
 
-/* Cambiar el color de las flechas del carrusel */
+/* Cambiar el color de las flechas del carrusel Slick */
 .slick-prev,
 .slick-next {
-  color: #4a403a; /* Cambia el color de las flechas */
+  color: #4a403a; /* Color de las flechas marrón oscuro */
 }
 
+/* Asegura que las flechas del carrusel Slick sean del color correcto */
 .slick-prev::before,
 .slick-next::before {
-  color: #4a403a; /* Asegura que el color de las flechas sea marrón */
+  color: #4a403a; /* Color de las flechas marrón oscuro */
 }
 
-/* MODO TABLET */
+/* Estilos para dispositivos tipo tablet */
 @media (max-width: 1024px) {
+  /* Ajustes del contenedor principal en tablet */
   .pageContainer {
-    max-width: 100%;
-    font-size: 22px;
-    padding: 10px;
+    max-width: 100%; /* Ancho completo del contenedor padre */
+    font-size: 22px; /* Aumenta el tamaño de fuente a 22 píxeles */
+    padding: 10px; /* Reduce el padding a 10 píxeles */
   }
 
+  /* Ajustes de posición del botón de desplazamiento en tablet */
   .scrollTop {
-    right: 20px;
-    bottom: 90px;
+    right: 20px; /* Posicionado a 20 píxeles desde la derecha */
+    bottom: 90px; /* Separación de 90 píxeles desde el fondo */
   }
 
+  /* Ajustes del contenedor de notificaciones Toastify en tablet */
   .Toastify__toast-container {
-    font-family: Arial, Helvetica, sans-serif;
-    width: 100%;
+    font-family: Arial, Helvetica, sans-serif; /* Fuente para las notificaciones */
+    width: 100%; /* Ancho completo del contenedor padre */
   }
 }
 
-/* MODO MOVIL */
+/* Estilos para dispositivos móviles */
 @media (max-width: 767px) {
+  /* Estilos para títulos h3 dentro del contenedor principal en móvil */
   .pageContainer h3 {
-    font-weight: bold;
-    text-align: center;
-  }
-  .ti-20p {
-    text-indent: 0px;
+    font-weight: bold; /* Fuente en negrita */
+    text-align: center; /* Centra el texto */
   }
 
+  /* Elimina la indentación de texto en móvil */
+  .ti-20p {
+    text-indent: 0px; /* Indentación de texto eliminada */
+  }
+
+  /* Ajusta la posición de los puntos del carrusel Slick en móvil */
   .slick-dots {
-    bottom: 15px; /* Ajusta este valor según lo cerca que quieras los puntos de la imagen */
+    bottom: 15px; /* Posiciona los puntos a 15 píxeles desde el fondo */
   }
 }
 
-/* MODO MOVIL PANTALLA PEQUEÑA */
+/* Estilos para dispositivos móviles con pantallas muy pequeñas */
 @media (max-width: 385px) {
+  /* Ajustes de posición del botón de desplazamiento en pantallas pequeñas */
   .scrollTop {
-    right: 20px;
-    bottom: 110px;
+    right: 20px; /* Posicionado a 20 píxeles desde la derecha */
+    bottom: 110px; /* Separación de 110 píxeles desde el fondo */
   }
 }

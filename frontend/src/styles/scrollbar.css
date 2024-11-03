@@ -5,30 +5,30 @@
     width: 12px; /* Ancho de la barra de scroll */
   }
 
-  /* Estilo para la parte de la barra de scroll que se puede desplazar */
+  /* Estilo para el pulgar de la barra de scroll (parte desplazable) */
   ::-webkit-scrollbar-thumb {
-    background-color: #7a726b; /* Color del pulgar (parte que se puede desplazar) */
-    border-radius: 10px; /* Radio de borde para hacerla redondeada */
-    border: 2px solid #7a726b; /* Borde alrededor del pulgar para dar un espacio */
+    background-color: #7a726b; /* Color del pulgar */
+    border-radius: 10px; /* Bordes redondeados para el pulgar */
+    border: 2px solid #7a726b; /* Borde del mismo color para dar un espacio visual */
   }
 
   /* Estilo para la pista de la barra de scroll (fondo) */
   ::-webkit-scrollbar-track {
-    background-color: #4a403a; /* Color de la pista de la barra de scroll */
+    background-color: #4a403a; /* Color de fondo de la pista de la barra de scroll */
   }
 }
 
 /* Estilos específicos para Firefox */
 @-moz-document url-prefix() {
   html {
-    scrollbar-width: thin; /* Ancho de la barra de scroll */
-    scrollbar-color: #7a726b #4a403a; /* Color del pulgar y de la pista */
+    scrollbar-width: thin; /* Define el ancho de la barra de scroll como fino */
+    scrollbar-color: #7a726b #4a403a; /* Color del pulgar y de la pista (fondo) en Firefox */
   }
 }
 
-/* Estilos generales para Microsoft Edge y IE 10+ */
+/* Estilos para Microsoft Edge y IE 10+ */
 body {
-  -ms-overflow-style: none; /* Ocultar la barra de desplazamiento nativa en IE y Edge */
+  -ms-overflow-style: none; /* Oculta la barra de desplazamiento nativa en IE y Edge */
 }
 
 /* Estilo personalizado para Microsoft Edge y IE 10+ */
@@ -37,9 +37,9 @@ body::-webkit-scrollbar {
 }
 
 body::-webkit-scrollbar-thumb {
-  background-color: #7a726b; /* Color del pulgar (parte que se puede desplazar) */
-  border-radius: 10px; /* Radio de borde para hacerla redondeada */
-  border: 2px solid #7a726b; /* Borde alrededor del pulgar para dar un espacio */
+  background-color: #7a726b; /* Color del pulgar */
+  border-radius: 10px; /* Bordes redondeados para el pulgar */
+  border: 2px solid #7a726b; /* Borde alrededor del pulgar */
 }
 
 body::-webkit-scrollbar-track {

@@ -1,178 +1,200 @@
 /* Navbar.module.css */
+
+/* Contenedor principal de la barra de navegación */
 .navbar {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  /* min-height: 100vh; */
-  position: relative;
+  width: 100%; /* Ancho completo de la barra de navegación */
+  display: flex; /* Utiliza flexbox para organizar los elementos internos */
+  flex-direction: column; /* Dispone los elementos en una columna */
+  justify-content: center; /* Centra verticalmente los elementos */
+  align-items: center; /* Centra horizontalmente los elementos */
+  /* min-height: 100vh; */ /* Altura mínima de 100% del viewport (comentado) */
+  position: relative; /* Posicionamiento relativo para permitir posicionamiento absoluto de hijos */
+  /* Fondo con degradado y una imagen de fondo (comentado) */
   /* background: linear-gradient(to bottom, rgba(241, 238, 227, 0) 60%, rgba(241, 238, 227, 0.8) 90%, #f1eee3 100%), url("/images/navbar/fondo.jpg"); */
   background: linear-gradient(to bottom, rgba(241, 238, 227, 0) 50%, rgba(241, 238, 227, 0.6) 80%, rgba(241, 238, 227, 0.9) 95%, #f1eee3 100%),
-    url("/images/navbar/fondo.jpg");
-  background-size: cover;
-  -webkit-background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 550px;
-  will-change: transform;
+    url("/images/navbar/fondo.jpg"); /* Fondo con degradado y imagen */
+  background-size: cover; /* Hace que la imagen de fondo cubra todo el contenedor */
+  -webkit-background-size: cover; /* Compatibilidad con navegadores WebKit */
+  background-position: center; /* Centra la imagen de fondo */
+  background-repeat: no-repeat; /* Evita que la imagen de fondo se repita */
+  height: 550px; /* Altura fija de la barra de navegación */
+  will-change: transform; /* Optimización para futuras transformaciones */
 }
 
-/* Contenedor superior que incluye logo, textoLogo y selector */
+/* Contenedor superior que incluye el logo, el texto del logo y el selector de idioma */
 .navbarTop {
-  width: 50%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  width: 50%; /* Ancho del 50% del contenedor padre */
+  display: flex; /* Utiliza flexbox para organizar los elementos */
+  justify-content: space-between; /* Distribuye el espacio entre los elementos */
+  align-items: center; /* Centra verticalmente los elementos */
 }
 
+/* Contenedor para el logo de la imagen */
 .imgLogoContainer {
-  width: 25%;
-  display: flex;
-  justify-content: center;
-  z-index: 3;
+  width: 25%; /* Ancho del 25% del contenedor padre */
+  display: flex; /* Utiliza flexbox para centrar el logo */
+  justify-content: center; /* Centra horizontalmente el logo */
+  z-index: 3; /* Asegura que el logo esté por encima de otros elementos */
 }
 
+/* Estilo para la imagen del logo */
 .imgLogo {
-  width: 100%;
-  cursor: pointer;
+  width: 100%; /* Ancho completo del contenedor */
+  cursor: pointer; /* Cambia el cursor al pasar sobre la imagen */
 }
 
+/* Contenedor para el texto del logo */
 .textLogoContainer {
-  width: 50%;
-  display: flex;
-  justify-content: center;
+  width: 50%; /* Ancho del 50% del contenedor padre */
+  display: flex; /* Utiliza flexbox para centrar el texto */
+  justify-content: center; /* Centra horizontalmente el texto */
 }
 
+/* Estilo para el texto del logo */
 .textLogo {
-  font-family: "Playfair Display SC", serif;
-  font-weight: 700;
-  font-size: 40px;
-  color: rgb(197, 12, 12); /* Rojo oscuro para el texto */
-  text-align: center;
-  text-shadow: 1px 1px 4px rgba(250, 26, 26, 0.8);
+  font-family: "Playfair Display SC", serif; /* Familia de fuentes personalizada */
+  font-weight: 700; /* Peso de fuente negrita */
+  font-size: 40px; /* Tamaño de fuente de 40 píxeles */
+  color: rgb(197, 12, 12); /* Color rojo oscuro para el texto */
+  text-align: center; /* Centra el texto */
+  text-shadow: 1px 1px 4px rgba(250, 26, 26, 0.8); /* Sombra del texto para mejorar legibilidad */
 }
 
+/* Contenedor para las banderas de selección de idioma */
 .flagContainer {
-  width: 25%;
-  display: flex;
-  justify-content: center;
+  width: 25%; /* Ancho del 25% del contenedor padre */
+  display: flex; /* Utiliza flexbox para organizar las banderas */
+  justify-content: center; /* Centra horizontalmente las banderas */
 }
 
+/* Estilo para cada bandera */
 .flag {
-  cursor: pointer;
-  width: 40px;
-  height: auto;
-  margin: 5px;
+  cursor: pointer; /* Cambia el cursor al pasar sobre la bandera */
+  width: 40px; /* Ancho fijo de 40 píxeles */
+  height: auto; /* Mantiene la proporción de la imagen */
+  margin: 5px; /* Márgen de 5 píxeles alrededor de cada bandera */
 }
 
+/* Icono del menú móvil */
 .mobileMenuIcon {
-  display: none; /* Por defecto no se muestra, cambiará en media query para móviles */
-  cursor: pointer;
-  margin-top: 3px; /* Añade esta línea para mover el icono 2px hacia abajo */
+  display: none; /* Por defecto no se muestra, se muestra en media queries para móviles */
+  cursor: pointer; /* Cambia el cursor al pasar sobre el icono */
+  margin-top: 3px; /* Añade un margen superior de 3 píxeles */
 }
 
+/* Contenedor interno del icono del menú móvil */
 .mobileMenuIcon .inner {
-  width: 30px; /* Reducido de 40px a 30px */
-  height: 30px; /* Reducido de 40px a 30px */
-  position: relative;
+  width: 30px; /* Ancho reducido de 30 píxeles */
+  height: 30px; /* Altura reducida de 30 píxeles */
+  position: relative; /* Posicionamiento relativo para los pseudo-elementos */
 }
 
+/* Estilo para las barras del icono del menú móvil */
 .mobileMenuIcon .inner span {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 30px; /* Reducido de 40px a 30px */
-  height: 3px; /* Reducido de 4px a 3px */
-  background-color: white;
-  transition: top 0.2s ease-in-out 0.4s, transform 0.4s ease-in-out, opacity 0.2s ease-in-out 0.2s, left 0.2s ease-in-out;
+  position: absolute; /* Posicionamiento absoluto dentro del contenedor */
+  top: 0; /* Posiciona en la parte superior */
+  left: 0; /* Posiciona en la parte izquierda */
+  width: 30px; /* Ancho de 30 píxeles */
+  height: 3px; /* Altura de 3 píxeles */
+  background-color: white; /* Color de fondo blanco para las barras */
+  transition: top 0.2s ease-in-out 0.4s, transform 0.4s ease-in-out, opacity 0.2s ease-in-out 0.2s, left 0.2s ease-in-out; /* Transiciones para animaciones */
 }
 
+/* Posición de la primera barra */
 .mobileMenuIcon .inner span:nth-child(1) {
   top: 0;
 }
 
+/* Posición de la segunda y cuarta barra */
 .mobileMenuIcon .inner span:nth-child(2),
 .mobileMenuIcon .inner span:nth-child(4) {
   top: 13px; /* Ajustado para mantener proporción */
 }
 
+/* Posición de la tercera barra */
 .mobileMenuIcon .inner span:nth-child(3) {
   top: 26px; /* Ajustado para mantener proporción */
 }
 
+/* Animación cuando el menú está colapsado */
 .colapseSpin .inner span {
   transition: top 0.2s ease-in-out, transform 0.4s ease-in-out 0.2s, opacity 0.1s ease-in-out 0.2s;
 }
 
+/* Animación para la primera barra al colapsar */
 .colapseSpin .inner span:nth-child(1) {
   top: 13px; /* Ajustado para mantener proporción */
-  transform: rotate(45deg);
+  transform: rotate(45deg); /* Rota la barra */
 }
 
+/* Animación para la segunda barra al colapsar */
 .colapseSpin .inner span:nth-child(2) {
   top: 13px; /* Ajustado para mantener proporción */
-  opacity: 0;
+  opacity: 0; /* Oculta la barra */
 }
 
+/* Animación para la tercera barra al colapsar */
 .colapseSpin .inner span:nth-child(3) {
   top: 13px; /* Ajustado para mantener proporción */
-  transform: rotate(-45deg);
+  transform: rotate(-45deg); /* Rota la barra */
 }
 
+/* Estilo para la imagen del menú */
 .menuIcon {
-  width: 30px; /* Ajusta el ancho de la imagen del menú */
-  height: auto; /* Mantiene la proporción */
+  width: 30px; /* Ancho de 30 píxeles */
+  height: auto; /* Mantiene la proporción de la imagen */
 }
 
-/* Estilo para el contenedor de enlaces */
+/* Contenedor para los enlaces de la barra de navegación */
 .navbarMenu {
-  width: 100%;
-  display: flex;
-  justify-content: center;
+  width: 100%; /* Ancho completo del contenedor */
+  display: flex; /* Utiliza flexbox para organizar los enlaces */
+  justify-content: center; /* Centra horizontalmente los enlaces */
   background-color: rgba(74, 64, 58, 0.5); /* Fondo semi-transparente */
-  font-size: 18px;
+  font-size: 18px; /* Tamaño de fuente de 18 píxeles */
 }
 
+/* Contenedor para los enlaces individuales */
 .links {
-  width: 50%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: nowrap;
+  width: 50%; /* Ancho del 50% del contenedor padre */
+  display: flex; /* Utiliza flexbox para organizar los enlaces */
+  justify-content: space-between; /* Distribuye el espacio entre los enlaces */
+  align-items: center; /* Centra verticalmente los enlaces */
+  flex-wrap: nowrap; /* Evita que los enlaces se envuelvan a la siguiente línea */
 }
 
 /* Estilo de los enlaces */
 .links a,
 .linksDropdown a,
 .noLink {
-  color: white;
-  text-decoration: none;
-  padding: 10px 16px;
+  color: white; /* Color de texto blanco */
+  text-decoration: none; /* Elimina el subrayado de los enlaces */
+  padding: 10px 16px; /* Espaciado interno de 10px arriba/abajo y 16px izquierda/derecha */
   position: relative; /* Necesario para posicionar el pseudo-elemento ::after correctamente */
   overflow: hidden; /* Asegura que cualquier hijo que desborde se oculte */
-  transition: color 0.3s ease; /* Transición suave para color */
+  transition: color 0.3s ease; /* Transición suave para el cambio de color */
 }
 
+/* Estilo para elementos sin enlace pero interactivos */
 .noLink {
-  cursor: pointer;
+  cursor: pointer; /* Cambia el cursor al pasar sobre el elemento */
   display: flex; /* Asegura la misma alineación vertical */
   align-items: center; /* Alinea verticalmente el contenido */
 }
 
-/* Añade pseudo-elementos ::after para la barra inferior blanca */
+/* Pseudo-elementos ::after para la barra inferior blanca */
 .links a::after,
 .linksDropdown a::after,
 .noLink::after,
 .dropdown a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 3px; /* Altura de la línea */
-  background-color: white; /* Color de la línea */
-  transform: scaleX(0); /* Inicia sin ser visible */
+  content: ""; /* Contenido vacío para crear la barra */
+  position: absolute; /* Posicionamiento absoluto dentro del enlace */
+  left: 0; /* Alinea la barra al inicio del enlace */
+  right: 0; /* Alinea la barra al final del enlace */
+  bottom: 0; /* Posiciona la barra en la parte inferior del enlace */
+  height: 3px; /* Altura de la barra */
+  background-color: white; /* Color de la barra */
+  transform: scaleX(0); /* Inicialmente la barra está oculta */
   transition: transform 0.3s ease; /* Transición suave para la transformación */
 }
 
@@ -182,7 +204,7 @@
   .linksDropdown a:hover::after,
   .dropdown a:hover::after,
   .noLink:hover::after {
-    transform: scaleX(1); /* Escala a tamaño completo para hacer visible la línea */
+    transform: scaleX(1); /* Escala a tamaño completo para hacer visible la barra */
   }
 
   /* .links a:hover,
@@ -212,278 +234,308 @@
 
 /* Configuración del menú desplegable para 'Restaurantes' */
 .linksDropdown {
-  position: relative;
-  display: inline-block;
+  position: relative; /* Posicionamiento relativo para el menú desplegable */
+  display: inline-block; /* Muestra el contenedor en línea */
 }
 
+/* Estilo para el menú desplegable */
 .dropdown {
-  display: block;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
+  display: block; /* Muestra el menú desplegable */
+  position: absolute; /* Posiciona el menú de manera absoluta */
+  left: 50%; /* Centra horizontalmente */
+  transform: translateX(-50%) translateY(10px); /* Ajusta la posición para centrar */
   background-color: rgba(74, 64, 58, 0.8); /* Fondo semi-transparente */
-  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  width: 160px;
-  transition: all 0.5s ease-out;
-  opacity: 0;
-  visibility: hidden;
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+  z-index: 1; /* Asegura que el menú esté por encima de otros elementos */
+  width: 160px; /* Ancho fijo del menú desplegable */
+  transition: all 0.5s ease-out; /* Transición suave para las propiedades */
+  opacity: 0; /* Inicialmente invisible */
+  visibility: hidden; /* Oculto */
 }
 
+/* Clases para mostrar y ocultar el menú desplegable */
 .show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateX(-50%) translateY(10px);
+  opacity: 1; /* Visible */
+  visibility: visible; /* Visible */
+  transform: translateX(-50%) translateY(10px); /* Mantiene la posición */
 }
 
 .hide {
-  opacity: 0;
-  visibility: hidden;
-  transform: translateX(-50%) translateY(10px);
+  opacity: 0; /* Invisible */
+  visibility: hidden; /* Oculto */
+  transform: translateX(-50%) translateY(10px); /* Mantiene la posición */
 }
 
+/* Triángulo antes del menú desplegable */
 .dropdown::before {
   /* Triángulo */
   content: "";
-  position: absolute;
-  top: -10px; /* Modificar este valor para acercar al menú desplegable */
-  left: 50%;
-  transform: translateX(-50%);
+  position: absolute; /* Posicionamiento absoluto dentro del menú */
+  top: -10px; /* Posición arriba del menú */
+  left: 50%; /* Centra horizontalmente */
+  transform: translateX(-50%); /* Ajusta para centrar el triángulo */
   width: 0;
   height: 0;
-  border-left: 10px solid transparent;
-  border-right: 10px solid transparent;
-  border-bottom: 10px solid rgba(74, 64, 58, 0.8);
-  z-index: 2; /* Asegurándonos de que esté por encima del menú desplegable */
+  border-left: 10px solid transparent; /* Bordes transparentes */
+  border-right: 10px solid transparent; /* Bordes transparentes */
+  border-bottom: 10px solid rgba(74, 64, 58, 0.8); /* Triángulo hacia arriba */
+  z-index: 2; /* Asegura que el triángulo esté por encima del menú */
 }
 
+/* Mostrar el triángulo cuando el menú está visible */
 .dropdown.show::before {
   display: block;
 }
 
+/* Ocultar el triángulo cuando el menú está oculto */
 .dropdown.hide::before {
   display: none;
 }
 
+/* Estilo para los enlaces dentro del menú desplegable */
 .dropdown a {
-  color: white;
-  padding: 12px 16px;
-  display: block;
-  text-align: left;
-  text-align: center; /* Asegura que el texto esté centrado horizontalmente */
-  width: 100%; /* Asegura que el enlace ocupe todo el ancho del menú desplegable */
+  color: white; /* Color de texto blanco */
+  padding: 12px 16px; /* Espaciado interno */
+  display: block; /* Muestra el enlace como bloque */
+  text-align: center; /* Centra el texto horizontalmente */
+  width: 100%; /* Ancho completo del enlace */
 }
 
+/* Mostrar el menú desplegable al pasar el ratón sobre el contenedor */
 .linksDropdown:hover .dropdown {
-  transform: translateX(-50%) translateY(10px);
+  transform: translateX(-50%) translateY(10px); /* Mantiene la posición */
 }
 
+/* Contenedor para el cargador dentro de la barra de navegación */
 .loaderContainer {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  position: relative; /* Posicionamiento relativo para el cargador */
+  display: flex; /* Utiliza flexbox para alinear el cargador */
+  align-items: center; /* Centra verticalmente */
+  justify-content: center; /* Centra horizontalmente */
   height: 50px; /* Altura del menú */
-  width: 100%; /* Ancho del contenedor del menú */
+  width: 100%; /* Ancho completo del contenedor del menú */
 }
 
+/* Cargador de la barra de navegación */
 .navbarLoader {
-  --point-color: white;
-  --size: 3px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 100%; /* Ajusta si es necesario */
-  height: 100%; /* Ajusta si es necesario */
-  display: flex;
-  align-items: center;
-  align-content: center;
-  justify-content: center;
-  z-index: 10;
+  --point-color: white; /* Define el color de los puntos del cargador */
+  --size: 3px; /* Define el tamaño de los puntos del cargador */
+  position: absolute; /* Posiciona el cargador de manera absoluta */
+  top: 50%; /* Centra verticalmente */
+  left: 50%; /* Centra horizontalmente */
+  transform: translate(-50%, -50%); /* Ajusta la posición para centrar perfectamente */
+  width: 100%; /* Ancho completo del cargador */
+  height: 100%; /* Altura completa del cargador */
+  display: flex; /* Utiliza flexbox para alinear los puntos */
+  align-items: center; /* Centra verticalmente los puntos */
+  align-content: center; /* Centra el contenido si hay múltiples líneas */
+  justify-content: center; /* Centra horizontalmente los puntos */
+  z-index: 10; /* Asegura que el cargador esté por encima de otros elementos */
 }
 
+/* Contenedor para el título animado */
 .animatedTitleContainer {
-  display: flex;
+  display: flex; /* Utiliza flexbox para alinear el contenido */
   justify-content: center; /* Centra horizontalmente */
   align-items: center; /* Centra verticalmente */
   flex-grow: 1; /* Ocupa el espacio restante debajo del menú */
-  width: 100%;
+  width: 100%; /* Ancho completo del contenedor */
 }
 
-/* MODO TABLET Y ESCRITORIO POCA RESOLUCION */
+/* Media Queries para dispositivos tipo tablet y escritorio con poca resolución */
 @media (max-width: 1600px) {
   .navbarTop {
-    width: 100%;
+    width: 100%; /* Expande el contenedor superior al 100% del ancho */
   }
 
   .links {
-    width: 100%;
-    justify-content: center;
+    width: 100%; /* Expande el contenedor de enlaces al 100% del ancho */
+    justify-content: center; /* Centra los enlaces horizontalmente */
   }
 }
 
-/* MODO TABLET PEQUEÑA*/
+/* Media Queries para tabletas pequeñas */
 @media (max-width: 850px) {
   .links a,
   .linksDropdown a,
   .noLink {
-    padding: 5px;
+    padding: 5px; /* Reduce el padding de los enlaces a 5 píxeles */
   }
 }
 
-/* MODO MOVIL */
+/* Media Queries para dispositivos móviles */
 @media (max-width: 767px) {
+  /* Ajustes generales de la barra de navegación en móviles */
   .navbar {
-    position: relative;
-    background-position: center 20px;
+    position: relative; /* Cambia a posicionamiento relativo */
+    background-position: center 20px; /* Ajusta la posición del fondo */
     height: auto; /* Ajusta la altura en móvil */
   }
 
+  /* Pseudo-elemento antes de la barra de navegación */
   .navbar::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 20px;
-    width: 100%;
-    background-color: black;
-    z-index: 2;
+    content: ""; /* Contenido vacío */
+    position: absolute; /* Posicionamiento absoluto */
+    top: 0; /* Posición superior */
+    left: 0; /* Posición izquierda */
+    height: 20px; /* Altura de 20 píxeles */
+    width: 100%; /* Ancho completo */
+    background-color: black; /* Fondo negro */
+    z-index: 2; /* Asegura que esté por encima de otros elementos */
   }
 
+  /* Ajustes del contenedor superior en móviles */
   .navbarTop {
-    width: 100%;
-    flex-direction: column;
+    width: 100%; /* Ancho completo */
+    flex-direction: column; /* Dispone los elementos en columna */
   }
 
+  /* Ajustes del contenedor del logo en móviles */
   .imgLogoContainer {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+    width: 100%; /* Ancho completo */
+    display: flex; /* Utiliza flexbox para centrar */
+    justify-content: center; /* Centra horizontalmente el logo */
   }
 
+  /* Ajustes de la imagen del logo en móviles */
   .imgLogo {
-    height: 200px;
-    width: auto;
+    height: 200px; /* Altura de 200 píxeles */
+    width: auto; /* Mantiene la proporción de la imagen */
   }
 
+  /* Oculta el contenedor del texto del logo en móviles */
   .textLogoContainer {
-    display: none;
+    display: none; /* Oculta el contenedor del texto del logo */
   }
 
+  /* Ajustes del contenedor de banderas en móviles */
   .flagContainer {
-    width: 100%;
-    margin-top: 15px;
-    justify-content: space-between;
+    width: 100%; /* Ancho completo */
+    margin-top: 15px; /* Márgen superior de 15 píxeles */
+    justify-content: space-between; /* Distribuye el espacio entre las banderas */
     /* background-color: #4a403a; */
-    background-color: rgba(74, 64, 58, 0.5);
-    align-items: center;
-    padding: 10px 0px;
+    background-color: rgba(74, 64, 58, 0.5); /* Fondo semi-transparente */
+    align-items: center; /* Centra verticalmente las banderas */
+    padding: 10px 0px; /* Padding superior e inferior de 10 píxeles */
   }
 
+  /* Muestra el icono del menú móvil en dispositivos móviles */
   .mobileMenuIcon {
-    display: flex;
-    cursor: pointer;
-    margin-left: 5%;
-    align-items: center;
+    display: flex; /* Muestra el icono */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el icono */
+    margin-left: 5%; /* Márgen izquierdo de 5% */
+    align-items: center; /* Centra verticalmente el icono */
   }
 
+  /* Ajustes de las banderas en móviles */
   .flags {
-    margin-right: 5%;
+    margin-right: 5%; /* Márgen derecho de 5% */
   }
 
+  /* Ajustes del tamaño de las banderas en móviles */
   .flag {
-    width: 30px;
+    width: 30px; /* Ancho de 30 píxeles */
   }
 
+  /* Ajustes del contenedor de enlaces en móviles */
   .navbarMenu {
-    font-size: 22px;
-    flex-direction: column;
-    max-height: 0;
-    visibility: hidden;
-    opacity: 0;
-    overflow: hidden;
-    transition: visibility 0s 0.3s, opacity 0.3s ease-in-out, max-height 0.3s ease-in-out;
-    margin-top: -1px;
+    font-size: 22px; /* Aumenta el tamaño de fuente a 22 píxeles */
+    flex-direction: column; /* Dispone los enlaces en columna */
+    max-height: 0; /* Altura máxima de 0 para ocultar el menú */
+    visibility: hidden; /* Oculta el menú */
+    opacity: 0; /* Opacidad 0 para ocultar visualmente */
+    overflow: hidden; /* Oculta cualquier contenido desbordado */
+    transition: visibility 0s 0.3s, opacity 0.3s ease-in-out, max-height 0.3s ease-in-out; /* Transiciones para mostrar/ocultar el menú */
+    margin-top: -1px; /* Márgen superior de -1 píxel */
     /* background-color: #4a403a; */
-    background-color: rgba(74, 64, 58, 0.8);
+    background-color: rgba(74, 64, 58, 0.8); /* Fondo semi-transparente */
   }
 
+  /* Muestra el menú desplegable en móviles */
   .navbarMenu.showMenu {
-    max-height: 100vh;
-    min-height: calc(100vh - 360px);
-    visibility: visible;
-    opacity: 1;
-    overflow: auto;
-    transition-delay: 0s;
+    max-height: 100vh; /* Expande la altura al 100% del viewport */
+    min-height: calc(100vh - 360px); /* Altura mínima calculada */
+    visibility: visible; /* Hace visible el menú */
+    opacity: 1; /* Opacidad completa */
+    overflow: auto; /* Permite el desplazamiento si el contenido excede */
+    transition-delay: 0s; /* Elimina el retraso en la transición */
   }
 
+  /* Ajustes de los enlaces en móviles */
   .links {
-    flex-direction: column;
-    width: 100%;
-    align-items: center;
+    flex-direction: column; /* Dispone los enlaces en columna */
+    width: 100%; /* Ancho completo */
+    align-items: center; /* Centra los enlaces horizontalmente */
   }
 
+  /* Estilo de los enlaces en móviles */
   .links a {
-    width: 100%;
-    text-align: center;
-    padding: 10px;
-    margin: 0px;
+    width: 100%; /* Ancho completo del enlace */
+    text-align: center; /* Centra el texto */
+    padding: 10px; /* Padding de 10 píxeles */
+    margin: 0px; /* Sin márgen */
     /* border-bottom: 1px solid rgb(99, 94, 94); */
   }
 
+  /* Oculta el triángulo del menú desplegable en móviles */
   .dropdown {
-    z-index: 2;
-    position: relative;
-    display: none;
-    width: 100%;
-    box-shadow: none;
-    padding: 0px;
-    transform: translateX(-50%) translateY(0px);
-    transition: none; /* Elimina cualquier transición */
+    z-index: 2; /* Asegura que el menú esté por encima de otros elementos */
+    position: relative; /* Posicionamiento relativo */
+    display: none; /* Oculta el menú desplegable */
+    width: 100%; /* Ancho completo */
+    box-shadow: none; /* Elimina la sombra */
+    padding: 0px; /* Sin padding */
+    transform: translateX(-50%) translateY(0px); /* Ajusta la posición */
+    transition: none; /* Elimina las transiciones */
     /* background-color: #4a403a; */
-    background-color: rgba(74, 64, 58, 0.8);
+    background-color: rgba(74, 64, 58, 0.8); /* Fondo semi-transparente */
   }
 
+  /* Muestra el menú desplegable en móviles */
   .dropdown.show {
-    display: block;
+    display: block; /* Muestra el menú */
   }
 
+  /* Oculta el menú desplegable en móviles */
   .dropdown.hide {
-    display: none;
+    display: none; /* Oculta el menú */
   }
 
+  /* Elimina el triángulo del menú desplegable en móviles */
   .dropdown::before {
     display: none; /* Elimina el triángulo */
-    visibility: hidden;
+    visibility: hidden; /* Oculta el triángulo */
   }
 
+  /* Elimina los pseudo-elementos ::after en móviles */
   .links a::after,
   .linksDropdown a::after,
   .dropdown a::after {
-    height: 0; /* Elimina la altura para que la línea no aparezca */
-    background-color: transparent; /* Hace que la línea sea transparente */
+    height: 0; /* Elimina la altura de la línea */
+    background-color: transparent; /* Hace la línea transparente */
     transform: none; /* Anula cualquier transformación */
     transition: none; /* Anula las transiciones */
   }
 
+  /* Anula la transformación al hacer hover en móviles */
   .links a:hover::after,
   .linksDropdown a:hover::after,
   .dropdown a:hover::after {
-    transform: none; /* Anula la transformación al hacer hover */
+    transform: none; /* Anula la transformación */
   }
 
+  /* Ajustes del contenedor del título animado en móviles */
   .animatedTitleContainer {
-    width: 100vw; /* Asegura que tome todo el ancho de la ventana en móviles */
-    padding-top: 10px;
-    padding-bottom: 10px;
+    width: 100vw; /* Ancho completo de la ventana en móviles */
+    padding-top: 10px; /* Padding superior de 10 píxeles */
+    padding-bottom: 10px; /* Padding inferior de 10 píxeles */
   }
 }
 
-/* MODO MOVIL PANTALLA PEQUEÑA */
+/* Media Queries para dispositivos móviles con pantalla muy pequeña */
 @media (max-width: 385px) {
   .imgLogo {
-    height: 150px;
-    width: auto;
+    height: 150px; /* Reduce la altura del logo a 150 píxeles */
+    width: auto; /* Mantiene la proporción de la imagen */
   }
 }

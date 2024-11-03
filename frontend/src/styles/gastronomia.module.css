@@ -1,60 +1,64 @@
+/* Botón de descarga de menú */
 .downloadMenuButton {
-  width: 400px;
-  --bs-btn-bg: #4a403a;
-  --bs-btn-border-color: #4a403a;
-  --bs-btn-hover-bg: #198754;
-  --bs-btn-hover-border-color: #198754;
-  --bs-btn-active-bg: #198754;
-  --bs-btn-active-border-color: #198754;
-  --bs-btn-disabled-bg: #4a403a;
-  --bs-btn-disabled-border-color: #4a403a;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19);
-  transform: translateZ(0);
+  width: 400px; /* Ancho fijo de 400 píxeles */
+  --bs-btn-bg: #4a403a; /* Color de fondo predeterminado del botón */
+  --bs-btn-border-color: #4a403a; /* Color de borde predeterminado del botón */
+  --bs-btn-hover-bg: #198754; /* Color de fondo al pasar el ratón */
+  --bs-btn-hover-border-color: #198754; /* Color de borde al pasar el ratón */
+  --bs-btn-active-bg: #198754; /* Color de fondo al hacer clic */
+  --bs-btn-active-border-color: #198754; /* Color de borde al hacer clic */
+  --bs-btn-disabled-bg: #4a403a; /* Color de fondo cuando el botón está deshabilitado */
+  --bs-btn-disabled-border-color: #4a403a; /* Color de borde cuando el botón está deshabilitado */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19); /* Sombra para dar profundidad */
+  transform: translateZ(0); /* Optimiza el rendimiento de la animación */
 }
 
+/* Contenedor de imágenes */
 .imageContainer {
-  display: flex;
-  justify-content: center;
-  flex-wrap: nowrap;
-  gap: 20px;
-  margin-top: 10px;
-  margin-bottom: 25px;
+  display: flex; /* Utiliza flexbox para organizar las imágenes en una fila */
+  justify-content: center; /* Centra las imágenes horizontalmente */
+  flex-wrap: nowrap; /* Evita que las imágenes se envuelvan a la siguiente línea */
+  gap: 20px; /* Espacio entre imágenes */
+  margin-top: 10px; /* Márgen superior de 10 píxeles */
+  margin-bottom: 25px; /* Márgen inferior de 25 píxeles */
 }
 
+/* Imágenes dentro del contenedor de imágenes */
 .responsiveImage {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
-  object-fit: cover;
-  border-radius: 8px;
-  transition: transform 0.3s ease;
+  width: 100%; /* Ancho completo de la imagen */
+  max-width: 300px; /* Ancho máximo de 300 píxeles */
+  height: auto; /* Mantiene la proporción de la imagen */
+  object-fit: cover; /* Cubre el contenedor sin distorsionar la imagen */
+  border-radius: 8px; /* Bordes redondeados de 8 píxeles */
+  transition: transform 0.3s ease; /* Transición suave para el efecto hover */
 }
 
+/* Efecto hover para agrandar la imagen */
 .responsiveImage:hover {
-  transform: scale(1.12);
+  transform: scale(1.12); /* Agranda la imagen al 112% cuando el usuario pasa el ratón */
 }
 
-/* Ocultar el carrusel en modo escritorio en la página de gastronomía */
+/* Oculta el carrusel en modo escritorio en la página de gastronomía */
 .mobileCarousel {
-  display: none;
+  display: none; /* Oculta el carrusel en dispositivos de escritorio */
 }
 
-/* MODO TABLET */
+/* Media Queries para dispositivos tipo tablet */
 @media (max-width: 1024px) {
   .downloadMenuButton {
-    width: 300px;
+    width: 300px; /* Reduce el ancho del botón de descarga a 300 píxeles en tablets */
   }
 }
 
-/* MODO MOVIL */
+/* Media Queries para dispositivos móviles */
 @media (max-width: 767px) {
-  /* Ocultar las imágenes en línea en móvil */
+  /* Ocultar las imágenes en línea en dispositivos móviles */
   .imageContainer {
-    display: none;
+    display: none; /* Oculta el contenedor de imágenes en pantallas pequeñas */
   }
 
   /* Mostrar el carrusel solo en móvil en la página de gastronomía */
   .mobileCarousel {
-    display: block;
+    display: block; /* Muestra el carrusel en dispositivos móviles */
   }
 }

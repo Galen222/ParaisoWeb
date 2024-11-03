@@ -1,7 +1,9 @@
+/* Estilo básico para enlaces */
 .link {
-  text-decoration: none;
+  text-decoration: none; /* Elimina el subrayado predeterminado de los enlaces para una apariencia más limpia */
 }
 
+/* Efecto hover para enlaces */
 .link:hover {
-  text-decoration: underline;
+  text-decoration: underline; /* Agrega subrayado al pasar el ratón, indicando interactividad */
 }
