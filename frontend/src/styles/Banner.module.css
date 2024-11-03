@@ -1,7 +1,8 @@
 .restaurantesContainer,
 .gastronomiaContainer,
 .nosotrosContainer,
-.empleoContainer {
+.empleoContainer,
+.charcuteriaContainer {
   background-size: cover;
   background-position: center;
   border-radius: 10px;
@@ -26,6 +27,11 @@
   margin-right: auto;
 }
 
+.charcuteriaContainer {
+  width: 100%;
+  background-image: url("/images/banner/fondocharcuteria.jpg");
+}
+
 .nosotrosContainer {
   width: 100%;
   background-image: url("/images/banner/fondoabout.jpg");
@@ -39,7 +45,8 @@
 .restaurantesFrameContent,
 .gastronomiaFrameContent,
 .nosotrosFrameContent,
-.empleoFrameContent {
+.empleoFrameContent,
+.charcuteriaFrameContent {
   width: 100%;
   max-width: 1200px;
   display: flex;
@@ -55,7 +62,8 @@
 .restaurantesFrameContent::before,
 .gastronomiaFrameContent::before,
 .nosotrosFrameContent::before,
-.empleoFrameContent::before {
+.empleoFrameContent::before,
+.charcuteriaFrameContent:before {
   content: "";
   position: absolute;
   background-color: rgba(255, 255, 255, 0.5);
@@ -69,7 +77,8 @@
 .restaurantesTextSection,
 .gastronomiaTextSection,
 .nosotrosTextSection,
-.empleoTextSection {
+.empleoTextSection,
+.charcuteriaTextSection {
   flex: 1;
   flex-direction: column;
   text-align: center;
@@ -82,7 +91,8 @@
 .restaurantesButtonsSection,
 .gastronomiaButtonsSection,
 .nosotrosButtonsSection,
-.empleoButtonsSection {
+.empleoButtonsSection,
+.charcuteriaButtonsSection {
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -97,14 +107,16 @@
 }
 
 .gastronomiaTitle,
-.empleoTitle {
+.empleoTitle,
+.charcuteriaTitle {
   font-size: 34px;
 }
 
 .restaurantesHighlight,
 .gastronomiaHighlight,
 .nosotrosHighlight,
-.empleoHighlight {
+.empleoHighlight,
+.charcuteriaHighlight {
   font-weight: bold;
 }
 
@@ -114,7 +126,8 @@
 }
 
 .gastronomiaHighlight,
-.empleoHighlight {
+.empleoHighlight,
+.charcuteriaHighlight {
   font-size: 40px;
 }
 
@@ -150,12 +163,14 @@
   }
 
   .gastronomiaTitle,
-  .empleoTitle {
+  .empleoTitle,
+  .charcuteriaTitle {
     font-size: 32px;
   }
 
   .gastronomiaHighlight,
-  .empleoHighlight {
+  .empleoHighlight,
+  .charcuteriaHighlight {
     font-size: 38px;
   }
 }
@@ -165,7 +180,8 @@
   .restaurantesFrameContent,
   .gastronomiaFrameContent,
   .nosotrosFrameContent,
-  .empleoFrameContent {
+  .empleoFrameContent,
+  .charcuteriaFrameContent {
     flex-direction: column;
     border-top: none;
     padding: 0;
@@ -181,10 +197,15 @@
     height: 250px;
   }
 
+  .charcuteriaFrameContent {
+    height: 275px;
+  }
+
   .restaurantesFrameContent::before,
   .gastronomiaFrameContent::before,
   .nosotrosFrameContent::before,
-  .empleoFrameContent::before {
+  .empleoFrameContent::before,
+  .charcuteriaFrameContent::before {
     width: 90%;
     height: 2px;
     top: 50%;
@@ -196,10 +217,12 @@
   .gastronomiaTextSection,
   .nosotrosTextSection,
   .empleoTextSection,
+  .charcuteriaTextSection,
   .restaurantesButtonsSection,
   .gastronomiaButtonsSection,
   .nosotrosButtonsSection,
-  .empleoButtonsSection {
+  .empleoButtonsSection,
+  .charcuteriaButtonsSection {
     flex: 0 0 50%;
     display: flex;
     flex-direction: column;
@@ -210,7 +233,8 @@
   .restaurantesTextSection,
   .gastronomiaTextSection,
   .nosotrosTextSection,
-  .empleoTextSection {
+  .empleoTextSection,
+  .charcuteriaTextSection {
     color: #4a403a;
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white;
   }
@@ -224,7 +248,8 @@
 
   .gastronomiaButtonsSection,
   .nosotrosButtonsSection,
-  .empleoButtonsSection {
+  .empleoButtonsSection,
+  .charcuteriaButtonsSection {
     display: flex;
     flex: 1;
     text-align: center;
@@ -243,7 +268,8 @@
   }
 
   .gastronomiaTitle,
-  .empleoTitle {
+  .empleoTitle,
+  .charcuteriaTitle {
     font-size: 30px;
   }
 
@@ -270,12 +296,14 @@
   }
 
   .gastronomiaTitle,
-  .empleoTitle {
+  .empleoTitle,
+  .charcuteriaTitle {
     font-size: 18px;
   }
 
   .gastronomiaHighlight,
-  .empleoHighlight {
+  .empleoHighlight,
+  .charcuteriaHighlight {
     font-size: 22px;
   }
 }

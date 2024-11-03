@@ -4,7 +4,7 @@ import { useIntl } from "react-intl";
 import styles from "../styles/Banner.module.css";
 
 interface BannerProps {
-  bannerType: "restaurantes" | "gastronomia" | "nosotros" | "empleo";
+  bannerType: "restaurantes" | "gastronomia" | "charcuteria" | "nosotros" | "empleo";
 }
 
 const Banner: React.FC<BannerProps> = ({ bannerType }) => {
@@ -30,19 +30,26 @@ const Banner: React.FC<BannerProps> = ({ bannerType }) => {
       reverse: true,
       reverseMobile: true,
     },
+    charcuteria: {
+      title: intl.formatMessage({ id: "banner_Charcuteria_Texto1" }),
+      highlight: intl.formatMessage({ id: "banner_Charcuteria_Texto2" }),
+      links: [{ href: "/charcuteria", text: intl.formatMessage({ id: "banner_Charcuteria_Texto3" }) }],
+      reverse: false,
+      reverseMobile: false,
+    },
     nosotros: {
       title: intl.formatMessage({ id: "banner_About_Texto1" }),
       highlight: intl.formatMessage({ id: "banner_About_Texto2" }),
       links: [{ href: "/about", text: intl.formatMessage({ id: "banner_About_Texto3" }) }],
-      reverse: false,
-      reverseMobile: false,
+      reverse: true,
+      reverseMobile: true,
     },
     empleo: {
       title: intl.formatMessage({ id: "banner_Empleo_Texto1" }),
       highlight: intl.formatMessage({ id: "banner_Empleo_Texto2" }),
       links: [{ href: "/contacto", text: intl.formatMessage({ id: "banner_Empleo_Texto3" }) }],
-      reverse: true,
-      reverseMobile: true,
+      reverse: false,
+      reverseMobile: false,
     },
   };
 

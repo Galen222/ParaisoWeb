@@ -43,6 +43,7 @@ const Home: HomeComponent = ({ loadingMessages }) => {
       {/* Uso de Banners */}
       <Banner bannerType="restaurantes" />
       <Banner bannerType="gastronomia" />
+      <Banner bannerType="charcuteria" />
       <Banner bannerType="nosotros" />
       <Banner bannerType="empleo" />
 
