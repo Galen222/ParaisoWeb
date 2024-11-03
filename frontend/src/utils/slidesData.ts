@@ -139,6 +139,16 @@ export const slidesData = (intl: IntlShape): { [key: string]: Slide[] } => ({
       src: "/images/carousel/bm/carousel-bm-d.png",
       alt: intl.formatMessage({ id: "bravo-murillo_Carousel_Alt8" }),
     },
+    {
+      type: "image",
+      src: "/images/carousel/bm/carousel-bm-5.png",
+      alt: intl.formatMessage({ id: "bravo-murillo_Carousel_Alt9" }),
+    },
+    {
+      type: "image",
+      src: "/images/carousel/bm/carousel-bm-e.png",
+      alt: intl.formatMessage({ id: "bravo-murillo_Carousel_Alt10" }),
+    },
   ],
   "reina-victoria": [
     {
@@ -180,6 +190,16 @@ export const slidesData = (intl: IntlShape): { [key: string]: Slide[] } => ({
       type: "image",
       src: "/images/carousel/rv/carousel-rv-d.png",
       alt: intl.formatMessage({ id: "reina-victoria_Carousel_Alt8" }),
+    },
+    {
+      type: "image",
+      src: "/images/carousel/rv/carousel-rv-5.png",
+      alt: intl.formatMessage({ id: "reina-victoria_Carousel_Alt9" }),
+    },
+    {
+      type: "image",
+      src: "/images/carousel/rv/carousel-rv-e.png",
+      alt: intl.formatMessage({ id: "reina-victoria_Carousel_Alt10" }),
     },
   ],
   arenal: [
