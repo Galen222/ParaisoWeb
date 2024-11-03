@@ -6,30 +6,33 @@ import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
 import styles from "../styles/error.module.css";
+import type { ComponentType } from "react";
+
+/**
+ * Propiedades para el componente `Custom404Page`.
+ * @property {boolean} loadingMessages - Indica si los mensajes de la página están en proceso de carga.
+ */
+interface Custom404PageProps {
+  loadingMessages: boolean;
+}
 
 /**
  * Componente para la página personalizada de error 404.
  * Muestra un mensaje de error y una imagen, además de realizar el seguimiento de la visita a la página.
  *
+ * @param {Custom404PageProps} props - Propiedades para el componente `Custom404`.
  * @returns {JSX.Element} Página de error 404.
  */
-const Custom404 = () => {
+const Custom404Page = ({ loadingMessages }: Custom404PageProps) => {
   const intl = useIntl(); // Hook para manejar la internacionalización
-  const [loading, setLoading] = React.useState(true); // Estado de carga de la página
 
   // Realiza el seguimiento de la visita a la página de error 404
   useVisitedPageTracking("404");
   useVisitedPageTrackingGA("404");
 
-  // Maneja el estado de carga en función de la disponibilidad de `intl`
-  React.useEffect(() => {
-    if (intl) {
-      setLoading(false); // Finaliza el estado de carga cuando `intl` está disponible
-    }
-  }, [intl]);
-
-  if (loading) {
-    return <Loader />; // Muestra un loader mientras `intl` se inicializa
+  // Muestra un loader si los mensajes están en proceso de carga
+  if (loadingMessages) {
+    return <Loader />;
   }
 
   // Mensaje de error para la página 404
@@ -46,4 +49,4 @@ const Custom404 = () => {
   );
 };
 
-export default Custom404;
+export default Custom404Page; // Exporta el componente para su uso en la aplicación
