@@ -64,8 +64,8 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
   // Renderiza un mensaje de error si ocurre un error en la carga de datos
   if (error) {
     return (
-      <div className={CharcuteriaStyles.errorContainer}>
-        <p className={CharcuteriaStyles.errorText}>{error}</p>
+      <div className={errorStyles.errorContainer}>
+        <p className={errorStyles.errorText}>{error}</p>
         <div className={errorStyles.imageContainer}>
           <img src={imageFileName} alt="Error" />
         </div>

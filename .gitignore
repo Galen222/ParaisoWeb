@@ -6,3 +6,7 @@ backdev.bat
 backprod.bat
 frontend/frontprod.bat
 frontend/frontdev.bat
+backdocs.bat
+frontend/frontdocs.bat
+docs
+frontend/docs
