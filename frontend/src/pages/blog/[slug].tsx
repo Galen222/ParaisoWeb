@@ -1,18 +1,18 @@
 // frontend/src/pages/blog/[slug].tsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useIntl } from "react-intl";
 import Loader from "../../components/Loader";
 import { useFetchBlogDetails } from "../../hooks/useFetchBlogDetails";
-import { getBlogPostById } from "../../services/blogService";
 import useScrollToTop from "../../hooks/useScrollToTop";
 import ReactMarkdown from "react-markdown";
 import errorStyles from "../../styles/error.module.css";
 import blogDetailsStyles from "../../styles/blogDetails.module.css";
 import type { ComponentType } from "react";
 import ShareLink from "../../components/shareLink";
+import { useHandleLanguageChange } from "../../hooks/useHandleLanguageChange"; // Nuevo hook
 
 interface BlogDetailsPageProps {
   loadingMessages: boolean;
@@ -30,33 +30,8 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
   // Usa el hook para obtener los detalles del post
   const { data: blogDetails, loadingBlogDetails, error } = useFetchBlogDetails(slug as string);
 
-  // Maneja el cambio de idioma
-  useEffect(() => {
-    const handleLanguageChange = async () => {
-      if (blogDetails) {
-        const newIdioma = intl.locale;
-        if (newIdioma !== blogDetails.idioma) {
-          try {
-            // Obtiene la noticia correspondiente en el nuevo idioma
-            const newBlogPost = await getBlogPostById(blogDetails.id_noticia, newIdioma);
-            if (newBlogPost) {
-              // Redirige al usuario a la nueva URL con el slug correspondiente
-              router.push(`/blog/${newBlogPost.slug}`);
-            } else {
-              // Opcional: Manejar el caso donde no existe la traducción
-              // Por ejemplo, mostrar un mensaje o redirigir a una página por defecto
-              console.warn("No se encontró la traducción de la noticia en el idioma seleccionado.");
-            }
-          } catch (err) {
-            console.error("Error al cambiar de idioma:", err);
-            // Opcional: Mostrar un mensaje de error al usuario
-          }
-        }
-      }
-    };
-
-    handleLanguageChange();
-  }, [intl.locale, blogDetails, router]);
+  // Usa el hook para manejar el cambio de idioma
+  useHandleLanguageChange(blogDetails);
 
   const handleBack = async () => {
     setIsPushingBack(true);
