@@ -1,7 +1,7 @@
 // src/pages/gastronomia.tsx
 
 import React, { useState } from "react";
-import { useIntl } from "react-intl"; // Hook para internacionalización
+import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
@@ -9,80 +9,39 @@ import type { ComponentType } from "react";
 import { toast, Slide } from "react-toastify";
 import useScrollToTop from "../hooks/useScrollToTop";
 import Carousel from "../components/Carousel";
-import { saveAs } from "file-saver";
-import styles from "../styles/gastronomia.module.css"; // Estilos específicos para la página
+import styles from "../styles/gastronomia.module.css";
+import { useDownloadFile } from "../hooks/useDownloadFile";
 
 interface GastronomiaPageProps {
-  loadingMessages: boolean; // Prop para el estado de carga
+  loadingMessages: boolean;
 }
 
-type GastronomiaPageComponent = ComponentType<GastronomiaPageProps> & { pageTitleText?: string };
+const GastronomiaPage: ComponentType<GastronomiaPageProps> & { pageTitleText?: string } = ({ loadingMessages }) => {
+  const intl = useIntl();
+  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+  const { downloadFile, isDownloading } = useDownloadFile(); // Usar el hook de descarga de archivos
+  const [isPushingDownloadMenuFile, setIsPushingDownloadMenuFile] = useState(false); // Estado para animación
+  useVisitedPageTracking("gastronomia");
+  useVisitedPageTrackingGA("gastronomia");
 
-// Componente funcional GastronomiaPage
-const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: GastronomiaPageProps) => {
-  const intl = useIntl(); // Inicializa el hook de internacionalización
-  const [isPushingDownloadMenuFile, setIsPushingDownloadMenuFile] = useState(false); // Estado para animaciones
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
-  useVisitedPageTracking("gastronomia"); // Tracking personalizado
-  useVisitedPageTrackingGA("gastronomia"); // Tracking para Google Analytics
-
-  // Seguimiento del botón
   const trackButtonClick = useButtonClickTrackingGA();
 
   // Función para manejar el clic en el enlace de descarga
-  const handleDownloadMenu = async () => {
-    setIsPushingDownloadMenuFile(true);
+  const handleDownloadMenu = () => {
     trackButtonClick("Descargar Carta");
-    try {
-      // Obtener el archivo PDF desde la carpeta public
-      const response = await fetch("/files/cartaparaiso.pdf", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/pdf",
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error("Error descargando el archivo");
-      }
-
-      const blob = await response.blob();
-      saveAs(blob, "cartaparaiso.pdf"); // Iniciar la descarga utilizando file-saver
-      // Mostrar notificación de éxito
-      toast.success(intl.formatMessage({ id: "gastronomia_Descargar_Carta_Ok" }), {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
-    } catch (error) {
-      /* console.error("Error descargando el archivo:", error); */
-      // Mostrar notificación de error
-      toast.error(intl.formatMessage({ id: "gastronomia_Descargar_Carta_Error" }), {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
-    }
+    setIsPushingDownloadMenuFile(true); // Activar la animación de push
+    downloadFile(
+      "/files/cartaparaiso.pdf", // Ruta del archivo
+      "cartaparaiso.pdf", // Nombre con el que se descargará
+      "gastronomia_Descargar_Carta_Ok", // ID del mensaje de éxito
+      "gastronomia_Descargar_Carta_Error" // ID del mensaje de error
+    );
   };
 
-  // Mostrar el loader si los mensajes están cargando
   if (loadingMessages) {
     return <Loader />;
   }
 
-  // Renderiza el contenido del componente
   return (
     <div className="pageContainer">
       <div>
@@ -92,11 +51,11 @@ const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: Gastrono
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto1" })}</p>
         <div className="text-center">
           <button
-            className={`btn btn-primary mx-auto ${styles.downloadMenuButton} ${isPushingDownloadMenuFile ? "animate-push" : ""}`} // Clases para estilos y animaciones
-            onClick={handleDownloadMenu} // Maneja el clic para activar la animación
-            onAnimationEnd={() => setIsPushingDownloadMenuFile(false)} // Resetea el estado de animación
+            className={`btn btn-primary mx-auto ${styles.downloadMenuButton} ${isPushingDownloadMenuFile ? "animate-push" : ""}`}
+            onClick={handleDownloadMenu}
+            onAnimationEnd={() => setIsPushingDownloadMenuFile(false)} // Resetear el estado de animación
           >
-            {intl.formatMessage({ id: "gastronomia_Boton" })} {/* Texto del botón */}
+            {intl.formatMessage({ id: "gastronomia_Boton" })}
           </button>
         </div>
       </div>
@@ -151,7 +110,6 @@ const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: Gastrono
   );
 };
 
-// Asigna un título de página opcional
 GastronomiaPage.pageTitleText = "gastronomia";
 
-export default GastronomiaPage; // Exporta el componente para su uso en otras partes de la aplicación
+export default GastronomiaPage;
