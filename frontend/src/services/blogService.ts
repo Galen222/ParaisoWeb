@@ -33,10 +33,10 @@ export const getBlogPosts = async (idioma: string): Promise<BlogPost[]> => {
 
 export const getBlogPostById = async (id: number, idioma: string): Promise<BlogPost> => {
   try {
-    const response = await axios.get<BlogPost>(`${API_URL}/${id}?idioma=${idioma}`);
+    const response = await axios.get<BlogPost>(`${API_URL}/by-id/${id}?idioma=${idioma}`);
     return response.data;
   } catch (error) {
-    /* console.error("Error recibiendo el blog: ", error); */
+    /* console.error("Error recibiendo el blog por Id: ", error); */
     throw error;
   }
 };
@@ -46,6 +46,7 @@ export const getBlogPostBySlug = async (slug: string): Promise<BlogPost> => {
     const response = await axios.get<BlogPost>(`${API_URL}/${slug}`);
     return response.data;
   } catch (error) {
+    /* console.error("Error recibiendo el blog por slug: ", error); */
     throw error;
   }
 };

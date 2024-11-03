@@ -38,3 +38,21 @@ async def get_blog_post_by_slug(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# Nuevo endpoint para obtener una noticia por id_noticia e idioma
+@router.get("/blog/by-id/{id_noticia}", response_model=schemas.Blog)
+async def get_blog_post_by_id(
+    id_noticia: int = Path(...),
+    idioma: str = Query(...),
+    db: AsyncSession = Depends(get_db)
+):
+    try:
+        result = await db.execute(
+            select(models.Blog).where(models.Blog.id_noticia == id_noticia, models.Blog.idioma == idioma)
+        )
+        blog_post = result.scalar_one_or_none()
+        if blog_post is None:
+            raise HTTPException(status_code=404, detail="Blog not found")
+        return blog_post
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+

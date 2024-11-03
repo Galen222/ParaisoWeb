@@ -1,11 +1,12 @@
 // frontend/src/pages/blog/[slug].tsx
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useIntl } from "react-intl";
 import Loader from "../../components/Loader";
 import { useFetchBlogDetails } from "../../hooks/useFetchBlogDetails";
+import { getBlogPostById } from "../../services/blogService";
 import useScrollToTop from "../../hooks/useScrollToTop";
 import ReactMarkdown from "react-markdown";
 import errorStyles from "../../styles/error.module.css";
@@ -26,8 +27,36 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
   const [isPushingBack, setIsPushingBack] = useState(false); // Estado para animaciones
 
-  // Usa el nuevo hook para obtener los detalles del post
+  // Usa el hook para obtener los detalles del post
   const { data: blogDetails, loadingBlogDetails, error } = useFetchBlogDetails(slug as string);
+
+  // Maneja el cambio de idioma
+  useEffect(() => {
+    const handleLanguageChange = async () => {
+      if (blogDetails) {
+        const newIdioma = intl.locale;
+        if (newIdioma !== blogDetails.idioma) {
+          try {
+            // Obtiene la noticia correspondiente en el nuevo idioma
+            const newBlogPost = await getBlogPostById(blogDetails.id_noticia, newIdioma);
+            if (newBlogPost) {
+              // Redirige al usuario a la nueva URL con el slug correspondiente
+              router.push(`/blog/${newBlogPost.slug}`);
+            } else {
+              // Opcional: Manejar el caso donde no existe la traducción
+              // Por ejemplo, mostrar un mensaje o redirigir a una página por defecto
+              console.warn("No se encontró la traducción de la noticia en el idioma seleccionado.");
+            }
+          } catch (err) {
+            console.error("Error al cambiar de idioma:", err);
+            // Opcional: Mostrar un mensaje de error al usuario
+          }
+        }
+      }
+    };
+
+    handleLanguageChange();
+  }, [intl.locale, blogDetails, router]);
 
   const handleBack = async () => {
     setIsPushingBack(true);
@@ -87,6 +116,7 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
               <button
                 className={`btn btn-outline-secondary mx-auto ${blogDetailsStyles.backButton} ${isPushingBack ? "animate-push" : ""}`}
                 onAnimationEnd={() => setIsPushingBack(false)} // Resetea el estado de animación
+                onClick={handleBack}
               >
                 {intl.formatMessage({ id: "blog_Details_Boton" })} {/* Texto del botón */}
               </button>
