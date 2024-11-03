@@ -1,6 +1,11 @@
-// services/charcuteriaService.ts
+// frontend/services/charcuteriaService.ts
+
+/**
+ * Servicio para manejar las operaciones relacionadas con los productos de charcutería.
+ */
 
 import axios from "axios";
+import { getTimedToken } from "./tokenService";
 
 /**
  * Interfaz para representar los datos de un producto de charcutería.
@@ -29,11 +34,17 @@ if (!API_URL) {
  *
  * @param {string} idioma - El idioma en el cual se desean obtener los productos.
  * @returns {Promise<CharcuteriaProduct[]>} - Una promesa que resuelve a un array de objetos CharcuteriaProduct.
+ * @throws {Error} - Si falla la solicitud.
  */
 export const getCharcuteriaProducts = async (idioma: string): Promise<CharcuteriaProduct[]> => {
   try {
+    const token = await getTimedToken(); // Obtiene el token temporal
     // Realiza la solicitud GET a la API incluyendo el idioma como parámetro de consulta.
-    const response = await axios.get<CharcuteriaProduct[]>(`${API_URL}?idioma=${idioma}`);
+    const response = await axios.get<CharcuteriaProduct[]>(`${API_URL}?idioma=${idioma}`, {
+      headers: {
+        "x-timed-token": token,
+      },
+    });
     return response.data;
   } catch (error) {
     /* console.error("Error recibiendo los productos de charcuteria:", error); */

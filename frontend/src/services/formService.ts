@@ -1,6 +1,11 @@
-// services/formService.ts
+// frontend/services/formService.ts
+
+/**
+ * Servicio para manejar el envío del formulario de contacto.
+ */
 
 import axios, { AxiosResponse } from "axios";
+import { getTimedToken } from "./tokenService";
 
 /**
  * Interfaz para los datos del formulario de contacto.
@@ -37,8 +42,12 @@ const axiosInstance = axios.create({
  *
  * @param {FormData} data - Los datos del formulario a enviar.
  * @returns {Promise<AxiosResponse>} - Una promesa que resuelve a la respuesta de la API.
+ * @throws {Error} - Si falla el envío del formulario.
  */
 export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
+  // Obtén el token temporal antes de enviar el formulario
+  const token = await getTimedToken();
+
   // Crea una instancia de FormData para enviar los datos incluyendo archivos adjuntos.
   const formData = new FormData();
   formData.append("name", data.name);
@@ -50,22 +59,26 @@ export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
   }
 
   try {
-    // Realiza la solicitud POST usando axios con los datos del formulario.
-    const response = await axiosInstance.post(API_URL, formData);
+    // Realiza la solicitud POST usando axios con los datos del formulario y el token temporal.
+    const response = await axiosInstance.post(API_URL, formData, {
+      headers: {
+        "x-timed-token": token, // Envía el token en el encabezado
+      },
+    });
     return response;
   } catch (error: any) {
     // Manejo de errores en la solicitud con axios.
     if (error.response) {
       // El servidor respondió con un estado fuera del rango 2xx.
-      /* console.error("Error del servidor:", error.response.data); */
-      throw new Error(error.response.data.message || "Error al enviar el formulario");
+      if (error.response.status === 403) {
+        throw new Error("Token inválido o expirado. Por favor, intenta de nuevo.");
+      }
+      throw new Error(error.response.data.detail || "Error al enviar el formulario");
     } else if (error.request) {
       // La solicitud fue hecha pero no se recibió respuesta.
-      /* console.error("No se recibió respuesta del servidor:", error.request); */
       throw new Error("No se pudo contactar con el servidor");
     } else {
       // Algo pasó al configurar la solicitud.
-      /* console.error("Error al configurar la solicitud:", error.message); */
       throw new Error("Error al enviar el formulario");
     }
   }

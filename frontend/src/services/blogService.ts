@@ -1,6 +1,11 @@
-// services/blogService.ts
+// frontend/services/blogService.ts
+
+/**
+ * Servicio para manejar las operaciones relacionadas con el blog.
+ */
 
 import axios from "axios";
+import { getTimedToken } from "./tokenService";
 
 /**
  * Interfaz para representar los datos de una publicación de blog.
@@ -33,10 +38,16 @@ if (!API_URL) {
  *
  * @param {string} idioma - El idioma en el cual se desean obtener las publicaciones.
  * @returns {Promise<BlogPost[]>} - Una promesa que resuelve a un array de objetos BlogPost.
+ * @throws {Error} - Si falla la solicitud.
  */
 export const getBlogPosts = async (idioma: string): Promise<BlogPost[]> => {
   try {
-    const response = await axios.get<BlogPost[]>(`${API_URL}?idioma=${idioma}`);
+    const token = await getTimedToken(); // Obtiene el token temporal
+    const response = await axios.get<BlogPost[]>(`${API_URL}?idioma=${idioma}`, {
+      headers: {
+        "x-timed-token": token,
+      },
+    });
     return response.data;
   } catch (error) {
     /* console.error("Error recibiendo la lista de blogs: ", error); */
@@ -50,10 +61,16 @@ export const getBlogPosts = async (idioma: string): Promise<BlogPost[]> => {
  * @param {number} id - El identificador único de la publicación de blog.
  * @param {string} idioma - El idioma en el cual se desea obtener la publicación.
  * @returns {Promise<BlogPost>} - Una promesa que resuelve al objeto BlogPost correspondiente.
+ * @throws {Error} - Si falla la solicitud.
  */
 export const getBlogPostById = async (id: number, idioma: string): Promise<BlogPost> => {
   try {
-    const response = await axios.get<BlogPost>(`${API_URL}/by-id/${id}?idioma=${idioma}`);
+    const token = await getTimedToken(); // Obtiene el token temporal
+    const response = await axios.get<BlogPost>(`${API_URL}/by-id/${id}?idioma=${idioma}`, {
+      headers: {
+        "x-timed-token": token,
+      },
+    });
     return response.data;
   } catch (error) {
     /* console.error("Error recibiendo el blog por Id: ", error); */
@@ -66,10 +83,16 @@ export const getBlogPostById = async (id: number, idioma: string): Promise<BlogP
  *
  * @param {string} slug - El slug único de la publicación de blog.
  * @returns {Promise<BlogPost>} - Una promesa que resuelve al objeto BlogPost correspondiente.
+ * @throws {Error} - Si falla la solicitud.
  */
 export const getBlogPostBySlug = async (slug: string): Promise<BlogPost> => {
   try {
-    const response = await axios.get<BlogPost>(`${API_URL}/${slug}`);
+    const token = await getTimedToken(); // Obtiene el token temporal
+    const response = await axios.get<BlogPost>(`${API_URL}/${slug}`, {
+      headers: {
+        "x-timed-token": token,
+      },
+    });
     return response.data;
   } catch (error) {
     /* console.error("Error recibiendo el blog por slug: ", error); */

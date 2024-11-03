@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .routers import contacto
 from .routers import charcuteria
 from .routers import blog
+from .routers import token
 from .core.config import ENVIRONMENT  # Importa la variable de entorno
 
 # Creación de la instancia de FastAPI
@@ -27,6 +28,7 @@ app.add_middleware(
 app.include_router(contacto.router, prefix="/api")
 app.include_router(charcuteria.router, prefix="/api")
 app.include_router(blog.router, prefix="/api")
+app.include_router(token.router, prefix="/api") 
 
 # Crear las tablas en la base de datos al iniciar la aplicación
 from .database import engine

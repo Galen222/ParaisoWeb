@@ -1,8 +1,14 @@
-# app/routers/contacto.py
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException
+# backend/app/routers/contacto.py
+
+"""
+Router para manejar el formulario de contacto.
+"""
+
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
 from ..models.schemas import ContactForm
 from ..core.email_utils import send_contacto_email
 from pydantic import EmailStr
+from ..dependencies import verify_token  # Importa la dependencia
 
 router = APIRouter()
 
@@ -12,8 +18,26 @@ async def contacto(
     reason: str = Form(...),
     email: EmailStr = Form(...),
     message: str = Form(...),
-    file: UploadFile = File(None)
+    file: UploadFile = File(None),
+    token_verification: None = Depends(verify_token)  # Verifica el token temporal
 ):
+    """
+    Endpoint para enviar el formulario de contacto.
+
+    Args:
+        name (str): Nombre del remitente.
+        reason (str): Razón del contacto.
+        email (EmailStr): Correo electrónico del remitente.
+        message (str): Mensaje del remitente.
+        file (UploadFile, optional): Archivo adjunto.
+        token_verification (None): Resultado de la verificación del token.
+
+    Raises:
+        HTTPException: En caso de errores en la validación o envío.
+
+    Returns:
+        dict: Mensaje de éxito.
+    """
     # Validar datos recibidos
     try:
         _ = ContactForm(name=name, reason=reason, email=email, message=message)
