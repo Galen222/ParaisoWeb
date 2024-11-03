@@ -1,68 +1,76 @@
+// pages/_error.tsx
+
 import React, { useEffect, useState } from "react";
-// Importa el hook useIntl de react-intl para la internacionalización
-import { useIntl } from "react-intl";
-// Importa el tipo NextPageContext de Next.js
-import { NextPageContext } from "next";
+import { useIntl } from "react-intl"; // Hook para internacionalización
+import { NextPageContext } from "next"; // Tipo para el contexto de la página de Next.js
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import Loader from "../components/Loader";
-// Importa los estilos específicos del módulo
-import styles from "../styles/error.module.css";
+import styles from "../styles/error.module.css"; // Importa los estilos específicos para el módulo de error
 
-// Define la interfaz para las props del componente ErrorPage
+/**
+ * Interfaz para las propiedades de ErrorPage.
+ * @property {number} statusCode - Código de estado HTTP que causó el error.
+ * @property {boolean} loadingMessages - Estado de carga de los mensajes.
+ */
 interface ErrorPageProps {
-  statusCode: number; // Propiedad que contiene el código de estado HTTP
-  loadingMessages: boolean; // Nuevo prop para el estado de carga
+  statusCode: number;
+  loadingMessages: boolean;
 }
 
-// Define el componente funcional ErrorPage
+/**
+ * Componente funcional para manejar y mostrar páginas de error con mensajes internacionalizados.
+ * También incluye seguimiento de visitas a páginas de error.
+ *
+ * @param {ErrorPageProps} props - Propiedades del componente ErrorPage.
+ * @returns {JSX.Element} Componente de página de error.
+ */
 const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
-  // Obtiene el objeto intl usando el hook useIntl para manejar la internacionalización
-  const intl = useIntl();
+  const intl = useIntl(); // Hook para manejar la internacionalización
   const [loading, setLoading] = useState(true);
 
+  // Realiza el seguimiento de visitas a la página de error para análisis interno y Google Analytics
   useVisitedPageTracking(`error_${statusCode}`);
   useVisitedPageTrackingGA(`error_${statusCode}`);
-  // Variable para almacenar el mensaje de error
+
+  // Determina el mensaje de error basado en el código de estado HTTP
   let message;
-  // Utiliza un switch para determinar el mensaje basado en el código de estado
   switch (statusCode) {
     case 400:
-      message = intl.formatMessage({ id: "error_Error400" }); // Mensaje para error 400
+      message = intl.formatMessage({ id: "error_Error400" });
       break;
     case 401:
-      message = intl.formatMessage({ id: "error_Error401" }); // Mensaje para error 401
+      message = intl.formatMessage({ id: "error_Error401" });
       break;
     case 403:
-      message = intl.formatMessage({ id: "error_Error403" }); // Mensaje para error 403
+      message = intl.formatMessage({ id: "error_Error403" });
       break;
     case 408:
-      message = intl.formatMessage({ id: "error_Error408" }); // Mensaje para error 408
+      message = intl.formatMessage({ id: "error_Error408" });
       break;
     case 500:
-      message = intl.formatMessage({ id: "error_Error500" }); // Mensaje para error 500
+      message = intl.formatMessage({ id: "error_Error500" });
       break;
     case 501:
-      message = intl.formatMessage({ id: "error_Error501" }); // Mensaje para error 501
+      message = intl.formatMessage({ id: "error_Error501" });
       break;
     case 502:
-      message = intl.formatMessage({ id: "error_Error502" }); // Mensaje para error 502
+      message = intl.formatMessage({ id: "error_Error502" });
       break;
     case 503:
-      message = intl.formatMessage({ id: "error_Error503" }); // Mensaje para error 503
+      message = intl.formatMessage({ id: "error_Error503" });
       break;
     case 504:
-      message = intl.formatMessage({ id: "error_Error504" }); // Mensaje para error 504
+      message = intl.formatMessage({ id: "error_Error504" });
       break;
     default:
-      // Mensaje genérico para otros códigos de estado
       message = `${statusCode} - ${intl.formatMessage({ id: "error_Other" })}`;
       break;
   }
 
-  const imageFileName = "/images/web/error.png";
+  const imageFileName = "/images/web/error.png"; // Ruta de la imagen de error
 
-  // Renderiza el componente de error
+  // Controla el estado de carga de la página de error
   useEffect(() => {
     if (intl) {
       setLoading(false);
@@ -70,28 +78,30 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
   }, [intl]);
 
   if (loadingMessages) {
-    return <Loader />;
+    return <Loader />; // Muestra un loader si los mensajes están cargando
   }
 
   return (
     <div className="pageContainer">
-      <h1>{statusCode}</h1> {/* Muestra el código de estado */}
+      <h1>{statusCode}</h1> {/* Muestra el código de estado HTTP */}
       <p className="text-center">{message}</p> {/* Muestra el mensaje de error */}
-      {/* Añade la imagen debajo del mensaje */}
       <div className={styles.imageContainer}>
-        <img src={imageFileName} alt={`Error ${statusCode}`} />
+        <img src={imageFileName} alt={`Error ${statusCode}`} /> {/* Muestra la imagen de error */}
       </div>
     </div>
   );
 };
 
-// Define el método getInitialProps para obtener las props iniciales de la página
+/**
+ * Método para obtener las propiedades iniciales del componente de error.
+ * Determina el código de estado HTTP a partir de la respuesta del servidor o del error.
+ *
+ * @param {NextPageContext} context - Contexto de la página de Next.js.
+ * @returns {{ statusCode: number }} Código de estado HTTP como una propiedad.
+ */
 ErrorPage.getInitialProps = ({ res, err }: NextPageContext) => {
-  // Determina el código de estado HTTP basado en la respuesta o el error
   const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
-  // Retorna el código de estado como una propiedad
   return { statusCode };
 };
 
-// Exporta el componente ErrorPage como el componente por defecto
-export default ErrorPage;
+export default ErrorPage; // Exporta el componente ErrorPage como predeterminado

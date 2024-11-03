@@ -1,19 +1,28 @@
-//hooks/useCookieLogic.ts
+// hooks/useCookieLogic.ts
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
 import { createDeviceCookie } from "@/utils/cookieUtils";
 import { initGA } from "@/utils/gaUtils"; // Importa la función desde utils
 
+/**
+ * Hook personalizado para gestionar la lógica de consentimiento de cookies.
+ * Controla la configuración del idioma, carga de mensajes, y la presentación del modal de cookies,
+ * además de gestionar los consentimientos para análisis, personalización y cookies de Google.
+ *
+ * @returns {Object} Objeto con variables y funciones para la gestión de cookies y consentimiento.
+ */
 export function useCookieLogic() {
-  const [locale, setLocale] = useState<string>("es");
-  const [mapLocale, setMapLocale] = useState<string>("");
-  const [messages, setMessages] = useState({});
-  const [loadingMessages, setLoadingMessages] = useState<boolean>(true);
-  const [showCookieModal, setShowCookieModal] = useState<boolean>(false);
-  const [cookiesModalClosed, setCookiesModalClosed] = useState<boolean>(false);
+  const [locale, setLocale] = useState<string>("es"); // Estado del idioma actual
+  const [mapLocale, setMapLocale] = useState<string>(""); // Estado del idioma del mapa
+  const [messages, setMessages] = useState({}); // Estado para los mensajes de localización
+  const [loadingMessages, setLoadingMessages] = useState<boolean>(true); // Indica si los mensajes están cargando
+  const [showCookieModal, setShowCookieModal] = useState<boolean>(false); // Estado para mostrar el modal de cookies
+  const [cookiesModalClosed, setCookiesModalClosed] = useState<boolean>(false); // Indica si el modal de cookies está cerrado
   const router = useRouter();
 
+  // Estado y funciones para el consentimiento de cookies desde el contexto
   const {
     setCookieConsentAnalysis,
     setCookieConsentAnalysisGoogle,
@@ -27,6 +36,7 @@ export function useCookieLogic() {
     AcceptCookiePersonalization,
   } = useCookieConsent();
 
+  // Efecto para verificar cookies y establecer idioma inicial
   useEffect(() => {
     let initialLocale = "es";
 
@@ -64,6 +74,7 @@ export function useCookieLogic() {
     }
   }, [setCookieConsentPersonalization, setCookieConsentAnalysis, setCookieConsentAnalysisGoogle]);
 
+  // Efecto para cargar los mensajes de localización en base al idioma seleccionado
   useEffect(() => {
     setLoadingMessages(true);
     import(`../locales/${locale}.json`).then((msgs) => {
@@ -72,12 +83,17 @@ export function useCookieLogic() {
     });
   }, [locale]);
 
+  // Efecto para guardar el idioma en cookies si se ha aceptado la personalización
   useEffect(() => {
     if (cookieConsentPersonalization) {
       document.cookie = `_locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
     }
   }, [locale, cookieConsentPersonalization]);
 
+  /**
+   * Cambia el idioma de la aplicación y guarda en cookies si se permite la personalización.
+   * @param {string} newLocale - Nuevo idioma a establecer.
+   */
   const handleLocaleChange = (newLocale: string) => {
     setLocale(newLocale);
     if (cookieConsentPersonalization) {
@@ -85,6 +101,9 @@ export function useCookieLogic() {
     }
   };
 
+  /**
+   * Maneja el clic en el enlace de la política de cookies, reinicia el consentimiento y redirige.
+   */
   const handleCookiesPolicyLinkClick = () => {
     resetCookieConsent();
     setShowCookieModal(false);
@@ -92,6 +111,9 @@ export function useCookieLogic() {
     router.push("/politica-cookies");
   };
 
+  /**
+   * Maneja el clic en el enlace de la política de privacidad, reinicia el consentimiento y redirige.
+   */
   const handlePrivacyPolicyLinkClick = () => {
     resetCookieConsent();
     setShowCookieModal(false);
@@ -99,6 +121,9 @@ export function useCookieLogic() {
     router.push("/politica-privacidad");
   };
 
+  /**
+   * Reinicia el consentimiento de cookies a su estado inicial (no consentido).
+   */
   const resetCookieConsent = () => {
     setAcceptCookieAnalysis(false);
     setCookieConsentAnalysis(false);
@@ -108,6 +133,9 @@ export function useCookieLogic() {
     setCookieConsentPersonalization(false);
   };
 
+  /**
+   * Maneja la aceptación de cookies según los consentimientos seleccionados.
+   */
   const handleAcceptCookies = () => {
     if (AcceptCookieAnalysis) {
       setCookieConsentAnalysis(true);
@@ -130,12 +158,18 @@ export function useCookieLogic() {
     setCookiesModalClosed(true);
   };
 
+  /**
+   * Declina todas las cookies, cerrando el modal de consentimiento.
+   */
   const handleDeclineAllCookies = () => {
     resetCookieConsent();
     setShowCookieModal(false);
     setCookiesModalClosed(true);
   };
 
+  /**
+   * Acepta todas las cookies (análisis, personalización y Google), cierra el modal y ejecuta `initGA`.
+   */
   const handleAcceptAllCookies = () => {
     setAcceptCookieAnalysis(true);
     setCookieConsentAnalysis(true);

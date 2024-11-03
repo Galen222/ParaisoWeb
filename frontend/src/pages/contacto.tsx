@@ -1,4 +1,5 @@
-// contacto.tsx
+// pages/contacto.tsx
+
 import React from "react";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
@@ -11,29 +12,50 @@ import Form from "../components/Form";
 import styles from "../styles/contacto.module.css";
 import type { ComponentType } from "react";
 
+/**
+ * Propiedades para el componente `ContactPage`.
+ * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
+ */
 interface ContactPageProps {
   loadingMessages: boolean;
 }
 
+/**
+ * Tipo de componente para `ContactPage` que incluye una propiedad opcional `pageTitleText`.
+ */
 type ContactPageComponent = ComponentType<ContactPageProps> & { pageTitleText?: string };
 
+/**
+ * Componente funcional para la página de Contacto.
+ * Incluye información de contacto, un formulario, detalles legales y ubicaciones.
+ *
+ * @param {ContactPageProps} props - Propiedades para el componente `ContactPage`.
+ * @returns {JSX.Element} Página de Contacto.
+ */
 const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps) => {
-  const intl = useIntl();
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+  const intl = useIntl(); // Hook para la internacionalización
+  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para el botón de desplazamiento hacia arriba
 
+  // Seguimiento de la visita a la página "Contacto" para análisis interno y Google Analytics
   useVisitedPageTracking("contacto");
   useVisitedPageTrackingGA("contacto");
 
+  /**
+   * Función para manejar el envío del formulario de contacto.
+   * Aquí se pueden agregar acciones adicionales tras el envío.
+   */
   const handleFormSubmit = () => {
     // Aquí puedes realizar acciones adicionales después del envío
   };
 
+  // Muestra un loader si los mensajes están en proceso de carga
   if (loadingMessages) {
     return <Loader />;
   }
 
   return (
     <div className="pageContainer">
+      {/* Información introductoria de contacto */}
       <div>
         <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto1" })}</p>
         <p className="ti-20p">
@@ -48,12 +70,18 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
         </p>
         <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto4" })}</p>
       </div>
+
+      {/* Formulario de contacto */}
       <div className={styles.formContainer}>
         <Form onSubmit={handleFormSubmit} />
       </div>
+
+      {/* Información legal */}
       <div>
         <LegalInfo />
       </div>
+
+      {/* Información adicional de contacto y enlaces de email */}
       <div>
         <p className="ti-20p">
           {intl.formatMessage({ id: "contacto_Texto4_1" })}
@@ -63,12 +91,16 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
           {intl.formatMessage({ id: "contacto_Texto4_2" })}
         </p>
       </div>
+
+      {/* Localizaciones de las sedes del negocio */}
       <div>
         <Localization localizationName="san-bernardo" />
         <Localization localizationName="bravo-murillo" />
         <Localization localizationName="reina-victoria" />
         <Localization localizationName="arenal" />
       </div>
+
+      {/* Botón de desplazamiento hacia arriba */}
       <div>
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollTop">
@@ -80,6 +112,7 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
   );
 };
 
+// Define `pageTitleText` como una propiedad estática del componente `ContactPage`
 ContactPage.pageTitleText = "contacto";
 
-export default ContactPage;
+export default ContactPage; // Exporta el componente para su uso en la aplicación

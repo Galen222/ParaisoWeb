@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+// components/Footer.tsx
+
+import React from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import useDeviceType from "../hooks/useDeviceType";
@@ -6,25 +8,43 @@ import { useMenu } from "../contexts/MenuContext";
 import Loader from "../components/Loader";
 import styles from "../styles/Footer.module.css";
 
+/**
+ * Propiedades para el componente Footer.
+ * @property {boolean} loadingMessages - Indica si los mensajes se están cargando, mostrando un loader en su lugar.
+ */
 interface FooterProps {
   loadingMessages: boolean;
 }
 
+/**
+ * Componente Footer
+ *
+ * Muestra el pie de página con enlaces a páginas de políticas y un mensaje de derechos reservados.
+ * Detecta si el dispositivo es móvil para ajustar el diseño y cierra el menú móvil cuando se hace clic en los enlaces.
+ *
+ * @component
+ * @param {FooterProps} props - Propiedades del componente Footer.
+ * @returns {JSX.Element} Pie de página con enlaces y loader opcional.
+ */
 const Footer: React.FC<FooterProps> = ({ loadingMessages }) => {
-  const intl = useIntl();
+  const intl = useIntl(); // Hook para obtener mensajes localizados
 
-  const deviceType = useDeviceType();
-  const { closeMobileMenu } = useMenu();
+  const deviceType = useDeviceType(); // Detecta el tipo de dispositivo
+  const { closeMobileMenu } = useMenu(); // Cierra el menú móvil si está abierto
 
-  const isMobile = deviceType === "mobile";
+  const isMobile = deviceType === "mobile"; // Determina si el dispositivo es móvil
 
-  // Función para cerrar el menú móvil al hacer clic en los enlaces, si está en móvil
+  /**
+   * Función para manejar el clic en los enlaces.
+   * Si el dispositivo es móvil, cierra el menú al hacer clic en cualquier enlace.
+   */
   const handleLinkClick = () => {
     if (isMobile) {
       closeMobileMenu();
     }
   };
 
+  // Enlaces de las políticas legales
   const links = (
     <>
       <Link href="/aviso-legal" className={styles.link} onClick={handleLinkClick}>
@@ -44,16 +64,20 @@ const Footer: React.FC<FooterProps> = ({ loadingMessages }) => {
   return (
     <footer className={styles.footer}>
       {loadingMessages ? (
+        // Si los mensajes están cargando, muestra un loader
         <div>
           <Loader className={styles.footerLoader} />
         </div>
       ) : (
         <div>
           <p>
+            {/* Muestra los derechos reservados y el año actual */}
             {intl.formatMessage({ id: "Footer_Rights" }, { year: new Date().getFullYear() })}
             {!isMobile && " | "}
+            {/* Muestra los enlaces solo si no es móvil */}
             {!isMobile && links}
           </p>
+          {/* Muestra los enlaces en una nueva línea si es móvil */}
           {isMobile && <p>{links}</p>}
         </div>
       )}

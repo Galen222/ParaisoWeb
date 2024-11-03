@@ -1,4 +1,4 @@
-// src/components/shareLink.tsx
+// src/components/ShareLink.tsx
 
 import React from "react";
 import { useIntl } from "react-intl";
@@ -16,13 +16,29 @@ import {
   TelegramIcon,
 } from "react-share";
 
+/**
+ * Propiedades para el componente ShareLink.
+ * @property {string} url - URL de la página o contenido a compartir.
+ * @property {string} title - Título que se muestra o envía en las opciones de compartir.
+ */
 interface ShareLinkProps {
   url: string;
   title: string;
 }
 
+/**
+ * Componente ShareLink
+ *
+ * Renderiza una serie de botones de redes sociales y correo electrónico para compartir
+ * una URL específica con un título. Incluye opciones de compartir en Twitter, Facebook,
+ * WhatsApp, Telegram y Email.
+ *
+ * @component
+ * @param {ShareLinkProps} props - Propiedades del componente ShareLink.
+ * @returns {JSX.Element} Botones de redes sociales para compartir un enlace.
+ */
 const ShareLink: React.FC<ShareLinkProps> = ({ url, title }) => {
-  const intl = useIntl(); // Inicializar intl
+  const intl = useIntl(); // Hook para obtener mensajes localizados
 
   return (
     <div className="text-end d-inline-flex align-items-center ptl-3">
@@ -31,7 +47,7 @@ const ShareLink: React.FC<ShareLinkProps> = ({ url, title }) => {
         <XIcon size={32} round={true} className={Styles.icon} />
       </TwitterShareButton>
 
-      {/* Botón para compartir en Facebook con URL y hashtag */}
+      {/* Botón para compartir en Facebook con URL y hashtag generado a partir del título */}
       <FacebookShareButton url={url} hashtag={`#${title.replace(/\s+/g, "")}`}>
         <FacebookIcon size={32} round={true} className={Styles.icon} />
       </FacebookShareButton>
@@ -41,7 +57,7 @@ const ShareLink: React.FC<ShareLinkProps> = ({ url, title }) => {
         <WhatsappIcon size={32} round={true} className={Styles.icon} />
       </WhatsappShareButton>
 
-      {/* Botón para compartir en Telegram */}
+      {/* Botón para compartir en Telegram con título y URL */}
       <TelegramShareButton url={url} title={title}>
         <TelegramIcon size={32} round={true} className={Styles.icon} />
       </TelegramShareButton>

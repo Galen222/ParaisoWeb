@@ -1,4 +1,4 @@
-// frontend/src/pages/blog/[slug].tsx
+// pages/blog/[slug].tsx
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -7,41 +7,64 @@ import { useIntl } from "react-intl";
 import Loader from "../../components/Loader";
 import { useFetchBlogDetails } from "../../hooks/useFetchBlogDetails";
 import useScrollToTop from "../../hooks/useScrollToTop";
+import { useVisitedPageTracking } from "../../hooks/useVisitedPageTracking";
+import { useVisitedPageTrackingGA } from "../../hooks/useTrackingGA";
 import ReactMarkdown from "react-markdown";
 import errorStyles from "../../styles/error.module.css";
 import blogDetailsStyles from "../../styles/blogDetails.module.css";
 import type { ComponentType } from "react";
-import ShareLink from "../../components/shareLink";
+import ShareLink from "../../components/ShareLink";
 import { useHandleLanguageChange } from "../../hooks/useHandleLanguageChange"; // Nuevo hook
 
+/**
+ * Propiedades para el componente BlogDetailsPage.
+ * @property {boolean} loadingMessages - Indica si los mensajes de la página están cargando.
+ */
 interface BlogDetailsPageProps {
   loadingMessages: boolean;
 }
 
+/**
+ * Tipo extendido de componente para BlogDetailsPage con una propiedad opcional `pageTitleText`.
+ */
 type BlogDetailsPageComponent = ComponentType<BlogDetailsPageProps> & { pageTitleText?: string };
 
+/**
+ * Componente para la página de detalles de un blog.
+ * Muestra el contenido de una publicación específica, permite compartir la publicación,
+ * y realiza el seguimiento del cambio de idioma.
+ *
+ * @param {BlogDetailsPageProps} props - Propiedades para el componente BlogDetailsPage.
+ * @returns {JSX.Element} Página de detalles de la publicación del blog.
+ */
 const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDetailsPageProps) => {
   const router = useRouter();
   const { slug } = router.query;
   const intl = useIntl();
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
-  const [isPushingBack, setIsPushingBack] = useState(false); // Estado para animaciones
+  const [isPushingBack, setIsPushingBack] = useState(false); // Estado para animaciones del botón de regreso
 
-  // Usa el hook para obtener los detalles del post
+  useVisitedPageTracking("blog-noticia");
+  useVisitedPageTrackingGA("blog-noticia");
+
+  // Usa el hook para obtener los detalles de la publicación
   const { data: blogDetails, loadingBlogDetails, error } = useFetchBlogDetails(slug as string);
 
   // Usa el hook para manejar el cambio de idioma
   useHandleLanguageChange(blogDetails);
 
+  /**
+   * Maneja la animación del botón de regreso.
+   */
   const handleBack = async () => {
     setIsPushingBack(true);
   };
 
   if (loadingMessages || loadingBlogDetails) {
-    return <Loader />;
+    return <Loader />; // Muestra un loader mientras los mensajes o datos están cargando
   }
 
-  const imageFileName = "/images/web/error.png";
+  const imageFileName = "/images/web/error.png"; // Imagen de error por defecto
 
   if (error) {
     return (
@@ -110,6 +133,7 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
   );
 };
 
+// Título de la página
 BlogDetailsPage.pageTitleText = "blog";
 
 export default BlogDetailsPage;

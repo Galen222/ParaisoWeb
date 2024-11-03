@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+// pages/about.tsx
+
+import React from "react";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
@@ -8,21 +10,36 @@ import Carousel from "../components/Carousel";
 import type { ComponentType } from "react";
 import styles from "../styles/about.module.css"; // Importa los estilos específicos para la página About
 
+/**
+ * Propiedades para el componente AboutPage.
+ * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
+ */
 interface AboutPageProps {
-  loadingMessages: boolean; // Nuevo prop para el estado de carga
+  loadingMessages: boolean;
 }
 
-// Define el tipo del componente para incluir `pageTitleText`
+/**
+ * Tipo de componente para AboutPage que incluye una propiedad opcional `pageTitleText`.
+ */
 type AboutPageComponent = ComponentType<AboutPageProps> & { pageTitleText?: string };
 
+/**
+ * Componente funcional para la página "About" de la aplicación.
+ * Muestra información sobre la empresa, incluyendo texto internacionalizado, imágenes y carruseles de imágenes.
+ * También incluye la funcionalidad para desplazarse hasta la parte superior de la página.
+ *
+ * @param {AboutPageProps} props - Propiedades del componente AboutPage.
+ * @returns {JSX.Element} Componente de la página "About".
+ */
 const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
-  const intl = useIntl(); // Inicializa el hook de internacionalización para usar en este componente
+  const intl = useIntl(); // Hook para manejar la internacionalización
+  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
 
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
-
+  // Seguimiento de visitas a la página "About" para análisis interno y Google Analytics
   useVisitedPageTracking("about");
   useVisitedPageTrackingGA("about");
 
+  // Muestra un loader si los mensajes están en proceso de carga
   if (loadingMessages) {
     return <Loader />;
   }
@@ -44,7 +61,7 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
         <p className="ti-20p">{intl.formatMessage({ id: "about_Texto2c" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "about_Texto2d" })}</p>
         <div className={styles.mobileCarousel}>
-          <Carousel carouselType="about1" />
+          <Carousel carouselType="about1" /> {/* Carrusel para dispositivos móviles */}
         </div>
       </div>
       <div className="mt-25p">
@@ -66,7 +83,7 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
           <img src="/images/about/nosotros5.png" alt={intl.formatMessage({ id: "about_Carousel_Alt5" })} className={styles.responsiveImage} />
         </div>
         <div className={styles.mobileCarousel}>
-          <Carousel carouselType="about2" />
+          <Carousel carouselType="about2" /> {/* Segundo carrusel para móviles */}
         </div>
       </div>
       <div className="mt-25p">
@@ -75,7 +92,7 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
       <div>
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollTop">
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
+            <img src="/images/web/flechaArriba.png" alt="Subir" /> {/* Botón para desplazarse hacia arriba */}
           </button>
         )}
       </div>
@@ -83,6 +100,7 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
   );
 };
 
+// Asigna un texto de título de página específico
 AboutPage.pageTitleText = "about";
 
-export default AboutPage; // Exporta el componente para ser usado en otras partes de la aplicación
+export default AboutPage; // Exporta el componente para su uso en la aplicación

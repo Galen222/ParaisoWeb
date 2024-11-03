@@ -1,13 +1,25 @@
-// src/utils/slidesData.ts
+// utils/slidesData.ts
+
 import { IntlShape } from "react-intl";
 
+/**
+ * Interfaz para representar los datos de un slide en un carrusel.
+ * Los slides pueden ser de tipo imagen o texto.
+ */
 interface Slide {
-  type: "image" | "text";
-  src?: string;
-  alt?: string;
-  content?: string;
+  type: "image" | "text"; // Tipo de slide: imagen o texto.
+  src?: string; // URL de la imagen (opcional si es tipo "text").
+  alt?: string; // Texto alternativo para la imagen (opcional).
+  content?: string; // Contenido del texto (solo para slides de tipo "text").
 }
 
+/**
+ * Genera los datos de slides para distintos carruseles en la aplicación, utilizando internacionalización
+ * para los atributos `alt` de las imágenes.
+ *
+ * @param {IntlShape} intl - Objeto de internacionalización para generar textos traducidos.
+ * @returns {Record<string, Slide[]>} - Un objeto que contiene los datos de los slides categorizados por carrusel.
+ */
 export const slidesData = (intl: IntlShape): { [key: string]: Slide[] } => ({
   inicio: [
     {

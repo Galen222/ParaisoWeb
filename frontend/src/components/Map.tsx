@@ -1,8 +1,19 @@
+// components/Map.tsx
+
 import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { useIntl } from "react-intl";
 import styles from "../styles/Map.module.css";
 
+/**
+ * Tipo de dato para una ubicación específica.
+ * @property {number} lat - Latitud de la ubicación.
+ * @property {number} lng - Longitud de la ubicación.
+ * @property {string} address - Dirección de la ubicación.
+ * @property {string} address_url - Nombre de la dirección para mostrar en el marcador.
+ * @property {string} url - Enlace directo a Google Maps para la ubicación.
+ * @property {string} telephone - Número de teléfono de la ubicación.
+ */
 type Location = {
   lat: number;
   lng: number;
@@ -12,10 +23,15 @@ type Location = {
   telephone: string;
 };
 
+/**
+ * Tipo de dato para un objeto que contiene múltiples ubicaciones.
+ * La clave es el identificador único de la ubicación.
+ */
 type Locations = {
   [key: string]: Location;
 };
 
+// Lista de ubicaciones para los diferentes puntos de contacto
 const locations: Locations = {
   "san-bernardo": {
     lat: 40.42182213478454,
@@ -51,21 +67,38 @@ const locations: Locations = {
   },
 };
 
+/**
+ * Propiedades para el componente MapComponent.
+ * @property {keyof Locations} locationKey - Clave que identifica la ubicación a mostrar.
+ * @property {string} mapLocale - Código de idioma para la localización del mapa.
+ */
 type MapProps = {
   locationKey: keyof Locations;
   mapLocale: string;
 };
 
+/**
+ * Componente MapComponent
+ *
+ * Renderiza un mapa de Google Maps con un marcador para una ubicación específica,
+ * basada en la clave `locationKey`. Proporciona un `InfoWindow` que muestra detalles
+ * de la ubicación al hacer clic en el marcador.
+ *
+ * @component
+ * @param {MapProps} props - Propiedades del componente MapComponent.
+ * @returns {JSX.Element} Mapa de Google Maps con marcador e información de la ubicación.
+ */
 const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
   const intl = useIntl();
-  const mapRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<google.maps.Map>();
-  const infoWindowRef = useRef<google.maps.InfoWindow>();
-  const location = locations[locationKey];
-  const [currentLocale, setCurrentLocale] = useState(intl.locale);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
+  const mapRef = useRef<HTMLDivElement>(null); // Referencia para el contenedor del mapa
+  const mapInstanceRef = useRef<google.maps.Map>(); // Referencia para la instancia del mapa
+  const infoWindowRef = useRef<google.maps.InfoWindow>(); // Referencia para el InfoWindow
+  const location = locations[locationKey]; // Ubicación seleccionada
+  const [currentLocale, setCurrentLocale] = useState(intl.locale); // Estado para el idioma actual
+  const [isLoaded, setIsLoaded] = useState(false); // Indica si el mapa se ha cargado
+  const [loadError, setLoadError] = useState<string | null>(null); // Estado para errores de carga
 
+  // Carga el API de Google Maps y configura el idioma
   useEffect(() => {
     const loader = new Loader({
       apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
@@ -77,13 +110,14 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
     loader
       .load()
       .then(() => {
-        setIsLoaded(true);
+        setIsLoaded(true); // Marca el estado como cargado
       })
       .catch((err) => {
-        setLoadError(err.message);
+        setLoadError(err.message); // Guarda el mensaje de error
       });
   }, [mapLocale]);
 
+  // Inicializa el mapa y el marcador al cargar el mapa
   useEffect(() => {
     if (isLoaded && mapRef.current && !mapInstanceRef.current) {
       mapInstanceRef.current = new google.maps.Map(mapRef.current, {
@@ -96,18 +130,23 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
     }
   }, [isLoaded, location]);
 
+  // Actualiza el idioma de localización si cambia
   useEffect(() => {
     if (currentLocale !== intl.locale) {
       setCurrentLocale(intl.locale);
     }
   }, [intl.locale]);
 
+  // Recarga el marcador si cambia el idioma
   useEffect(() => {
     if (mapInstanceRef.current) {
       loadMarker();
     }
   }, [currentLocale]);
 
+  /**
+   * Carga el marcador en el mapa, mostrando un InfoWindow con detalles al hacer clic.
+   */
   const loadMarker = async () => {
     const { AdvancedMarkerElement } = (await google.maps.importLibrary("marker")) as any;
     const marker = new AdvancedMarkerElement({
@@ -116,6 +155,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
       title: location.address_url,
     });
 
+    // Contenido del InfoWindow en formato HTML
     const contentString = `<div class="fw-bold">
       <h5>Paraíso del Jamón</h5>
       <p>${location.address} ${intl.formatMessage({ id: "Map_Marker_Pais" })}</p>
@@ -140,6 +180,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
       });
     }
 
+    // Agrega un evento al marcador para abrir el InfoWindow al hacer clic
     marker.addListener("click", () => {
       if (infoWindowRef.current && mapInstanceRef.current) {
         infoWindowRef.current.open({

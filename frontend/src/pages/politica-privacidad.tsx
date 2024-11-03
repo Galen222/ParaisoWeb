@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+// pages/politica-privacidad.tsx
+
+import React, { useState } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
@@ -7,34 +9,62 @@ import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/politica-privacidad.module.css";
 
+/**
+ * Interfaz para las propiedades de la página de Política de Privacidad.
+ */
 interface PoliticaPrivacidadPageProps {
   loadingMessages: boolean;
 }
 
+/**
+ * Componente que representa la página de Política de Privacidad.
+ *
+ * @param {PoliticaPrivacidadPageProps} props - Las propiedades del componente.
+ * @param {boolean} props.loadingMessages - Indica si los mensajes están cargando.
+ * @returns {JSX.Element} El componente de la página de Política de Privacidad.
+ */
 const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps) => {
   const intl = useIntl();
+
+  /**
+   * Estado para indicar si se está cargando algún proceso adicional.
+   */
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Hooks para manejar la visibilidad del botón de scroll y la acción de desplazarse hacia arriba.
+   */
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
 
+  /**
+   * Hooks para el seguimiento de la página visitada.
+   */
   useVisitedPageTracking("politica-privacidad");
   useVisitedPageTrackingGA("politica-privacidad");
 
+  /**
+   * Muestra el cargador mientras se están cargando los mensajes.
+   */
   if (loadingMessages) {
     return <Loader />;
   }
 
   return (
     <div className="pageContainer">
+      {/* Título principal de la página */}
       <div>
         <h1 className="text-center">{intl.formatMessage({ id: "politicaPrivacidad_Principal_Titulo" })}</h1>
       </div>
+
+      {/* Sección principal de la política de privacidad */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Principal_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Principal_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Principal_Texto2" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Principal_Texto3" })}</p>
       </div>
+
+      {/* Sección de datos identificativos */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_DatosIdentificativos_Titulo" })}</h3>
         <ul className={`text-left ${styles.listas}`}>
@@ -52,6 +82,8 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
           </li>
         </ul>
       </div>
+
+      {/* Sección de principios de privacidad */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Principios_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Principios_Texto" })}</p>
@@ -62,6 +94,8 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
           <li>{intl.formatMessage({ id: "politicaPrivacidad_Principios_Texto_Punto4" })}</li>
         </ul>
       </div>
+
+      {/* Sección de datos personales */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Datos_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Datos_Texto" })}</p>
@@ -69,6 +103,8 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
           <li>{intl.formatMessage({ id: "politicaPrivacidad_Datos_Texto_Punto1" })}</li>
         </ul>
       </div>
+
+      {/* Sección de derechos de los usuarios */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Derechos_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Derechos_Texto1" })}</p>
@@ -89,6 +125,8 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
         </p>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Derechos_Texto4" })}</p>
       </div>
+
+      {/* Sección de finalidad del tratamiento de datos */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto1" })}</p>
@@ -109,7 +147,8 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
           </li>
           {/* <li>{intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto3_Punto4" })}</li> */}
         </ul>
-        {/* <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4" })}</p>
+        {/* 
+        <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4" })}</p>
         <ul className={styles.listas}>
           <li>
             <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto1_Enlace" })} target="_blank">
@@ -117,7 +156,7 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
             </a>
           </li>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto1_Enlace" })} target="_blank">
+            <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto2_Enlace" })} target="_blank">
               {intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto2" })}
             </a>
           </li>
@@ -128,8 +167,11 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
           </li>
         </ul>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto5" })}</p>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto6" })}</p> */}
+        <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto6" })}</p> 
+        */}
       </div>
+
+      {/* Sección de seguridad de los datos */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Seguridad_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Seguridad_Texto1" })}</p>
@@ -141,11 +183,15 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
           {intl.formatMessage({ id: "politicaPrivacidad_Seguridad_Texto2_3" })}
         </p>
       </div>
+
+      {/* Sección de contenido de la política de privacidad */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Contenido_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Contenido_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Contenido_Texto2" })}</p>
       </div>
+
+      {/* Sección de política de cookies */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_PoliticaCookies_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_PoliticaCookies_Texto1" })}</p>
@@ -157,6 +203,8 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
           {intl.formatMessage({ id: "politicaPrivacidad_PoliticaCookies_Texto2_3" })}
         </p>
       </div>
+
+      {/* Sección de legitimación para el tratamiento de datos */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Legitimacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Legitimacion_Texto1" })}</p>
@@ -165,6 +213,8 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
         </ul>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Legitimacion_Texto2" })}</p>
       </div>
+
+      {/* Sección de categorías de datos personales */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Categorias_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Categorias_Texto" })}</p>
@@ -172,10 +222,14 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
           <li>{intl.formatMessage({ id: "politicaPrivacidad_Categorias_Texto_Punto1" })}</li>
         </ul>
       </div>
+
+      {/* Sección de conservación de datos */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Conservacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Conservacion_Texto" })}</p>
       </div>
+
+      {/* Sección de destinatarios de los datos */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Destinatarios_Titulo" })}</h3>
         <ul className={styles.listas}>
@@ -188,6 +242,8 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
           </li>
         </ul>
       </div>
+
+      {/* Sección de navegación y uso de cookies */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto1" })}</p>
@@ -201,15 +257,21 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
         </ul>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto3" })}</p>
       </div>
+
+      {/* Sección de veracidad de la información */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Veracidad_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Veracidad_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Veracidad_Texto2" })}</p>
       </div>
+
+      {/* Sección de aceptación de la política de privacidad */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Aceptacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Aceptacion_Texto" })}</p>
       </div>
+
+      {/* Sección de revocabilidad del consentimiento */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Revocabilidad_Titulo" })}</h3>
         <p className="ti-20p">
@@ -221,10 +283,14 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
         </p>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Revocabilidad_Texto2" })}</p>
       </div>
+
+      {/* Sección de actualización de la política de privacidad */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Actualizacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Actualizacion_Texto" })}</p>
       </div>
+
+      {/* Botón para desplazarse hacia arriba */}
       <div>
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollTop">

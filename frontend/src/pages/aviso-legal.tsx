@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+// pages/aviso-legal.tsx
+
+import React from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
@@ -7,18 +9,31 @@ import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/aviso-legal.module.css";
 
+/**
+ * Propiedades para el componente `AvisoLegalPage`.
+ * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
+ */
 interface AvisoLegalPageProps {
   loadingMessages: boolean;
 }
 
+/**
+ * Componente funcional para la página de "Aviso Legal".
+ * Muestra información legal y de privacidad, incluyendo enlaces a otras políticas.
+ *
+ * @param {AvisoLegalPageProps} props - Propiedades para el componente `AvisoLegalPage`.
+ * @returns {JSX.Element} Página de Aviso Legal.
+ */
 const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
-  const intl = useIntl();
+  const intl = useIntl(); // Hook para manejar la internacionalización
 
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de desplazamiento hacia arriba
 
+  // Seguimiento de la visita a la página "Aviso Legal" para análisis interno y Google Analytics
   useVisitedPageTracking("aviso-legal");
   useVisitedPageTrackingGA("aviso-legal");
 
+  // Muestra un loader si los mensajes están en proceso de carga
   if (loadingMessages) {
     return <Loader />;
   }
@@ -34,6 +49,8 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Principal_Texto2" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Principal_Texto3" })}</p>
       </div>
+
+      {/* Datos Identificativos */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Titulo" })}</h3>
         <ul className={`text-left ${styles.listas}`}>
@@ -51,6 +68,8 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
           </li>
         </ul>
       </div>
+
+      {/* Secciones adicionales de contenido legal */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Objeto_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Objeto_Texto" })}</p>
@@ -189,4 +208,4 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
   );
 };
 
-export default AvisoLegalPage;
+export default AvisoLegalPage; // Exporta el componente para su uso en la aplicación

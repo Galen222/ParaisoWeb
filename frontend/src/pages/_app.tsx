@@ -1,4 +1,5 @@
 // pages/_app.tsx
+
 import React from "react";
 import Head from "next/head";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -11,7 +12,6 @@ import "../styles/animateButton.css";
 import "../styles/scrollbar.css";
 import "@/styles/globals.css";
 import type { AppProps as NextAppProps } from "next/app";
-import { useRouter } from "next/router";
 import { IntlProvider } from "react-intl";
 import { ToastContainer } from "react-toastify";
 import { CookieConsentProvider } from "../contexts/CookieContext";
@@ -22,13 +22,22 @@ import Cookie from "../components/Cookie";
 import { useCookieLogic } from "../hooks/useCookieLogic";
 import Loader from "../components/Loader";
 
-// Extiende AppProps e incluye `pageTitleText` opcional
+/**
+ * Extiende `AppProps` de Next.js e incluye una propiedad opcional `pageTitleText`
+ * para definir el título de la página.
+ */
 interface CustomAppProps extends NextAppProps {
   Component: NextAppProps["Component"] & { pageTitleText?: string };
 }
 
+/**
+ * Componente principal para manejar el layout y el contexto global.
+ * Incluye proveedores de contexto, gestión de cookies y lógica de idioma.
+ *
+ * @param {CustomAppProps} props - Propiedades del componente.
+ * @returns {JSX.Element} Componente de la aplicación principal.
+ */
 function MainComponent({ Component, pageProps, router }: CustomAppProps) {
-  // Incluye `router` aquí
   const {
     locale,
     messages,
@@ -42,13 +51,13 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps) {
     handleDeclineAllCookies,
     handleAcceptAllCookies,
     mapLocale,
-  } = useCookieLogic();
+  } = useCookieLogic(); // Lógica personalizada para manejo de cookies e internacionalización
 
   if (loadingMessages) {
-    return <Loader />;
+    return <Loader />; // Muestra un loader mientras los mensajes están cargando
   }
 
-  const pageTitleText = Component.pageTitleText || "default";
+  const pageTitleText = Component.pageTitleText || "default"; // Define el título de la página si está disponible
 
   return (
     <>
@@ -85,8 +94,14 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps) {
   );
 }
 
+/**
+ * Componente de entrada principal de Next.js.
+ * Incluye el proveedor de consentimiento de cookies y renderiza `MainComponent`.
+ *
+ * @param {CustomAppProps} props - Propiedades del componente de la aplicación.
+ * @returns {JSX.Element} Componente principal de la aplicación con proveedor de cookies.
+ */
 export default function App({ Component, pageProps, router }: CustomAppProps) {
-  // Incluye `router` aquí también
   return (
     <CookieConsentProvider>
       <MainComponent Component={Component} pageProps={pageProps} router={router} />

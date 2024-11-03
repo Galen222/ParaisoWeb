@@ -1,4 +1,6 @@
-import React, { useEffect, useState } from "react";
+// pages/politica-cookies.tsx
+
+import React, { useState } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { deleteCookies } from "../utils/cookieUtils";
@@ -10,19 +12,42 @@ import useScrollToTop from "../hooks/useScrollToTop";
 import { useCookieConsent } from "../contexts/CookieContext";
 import styles from "../styles/politica-cookies.module.css";
 
+/**
+ * Interfaz para las propiedades de la página de Política de Cookies.
+ */
 interface PoliticaCookiesPageProps {
   loadingMessages: boolean;
 }
 
+/**
+ * Componente que representa la página de Política de Cookies.
+ *
+ * @param {PoliticaCookiesPageProps} props - Las propiedades del componente.
+ * @param {boolean} props.loadingMessages - Indica si los mensajes están cargando.
+ * @returns {JSX.Element} El componente de la página de Política de Cookies.
+ */
 const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
   const intl = useIntl();
+
+  /**
+   * Estado para indicar si se está ejecutando la acción de borrar cookies.
+   */
   const [isPushingDelCookies, setIsPushingDelCookies] = useState(false);
 
+  /**
+   * Hook personalizado para determinar el tipo de dispositivo.
+   */
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
 
+  /**
+   * Hooks para manejar la visibilidad del botón de scroll y la acción de desplazarse hacia arriba.
+   */
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
 
+  /**
+   * Contexto para manejar el consentimiento de cookies.
+   */
   const {
     setAcceptCookieAnalysis,
     setAcceptCookieAnalysisGoogle,
@@ -34,13 +59,26 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
     cookieConsentPersonalization,
     setCookieConsentPersonalization,
   } = useCookieConsent();
+
+  /**
+   * Estado que representa si alguna de las cookies está consentida.
+   */
   const cookiesState = cookieConsentAnalysis || cookieConsentPersonalization || cookieConsentAnalysisGoogle;
+
+  /**
+   * Hooks para el seguimiento de la página visitada.
+   */
   useVisitedPageTracking("politica-cookies");
   useVisitedPageTrackingGA("politica-cookies");
 
-  // Seguimiento del botón
+  /**
+   * Hook para el seguimiento de clics en botones a través de Google Analytics.
+   */
   const trackButtonClick = useButtonClickTrackingGA();
 
+  /**
+   * Maneja la eliminación de cookies y actualiza el estado correspondiente.
+   */
   const handleDeleteCookies = () => {
     trackButtonClick("Borrar Cookies");
     setIsPushingDelCookies(true);
@@ -58,6 +96,9 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
     );
   };
 
+  /**
+   * Tabla de cookies para dispositivos móviles.
+   */
   const mobileTable = (
     <table className="table table-dark table-striped-columns rounded-3 overflow-hidden">
       <tbody>
@@ -90,6 +131,9 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
     </table>
   );
 
+  /**
+   * Tabla de cookies para dispositivos de escritorio.
+   */
   const desktopTable = (
     <table className="table table-dark table-striped-columns rounded-3 overflow-hidden">
       <thead>
@@ -113,6 +157,7 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
     </table>
   );
 
+  // Muestra el cargador mientras se están cargando los mensajes.
   if (loadingMessages) {
     return <Loader />;
   }

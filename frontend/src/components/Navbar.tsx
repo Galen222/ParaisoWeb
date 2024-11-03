@@ -1,4 +1,4 @@
-// navbar.tsx
+// components/Navbar.tsx
 
 import React from "react";
 import Link from "next/link";
@@ -9,6 +9,13 @@ import Loader from "../components/Loader";
 import AnimatedTitle from "../components/AnimatedTitle";
 import styles from "../styles/Navbar.module.css";
 
+/**
+ * Propiedades para el componente Navbar.
+ * @property {(locale: string) => void} onLocaleChange - Función para cambiar el idioma de la aplicación.
+ * @property {boolean} loadingMessages - Indica si los mensajes están cargando.
+ * @property {boolean} cookiesModalClosed - Indica si el modal de cookies ha sido cerrado.
+ * @property {string} pageTitleText - Texto del título de la página para el componente AnimatedTitle.
+ */
 interface NavbarProps {
   onLocaleChange: (locale: string) => void;
   loadingMessages: boolean;
@@ -16,12 +23,26 @@ interface NavbarProps {
   pageTitleText: string;
 }
 
+/**
+ * Componente Navbar
+ *
+ * Renderiza la barra de navegación de la aplicación, incluyendo enlaces a varias secciones,
+ * un menú desplegable de restaurantes, selector de idioma y un título animado.
+ *
+ * @component
+ * @param {NavbarProps} props - Propiedades del componente Navbar.
+ * @returns {JSX.Element} Barra de navegación con enlaces y selección de idioma.
+ */
 const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookiesModalClosed, pageTitleText }) => {
-  const intl = useIntl();
-  const deviceType = useDeviceType();
+  const intl = useIntl(); // Hook para obtener mensajes localizados
+  const deviceType = useDeviceType(); // Detecta el tipo de dispositivo (móvil o escritorio)
   const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();
-  const isMobile = deviceType === "mobile";
+  const isMobile = deviceType === "mobile"; // Booleano que indica si es un dispositivo móvil
 
+  /**
+   * Maneja el clic en el menú desplegable de restaurantes.
+   * Si el menú de restaurantes no está abierto, lo abre.
+   */
   const handleDropdownClick = () => {
     if (!restaurantsMenu) {
       openRestaurantsMenu();
@@ -32,6 +53,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
     <nav className={styles.navbar}>
       <div className={styles.navbarTop}>
         <div className={styles.imgLogoContainer}>
+          {/* Logo que enlaza a la página principal */}
           <Link href="/" onClick={closeMobileMenu}>
             <img src="/images/navbar/imagenLogo.png" alt="Logo Paraíso Del Jamón" className={styles.imgLogo} />
           </Link>
@@ -40,6 +62,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
           <span className={styles.textLogo}>PARAISO DEL JAMON</span>
         </div>
         <div className={styles.flagContainer}>
+          {/* Ícono del menú móvil que muestra u oculta el menú al hacer clic */}
           <div className={`${styles.mobileMenuIcon} ${mobileMenu ? styles.colapseSpin : ""}`} onClick={toggleMobileMenu}>
             <div className={styles.inner}>
               <span></span>
@@ -47,6 +70,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
               <span></span>
             </div>
           </div>
+          {/* Selector de idioma con banderas */}
           <div className={styles.flags}>
             <img
               src="/images/flags/es.png"
@@ -80,15 +104,18 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
       </div>
       <div className={`${styles.navbarMenu} ${mobileMenu ? styles.showMenu : ""}`}>
         {loadingMessages ? (
+          // Muestra un loader mientras se cargan los mensajes
           <div className={styles.loaderContainer}>
             <Loader className={styles.navbarLoader} />
           </div>
         ) : (
+          // Enlaces de navegación
           <div className={styles.links}>
             <Link href="/" onClick={closeMobileMenu}>
               {intl.formatMessage({ id: "navbar_inicio" })}
             </Link>
             {!isMobile ? (
+              // Menú desplegable de restaurantes en dispositivos de escritorio
               <div className={styles.linksDropdown} onMouseEnter={openRestaurantsMenu} onMouseLeave={closeRestaurantsMenu} onClick={handleDropdownClick}>
                 <span className={styles.noLink}>{intl.formatMessage({ id: "navbar_restaurantes" })}</span>
                 <div className={`${styles.dropdown} ${restaurantsMenu ? styles.show : styles.hide}`}>
@@ -107,6 +134,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
                 </div>
               </div>
             ) : (
+              // Menú desplegable de restaurantes en dispositivos móviles
               <div className={`${styles.dropdown} ${styles.show}`}>
                 <Link href="/san-bernardo" onClick={closeMobileMenu}>
                   San Bernardo
@@ -143,6 +171,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
           </div>
         )}
       </div>
+      {/* Contenedor del título animado */}
       <div className={styles.animatedTitleContainer}>
         <AnimatedTitle key={pageTitleText} pageTitleText={pageTitleText} cookiesModalClosed={cookiesModalClosed} />
       </div>

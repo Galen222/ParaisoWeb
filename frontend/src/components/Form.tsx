@@ -1,4 +1,5 @@
-// Form.tsx
+// components/Form.tsx
+
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl";
 import { toast, Slide } from "react-toastify";
@@ -7,16 +8,32 @@ import Link from "next/link";
 import styles from "../styles/Form.module.css";
 import { submitForm, FormData as FormServiceData } from "../services/formService"; // Importa el servicio y la interfaz
 
+/**
+ * Propiedades para el componente Form.
+ * @property {function} onSubmit - Función que se ejecuta al enviar el formulario exitosamente.
+ */
 interface FormProps {
   onSubmit: () => void;
 }
 
+/**
+ * Componente Form
+ *
+ * Renderiza un formulario de contacto que permite al usuario ingresar su nombre, correo electrónico,
+ * mensaje, seleccionar el motivo de contacto, y cargar un archivo. Incluye validaciones y opciones
+ * para personalizar la interacción con las cookies y la política de privacidad.
+ *
+ * @component
+ * @param {FormProps} props - Propiedades del componente Form.
+ * @returns {JSX.Element} Formulario de contacto.
+ */
 const Form: React.FC<FormProps> = ({ onSubmit }) => {
-  const intl = useIntl();
-  const [isPushingSend, setIsPushingSend] = useState(false);
-  const [isPushingFile, setIsPushingFile] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const intl = useIntl(); // Hook para obtener mensajes localizados
+  const [isPushingSend, setIsPushingSend] = useState(false); // Estado para la animación del botón de enviar
+  const [isPushingFile, setIsPushingFile] = useState(false); // Estado para la animación del botón de subir archivo
+  const [isSubmitting, setIsSubmitting] = useState(false); // Estado de envío del formulario
 
+  // Estado del formulario, incluyendo los datos que se enviarán
   const [formData, setFormData] = useState<FormServiceData>({
     name: "",
     reason: "",
@@ -24,13 +41,21 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
     message: "",
     file: null,
   });
-  const [isValidEmail, setIsValidEmail] = useState(true);
-  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
+  const [isValidEmail, setIsValidEmail] = useState(true); // Validación del email
+  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false); // Validación del checkbox de privacidad
 
+  /**
+   * Maneja el cambio del checkbox de privacidad.
+   * @param {ChangeEvent<HTMLInputElement>} e - Evento de cambio en el checkbox de privacidad.
+   */
   const handlePrivacyCheck = (e: ChangeEvent<HTMLInputElement>) => {
     setIsPrivacyChecked(e.target.checked);
   };
 
+  /**
+   * Valida el nombre ingresado permitiendo solo letras y espacios.
+   * @param {ChangeEvent<HTMLInputElement>} e - Evento de cambio en el campo de nombre.
+   */
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     if (/^[a-zA-ZäöüÄÖÜß\s]*$/.test(value)) {
@@ -38,6 +63,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
     }
   };
 
+  /**
+   * Valida el formato del correo electrónico y actualiza el estado.
+   * @param {ChangeEvent<HTMLInputElement>} e - Evento de cambio en el campo de email.
+   */
   const handleValidateEmail = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -46,16 +75,28 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
     setFormData({ ...formData, [name]: value });
   };
 
+  /**
+   * Maneja la selección en el campo de motivo.
+   * @param {ChangeEvent<HTMLSelectElement>} e - Evento de cambio en el campo de selección de motivo.
+   */
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  /**
+   * Maneja el cambio en el campo de mensaje.
+   * @param {ChangeEvent<HTMLTextAreaElement>} e - Evento de cambio en el área de texto del mensaje.
+   */
   const handleValidateMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  /**
+   * Maneja el cambio de archivo y valida el tipo y tamaño.
+   * @param {ChangeEvent<HTMLInputElement>} e - Evento de cambio en el campo de carga de archivo.
+   */
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
@@ -91,8 +132,12 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
     }
   };
 
-  const trackButtonClick = useButtonClickTrackingGA();
+  const trackButtonClick = useButtonClickTrackingGA(); // Seguimiento del botón de envío en Google Analytics
 
+  /**
+   * Maneja el envío del formulario, incluyendo validación, envío a la API y notificación.
+   * @param {FormEvent<HTMLFormElement>} e - Evento de envío del formulario.
+   */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trackButtonClick("Enviar Formulario");
@@ -101,7 +146,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
     try {
       await submitForm(formData); // Enviar el formulario
 
-      // Éxito
+      // Notificación de éxito
       toast.success(intl.formatMessage({ id: "contacto_Formulario_Ok" }), {
         position: "top-center",
         autoClose: 4000,
@@ -112,7 +157,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
         theme: "dark",
         transition: Slide,
       });
-      // Restablecer el formulario
+      // Restablece el formulario
       setFormData({
         name: "",
         reason: "",
@@ -123,7 +168,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
       setIsPrivacyChecked(false);
       onSubmit();
     } catch (error: any) {
-      // Error
+      // Notificación de error
       toast.error(intl.formatMessage({ id: "contacto_Formulario_Error" }), {
         position: "top-center",
         autoClose: 4000,
@@ -139,6 +184,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
     }
   };
 
+  /**
+   * Verifica si el formulario está completo y todos los campos requeridos están llenos y válidos.
+   * @returns {boolean} Verdadero si el formulario está listo para enviar, falso de lo contrario.
+   */
   const CheckFormComplete = () => {
     return (
       formData.name.trim() !== "" &&
@@ -153,6 +202,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
+      {/* Campo de nombre */}
       <div>
         <h3 className="text-center">{intl.formatMessage({ id: "contacto_Titulo_Formulario" })}</h3>
         <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
@@ -167,6 +217,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
           className={`${styles.input} ${styles.nameInput}`}
         />
       </div>
+
+      {/* Campo de selección de motivo */}
       <div>
         <label htmlFor="reason">{intl.formatMessage({ id: "contacto_Motivo" })}</label>
         <select id="reason" name="reason" value={formData.reason} onChange={handleSelect} required>
@@ -181,6 +233,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
           <option value="other">{intl.formatMessage({ id: "contacto_MotivoOtro" })}</option>
         </select>
       </div>
+
+      {/* Campo de correo electrónico */}
       <div>
         <label htmlFor="email">{intl.formatMessage({ id: "contacto_Email" })}</label>
         <input
@@ -194,10 +248,14 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
           className={`${styles.input} ${isValidEmail ? styles.emailValid : styles.emailInvalid}`}
         />
       </div>
+
+      {/* Campo de mensaje */}
       <div>
         <label htmlFor="message">{intl.formatMessage({ id: "contacto_Mensaje" })}</label>
         <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
       </div>
+
+      {/* Subir archivo */}
       <div className={styles.archiveText}>
         <span>{intl.formatMessage({ id: "contacto_SubirArchivo1" })}</span>
         <span className="fs-14p">{intl.formatMessage({ id: "contacto_SubirArchivo2" })}</span>
@@ -219,6 +277,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
         </div>
         <div className={`text-center ${styles.fileNameBox}`}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
       </div>
+
+      {/* Checkbox de política de privacidad */}
       <div className={styles.customCheckbox}>
         <div className={styles.checkboxLabelContainer}>
           <span className={styles.checkboxControl} onClick={() => setIsPrivacyChecked(!isPrivacyChecked)}>
@@ -237,10 +297,12 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
           </label>
         </div>
       </div>
+
+      {/* Botón de envío */}
       <button
         type="submit"
         className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${isPushingSend ? "animate-push" : ""}`}
-        disabled={!CheckFormComplete() || isSubmitting} // Desactiva el botón si se está enviando
+        disabled={!CheckFormComplete() || isSubmitting} // Desactiva el botón si no se completa el formulario o está enviando
         onClick={() => setIsPushingSend(true)}
         onAnimationEnd={() => setIsPushingSend(false)}
       >

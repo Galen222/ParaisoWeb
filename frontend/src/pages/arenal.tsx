@@ -13,47 +13,63 @@ import Transport from "../components/Transport";
 import styles from "../styles/arenal.module.css";
 import type { ComponentType } from "react";
 
+/**
+ * Propiedades para el componente `ArenalPage`.
+ * @property {boolean} loadingMessages - Indica si los mensajes de la página están en proceso de carga.
+ * @property {string} mapLocale - Idioma del mapa, usado en el componente `Map`.
+ */
 interface ArenalPageProps {
   loadingMessages: boolean;
   mapLocale: string;
 }
 
-// Define el tipo del componente para incluir `pageTitleText`
+/**
+ * Tipo de componente para `ArenalPage` que incluye una propiedad opcional `pageTitleText`.
+ */
 type ArenalPageComponent = ComponentType<ArenalPageProps> & { pageTitleText?: string };
 
+/**
+ * Componente de la página del restaurante "Arenal".
+ * Muestra información y elementos específicos de localización, como un mapa, carrusel y detalles de transporte.
+ *
+ * @param {ArenalPageProps} props - Propiedades para el componente `ArenalPage`.
+ * @returns {JSX.Element} Página del restaurante "Arenal".
+ */
 const ArenalPage: ArenalPageComponent = ({ loadingMessages, mapLocale }) => {
-  let restaurante = "arenal";
-  const intl = useIntl();
+  const restaurante = "arenal"; // Nombre del restaurante
+  const intl = useIntl(); // Hook para la internacionalización
 
+  // Seguimiento de la visita a la página "Arenal" para análisis interno y Google Analytics
   useVisitedPageTracking(restaurante);
   useVisitedPageTrackingGA(restaurante);
 
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
-  const locationKey = restaurante;
+  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para el botón de desplazamiento
+  const locationKey = restaurante; // Clave de localización para el mapa
 
+  // Muestra un loader si los mensajes están en proceso de carga
   if (loadingMessages) {
     return <Loader />;
   }
 
   return (
     <div className="pageContainer">
-      <div>{intl.formatMessage({ id: "arenal_Texto" })}</div>
+      <div>{intl.formatMessage({ id: "arenal_Texto" })}</div> {/* Texto principal de la página */}
       <div className="mt-25p">
-        <Localization localizationName="arenal" />
+        <Localization localizationName="arenal" /> {/* Componente de localización específico para "Arenal" */}
       </div>
       <div className="mt-25p">
-        <Carousel carouselType="arenal" />
+        <Carousel carouselType="arenal" /> {/* Carrusel de imágenes para el restaurante "Arenal" */}
       </div>
       <div className="mt-25p">
-        <Transport transportName="arenal" />
+        <Transport transportName="arenal" /> {/* Componente de transporte con información sobre cómo llegar */}
       </div>
       <div className="mt-25p">
-        <Map locationKey={locationKey} mapLocale={mapLocale} />
+        <Map locationKey={locationKey} mapLocale={mapLocale} /> {/* Mapa del restaurante "Arenal" */}
       </div>
       <div>
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollTop">
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
+            <img src="/images/web/flechaArriba.png" alt="Subir" /> {/* Botón para desplazarse hacia arriba */}
           </button>
         )}
       </div>
@@ -64,4 +80,4 @@ const ArenalPage: ArenalPageComponent = ({ loadingMessages, mapLocale }) => {
 // Define `pageTitleText` como una propiedad estática del componente `ArenalPage`
 ArenalPage.pageTitleText = "arenal";
 
-export default ArenalPage;
+export default ArenalPage; // Exporta el componente para su uso en la aplicación
