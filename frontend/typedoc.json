@@ -1,9 +1,0 @@
-{
-  "entryPoints": ["src/pages", "src/components", "src/hooks", "src/contexts", "src/services", "src/locales", "src/styles", "src/types", "src/utils"],
-  "entryPointStrategy": "expand",
-  "out": "docs",
-  "exclude": ["**/node_modules/**", "**/*.test.ts", "**/*.spec.ts"],
-  "excludeExternals": true,
-  "excludePrivate": true,
-  "excludeProtected": true
-}
