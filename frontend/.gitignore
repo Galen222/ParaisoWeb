@@ -28,9 +28,28 @@ yarn-error.log*
 # local env files
 .env*.local
 
+# production env files
+.env*.production
+
 # vercel
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# .bat for quick launch
+frontdev.bat
+frontprod.bat
+frontdocs.bat
+
+# docs
+docs
+
+# PM2 launch
+# pm2 start ecosystem.config.js
+ecosystem.config.js
+
+# typedoc config
+
+typedoc.json

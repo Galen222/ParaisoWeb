@@ -1,12 +1,6 @@
 TODO.txt
-backend/.env
-frontend/.env.production
-frontend/.env.local
 backdev.bat
 backprod.bat
-frontend/frontprod.bat
-frontend/frontdev.bat
 backdocs.bat
-frontend/frontdocs.bat
+typedoc.json
 docs
-frontend/docs
