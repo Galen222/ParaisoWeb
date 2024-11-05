@@ -60,26 +60,23 @@ const Footer: React.FC<FooterProps> = ({ loadingMessages }) => {
     </>
   );
 
+  if (loadingMessages) {
+    return <Loader />; // Muestra un loader mientras los mensajes están cargando
+  }
+
   return (
     <footer className={styles.footer}>
-      {loadingMessages ? (
-        // Si los mensajes están cargando, muestra un loader
-        <div>
-          <Loader className={styles.footerLoader} />
-        </div>
-      ) : (
-        <div>
-          <p>
-            {/* Muestra los derechos reservados y el año actual */}
-            {intl.formatMessage({ id: "Footer_Rights" }, { year: new Date().getFullYear() })}
-            {!isMobile && " | "}
-            {/* Muestra los enlaces solo si no es móvil */}
-            {!isMobile && links}
-          </p>
-          {/* Muestra los enlaces en una nueva línea si es móvil */}
-          {isMobile && <p>{links}</p>}
-        </div>
-      )}
+      <div>
+        <p>
+          {/* Muestra los derechos reservados y el año actual */}
+          {intl.formatMessage({ id: "Footer_Rights" }, { year: new Date().getFullYear() })}
+          {!isMobile && " | "}
+          {/* Muestra los enlaces solo si no es móvil */}
+          {!isMobile && links}
+        </p>
+        {/* Muestra los enlaces en una nueva línea si es móvil */}
+        {isMobile && <p>{links}</p>}
+      </div>
     </footer>
   );
 };

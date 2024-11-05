@@ -22,8 +22,12 @@ interface LoaderProps {
  * @returns {JSX.Element} Indicador de carga animado.
  */
 const Loader: React.FC<LoaderProps> = ({ className }) => {
+  let loaderClasses = styles.loader;
+  if (className) {
+    loaderClasses = `${styles.loader} ${styles[className]}`;
+  }
   return (
-    <div className={`${styles.loader} ${className ? className : ""}`}>
+    <div className={loaderClasses}>
       <span className={styles.loader_element}></span>
       <span className={styles.loader_element}></span>
       <span className={styles.loader_element}></span>

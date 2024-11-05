@@ -48,6 +48,10 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
     }
   };
 
+  if (loadingMessages) {
+    return <Loader />; // Muestra un loader mientras los mensajes están cargando
+  }
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.navbarTop}>
@@ -102,73 +106,65 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
         </div>
       </div>
       <div className={`${styles.navbarMenu} ${mobileMenu ? styles.showMenu : ""}`}>
-        {loadingMessages ? (
-          // Muestra un loader mientras se cargan los mensajes
-          <div className={styles.loaderContainer}>
-            <Loader className={styles.navbarLoader} />
-          </div>
-        ) : (
-          // Enlaces de navegación
-          <div className={styles.links}>
-            <Link href="/" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "navbar_inicio" })}
-            </Link>
-            {!isMobile ? (
-              // Menú desplegable de restaurantes en dispositivos de escritorio
-              <div className={styles.linksDropdown} onMouseEnter={openRestaurantsMenu} onMouseLeave={closeRestaurantsMenu} onClick={handleDropdownClick}>
-                <span className={styles.noLink}>{intl.formatMessage({ id: "navbar_restaurantes" })}</span>
-                <div className={`${styles.dropdown} ${restaurantsMenu ? styles.show : styles.hide}`}>
-                  <Link href="/san-bernardo" onClick={closeRestaurantsMenu}>
-                    San Bernardo
-                  </Link>
-                  <Link href="/bravo-murillo" onClick={closeRestaurantsMenu}>
-                    Bravo Murillo
-                  </Link>
-                  <Link href="/reina-victoria" onClick={closeRestaurantsMenu}>
-                    Reina Victoria
-                  </Link>
-                  <Link href="/arenal" onClick={closeRestaurantsMenu}>
-                    Arenal
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              // Menú desplegable de restaurantes en dispositivos móviles
-              <div className={`${styles.dropdown} ${styles.show}`}>
-                <Link href="/san-bernardo" onClick={closeMobileMenu}>
+        <div className={styles.links}>
+          <Link href="/" onClick={closeMobileMenu}>
+            {intl.formatMessage({ id: "navbar_inicio" })}
+          </Link>
+          {!isMobile ? (
+            // Menú desplegable de restaurantes en dispositivos de escritorio
+            <div className={styles.linksDropdown} onMouseEnter={openRestaurantsMenu} onMouseLeave={closeRestaurantsMenu} onClick={handleDropdownClick}>
+              <span className={styles.noLink}>{intl.formatMessage({ id: "navbar_restaurantes" })}</span>
+              <div className={`${styles.dropdown} ${restaurantsMenu ? styles.show : styles.hide}`}>
+                <Link href="/san-bernardo" onClick={closeRestaurantsMenu}>
                   San Bernardo
                 </Link>
-                <Link href="/bravo-murillo" onClick={closeMobileMenu}>
+                <Link href="/bravo-murillo" onClick={closeRestaurantsMenu}>
                   Bravo Murillo
                 </Link>
-                <Link href="/reina-victoria" onClick={closeMobileMenu}>
+                <Link href="/reina-victoria" onClick={closeRestaurantsMenu}>
                   Reina Victoria
                 </Link>
-                <Link href="/arenal" onClick={closeMobileMenu}>
+                <Link href="/arenal" onClick={closeRestaurantsMenu}>
                   Arenal
                 </Link>
               </div>
-            )}
-            <Link href="/reservas" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "navbar_reservas" })}
-            </Link>
-            <Link href="/gastronomia" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "navbar_gastronomia" })}
-            </Link>
-            <Link href="/charcuteria" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "navbar_charcuteria" })}
-            </Link>
-            <Link href="/about" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "navbar_about" })}
-            </Link>
-            <Link href="/blog" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "navbar_blog" })}
-            </Link>
-            <Link href="/contacto" onClick={closeMobileMenu}>
-              {intl.formatMessage({ id: "navbar_contacto" })}
-            </Link>
-          </div>
-        )}
+            </div>
+          ) : (
+            // Menú desplegable de restaurantes en dispositivos móviles
+            <div className={`${styles.dropdown} ${styles.show}`}>
+              <Link href="/san-bernardo" onClick={closeMobileMenu}>
+                San Bernardo
+              </Link>
+              <Link href="/bravo-murillo" onClick={closeMobileMenu}>
+                Bravo Murillo
+              </Link>
+              <Link href="/reina-victoria" onClick={closeMobileMenu}>
+                Reina Victoria
+              </Link>
+              <Link href="/arenal" onClick={closeMobileMenu}>
+                Arenal
+              </Link>
+            </div>
+          )}
+          <Link href="/reservas" onClick={closeMobileMenu}>
+            {intl.formatMessage({ id: "navbar_reservas" })}
+          </Link>
+          <Link href="/gastronomia" onClick={closeMobileMenu}>
+            {intl.formatMessage({ id: "navbar_gastronomia" })}
+          </Link>
+          <Link href="/charcuteria" onClick={closeMobileMenu}>
+            {intl.formatMessage({ id: "navbar_charcuteria" })}
+          </Link>
+          <Link href="/about" onClick={closeMobileMenu}>
+            {intl.formatMessage({ id: "navbar_about" })}
+          </Link>
+          <Link href="/blog" onClick={closeMobileMenu}>
+            {intl.formatMessage({ id: "navbar_blog" })}
+          </Link>
+          <Link href="/contacto" onClick={closeMobileMenu}>
+            {intl.formatMessage({ id: "navbar_contacto" })}
+          </Link>
+        </div>
       </div>
       {/* Contenedor del título animado */}
       <div className={styles.animatedTitleContainer}>

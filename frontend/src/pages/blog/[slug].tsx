@@ -60,8 +60,9 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
     setIsPushingBack(true);
   };
 
+  // Muestra un loader si los mensajes o los blogs están en proceso de carga
   if (loadingMessages || loadingBlogDetails) {
-    return <Loader />; // Muestra un loader mientras los mensajes o datos están cargando
+    return <Loader className="BD" />;
   }
 
   const imageFileName = "/images/web/error.png"; // Imagen de error por defecto

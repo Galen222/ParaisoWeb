@@ -306,33 +306,6 @@
   transform: translateX(-50%) translateY(10px); /* Mantiene la posición */
 }
 
-/* Contenedor para el cargador dentro de la barra de navegación */
-.loaderContainer {
-  position: relative; /* Posicionamiento relativo para el cargador */
-  display: flex; /* Utiliza flexbox para alinear el cargador */
-  align-items: center; /* Centra verticalmente */
-  justify-content: center; /* Centra horizontalmente */
-  height: 50px; /* Altura del menú */
-  width: 100%; /* Ancho completo del contenedor del menú */
-}
-
-/* Cargador de la barra de navegación */
-.navbarLoader {
-  --point-color: white; /* Define el color de los puntos del cargador */
-  --size: 3px; /* Define el tamaño de los puntos del cargador */
-  position: absolute; /* Posiciona el cargador de manera absoluta */
-  top: 50%; /* Centra verticalmente */
-  left: 50%; /* Centra horizontalmente */
-  transform: translate(-50%, -50%); /* Ajusta la posición para centrar perfectamente */
-  width: 100%; /* Ancho completo del cargador */
-  height: 100%; /* Altura completa del cargador */
-  display: flex; /* Utiliza flexbox para alinear los puntos */
-  align-items: center; /* Centra verticalmente los puntos */
-  align-content: center; /* Centra el contenido si hay múltiples líneas */
-  justify-content: center; /* Centra horizontalmente los puntos */
-  z-index: 10; /* Asegura que el cargador esté por encima de otros elementos */
-}
-
 /* Contenedor para el título animado */
 .animatedTitleContainer {
   display: flex; /* Utiliza flexbox para alinear el contenido */

@@ -31,21 +31,6 @@
   text-decoration: underline; /* Agrega subrayado al pasar el ratón */
 }
 
-/* Contenedor para el cargador dentro del pie de página */
-.footerLoader {
-  --point-color: white; /* Define el color de los puntos del cargador */
-  --size: 3px; /* Define el tamaño de los puntos del cargador */
-  position: absolute; /* Posiciona el cargador de manera absoluta dentro del pie de página */
-  top: 50%; /* Centra verticalmente el cargador */
-  left: 50%; /* Centra horizontalmente el cargador */
-  transform: translate(-50%, -50%); /* Ajusta la posición para una alineación perfecta */
-  display: flex; /* Utiliza flexbox para alinear los puntos */
-  align-items: center; /* Centra verticalmente los puntos */
-  align-content: center; /* Centra el contenido si hay múltiples líneas */
-  justify-content: center; /* Centra horizontalmente los puntos */
-  z-index: 10; /* Asegura que el cargador esté por encima de otros elementos */
-}
-
 /* Media Queries para dispositivos tipo tablet */
 @media (max-width: 1024px) {
   .footer {

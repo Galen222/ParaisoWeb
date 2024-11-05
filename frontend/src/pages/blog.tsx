@@ -44,7 +44,7 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
 
   // Muestra un loader si los mensajes o los blogs están en proceso de carga
   if (loadingMessages || loadingBlog) {
-    return <Loader />;
+    return <Loader className="BD" />;
   }
 
   // Ruta de la imagen de error

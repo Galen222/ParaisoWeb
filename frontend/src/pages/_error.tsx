@@ -78,7 +78,7 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
   }, [intl]);
 
   if (loadingMessages) {
-    return <Loader />; // Muestra un loader si los mensajes están cargando
+    return <Loader />; // Muestra un loader mientras los mensajes están cargando
   }
 
   return (
