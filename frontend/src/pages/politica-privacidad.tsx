@@ -151,17 +151,17 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4" })}</p>
         <ul className={styles.listas}>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto1_Enlace" })} target="_blank">
+            <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto1_Enlace" })} target="_blank" rel="noopener noreferrer">
               {intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto1" })}
             </a>
           </li>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto2_Enlace" })} target="_blank">
+            <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto2_Enlace" })} target="_blank" rel="noopener noreferrer">
               {intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto2" })}
             </a>
           </li>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto3_Enlace" })} target="_blank">
+            <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto3_Enlace" })} target="_blank" rel="noopener noreferrer">
               {intl.formatMessage({ id: "politicaPrivacidad_Finalidad_Texto4_Punto3" })}
             </a>
           </li>
@@ -177,7 +177,12 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Seguridad_Texto1" })}</p>
         <p className="ti-20p">
           {intl.formatMessage({ id: "politicaPrivacidad_Seguridad_Texto2_1" })}
-          <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Seguridad_Texto2_2_Enlace" })} target="_blank">
+          <a
+            className={styles.link}
+            href={intl.formatMessage({ id: "politicaPrivacidad_Seguridad_Texto2_2_Enlace" })}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             {intl.formatMessage({ id: "politicaPrivacidad_Seguridad_Texto2_2" })}
           </a>
           {intl.formatMessage({ id: "politicaPrivacidad_Seguridad_Texto2_3" })}
@@ -235,7 +240,12 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
         <ul className={styles.listas}>
           <li>
             {intl.formatMessage({ id: "politicaPrivacidad_Destinatarios_Punto1_1" })}
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Destinatarios_Punto1_2_Enlace" })} target="_blank">
+            <a
+              className={styles.link}
+              href={intl.formatMessage({ id: "politicaPrivacidad_Destinatarios_Punto1_2_Enlace" })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {intl.formatMessage({ id: "politicaPrivacidad_Destinatarios_Punto1_2" })}
             </a>
             {intl.formatMessage({ id: "politicaPrivacidad_Destinatarios_Punto1_3" })}
@@ -250,7 +260,12 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto2" })}</p>
         <ul className={styles.listas}>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto2_Punto1_Enlace" })} target="_blank">
+            <a
+              className={styles.link}
+              href={intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto2_Punto1_Enlace" })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               {intl.formatMessage({ id: "politicaPrivacidad_Navegacion_Texto2_Punto1" })}
             </a>
           </li>
