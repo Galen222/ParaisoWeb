@@ -27,24 +27,6 @@
   align-items: center; /* Centra el contenido verticalmente */
 }
 
-/* Ajustes de los puntos del carrusel Slick */
-.slick-dots {
-  bottom: 30px; /* Posiciona los puntos a 30 píxeles desde el fondo */
-  color: var(--text_color); /* Color de los puntos marrón oscuro */
-}
-
-/* Cambiar el color de las flechas del carrusel Slick */
-.slick-prev,
-.slick-next {
-  color: var(--text_color); /* Color de las flechas marrón oscuro */
-}
-
-/* Asegura que las flechas del carrusel Slick sean del color correcto */
-.slick-prev::before,
-.slick-next::before {
-  color: var(--text_color); /* Color de las flechas marrón oscuro */
-}
-
 /* Estilos responsivos para dispositivos móviles */
 @media (max-width: 767px) {
   /* Ajustes del contenedor del carrusel en dispositivos móviles */

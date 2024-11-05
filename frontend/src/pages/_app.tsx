@@ -7,12 +7,14 @@ import "react-toastify/dist/ReactToastify.css"; // Estilos de React-Toastify
 import "@/styles/toastify.css"; // Estilos personalizados de React-Toastify
 import "slick-carousel/slick/slick.css"; // Estilos de Slick (Carousel)
 import "slick-carousel/slick/slick-theme.css"; // Estilos de Slick (Carousel)
+import "@/styles/carousel.css"; // Estilos personalizados de Slick (Carousel)
 import "animate.css"; // Estilos de la libreria de animación
 import "@/styles/fonts.css"; // Estilos de fuentes añadidas
 import "@/styles/animateButton.css"; // Estilos de animación de botones
 import "@/styles/scrollbar.css"; // Estilos de la barra de scroll del navegador
 import "@/styles/scrollToTop.css"; // Estilos del botón de scroll de las páginas
 import "@/styles/globals.css"; // Estilos globales
+
 import type { AppProps as NextAppProps } from "next/app";
 import { IntlProvider } from "react-intl";
 import { ToastContainer } from "react-toastify";
