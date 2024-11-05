@@ -1,5 +1,3 @@
-# backend/app/routers/charcuteria.py
-
 """
 Router para manejar los productos de charcutería.
 """
@@ -21,12 +19,12 @@ async def get_charcuteria_products(
     token_verification: None = Depends(verify_token)  # Verifica el token temporal
 ):
     """
-    Obtiene una lista de productos de charcutería filtrados por idioma.
+    Obtiene una lista de productos de charcutería filtrados por idioma,
+    ordenados por categoría y luego por nombre en orden alfabético.
 
     Args:
         idioma (str, optional): Idioma de los productos. Por defecto "es".
         db (AsyncSession): Sesión de base de datos.
-        token_verification (None): Resultado de la verificación del token.
 
     Raises:
         HTTPException: En caso de errores en la consulta.
@@ -35,9 +33,11 @@ async def get_charcuteria_products(
         List[schemas.Charcuteria]: Lista de productos de charcutería.
     """
     try:
-        # Modificar la consulta para filtrar por idioma
+        # Consulta SQL modificada para ordenar por categoría y luego por nombre alfabéticamente
         result = await db.execute(
-            select(models.Charcuteria).where(models.Charcuteria.idioma == idioma)
+            select(models.Charcuteria)
+            .where(models.Charcuteria.idioma == idioma)
+            .order_by(models.Charcuteria.categoria.asc(), models.Charcuteria.nombre.asc())
         )
         products = result.scalars().all()
         return products

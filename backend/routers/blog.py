@@ -20,7 +20,8 @@ async def get_blog_posts(
     token_verification: None = Depends(verify_token)  # Verifica el token temporal
 ):
     """
-    Obtiene una lista de publicaciones de blog filtradas por idioma.
+    Obtiene una lista de publicaciones de blog filtradas por idioma y 
+    ordenadas por la fecha más reciente primero.
 
     Args:
         idioma (str, optional): Idioma de las publicaciones. Por defecto "es".
@@ -35,7 +36,12 @@ async def get_blog_posts(
     """
     try:
         result = await db.execute(
-            select(models.Blog).where(models.Blog.idioma == idioma)
+            select(models.Blog)
+            .where(models.Blog.idioma == idioma)
+            .order_by(
+                models.Blog.fecha_actualizacion.desc().nullslast(),  # Ordenar por fecha de actualización
+                models.Blog.fecha_publicacion.desc()                 # Si no hay fecha de actualización, ordenar por fecha de publicación
+            )
         )
         return result.scalars().all()
     except Exception as e:
