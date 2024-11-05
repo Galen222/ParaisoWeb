@@ -1,7 +1,7 @@
 // components/Loader.tsx
 
 import React from "react";
-import styles from "../styles/Loader.module.css";
+import styles from "../styles/components/Loader.module.css";
 
 /**
  * Propiedades para el componente Loader.
@@ -14,11 +14,10 @@ interface LoaderProps {
 /**
  * Componente Loader
  *
- * Renderiza un componente de carga (loader) animado, ideal para indicar a los usuarios
- * que una operación está en proceso. El loader consiste en tres elementos circulares animados.
+ * Renderiza un componente de carga (loader) animado, para indicar a los usuarios que
+ * una operación está en proceso. El loader consiste en tres elementos circulares animados.
  * Se puede pasar una clase opcional para modificar el estilo.
  *
- * @component
  * @param {LoaderProps} props - Propiedades del componente Loader.
  * @returns {JSX.Element} Indicador de carga animado.
  */

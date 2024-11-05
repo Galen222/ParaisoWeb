@@ -1,17 +1,17 @@
 // pages/reina-victoria.tsx
 
 import React from "react";
-import { useIntl } from "react-intl";
-import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import type { ComponentType } from "react";
 import Loader from "../components/Loader";
-import useScrollToTop from "../hooks/useScrollToTop";
 import Map from "../components/Map";
 import Carousel from "../components/Carousel";
 import Localization from "../components/Localization";
 import Transport from "../components/Transport";
-import styles from "../styles/reina-victoria.module.css";
-import type { ComponentType } from "react";
+import { useIntl } from "react-intl";
+import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import useScrollToTop from "../hooks/useScrollToTop";
+import styles from "../styles/pages/reina-victoria.module.css";
 
 /**
  * Interfaz para las propiedades de la página Reina Victoria.
@@ -91,7 +91,7 @@ const ReinaVictoriaPage: ReinaVictoriaPageComponent = ({ loadingMessages, mapLoc
       {/* Botón para desplazarse hacia arriba cuando es visible */}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

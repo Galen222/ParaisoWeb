@@ -2,12 +2,12 @@
 
 import React from "react";
 import Link from "next/link";
+import Loader from "../components/Loader";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import styles from "../styles/aviso-legal.module.css";
+import styles from "../styles/pages/aviso-legal.module.css";
 
 /**
  * Propiedades para el componente `AvisoLegalPage`.
@@ -199,7 +199,7 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
       </div>
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

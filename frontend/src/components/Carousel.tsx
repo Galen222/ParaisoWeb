@@ -4,7 +4,7 @@ import React from "react";
 import Slider from "react-slick";
 import { useIntl } from "react-intl";
 import { slidesData } from "../utils/slidesData";
-import styles from "../styles/Carousel.module.css";
+import styles from "../styles/components/Carousel.module.css";
 
 /**
  * Interface para definir las propiedades de cada diapositiva.
@@ -36,7 +36,6 @@ interface CarouselProps {
  * Cada diapositiva puede ser de tipo "imagen" o "texto", y el carrusel se configura
  * para deslizarse automáticamente.
  *
- * @component
  * @param {CarouselProps} props - Propiedades para el componente Carousel.
  * @returns {JSX.Element} Carrusel de diapositivas.
  */

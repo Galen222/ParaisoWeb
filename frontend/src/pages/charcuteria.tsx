@@ -1,14 +1,14 @@
 // pages/charcuteria.tsx
 
 import React, { useState, useEffect } from "react";
+import type { ComponentType } from "react";
+import Loader from "../components/Loader";
 import { useFetchCharcuteria } from "../hooks/useFetchCharcuteria";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import type { ComponentType } from "react";
-import CharcuteriaStyles from "../styles/charcuteria.module.css";
-import errorStyles from "../styles/error.module.css";
+import errorStyles from "../styles/pages/error.module.css";
+import styles from "../styles/pages/charcuteria.module.css";
 
 /**
  * Propiedades para el componente `CharcuteriaPage`.
@@ -74,13 +74,13 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
   }
 
   return (
-    <div className={CharcuteriaStyles.charcuteriaContainer}>
-      <div className={CharcuteriaStyles.content}>
+    <div className={styles.charcuteriaContainer}>
+      <div className={styles.content}>
         {/* Mapeo de los productos de charcutería en tarjetas */}
         {products?.map((product) => (
-          <div className={CharcuteriaStyles.card} key={product.id_producto}>
+          <div className={styles.card} key={product.id_producto}>
             <div
-              className={CharcuteriaStyles.cardInner}
+              className={styles.cardInner}
               onClick={(e) => {
                 // Habilita el flip al hacer clic solo en dispositivos pequeños
                 if (isClickFlipEnabled) {
@@ -90,16 +90,16 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
               }}
             >
               {/* Lado frontal de la tarjeta con imagen y nombre del producto */}
-              <div className={CharcuteriaStyles.front} style={{ backgroundImage: `url(${product.imagen_url})` }}>
+              <div className={styles.front} style={{ backgroundImage: `url(${product.imagen_url})` }}>
                 <p>{product.nombre}</p>
-                {product.categoria && <p className={CharcuteriaStyles.category}>{product.categoria}</p>}
+                {product.categoria && <p className={styles.category}>{product.categoria}</p>}
               </div>
               {/* Lado posterior de la tarjeta con descripción del producto */}
-              <div className={CharcuteriaStyles.back}>
+              <div className={styles.back}>
                 <div>
-                  <p className={CharcuteriaStyles.productName}>{product.nombre}</p>
-                  {product.categoria && <p className={CharcuteriaStyles.category}>{product.categoria}</p>}
-                  <p className={CharcuteriaStyles.descripcion}>{product.descripcion}</p>
+                  <p className={styles.productName}>{product.nombre}</p>
+                  {product.categoria && <p className={styles.category}>{product.categoria}</p>}
+                  <p className={styles.descripcion}>{product.descripcion}</p>
                 </div>
               </div>
             </div>
@@ -109,7 +109,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
       {/* Botón de desplazamiento hacia arriba */}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

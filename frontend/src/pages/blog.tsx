@@ -2,15 +2,14 @@
 
 import React from "react";
 import Link from "next/link";
-import { useFetchBlog } from "../hooks/useFetchBlog";
-import { BlogPost } from "../services/blogService";
+import type { ComponentType } from "react";
 import Loader from "../components/Loader";
-import useScrollToTop from "../hooks/useScrollToTop";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import type { ComponentType } from "react";
-import errorStyles from "../styles/error.module.css";
-import BlogStyles from "../styles/blog.module.css";
+import { useFetchBlog } from "../hooks/useFetchBlog";
+import useScrollToTop from "../hooks/useScrollToTop";
+import errorStyles from "../styles/pages/error.module.css";
+import styles from "../styles/pages/blog.module.css";
 
 /**
  * Propiedades para el componente `BlogPage`.
@@ -64,15 +63,15 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
   }
 
   return (
-    <div className={BlogStyles.blogContainer}>
-      <div className={BlogStyles.content}>
+    <div className={styles.blogContainer}>
+      <div className={styles.content}>
         {blogs?.map((blog) => (
-          <Link className={BlogStyles.blogLink} href={`/blog/${blog.slug}`} key={blog.id_noticia} passHref>
-            <div className={BlogStyles.blogCard}>
-              <div className={BlogStyles.imageContainer}>
-                <img src={blog.imagen_url} alt={blog.titulo} className={BlogStyles.blogImage} />
+          <Link className={styles.blogLink} href={`/blog/${blog.slug}`} key={blog.id_noticia} passHref>
+            <div className={styles.blogCard}>
+              <div className={styles.imageContainer}>
+                <img src={blog.imagen_url} alt={blog.titulo} className={styles.blogImage} />
               </div>
-              <div className={BlogStyles.blogText}>
+              <div className={styles.blogText}>
                 <p>{blog.titulo}</p>
               </div>
             </div>
@@ -82,7 +81,7 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
       {/* Botón de desplazamiento hacia arriba */}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

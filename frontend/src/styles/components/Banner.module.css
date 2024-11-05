@@ -1,0 +1,235 @@
+/* Banner.module.css */
+
+/* Contenedor común para todos los banners */
+.Container {
+  width: 100%; /* Ancho completo del contenedor padre */
+  background-size: cover; /* Asegura que la imagen de fondo cubra todo el contenedor */
+  background-position: center; /* Centra la imagen de fondo */
+  border-radius: 10px; /* Bordes redondeados de 10 píxeles */
+  margin: 40px 0; /* Márgenes superior e inferior de 40 píxeles */
+  box-sizing: border-box; /* Incluye padding y borde en el cálculo del ancho y alto */
+  display: flex; /* Define un contenedor flex */
+  justify-content: center; /* Centra los elementos horizontalmente */
+  align-items: center; /* Centra los elementos verticalmente */
+}
+
+/* Clases específicas para cada contenedor */
+.restaurantesContainer {
+  background-image: url("/images/banner/fondorestaurantes.jpg"); /* Imagen de fondo específica para Restaurantes */
+}
+
+.gastronomiaContainer {
+  background-image: url("/images/banner/fondogastronomia.jpg"); /* Imagen de fondo específica para Gastronomía */
+}
+
+.charcuteriaContainer {
+  background-image: url("/images/banner/fondocharcuteria.jpg"); /* Imagen de fondo específica para Charcutería */
+}
+
+.nosotrosContainer {
+  background-image: url("/images/banner/fondoabout.jpg"); /* Imagen de fondo específica para Nosotros */
+}
+
+.empleoContainer {
+  background-image: url("/images/banner/fondoempleo.jpg"); /* Imagen de fondo específica para Empleo */
+}
+
+/* Contenido interno de los contenedores principales */
+.FrameContent {
+  width: 100%; /* Ancho completo del contenedor */
+  max-width: 1200px; /* Ancho máximo de 1200 píxeles */
+  display: flex; /* Define un contenedor flex */
+  flex-direction: row; /* Dirección de los elementos en fila */
+  justify-content: center; /* Centra los elementos horizontalmente */
+  align-items: center; /* Centra los elementos verticalmente */
+  position: relative; /* Posicionamiento relativo para elementos internos absolutos */
+  box-sizing: border-box; /* Incluye padding y borde en el cálculo del ancho y alto */
+  padding: 30px 0; /* Padding superior e inferior de 30 píxeles */
+}
+
+/* Línea divisoria vertical */
+.FrameContent::before {
+  content: ""; /* Contenido vacío para crear el elemento pseudo */
+  position: absolute; /* Posicionamiento absoluto */
+  background-color: rgba(255, 255, 255, 0.5); /* Color de fondo semi-transparente */
+  width: 2px; /* Ancho de 2 píxeles */
+  height: 90%; /* Altura del 90% del contenedor */
+  left: 50%; /* Posiciona al 50% desde la izquierda */
+  top: 5%; /* Posiciona al 5% desde la parte superior */
+  transform: translateX(-50%); /* Centra horizontalmente la línea */
+}
+
+/* Sección de texto dentro de los contenedores */
+.textSection {
+  flex: 1; /* Ocupa igual proporción del espacio disponible */
+  display: flex; /* Define un contenedor flex */
+  flex-direction: column; /* Dirección de los elementos en columna */
+  text-align: center; /* Alinea el texto al centro */
+  justify-content: center; /* Centra los elementos verticalmente */
+  align-items: center; /* Centra los elementos horizontalmente */
+  color: white; /* Color del texto blanco */
+  text-shadow: 1px 1px 2px #4a403a, -1px -1px 2px #4a403a, 1px -1px 2px #4a403a, -1px 1px 2px #4a403a; /* Sombra del texto para mejor legibilidad */
+}
+
+/* Sección de botones dentro de los contenedores */
+.Buttons {
+  flex: 1; /* Ocupa igual proporción del espacio disponible */
+  display: flex; /* Define un contenedor flex */
+  flex-direction: column; /* Dirección de los elementos en columna */
+  gap: 15px; /* Espacio de 15 píxeles entre los elementos */
+  justify-content: center; /* Centra los elementos verticalmente */
+  align-items: center; /* Centra los elementos horizontalmente */
+}
+
+.SizeLarge {
+  height: 300px; /* Altura del contenedor para Size Large en móvil */
+}
+
+.SizeMedium {
+  height: 275px; /* Altura del contenedor para Size Medium en móvil */
+}
+
+.SizeSmall {
+  height: 250px; /* Altura del contenedor para Size Small en móvil */
+}
+
+.SizeLarge .text {
+  font-size: 40px; /* Tamaño de fuente para texto en Size Large */
+}
+
+.SizeLarge .hightLightText {
+  font-size: 46px; /* Tamaño de fuente para destacados en Size Large */
+}
+
+.SizeMedium .text {
+  font-size: 34px; /* Tamaño de fuente para texto en Size Medium */
+}
+
+.SizeMedium .hightLightText {
+  font-size: 40px; /* Tamaño de fuente para destacados en Size Medium */
+}
+
+.SizeSmall .text {
+  font-size: 30px; /* Tamaño de fuente para texto en Size Small */
+}
+
+.SizeSmall .hightLightText {
+  font-size: 36px; /* Tamaño de fuente para destacados en Size Small */
+}
+
+/* Destacados en los banners */
+.hightLightText {
+  font-weight: bold; /* Fuente en negrita */
+}
+
+/* Estilos para los botones del banner */
+.bannerButton {
+  width: 150px; /* Ancho de 150 píxeles */
+  max-width: 200px; /* Ancho máximo de 200 píxeles */
+  --bs-btn-bg: rgba(74, 64, 58, 0.8); /* Variable CSS para el color de fondo del botón */
+  --bs-btn-border-color: rgba(74, 64, 58, 0.8); /* Variable CSS para el color del borde del botón */
+  --bs-btn-hover-bg: #720b0b; /* Variable CSS para el color de fondo al pasar el ratón */
+  --bs-btn-hover-border-color: #720b0b; /* Variable CSS para el color del borde al pasar el ratón */
+  --bs-btn-active-bg: #720b0b; /* Variable CSS para el color de fondo al activar el botón */
+  --bs-btn-active-border-color: #720b0b; /* Variable CSS para el color del borde al activar el botón */
+  --bs-btn-disabled-bg: rgba(74, 64, 58, 0.8); /* Variable CSS para el color de fondo cuando está deshabilitado */
+  --bs-btn-disabled-border-color: rgba(74, 64, 58, 0.8); /* Variable CSS para el color del borde cuando está deshabilitado */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19); /* Sombra del botón para dar efecto de profundidad */
+  transform: translateZ(0); /* Optimiza el rendimiento de la animación */
+}
+
+/* Clase para invertir la dirección de los elementos flex */
+.reverse {
+  flex-direction: row-reverse; /* Invierte el orden de los elementos en fila */
+}
+
+/* Estilos para dispositivos móviles */
+@media (max-width: 767px) {
+  .FrameContent {
+    flex-direction: column; /* Cambia la dirección a columna */
+    border-top: none; /* Elimina el borde superior */
+    padding: 0; /* Elimina padding */
+  }
+
+  /* Línea divisoria horizontal */
+  .FrameContent::before {
+    width: 90%; /* Ancho de 90% */
+    height: 2px; /* Altura de 2 píxeles */
+    top: 50%; /* Posiciona al 50% desde la parte superior */
+    left: 5%; /* Posiciona al 5% desde la izquierda */
+    transform: translateY(-50%); /* Centra verticalmente la línea */
+  }
+
+  /* Ajuste de las secciones de texto y botones en móviles */
+  .textSection,
+  .Buttons {
+    flex: 0 0 50%; /* Define una base del 50% y no permite crecer o encoger */
+    display: flex; /* Define un contenedor flex */
+    flex-direction: column; /* Dirección de los elementos en columna */
+    justify-content: center; /* Centra los elementos verticalmente */
+    align-items: center; /* Centra los elementos horizontalmente */
+  }
+
+  /* Clases para botones según Buttons aplicadas solo en modo móvil */
+  .ButtonsMultiple {
+    display: grid; /* Cambia a un diseño de cuadrícula */
+    grid-template-columns: repeat(2, 1fr); /* Dos columnas de igual tamaño */
+    padding: 20px 0; /* Padding superior e inferior de 20 píxeles */
+  }
+
+  .ButtonsOne {
+    display: flex; /* Define un contenedor flex */
+    justify-content: center; /* Centra los elementos horizontalmente */
+    align-items: center; /* Centra los elementos verticalmente */
+  }
+
+  /* Ajuste de color y sombra del texto en móviles */
+  .textSection {
+    color: #4a403a; /* Cambia el color del texto a un tono marrón oscuro */
+    text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white; /* Sombra blanca para mejorar la legibilidad */
+  }
+
+  .SizeLarge .text {
+    font-size: 32px; /* Tamaño de fuente reducido a 32 píxeles */
+  }
+
+  .SizeLarge .hightLightText {
+    font-size: 38px; /* Tamaño de fuente reducido a 38 píxeles */
+  }
+
+  .SizeMedium .text,
+  .SizeSmall .text {
+    font-size: 30px; /* Tamaño de fuente reducido a 30 píxeles */
+  }
+
+  .SizeMedium .hightLightText,
+  .SizeSmall .hightLightText {
+    font-size: 36px; /* Tamaño de fuente reducido a 36 píxeles */
+  }
+
+  /* Clase para invertir la dirección de los elementos flex en móviles */
+  .reverseMobile {
+    flex-direction: column-reverse; /* Invierte la dirección a columna inversa */
+  }
+}
+
+/* Estilos para dispositivos móviles con pantallas muy pequeñas */
+@media (max-width: 385px) {
+  .SizeLarge .text {
+    font-size: 20px; /* Tamaño de fuente reducido a 20 píxeles */
+  }
+
+  .SizeLarge .hightLightText {
+    font-size: 24px; /* Tamaño de fuente reducido a 24 píxeles */
+  }
+
+  .SizeMedium .text,
+  .SizeSmall .text {
+    font-size: 18px; /* Tamaño de fuente reducido a 18 píxeles */
+  }
+
+  .SizeMedium .hightLightText,
+  .SizeSmall .hightLightText {
+    font-size: 22px; /* Tamaño de fuente reducido a 22 píxeles */
+  }
+}

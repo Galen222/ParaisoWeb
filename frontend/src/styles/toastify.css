@@ -1,0 +1,18 @@
+/* Contenedor de notificaciones Toastify */
+.Toastify__toast-container {
+  font-family: Arial, Helvetica, sans-serif; /* Fuente para las notificaciones */
+  width: 420px; /* Ancho fijo de 420 píxeles */
+}
+
+/* Estilos para las notificaciones Toastify */
+.Toastify__toast {
+  background-color: #4a403a; /* Fondo marrón oscuro para las notificaciones */
+}
+
+/* Estilos para dispositivos tipo tablet */
+@media (max-width: 1024px) {
+  /* Ajustes del contenedor de notificaciones Toastify en tablet */
+  .Toastify__toast-container {
+    width: 100%; /* Ancho completo del contenedor padre */
+  }
+}

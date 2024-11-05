@@ -1,17 +1,17 @@
 // pages/bravo-murillo.tsx
 
 import React from "react";
-import { useIntl } from "react-intl";
-import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import type { ComponentType } from "react";
 import Loader from "../components/Loader";
-import useScrollToTop from "../hooks/useScrollToTop";
 import Map from "../components/Map";
 import Carousel from "../components/Carousel";
 import Localization from "../components/Localization";
 import Transport from "../components/Transport";
+import { useIntl } from "react-intl";
+import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/bravo-murillo.module.css";
-import type { ComponentType } from "react";
 
 /**
  * Propiedades para el componente `BravoMurilloPage`.
@@ -70,7 +70,7 @@ const BravoMurilloPage: BravoMurilloPageComponent = ({ loadingMessages, mapLocal
       <div>
         {/* Botón de desplazamiento hacia arriba */}
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

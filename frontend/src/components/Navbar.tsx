@@ -7,7 +7,7 @@ import useDeviceType from "../hooks/useDeviceType";
 import { useMenu } from "../contexts/MenuContext";
 import Loader from "../components/Loader";
 import AnimatedTitle from "../components/AnimatedTitle";
-import styles from "../styles/Navbar.module.css";
+import styles from "../styles/components/Navbar.module.css";
 
 /**
  * Propiedades para el componente Navbar.
@@ -29,7 +29,6 @@ interface NavbarProps {
  * Renderiza la barra de navegación de la aplicación, incluyendo enlaces a varias secciones,
  * un menú desplegable de restaurantes, selector de idioma y un título animado.
  *
- * @component
  * @param {NavbarProps} props - Propiedades del componente Navbar.
  * @returns {JSX.Element} Barra de navegación con enlaces y selección de idioma.
  */

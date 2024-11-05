@@ -1,17 +1,17 @@
 // pages/arenal.tsx
 
 import React from "react";
-import { useIntl } from "react-intl";
-import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import type { ComponentType } from "react";
 import Loader from "../components/Loader";
-import useScrollToTop from "../hooks/useScrollToTop";
 import Map from "../components/Map";
 import Carousel from "../components/Carousel";
 import Localization from "../components/Localization";
 import Transport from "../components/Transport";
-import styles from "../styles/arenal.module.css";
-import type { ComponentType } from "react";
+import { useIntl } from "react-intl";
+import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import useScrollToTop from "../hooks/useScrollToTop";
+import styles from "../styles/pages/arenal.module.css";
 
 /**
  * Propiedades para el componente `ArenalPage`.
@@ -68,7 +68,7 @@ const ArenalPage: ArenalPageComponent = ({ loadingMessages, mapLocale }) => {
       </div>
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" /> {/* Botón para desplazarse hacia arriba */}
           </button>
         )}

@@ -80,83 +80,13 @@ body {
   max-width: 600px; /* Ancho máximo de 600 píxeles */
 }
 
-/* Botón para desplazarse al inicio de la página */
-.scrollTop {
-  position: fixed; /* Posicionamiento fijo en la ventana */
-  right: calc(25% + 20px); /* Posicionado a la derecha con cálculo dinámico */
-  bottom: 70px; /* Separación de 70 píxeles desde el fondo */
-  height: 40px; /* Altura de 40 píxeles */
-  width: 40px; /* Ancho de 40 píxeles */
-  text-align: center; /* Centra el texto horizontalmente */
-  line-height: 40px; /* Centra el texto verticalmente */
-  background: rgba(74, 64, 58, 0.5); /* Fondo semi-transparente */
-  border-radius: 20px; /* Bordes redondeados para formar un círculo */
-  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-  z-index: 6; /* Nivel de apilamiento para sobreponerse a otros elementos */
-  display: flex; /* Usa flexbox para centrar el contenido */
-  align-items: center; /* Centra verticalmente */
-  justify-content: center; /* Centra horizontalmente */
-}
-
-/* Efecto al pasar el ratón sobre el botón de desplazamiento */
-.scrollTop:hover {
-  background: #4a403a; /* Cambia el fondo a color marrón oscuro */
-}
-
-/* Estilos para la imagen dentro del botón de desplazamiento */
-.scrollTop img {
-  width: 20px; /* Ancho de la imagen ajustado a 20 píxeles */
-  height: auto; /* Mantiene la proporción de la imagen */
-}
-
-/* Contenedor de notificaciones Toastify */
-.Toastify__toast-container {
-  font-family: Arial, Helvetica, sans-serif; /* Fuente para las notificaciones */
-  width: 420px; /* Ancho fijo de 420 píxeles */
-}
-
-/* Estilos para las notificaciones Toastify */
-.Toastify__toast {
-  background-color: #4a403a; /* Fondo marrón oscuro para las notificaciones */
-}
-
-/* Ajustes de los puntos del carrusel Slick */
-.slick-dots {
-  bottom: 30px; /* Posiciona los puntos a 30 píxeles desde el fondo */
-  color: #4a403a; /* Color de los puntos marrón oscuro */
-}
-
-/* Cambiar el color de las flechas del carrusel Slick */
-.slick-prev,
-.slick-next {
-  color: #4a403a; /* Color de las flechas marrón oscuro */
-}
-
-/* Asegura que las flechas del carrusel Slick sean del color correcto */
-.slick-prev::before,
-.slick-next::before {
-  color: #4a403a; /* Color de las flechas marrón oscuro */
-}
-
 /* Estilos para dispositivos tipo tablet */
 @media (max-width: 1024px) {
   /* Ajustes del contenedor principal en tablet */
   .pageContainer {
     max-width: 100%; /* Ancho completo del contenedor padre */
     font-size: 22px; /* Aumenta el tamaño de fuente a 22 píxeles */
-    padding: 10px; /* Reduce el padding a 10 píxeles */
-  }
-
-  /* Ajustes de posición del botón de desplazamiento en tablet */
-  .scrollTop {
-    right: 20px; /* Posicionado a 20 píxeles desde la derecha */
-    bottom: 90px; /* Separación de 90 píxeles desde el fondo */
-  }
-
-  /* Ajustes del contenedor de notificaciones Toastify en tablet */
-  .Toastify__toast-container {
-    font-family: Arial, Helvetica, sans-serif; /* Fuente para las notificaciones */
-    width: 100%; /* Ancho completo del contenedor padre */
+    padding: 16px; /* Reduce el padding a 10 píxeles */
   }
 }
 
@@ -171,19 +101,5 @@ body {
   /* Elimina la indentación de texto en móvil */
   .ti-20p {
     text-indent: 0px; /* Indentación de texto eliminada */
-  }
-
-  /* Ajusta la posición de los puntos del carrusel Slick en móvil */
-  .slick-dots {
-    bottom: 15px; /* Posiciona los puntos a 15 píxeles desde el fondo */
-  }
-}
-
-/* Estilos para dispositivos móviles con pantallas muy pequeñas */
-@media (max-width: 385px) {
-  /* Ajustes de posición del botón de desplazamiento en pantallas pequeñas */
-  .scrollTop {
-    right: 20px; /* Posicionado a 20 píxeles desde la derecha */
-    bottom: 110px; /* Separación de 110 píxeles desde el fondo */
   }
 }

@@ -1,13 +1,13 @@
 // pages/politica-privacidad.tsx
 
 import React, { useState } from "react";
-import { useIntl } from "react-intl";
 import Link from "next/link";
+import Loader from "../components/Loader";
+import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import styles from "../styles/politica-privacidad.module.css";
+import styles from "../styles/pages/politica-privacidad.module.css";
 
 /**
  * Interfaz para las propiedades de la página de Política de Privacidad.
@@ -293,7 +293,7 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
       {/* Botón para desplazarse hacia arriba */}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

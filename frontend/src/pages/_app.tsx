@@ -2,15 +2,17 @@
 
 import React from "react";
 import Head from "next/head";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "react-toastify/dist/ReactToastify.css";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import "animate.css";
-import "@/styles/fonts.css";
-import "../styles/animateButton.css";
-import "../styles/scrollbar.css";
-import "@/styles/globals.css";
+import "bootstrap/dist/css/bootstrap.min.css"; // Estilos de Bootstrap
+import "react-toastify/dist/ReactToastify.css"; // Estilos de React-Toastify
+import "@/styles/toastify.css"; // Estilos personalizados de React-Toastify
+import "slick-carousel/slick/slick.css"; // Estilos de Slick (Carousel)
+import "slick-carousel/slick/slick-theme.css"; // Estilos de Slick (Carousel)
+import "animate.css"; // Estilos de la libreria de animación
+import "@/styles/fonts.css"; // Estilos de fuentes añadidas
+import "@/styles/animateButton.css"; // Estilos de animación de botones
+import "@/styles/scrollbar.css"; // Estilos de la barra de scroll del navegador
+import "@/styles/scrollToTop.css"; // Estilos del botón de scroll de las páginas
+import "@/styles/globals.css"; // Estilos globales
 import type { AppProps as NextAppProps } from "next/app";
 import { IntlProvider } from "react-intl";
 import { ToastContainer } from "react-toastify";
@@ -19,8 +21,8 @@ import { MenuProvider } from "../contexts/MenuContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cookie from "../components/Cookie";
-import { useCookieLogic } from "../hooks/useCookieLogic";
 import Loader from "../components/Loader";
+import { useCookieLogic } from "../hooks/useCookieLogic";
 
 /**
  * Extiende `AppProps` de Next.js e incluye una propiedad opcional `pageTitleText`

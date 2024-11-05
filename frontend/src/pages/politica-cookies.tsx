@@ -1,16 +1,16 @@
 // pages/politica-cookies.tsx
 
 import React, { useState } from "react";
-import { useIntl } from "react-intl";
 import Link from "next/link";
-import { deleteCookies } from "../utils/cookieUtils";
+import { useCookieConsent } from "../contexts/CookieContext";
+import Loader from "../components/Loader";
+import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
-import Loader from "../components/Loader";
 import useDeviceType from "../hooks/useDeviceType";
 import useScrollToTop from "../hooks/useScrollToTop";
-import { useCookieConsent } from "../contexts/CookieContext";
-import styles from "../styles/politica-cookies.module.css";
+import { deleteCookies } from "../utils/cookieUtils";
+import styles from "../styles/pages/politica-cookies.module.css";
 
 /**
  * Interfaz para las propiedades de la página de Política de Cookies.
@@ -294,7 +294,7 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
       </div>
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

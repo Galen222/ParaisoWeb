@@ -1,15 +1,15 @@
 // pages/index.tsx
 
 import React from "react";
+import type { ComponentType } from "react";
+import Loader from "../components/Loader";
+import Carousel from "../components/Carousel";
+import Banner from "../components/Banner";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import Carousel from "../components/Carousel";
-import Banner from "../components/Banner";
-import styles from "../styles/index.module.css";
-import type { ComponentType } from "react";
+import styles from "../styles/pages/index.module.css";
 
 /**
  * Propiedades para el componente `Home`.
@@ -67,7 +67,7 @@ const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMe
       {/* Botón para desplazarse hacia arriba */}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

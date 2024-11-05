@@ -5,7 +5,7 @@ import { useIntl } from "react-intl";
 import { toast, Slide } from "react-toastify";
 import { useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import Link from "next/link";
-import styles from "../styles/Form.module.css";
+import styles from "../styles/components/Form.module.css";
 import { submitForm, FormData as FormServiceData } from "../services/formService"; // Importa el servicio y la interfaz
 
 /**
@@ -23,7 +23,6 @@ interface FormProps {
  * mensaje, seleccionar el motivo de contacto, y cargar un archivo. Incluye validaciones y opciones
  * para personalizar la interacción con las cookies y la política de privacidad.
  *
- * @component
  * @param {FormProps} props - Propiedades del componente Form.
  * @returns {JSX.Element} Formulario de contacto.
  */

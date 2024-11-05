@@ -1,14 +1,14 @@
 // pages/about.tsx
 
 import React from "react";
+import type { ComponentType } from "react";
+import Loader from "../components/Loader";
+import Carousel from "../components/Carousel";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import Carousel from "../components/Carousel";
-import type { ComponentType } from "react";
-import styles from "../styles/about.module.css"; // Importa los estilos específicos para la página About
+import styles from "../styles/pages/about.module.css"; // Importa los estilos específicos para la página About
 
 /**
  * Propiedades para el componente AboutPage.
@@ -91,7 +91,7 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
       </div>
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" /> {/* Botón para desplazarse hacia arriba */}
           </button>
         )}

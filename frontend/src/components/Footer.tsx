@@ -6,7 +6,7 @@ import Link from "next/link";
 import useDeviceType from "../hooks/useDeviceType";
 import { useMenu } from "../contexts/MenuContext";
 import Loader from "../components/Loader";
-import styles from "../styles/Footer.module.css";
+import styles from "../styles/components/Footer.module.css";
 
 /**
  * Propiedades para el componente Footer.
@@ -22,7 +22,6 @@ interface FooterProps {
  * Muestra el pie de página con enlaces a páginas de políticas y un mensaje de derechos reservados.
  * Detecta si el dispositivo es móvil para ajustar el diseño y cierra el menú móvil cuando se hace clic en los enlaces.
  *
- * @component
  * @param {FooterProps} props - Propiedades del componente Footer.
  * @returns {JSX.Element} Pie de página con enlaces y loader opcional.
  */

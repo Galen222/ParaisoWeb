@@ -1,17 +1,17 @@
 // pages/san-bernardo.tsx
 
 import React from "react";
-import { useIntl } from "react-intl";
-import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import type { ComponentType } from "react";
 import Loader from "../components/Loader";
-import useScrollToTop from "../hooks/useScrollToTop";
 import Map from "../components/Map";
 import Carousel from "../components/Carousel";
 import Localization from "../components/Localization";
 import Transport from "../components/Transport";
-import styles from "../styles/san-bernardo.module.css";
-import type { ComponentType } from "react";
+import { useIntl } from "react-intl";
+import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import useScrollToTop from "../hooks/useScrollToTop";
+import styles from "../styles/pages/san-bernardo.module.css";
 
 /**
  * Interfaz para las propiedades del componente de la página San Bernardo.
@@ -85,7 +85,7 @@ const SanBernardoPage: SanBernardoPageComponent = ({ loadingMessages, mapLocale 
       {/* Botón para desplazarse hacia arriba, visible según el estado de scroll */}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

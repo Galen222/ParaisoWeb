@@ -1,15 +1,15 @@
 // pages/gastronomia.tsx
 
 import React, { useState } from "react";
+import type { ComponentType } from "react";
+import Loader from "../components/Loader";
+import Carousel from "../components/Carousel";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
-import Loader from "../components/Loader";
-import type { ComponentType } from "react";
 import useScrollToTop from "../hooks/useScrollToTop";
-import Carousel from "../components/Carousel";
-import styles from "../styles/gastronomia.module.css";
 import { useDownloadFile } from "../hooks/useDownloadFile";
+import styles from "../styles/pages/gastronomia.module.css";
 
 /**
  * Propiedades para el componente `GastronomiaPage`.
@@ -129,7 +129,7 @@ const GastronomiaPage: ComponentType<GastronomiaPageProps> & { pageTitleText?: s
       {/* Botón de desplazamiento hacia arriba */}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

@@ -1,14 +1,14 @@
 // pages/reservas.tsx
 
 import React from "react";
+import type { ComponentType } from "react";
+import Loader from "../components/Loader";
+import Localization from "../components/Localization";
 import { useIntl } from "react-intl"; // Importa el hook useIntl, que permite la internacionalización de la aplicación.
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import Loader from "../components/Loader";
 import useScrollToTop from "../hooks/useScrollToTop";
-import Localization from "../components/Localization";
-import type { ComponentType } from "react";
-import styles from "../styles/reservas.module.css"; // Importa estilos CSS específicos para la página de reservas.
+import styles from "../styles/pages/reservas.module.css"; // Importa estilos CSS específicos para la página de reservas.
 
 /**
  * Interfaz para las propiedades del componente de reservas.
@@ -62,7 +62,7 @@ const Reservas: ReservasPageComponent = ({ loadingMessages }: ReservasProps) => 
       {/* Botón para desplazarse hacia arriba, visible según el estado de scroll */}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

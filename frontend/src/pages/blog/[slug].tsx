@@ -2,19 +2,19 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import type { ComponentType } from "react";
+import Loader from "../../components/Loader";
+import ShareLink from "../../components/ShareLink";
+import ReactMarkdown from "react-markdown";
 import { useRouter } from "next/router";
 import { useIntl } from "react-intl";
-import Loader from "../../components/Loader";
 import { useFetchBlogDetails } from "../../hooks/useFetchBlogDetails";
 import useScrollToTop from "../../hooks/useScrollToTop";
 import { useVisitedPageTracking } from "../../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../../hooks/useTrackingGA";
-import ReactMarkdown from "react-markdown";
-import errorStyles from "../../styles/error.module.css";
-import blogDetailsStyles from "../../styles/blogDetails.module.css";
-import type { ComponentType } from "react";
-import ShareLink from "../../components/ShareLink";
-import { useHandleLanguageChange } from "../../hooks/useHandleLanguageChange"; // Nuevo hook
+import { useHandleLanguageChange } from "../../hooks/useHandleLanguageChange";
+import errorStyles from "../../styles/pages/error.module.css";
+import styles from "../../styles/pages/slug.module.css";
 
 /**
  * Propiedades para el componente BlogDetailsPage.
@@ -78,17 +78,17 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
   }
 
   return (
-    <div className={blogDetailsStyles.blogDetailsContainer}>
+    <div className={styles.blogDetailsContainer}>
       {blogDetails && (
         <div>
           <div className="mt-25p">
-            <h1 className={blogDetailsStyles.blogTitle}>{blogDetails.titulo}</h1>
+            <h1 className={styles.blogTitle}>{blogDetails.titulo}</h1>
           </div>
           <div className="mt-25p">
-            <p className={blogDetailsStyles.blogAuthor}>
+            <p className={styles.blogAuthor}>
               {intl.formatMessage({ id: "blog_details_Autor" })} {blogDetails.autor}
             </p>
-            <p className={blogDetailsStyles.blogDate}>
+            <p className={styles.blogDate}>
               {intl.formatMessage({ id: "blog_details_Publicado" })} {new Date(blogDetails.fecha_publicacion).toLocaleDateString()}
               {blogDetails.fecha_actualizacion &&
                 ` | ${intl.formatMessage({ id: "blog_details_Actualizado" })} ${new Date(blogDetails.fecha_actualizacion).toLocaleDateString()}`}
@@ -98,13 +98,13 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
             <ShareLink url={typeof window !== "undefined" ? window.location.href : ""} title={blogDetails.titulo} />
           </div>
           <div className="mt-25p">
-            <img src={blogDetails.imagen_url} alt={blogDetails.titulo} className={blogDetailsStyles.blogImage} />
+            <img src={blogDetails.imagen_url} alt={blogDetails.titulo} className={styles.blogImage} />
           </div>
-          <div className={`mt-25p ${blogDetailsStyles.blogText}`}>
+          <div className={`mt-25p ${styles.blogText}`}>
             <ReactMarkdown>{blogDetails.contenido}</ReactMarkdown>
           </div>
           <div className="mt-25p">
-            {blogDetails.imagen_url_2 && <img src={blogDetails.imagen_url_2} alt={blogDetails.titulo} className={blogDetailsStyles.blogImage} />}
+            {blogDetails.imagen_url_2 && <img src={blogDetails.imagen_url_2} alt={blogDetails.titulo} className={styles.blogImage} />}
           </div>
           <div>
             <ShareLink url={typeof window !== "undefined" ? window.location.href : ""} title={blogDetails.titulo} />
@@ -112,7 +112,7 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
           <div className="text-center mt-25p">
             <Link href="/blog">
               <button
-                className={`btn btn-outline-secondary mx-auto ${blogDetailsStyles.backButton} ${isPushingBack ? "animate-push" : ""}`}
+                className={`btn btn-outline-secondary mx-auto ${styles.backButton} ${isPushingBack ? "animate-push" : ""}`}
                 onAnimationEnd={() => setIsPushingBack(false)} // Resetea el estado de animación
                 onClick={handleBack}
               >
@@ -124,7 +124,7 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
       )}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

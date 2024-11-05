@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useIntl } from "react-intl";
-import Styles from "../styles/shareLink.module.css";
+import Styles from "../styles/components/ShareLink.module.css";
 import {
   FacebookShareButton,
   TwitterShareButton,
@@ -33,7 +33,6 @@ interface ShareLinkProps {
  * una URL específica con un título. Incluye opciones de compartir en Twitter, Facebook,
  * WhatsApp, Telegram y Email.
  *
- * @component
  * @param {ShareLinkProps} props - Propiedades del componente ShareLink.
  * @returns {JSX.Element} Botones de redes sociales para compartir un enlace.
  */

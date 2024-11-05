@@ -1,11 +1,11 @@
 // pages/404.tsx
 
 import React from "react";
+import Loader from "../components/Loader";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import Loader from "../components/Loader";
-import styles from "../styles/error.module.css";
+import styles from "../styles/pages/error.module.css";
 import type { ComponentType } from "react";
 
 /**

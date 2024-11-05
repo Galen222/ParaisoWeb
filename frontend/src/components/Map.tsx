@@ -3,7 +3,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { useIntl } from "react-intl";
-import styles from "../styles/Map.module.css";
+import styles from "../styles/components/Map.module.css";
 
 /**
  * Tipo de dato para una ubicación específica.
@@ -81,10 +81,9 @@ type MapProps = {
  * Componente MapComponent
  *
  * Renderiza un mapa de Google Maps con un marcador para una ubicación específica,
- * basada en la clave `locationKey`. Proporciona un `InfoWindow` que muestra detalles
+ * basada en la clave `locationKey`. Usa `Advanced InfoWindow` que muestra detalles
  * de la ubicación al hacer clic en el marcador.
  *
- * @component
  * @param {MapProps} props - Propiedades del componente MapComponent.
  * @returns {JSX.Element} Mapa de Google Maps con marcador e información de la ubicación.
  */
@@ -130,14 +129,14 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
     }
   }, [isLoaded, location]);
 
-  // Actualiza el idioma de localización si cambia
+  // Actualiza el idioma de localización si cambia en la web
   useEffect(() => {
     if (currentLocale !== intl.locale) {
       setCurrentLocale(intl.locale);
     }
   }, [intl.locale]);
 
-  // Recarga el marcador si cambia el idioma
+  // Recarga el marcador si cambia el idioma en la web
   useEffect(() => {
     if (mapInstanceRef.current) {
       loadMarker();

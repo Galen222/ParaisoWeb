@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { useIntl } from "react-intl"; // Hook para internacionalización
 import { NextPageContext } from "next"; // Tipo para el contexto de la página de Next.js
+import Loader from "../components/Loader";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import Loader from "../components/Loader";
-import styles from "../styles/error.module.css"; // Importa los estilos específicos para el módulo de error
+import styles from "../styles/pages/error.module.css"; // Importa los estilos específicos para el módulo de error
 
 /**
  * Interfaz para las propiedades de ErrorPage.

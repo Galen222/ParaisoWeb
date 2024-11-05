@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useIntl } from "react-intl";
-import styles from "../styles/AnimatedTitle.module.css";
+import styles from "../styles/components/AnimatedTitle.module.css";
 
 /**
  * Propiedades para el componente AnimatedTitle
@@ -21,7 +21,6 @@ interface AnimatedTitleProps {
  * Si el modal de cookies está cerrado, el título se muestra con un efecto de entrada;
  * de lo contrario, se muestra el texto estático.
  *
- * @component
  * @param {AnimatedTitleProps} props - Propiedades para el componente AnimatedTitle.
  * @returns {JSX.Element} Título animado o estático según el estado del modal de cookies.
  */

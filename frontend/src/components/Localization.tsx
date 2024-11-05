@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useIntl } from "react-intl";
-import styles from "../styles/Localization.module.css"; // Crea un archivo CSS o reutiliza uno existente
+import styles from "../styles/components/Localization.module.css"; // Crea un archivo CSS o reutiliza uno existente
 
 /**
  * Propiedades para el componente Localization.
@@ -19,7 +19,6 @@ interface LocalizationProps {
  * Muestra información localizada de contacto sobre una ubicación específica, incluyendo dirección, teléfono y horario.
  * La información se obtiene dinámicamente usando el identificador `localizationName` para adaptarse a múltiples ubicaciones.
  *
- * @component
  * @param {LocalizationProps} props - Propiedades del componente Localization.
  * @returns {JSX.Element} Información de contacto localizada para la ubicación especificada.
  */

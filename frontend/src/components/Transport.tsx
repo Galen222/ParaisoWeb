@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useIntl } from "react-intl";
-import styles from "../styles/Transport.module.css"; // Crea un archivo CSS o reutiliza uno existente
+import styles from "../styles/components/Transport.module.css"; // Crea un archivo CSS o reutiliza uno existente
 
 /**
  * Propiedades para el componente Transport.
@@ -20,7 +20,6 @@ interface TransportProps {
  * como líneas de metro, autobuses, taxis y aparcamiento. Cada opción incluye un ícono,
  * un título y una descripción, todos los textos son internacionalizados.
  *
- * @component
  * @param {TransportProps} props - Propiedades del componente Transport.
  * @returns {JSX.Element} Información de transporte para la ubicación especificada.
  */

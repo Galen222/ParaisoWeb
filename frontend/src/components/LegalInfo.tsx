@@ -3,7 +3,7 @@
 import React from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
-import styles from "../styles/LegalInfo.module.css";
+import styles from "../styles/components/LegalInfo.module.css";
 
 /**
  * Componente LegalInfo
@@ -12,7 +12,9 @@ import styles from "../styles/LegalInfo.module.css";
  * dirección, contacto y enlaces a la política de privacidad. La información se
  * presenta en varios idiomas según las configuraciones de localización.
  *
- * @component
+ * Necesario siempre que se solicite cualquier información al usuario
+ * para cumplir con la normativa vigente.
+ *
  * @returns {JSX.Element} Tabla con información legal de la empresa.
  */
 const LegalInfo: React.FC = () => {

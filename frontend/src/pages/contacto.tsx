@@ -1,16 +1,16 @@
 // pages/contacto.tsx
 
 import React from "react";
-import { useIntl } from "react-intl";
-import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import type { ComponentType } from "react";
 import Loader from "../components/Loader";
 import Localization from "../components/Localization";
 import LegalInfo from "../components/LegalInfo";
-import useScrollToTop from "../hooks/useScrollToTop";
 import Form from "../components/Form";
-import styles from "../styles/contacto.module.css";
-import type { ComponentType } from "react";
+import { useIntl } from "react-intl";
+import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import useScrollToTop from "../hooks/useScrollToTop";
+import styles from "../styles/pages/contacto.module.css";
 
 /**
  * Propiedades para el componente `ContactPage`.
@@ -103,7 +103,7 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
       {/* Botón de desplazamiento hacia arriba */}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollTop">
+          <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

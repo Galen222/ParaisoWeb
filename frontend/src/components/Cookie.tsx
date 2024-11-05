@@ -5,7 +5,7 @@ import { useIntl } from "react-intl";
 import { toast, Slide } from "react-toastify";
 import Link from "next/link";
 import { useCookieConsent } from "../contexts/CookieContext";
-import styles from "../styles/Cookie.module.css";
+import styles from "../styles/components/Cookie.module.css";
 
 /**
  * Propiedades para el componente Cookie.
@@ -29,7 +29,6 @@ interface CookieProps {
  * Muestra un modal para la aceptación, personalización o rechazo de cookies.
  * Permite a los usuarios personalizar sus preferencias de cookies y muestra notificaciones (toast) según la acción realizada.
  *
- * @component
  * @param {CookieProps} props - Propiedades del componente Cookie.
  * @returns {JSX.Element} Modal de preferencias de cookies.
  */
