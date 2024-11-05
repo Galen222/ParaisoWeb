@@ -14,9 +14,9 @@ from .core.config import ENVIRONMENT  # Importa la variable de entorno
 # Creación de la instancia de FastAPI
 # -----------------------------
 app = FastAPI(
-    title="Aplicación Galenn Backend",
-    description="API para gestionar contactos, charcutería, blogs y tokens temporales.",
-    version="1.0.0"
+    title="ParaisoWeb Backend",
+    description="Gestionar el envío de formularios, base de datos de charcutería y blogs y tokens API temporales.",
+    version="0.8.0"
 )
 
 # -----------------------------
