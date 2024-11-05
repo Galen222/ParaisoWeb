@@ -1,3 +1,5 @@
+/* components/Loader.module.css */
+
 /* Contenedor principal del cargador */
 .loader {
   --point-color: var(--text_color); /* Color de los elementos del cargador */

@@ -11,7 +11,6 @@ import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import useScrollToTop from "../hooks/useScrollToTop";
-import styles from "../styles/bravo-murillo.module.css";
 
 /**
  * Propiedades para el componente `BravoMurilloPage`.

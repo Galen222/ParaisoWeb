@@ -1,3 +1,5 @@
+/* scrollbar.css */
+
 /* Estilo para navegadores basados en WebKit (Chrome, Safari, Edge Chromium) */
 @supports (-webkit-touch-callout: none) {
   /* Estilo para el contenedor de la barra de scroll */

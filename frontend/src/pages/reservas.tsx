@@ -8,7 +8,6 @@ import { useIntl } from "react-intl"; // Importa el hook useIntl, que permite la
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import useScrollToTop from "../hooks/useScrollToTop";
-import styles from "../styles/pages/reservas.module.css"; // Importa estilos CSS específicos para la página de reservas.
 
 /**
  * Interfaz para las propiedades del componente de reservas.

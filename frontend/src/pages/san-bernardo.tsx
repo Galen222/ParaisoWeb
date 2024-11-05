@@ -11,7 +11,6 @@ import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import useScrollToTop from "../hooks/useScrollToTop";
-import styles from "../styles/pages/san-bernardo.module.css";
 
 /**
  * Interfaz para las propiedades del componente de la página San Bernardo.

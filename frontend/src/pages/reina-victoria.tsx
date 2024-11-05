@@ -11,7 +11,6 @@ import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import useScrollToTop from "../hooks/useScrollToTop";
-import styles from "../styles/pages/reina-victoria.module.css";
 
 /**
  * Interfaz para las propiedades de la página Reina Victoria.
