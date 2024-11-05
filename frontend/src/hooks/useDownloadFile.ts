@@ -1,9 +1,9 @@
 // hooks/useDownloadFile.ts
 
 import { useState } from "react";
-import { toast, Slide } from "react-toastify";
 import { saveAs } from "file-saver";
 import { useIntl } from "react-intl"; // Hook para internacionalización
+import { useToastMessage } from "./useToast";
 
 /**
  * Hook personalizado para gestionar la descarga de archivos.
@@ -14,6 +14,7 @@ import { useIntl } from "react-intl"; // Hook para internacionalización
 export function useDownloadFile() {
   const intl = useIntl(); // Inicializa el hook de internacionalización
   const [isDownloading, setIsDownloading] = useState(false); // Estado para controlar el proceso de descarga
+  const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones
 
   /**
    * Inicia la descarga de un archivo y maneja las notificaciones de éxito o error.
@@ -26,7 +27,7 @@ export function useDownloadFile() {
   const downloadFile = async (filePath: string, fileName: string, successMessageId: string, errorMessageId: string) => {
     setIsDownloading(true);
     try {
-      // Realizar la solicitud de descarga
+      // Realiza la solicitud de descarga
       const response = await fetch(filePath, {
         method: "GET",
         headers: {
@@ -42,30 +43,10 @@ export function useDownloadFile() {
       saveAs(blob, fileName); // Inicia la descarga del archivo usando file-saver
 
       // Mostrar notificación de éxito
-      toast.success(intl.formatMessage({ id: successMessageId }), {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
+      showToast(successMessageId, 3000, "success"); // Muestra el toast utilizando el hook
     } catch (error) {
       // Mostrar notificación de error
-      toast.error(intl.formatMessage({ id: errorMessageId }), {
-        position: "top-center",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Slide,
-      });
+      showToast(errorMessageId, 3000, "error"); // Muestra el toast utilizando el hook
     } finally {
       setIsDownloading(false); // Finaliza el estado de descarga
     }

@@ -9,6 +9,7 @@ import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import useDeviceType from "../hooks/useDeviceType";
 import useScrollToTop from "../hooks/useScrollToTop";
+import { useToastMessage } from "../hooks/useToast";
 import { deleteCookies } from "../utils/cookieUtils";
 import styles from "../styles/pages/politica-cookies.module.css";
 
@@ -28,6 +29,7 @@ interface PoliticaCookiesPageProps {
  */
 const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
   const intl = useIntl();
+  const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones
 
   /**
    * Estado para indicar si se está ejecutando la acción de borrar cookies.
@@ -79,10 +81,10 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
   /**
    * Maneja la eliminación de cookies y actualiza el estado correspondiente.
    */
-  const handleDeleteCookies = () => {
+  const handleDeleteCookies = async () => {
     trackButtonClick("Borrar Cookies");
     setIsPushingDelCookies(true);
-    deleteCookies(
+    const success = await deleteCookies(
       intl,
       setAcceptCookiePersonalization,
       cookieConsentAnalysis,
@@ -94,6 +96,16 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
       cookieConsentPersonalization,
       setCookieConsentPersonalization
     );
+
+    if (success) {
+      // Notificación de éxito al borrar cookies.
+      showToast("cookie_Borrado_Ok", 4000, "success"); // Muestra el toast utilizando el hook
+    } else {
+      // Notificación de error si la eliminación de cookies falla.
+      showToast("cookie_Borrado_Error", 4000, "error"); // Muestra el toast utilizando el hook
+    }
+
+    setIsPushingDelCookies(false);
   };
 
   /**
@@ -106,19 +118,35 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
           <React.Fragment key={i}>
             <tr>
               <td>Nombre</td>
-              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Nombre${i + 1}` })}</td>
+              <td>
+                {intl.formatMessage({
+                  id: `politicaCookies_Utilizadas_Nombre${i + 1}`,
+                })}
+              </td>
             </tr>
             <tr>
               <td>Titular</td>
-              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Titular${i + 1}` })}</td>
+              <td>
+                {intl.formatMessage({
+                  id: `politicaCookies_Utilizadas_Titular${i + 1}`,
+                })}
+              </td>
             </tr>
             <tr>
               <td>Finalidad</td>
-              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Finalidad${i + 1}` })}</td>
+              <td>
+                {intl.formatMessage({
+                  id: `politicaCookies_Utilizadas_Finalidad${i + 1}`,
+                })}
+              </td>
             </tr>
             <tr>
               <td>Duración</td>
-              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Duracion${i + 1}` })}</td>
+              <td>
+                {intl.formatMessage({
+                  id: `politicaCookies_Utilizadas_Duracion${i + 1}`,
+                })}
+              </td>
             </tr>
             {i < 3 && ( // Condición para no mostrar el separador en el último grupo
               <tr className={styles.tableSeparator}>
@@ -147,10 +175,26 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
       <tbody className="table-group-divider">
         {Array.from({ length: 4 }, (_, i) => i + 1).map((index) => (
           <tr key={index}>
-            <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Nombre${index}` })}</td>
-            <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Titular${index}` })}</td>
-            <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Finalidad${index}` })}</td>
-            <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Duracion${index}` })}</td>
+            <td>
+              {intl.formatMessage({
+                id: `politicaCookies_Utilizadas_Nombre${index}`,
+              })}
+            </td>
+            <td>
+              {intl.formatMessage({
+                id: `politicaCookies_Utilizadas_Titular${index}`,
+              })}
+            </td>
+            <td>
+              {intl.formatMessage({
+                id: `politicaCookies_Utilizadas_Finalidad${index}`,
+              })}
+            </td>
+            <td>
+              {intl.formatMessage({
+                id: `politicaCookies_Utilizadas_Duracion${index}`,
+              })}
+            </td>
           </tr>
         ))}
       </tbody>
@@ -179,31 +223,96 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
         <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Clasificacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Clasificacion1_Texto1" })}</p>
         <ul className={styles.listas}>
-          <li>{intl.formatMessage({ id: "politicaCookies_Clasificacion1_Texto1_Punto1" })}</li>
-          <li>{intl.formatMessage({ id: "politicaCookies_Clasificacion1_Texto1_Punto2" })}</li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Clasificacion1_Texto1_Punto1",
+            })}
+          </li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Clasificacion1_Texto1_Punto2",
+            })}
+          </li>
         </ul>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Clasificacion1_Texto2" })}</p>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Clasificacion2_Texto" })}</p>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Clasificacion1_Texto2",
+          })}
+        </p>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Clasificacion2_Texto",
+          })}
+        </p>
         <ul className={styles.listas}>
-          <li>{intl.formatMessage({ id: "politicaCookies_Clasificacion2_Texto_Punto1" })}</li>
-          <li>{intl.formatMessage({ id: "politicaCookies_Clasificacion2_Texto_Punto2" })}</li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Clasificacion2_Texto_Punto1",
+            })}
+          </li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Clasificacion2_Texto_Punto2",
+            })}
+          </li>
         </ul>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Clasificacion3_Texto" })}</p>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Clasificacion3_Texto",
+          })}
+        </p>
         <ul className={styles.listas}>
-          <li>{intl.formatMessage({ id: "politicaCookies_Clasificacion3_Texto_Punto1" })}</li>
-          <li>{intl.formatMessage({ id: "politicaCookies_Clasificacion3_Texto_Punto2" })}</li>
-          <li>{intl.formatMessage({ id: "politicaCookies_Clasificacion3_Texto_Punto3" })}</li>
-          <li>{intl.formatMessage({ id: "politicaCookies_Clasificacion3_Texto_Punto4" })}</li>
-          <li>{intl.formatMessage({ id: "politicaCookies_Clasificacion3_Texto_Punto5" })}</li>
-          <li>{intl.formatMessage({ id: "politicaCookies_Clasificacion3_Texto_Punto6" })}</li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Clasificacion3_Texto_Punto1",
+            })}
+          </li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Clasificacion3_Texto_Punto2",
+            })}
+          </li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Clasificacion3_Texto_Punto3",
+            })}
+          </li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Clasificacion3_Texto_Punto4",
+            })}
+          </li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Clasificacion3_Texto_Punto5",
+            })}
+          </li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Clasificacion3_Texto_Punto6",
+            })}
+          </li>
         </ul>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Utilizadas_Titulo" })}</h3>
+        <h3 className="mb-10p">
+          {intl.formatMessage({
+            id: "politicaCookies_Utilizadas_Titulo",
+          })}
+        </h3>
         <div className="table-responsive">{isMobile ? mobileTable : desktopTable}</div>
         <p className="ti-20p">
-          {intl.formatMessage({ id: "politicaCookies_Utilizadas_texto1" })}
-          <a className={styles.link} href={intl.formatMessage({ id: "politicaCookies_Utilizadas_texto1_Enlace" })} target="_blank">
+          {intl.formatMessage({
+            id: "politicaCookies_Utilizadas_texto1",
+          })}
+          <a
+            className={styles.link}
+            href={intl.formatMessage({
+              id: "politicaCookies_Utilizadas_texto1_Enlace",
+            })}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Google Analytics
           </a>
           .
@@ -211,26 +320,68 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
         {/* <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Utilizadas_texto2" })}</p> */}
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Titulo" })}</h3>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto1" })}</p>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto2" })}</p>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3" })}</p>
+        <h3 className="mb-10p">
+          {intl.formatMessage({
+            id: "politicaCookies_Aceptacion_Titulo",
+          })}
+        </h3>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Aceptacion_Texto1",
+          })}
+        </p>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Aceptacion_Texto2",
+          })}
+        </p>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Aceptacion_Texto3",
+          })}
+        </p>
         <ul className={styles.listas}>
-          <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto1" })}</li>
-          <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto2" })}</li>
-          <li>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto3" })}</li>
           <li>
-            {intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto4" })}
+            {intl.formatMessage({
+              id: "politicaCookies_Aceptacion_Texto3_Punto1",
+            })}
+          </li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Aceptacion_Texto3_Punto2",
+            })}
+          </li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Aceptacion_Texto3_Punto3",
+            })}
+          </li>
+          <li>
+            {intl.formatMessage({
+              id: "politicaCookies_Aceptacion_Texto3_Punto4",
+            })}
             <Link href="/politica-privacidad" className={styles.link}>
-              <span>{intl.formatMessage({ id: "politicaCookies_Aceptacion_Texto3_Punto4_Enlace" })}</span>
+              <span>
+                {intl.formatMessage({
+                  id: "politicaCookies_Aceptacion_Texto3_Punto4_Enlace",
+                })}
+              </span>
             </Link>
             .
           </li>
         </ul>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Denegacion_Titulo" })}</h3>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Denegacion_Texto" })}</p>
+        <h3 className="mb-10p">
+          {intl.formatMessage({
+            id: "politicaCookies_Denegacion_Titulo",
+          })}
+        </h3>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Denegacion_Texto",
+          })}
+        </p>
       </div>
       <div className="text-center">
         <button
@@ -239,58 +390,151 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
           onClick={() => handleDeleteCookies()}
           onAnimationEnd={() => setIsPushingDelCookies(false)}
         >
-          {intl.formatMessage({ id: "politicaCookies_BotonBorrar" })}
+          {intl.formatMessage({
+            id: "politicaCookies_BotonBorrar",
+          })}
         </button>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Desactivacion_Titulo" })}</h3>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto1" })}</p>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto2" })}</p>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3" })}</p>
+        <h3 className="mb-10p">
+          {intl.formatMessage({
+            id: "politicaCookies_Desactivacion_Titulo",
+          })}
+        </h3>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Desactivacion_Texto1",
+          })}
+        </p>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Desactivacion_Texto2",
+          })}
+        </p>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Desactivacion_Texto3",
+          })}
+        </p>
         <ul className={`text-left ${styles.listas}`}>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto1_Enlace" })} target="_blank">
-              {intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto1" })}
+            <a
+              className={styles.link}
+              href={intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto3_Punto1_Enlace",
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto3_Punto1",
+              })}
             </a>
           </li>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto2_Enlace" })} target="_blank">
-              {intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto2" })}
+            <a
+              className={styles.link}
+              href={intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto3_Punto2_Enlace",
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto3_Punto2",
+              })}
             </a>
           </li>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto3_Enlace" })} target="_blank">
-              {intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto3" })}
+            <a
+              className={styles.link}
+              href={intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto3_Punto3_Enlace",
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto3_Punto3",
+              })}
             </a>
           </li>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto4_Enlace" })} target="_blank">
-              {intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto4" })}
+            <a
+              className={styles.link}
+              href={intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto3_Punto4_Enlace",
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto3_Punto4",
+              })}
             </a>
           </li>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto5_Enlace" })} target="_blank">
-              {intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto3_Punto5" })}
+            <a
+              className={styles.link}
+              href={intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto3_Punto5_Enlace",
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto3_Punto5",
+              })}
             </a>
           </li>
         </ul>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto4" })}</p>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Desactivacion_Texto4",
+          })}
+        </p>
         <ul className={styles.listas}>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto4_Punto1_Enlace" })} target="_blank">
-              {intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto4_Punto1" })}
+            <a
+              className={styles.link}
+              href={intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto4_Punto1_Enlace",
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto4_Punto1",
+              })}
             </a>
           </li>
           <li>
-            <a className={styles.link} href={intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto4_Punto2_Enlace" })} target="_blank">
-              {intl.formatMessage({ id: "politicaCookies_Desactivacion_Texto4_Punto2" })}
+            <a
+              className={styles.link}
+              href={intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto4_Punto2_Enlace",
+              })}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {intl.formatMessage({
+                id: "politicaCookies_Desactivacion_Texto4_Punto2",
+              })}
             </a>
           </li>
         </ul>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Actualizacion_Titulo" })}</h3>
-        <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Actualizacion_Texto" })}</p>
+        <h3 className="mb-10p">
+          {intl.formatMessage({
+            id: "politicaCookies_Actualizacion_Titulo",
+          })}
+        </h3>
+        <p className="ti-20p">
+          {intl.formatMessage({
+            id: "politicaCookies_Actualizacion_Texto",
+          })}
+        </p>
       </div>
       <div>
         {isScrollButtonVisible && (

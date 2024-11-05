@@ -29,10 +29,6 @@ const Banner: React.FC<BannerProps> = ({ bannerType }) => {
   const intl = useIntl();
 
   // Objeto que define el contenido y configuración de cada tipo de banner.
-  // reverse: Intercambia secciones en modo escritorio
-  // reverseMobile: Intercambia secciones en modo movil
-  // Size: Tamaño del texto, texto destacado y banner
-  // Buttons: colocación en modo movil dependiendo de uno o varios botones
   const bannerContent = {
     restaurantes: {
       text: intl.formatMessage({ id: "banner_Restaurantes_Texto1" }), // Texto del banner de restaurantes
@@ -45,8 +41,8 @@ const Banner: React.FC<BannerProps> = ({ bannerType }) => {
       ],
       reverse: false,
       reverseMobile: false,
-      Size: "Large",
-      Buttons: "Multiple",
+      size: "Large",
+      buttons: "Multiple",
     },
     gastronomia: {
       text: intl.formatMessage({ id: "banner_Gastronomia_Texto1" }), // Texto del banner de gastronomía
@@ -54,8 +50,8 @@ const Banner: React.FC<BannerProps> = ({ bannerType }) => {
       links: [{ href: "/gastronomia", text: intl.formatMessage({ id: "banner_Gastronomia_Texto3" }) }],
       reverse: true,
       reverseMobile: true,
-      Size: "Medium",
-      Buttons: "One",
+      size: "Small",
+      buttons: "One",
     },
     charcuteria: {
       text: intl.formatMessage({ id: "banner_Charcuteria_Texto1" }), // Texto del banner de charcutería
@@ -63,8 +59,8 @@ const Banner: React.FC<BannerProps> = ({ bannerType }) => {
       links: [{ href: "/charcuteria", text: intl.formatMessage({ id: "banner_Charcuteria_Texto3" }) }],
       reverse: false,
       reverseMobile: false,
-      Size: "Medium",
-      Buttons: "One",
+      size: "Small",
+      buttons: "One",
     },
     nosotros: {
       text: intl.formatMessage({ id: "banner_About_Texto1" }), // Texto del banner de "nosotros"
@@ -72,8 +68,8 @@ const Banner: React.FC<BannerProps> = ({ bannerType }) => {
       links: [{ href: "/about", text: intl.formatMessage({ id: "banner_About_Texto3" }) }],
       reverse: true,
       reverseMobile: true,
-      Size: "Small",
-      Buttons: "One",
+      size: "Small",
+      buttons: "One",
     },
     empleo: {
       text: intl.formatMessage({ id: "banner_Empleo_Texto1" }), // Texto del banner de empleo
@@ -81,8 +77,8 @@ const Banner: React.FC<BannerProps> = ({ bannerType }) => {
       links: [{ href: "/contacto", text: intl.formatMessage({ id: "banner_Empleo_Texto3" }) }],
       reverse: false,
       reverseMobile: false,
-      Size: "Small",
-      Buttons: "One",
+      size: "Small",
+      buttons: "One",
     },
   };
 
@@ -94,11 +90,11 @@ const Banner: React.FC<BannerProps> = ({ bannerType }) => {
 
   // Construye las clases para FrameContent incluyendo Size y reverse
   const frameContentClasses = `${styles.FrameContent} ${content.reverse ? styles.reverse : ""} ${content.reverseMobile ? styles.reverseMobile : ""} ${
-    styles[`Size${content.Size}`]
+    styles[`FrameContentSize${content.size}`]
   }`;
 
-  // Construye las clases para Buttons incluyendo Buttons type
-  const buttonsClasses = `${styles.Buttons} ${styles[`Buttons${content.Buttons}`]}`;
+  // Construye las clases para Buttons
+  const buttonsClasses = `${styles.buttonsSection} ${styles[`buttons${content.buttons}`]}`;
 
   return (
     <div className={containerClasses}>
@@ -113,7 +109,7 @@ const Banner: React.FC<BannerProps> = ({ bannerType }) => {
         <div className={buttonsClasses}>
           {content.links.map((link, index) => (
             <Link key={index} href={link.href} passHref>
-              <button className={`btn btn-primary mx-auto ${styles.bannerButton}`}>{link.text}</button>
+              <button className={`btn btn-primary mx-auto ${styles.Button}`}>{link.text}</button>
             </Link>
           ))}
         </div>

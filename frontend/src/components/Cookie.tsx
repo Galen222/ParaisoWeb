@@ -1,11 +1,11 @@
-// components//Cookie.tsx
+// components/Cookie.tsx
 
 import React, { useState } from "react";
 import { useIntl } from "react-intl";
-import { toast, Slide } from "react-toastify";
 import Link from "next/link";
 import { useCookieConsent } from "../contexts/CookieContext";
 import styles from "../styles/components/Cookie.module.css";
+import { useToastMessage } from "../hooks/useToast";
 
 /**
  * Propiedades para el componente Cookie.
@@ -35,7 +35,6 @@ interface CookieProps {
 const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, onCookiesPolicyLinkClick, onPrivacyPolicyLinkClick }) => {
   const intl = useIntl();
   const [isCustomizing, setIsCustomizing] = useState(false); // Estado para manejar si se están personalizando las cookies
-  let app_message = ""; // Mensaje que se mostrará en el toast
 
   // Obtiene y maneja el estado de consentimiento de cookies del contexto
   const {
@@ -46,6 +45,8 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
     AcceptCookiePersonalization,
     setAcceptCookiePersonalization,
   } = useCookieConsent();
+
+  const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones
 
   /**
    * Maneja el cambio de estado para la cookie de personalización.
@@ -73,28 +74,7 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
    * @returns {boolean} Verdadero si todas las cookies están deshabilitadas, falso de lo contrario.
    */
   const checkCookiesState = () => {
-    if (!AcceptCookieAnalysis && !AcceptCookieAnalysisGoogle && !AcceptCookiePersonalization) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  /**
-   * Muestra un mensaje en un toast con las configuraciones predeterminadas.
-   */
-  const showCookieToast = () => {
-    toast.success(app_message, {
-      position: "top-center",
-      autoClose: 2000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-      transition: Slide,
-    });
+    return !(AcceptCookieAnalysis || AcceptCookieAnalysisGoogle || AcceptCookiePersonalization);
   };
 
   /**
@@ -102,8 +82,7 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
    */
   const handleAccept = () => {
     onAccept();
-    app_message = intl.formatMessage({ id: "app_CookieAccept" });
-    showCookieToast();
+    showToast("app_CookieAccept", 2000, "success"); // Muestra el toast utilizando el hook
   };
 
   /**
@@ -111,8 +90,7 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
    */
   const handleAcceptAll = () => {
     onAcceptAll();
-    app_message = intl.formatMessage({ id: "app_CookieAcceptAll" });
-    showCookieToast();
+    showToast("app_CookieAcceptAll", 2000, "success"); // Muestra el toast utilizando el hook
   };
 
   /**
@@ -120,8 +98,7 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
    */
   const handleDeclineAll = () => {
     onDeclineAll();
-    app_message = intl.formatMessage({ id: "app_CookieDenied" });
-    showCookieToast();
+    showToast("app_CookieDenied", 2000, "success"); // Muestra el toast utilizando el hook
   };
 
   /**
@@ -151,7 +128,11 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
                 className={styles.hiddenCheckbox}
               />
               <span className={styles.slider} onClick={handleAcceptCookiePersonalizationChange}></span>
-              <span>{intl.formatMessage({ id: "cookie_AceptarPersonalizacion" })}</span>
+              <span>
+                {intl.formatMessage({
+                  id: "cookie_AceptarPersonalizacion",
+                })}
+              </span>
             </div>
             <div className={styles.switch}>
               <input
@@ -177,7 +158,11 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
                 className={styles.hiddenCheckbox}
               />
               <span className={styles.slider} onClick={handleAcceptCookieAnalysisGoogleChange}></span>
-              <span>{intl.formatMessage({ id: "cookie_AceptarAnalisisGoogle" })}</span>
+              <span>
+                {intl.formatMessage({
+                  id: "cookie_AceptarAnalisisGoogle",
+                })}
+              </span>
             </div>
           </div>
         )}

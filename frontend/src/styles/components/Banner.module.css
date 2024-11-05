@@ -6,7 +6,8 @@
   background-size: cover; /* Asegura que la imagen de fondo cubra todo el contenedor */
   background-position: center; /* Centra la imagen de fondo */
   border-radius: 10px; /* Bordes redondeados de 10 píxeles */
-  margin: 40px 0; /* Márgenes superior e inferior de 40 píxeles */
+  margin-top: 40px; /* Márgen superior de 40 píxeles */
+  margin-bottom: 40px; /* Márgen inferior de 40 píxeles */
   box-sizing: border-box; /* Incluye padding y borde en el cálculo del ancho y alto */
   display: flex; /* Define un contenedor flex */
   justify-content: center; /* Centra los elementos horizontalmente */
@@ -31,7 +32,9 @@
 }
 
 .empleoContainer {
-  background-image: url("/images/banner/fondoempleo.jpg"); /* Imagen de fondo específica para Empleo */
+  /* background-image: url("/images/banner/fondoempleo.jpg"); /* Imagen de fondo específica para Empleo */
+  background-color: blue;
+  height: 800px;
 }
 
 /* Contenido interno de los contenedores principales */
@@ -44,7 +47,8 @@
   align-items: center; /* Centra los elementos verticalmente */
   position: relative; /* Posicionamiento relativo para elementos internos absolutos */
   box-sizing: border-box; /* Incluye padding y borde en el cálculo del ancho y alto */
-  padding: 30px 0; /* Padding superior e inferior de 30 píxeles */
+  padding-top: 30px; /* Padding superior de 30 píxeles */
+  padding-bottom: 30px; /* Padding inferior de 30 píxeles */
 }
 
 /* Línea divisoria vertical */
@@ -69,61 +73,51 @@
   align-items: center; /* Centra los elementos horizontalmente */
   color: white; /* Color del texto blanco */
   text-shadow: 1px 1px 2px #4a403a, -1px -1px 2px #4a403a, 1px -1px 2px #4a403a, -1px 1px 2px #4a403a; /* Sombra del texto para mejor legibilidad */
+  background-color: chocolate;
 }
 
 /* Sección de botones dentro de los contenedores */
-.Buttons {
+.buttonsSection {
   flex: 1; /* Ocupa igual proporción del espacio disponible */
   display: flex; /* Define un contenedor flex */
   flex-direction: column; /* Dirección de los elementos en columna */
   gap: 15px; /* Espacio de 15 píxeles entre los elementos */
   justify-content: center; /* Centra los elementos verticalmente */
   align-items: center; /* Centra los elementos horizontalmente */
+  background-color: chartreuse;
 }
 
-.SizeLarge {
+.FrameContentSizeLarge {
   height: 300px; /* Altura del contenedor para Size Large en móvil */
 }
 
-.SizeMedium {
-  height: 275px; /* Altura del contenedor para Size Medium en móvil */
+.FrameContentSizeSmall {
+  height: 200px; /* Altura del contenedor para Size Small en móvil */
 }
 
-.SizeSmall {
-  height: 250px; /* Altura del contenedor para Size Small en móvil */
+.FrameContentSizeLarge .text {
+  font-size: 44px; /* Tamaño de fuente para texto en Size Large */
 }
 
-.SizeLarge .text {
-  font-size: 40px; /* Tamaño de fuente para texto en Size Large */
+.FrameContentSizeLarge .highlightText {
+  font-size: 50px; /* Tamaño de fuente para destacados en Size Large */
 }
 
-.SizeLarge .hightLightText {
-  font-size: 46px; /* Tamaño de fuente para destacados en Size Large */
+.FrameContentSizeSmall .text {
+  font-size: 36px; /* Tamaño de fuente para texto en Size Large */
 }
 
-.SizeMedium .text {
-  font-size: 34px; /* Tamaño de fuente para texto en Size Medium */
-}
-
-.SizeMedium .hightLightText {
-  font-size: 40px; /* Tamaño de fuente para destacados en Size Medium */
-}
-
-.SizeSmall .text {
-  font-size: 30px; /* Tamaño de fuente para texto en Size Small */
-}
-
-.SizeSmall .hightLightText {
-  font-size: 36px; /* Tamaño de fuente para destacados en Size Small */
+.FrameContentSizeSmall .highlightText {
+  font-size: 44px; /* Tamaño de fuente para destacados en Size Large */
 }
 
 /* Destacados en los banners */
-.hightLightText {
+.highlightText {
   font-weight: bold; /* Fuente en negrita */
 }
 
 /* Estilos para los botones del banner */
-.bannerButton {
+.Button {
   width: 150px; /* Ancho de 150 píxeles */
   max-width: 200px; /* Ancho máximo de 200 píxeles */
   --bs-btn-bg: rgba(74, 64, 58, 0.8); /* Variable CSS para el color de fondo del botón */
@@ -162,7 +156,7 @@
 
   /* Ajuste de las secciones de texto y botones en móviles */
   .textSection,
-  .Buttons {
+  .buttonsSection {
     flex: 0 0 50%; /* Define una base del 50% y no permite crecer o encoger */
     display: flex; /* Define un contenedor flex */
     flex-direction: column; /* Dirección de los elementos en columna */
@@ -171,13 +165,14 @@
   }
 
   /* Clases para botones según Buttons aplicadas solo en modo móvil */
-  .ButtonsMultiple {
+  .buttonsMultiple {
     display: grid; /* Cambia a un diseño de cuadrícula */
     grid-template-columns: repeat(2, 1fr); /* Dos columnas de igual tamaño */
-    padding: 20px 0; /* Padding superior e inferior de 20 píxeles */
+    padding-top: 20px; /* Padding superior de 20 píxeles */
+    padding-bottom: 20px; /* Padding inferior de 20 píxeles */
   }
 
-  .ButtonsOne {
+  .buttonsOne {
     display: flex; /* Define un contenedor flex */
     justify-content: center; /* Centra los elementos horizontalmente */
     align-items: center; /* Centra los elementos verticalmente */
@@ -189,47 +184,23 @@
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white; /* Sombra blanca para mejorar la legibilidad */
   }
 
-  .SizeLarge .text {
-    font-size: 32px; /* Tamaño de fuente reducido a 32 píxeles */
-  }
-
-  .SizeLarge .hightLightText {
-    font-size: 38px; /* Tamaño de fuente reducido a 38 píxeles */
-  }
-
-  .SizeMedium .text,
-  .SizeSmall .text {
-    font-size: 30px; /* Tamaño de fuente reducido a 30 píxeles */
-  }
-
-  .SizeMedium .hightLightText,
-  .SizeSmall .hightLightText {
-    font-size: 36px; /* Tamaño de fuente reducido a 36 píxeles */
-  }
-
   /* Clase para invertir la dirección de los elementos flex en móviles */
   .reverseMobile {
     flex-direction: column-reverse; /* Invierte la dirección a columna inversa */
   }
-}
-
-/* Estilos para dispositivos móviles con pantallas muy pequeñas */
-@media (max-width: 385px) {
-  .SizeLarge .text {
-    font-size: 20px; /* Tamaño de fuente reducido a 20 píxeles */
+  .FrameContentSizeLarge .text {
+    font-size: 34px; /* Tamaño de fuente para texto en Size Large */
   }
 
-  .SizeLarge .hightLightText {
-    font-size: 24px; /* Tamaño de fuente reducido a 24 píxeles */
+  .FrameContentSizeLarge .highlightText {
+    font-size: 40px; /* Tamaño de fuente para destacados en Size Large */
   }
 
-  .SizeMedium .text,
-  .SizeSmall .text {
-    font-size: 18px; /* Tamaño de fuente reducido a 18 píxeles */
+  .FrameContentSizeSmall .text {
+    font-size: 26px; /* Tamaño de fuente para texto en Size Large */
   }
 
-  .SizeMedium .hightLightText,
-  .SizeSmall .hightLightText {
-    font-size: 22px; /* Tamaño de fuente reducido a 22 píxeles */
+  .FrameContentSizeSmall .highlightText {
+    font-size: 32px; /* Tamaño de fuente para destacados en Size Large */
   }
 }

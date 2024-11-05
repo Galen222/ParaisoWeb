@@ -18,7 +18,7 @@
 
 /* Efecto al pasar el ratón sobre el botón de desplazamiento */
 .scrollToTop:hover {
-  background: #4a403a; /* Cambia el fondo a color marrón oscuro */
+  background: rgba(175, 36, 36, 0.904); /* Cambia el fondo a color marrón oscuro */
 }
 
 /* Estilos para la imagen dentro del botón de desplazamiento */

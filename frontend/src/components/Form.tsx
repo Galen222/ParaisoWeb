@@ -2,11 +2,11 @@
 
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl";
-import { toast, Slide } from "react-toastify";
-import { useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import Link from "next/link";
-import styles from "../styles/components/Form.module.css";
+import { useButtonClickTrackingGA } from "../hooks/useTrackingGA";
+import { useToastMessage } from "../hooks/useToast";
 import { submitForm, FormData as FormServiceData } from "../services/formService"; // Importa el servicio y la interfaz
+import styles from "../styles/components/Form.module.css";
 
 /**
  * Propiedades para el componente Form.
@@ -42,6 +42,9 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
   });
   const [isValidEmail, setIsValidEmail] = useState(true); // Validación del email
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false); // Validación del checkbox de privacidad
+
+  const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones
+  const trackButtonClick = useButtonClickTrackingGA(); // Seguimiento del botón de envío en Google Analytics
 
   /**
    * Maneja el cambio del checkbox de privacidad.
@@ -100,29 +103,11 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       if (file.type !== "image/jpeg" && file.type !== "application/pdf") {
-        toast.error(intl.formatMessage({ id: "contacto_ArchivoNoJPG-PDF" }), {
-          position: "top-center",
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          theme: "dark",
-          transition: Slide,
-        });
+        showToast("contacto_ArchivoNoJPG-PDF", 4000, "error"); // Muestra el toast utilizando el hook
         return;
       }
       if (file.size > 10485760) {
-        toast.error(intl.formatMessage({ id: "contacto_ArchivoGrande" }), {
-          position: "top-center",
-          autoClose: 4000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: true,
-          theme: "dark",
-          transition: Slide,
-        });
+        showToast("contacto_ArchivoGrande", 4000, "error"); // Muestra el toast utilizando el hook
         return;
       }
       setFormData({ ...formData, file });
@@ -130,8 +115,6 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
       setFormData({ ...formData, file: null });
     }
   };
-
-  const trackButtonClick = useButtonClickTrackingGA(); // Seguimiento del botón de envío en Google Analytics
 
   /**
    * Maneja el envío del formulario, incluyendo validación, envío a la API y notificación.
@@ -146,16 +129,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
       await submitForm(formData); // Enviar el formulario
 
       // Notificación de éxito
-      toast.success(intl.formatMessage({ id: "contacto_Formulario_Ok" }), {
-        position: "top-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        theme: "dark",
-        transition: Slide,
-      });
+      showToast("contacto_Formulario_Ok", 4000, "success"); // Muestra el toast utilizando el hook
+
       // Restablece el formulario
       setFormData({
         name: "",
@@ -168,16 +143,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
       onSubmit();
     } catch (error: any) {
       // Notificación de error
-      toast.error(intl.formatMessage({ id: "contacto_Formulario_Error" }), {
-        position: "top-center",
-        autoClose: 4000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: true,
-        theme: "dark",
-        transition: Slide,
-      });
+      showToast("contacto_Formulario_Error", 4000, "error"); // Muestra el toast utilizando el hook
     } finally {
       setIsSubmitting(false); // Finaliza el envío
     }
@@ -225,9 +191,21 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
             {intl.formatMessage({ id: "contacto_SeleccioneMotivo" })}
           </option>
           <option value="info">{intl.formatMessage({ id: "contacto_MotivoInfo" })}</option>
-          <option value="commercial">{intl.formatMessage({ id: "contacto_MotivoComercial" })}</option>
-          <option value="invoice">{intl.formatMessage({ id: "contacto_MotivoFactura" })}</option>
-          <option value="curriculum">{intl.formatMessage({ id: "contacto_MotivoCurriculum" })}</option>
+          <option value="commercial">
+            {intl.formatMessage({
+              id: "contacto_MotivoComercial",
+            })}
+          </option>
+          <option value="invoice">
+            {intl.formatMessage({
+              id: "contacto_MotivoFactura",
+            })}
+          </option>
+          <option value="curriculum">
+            {intl.formatMessage({
+              id: "contacto_MotivoCurriculum",
+            })}
+          </option>
           <option value="bug">{intl.formatMessage({ id: "contacto_MotivoBug" })}</option>
           <option value="other">{intl.formatMessage({ id: "contacto_MotivoOtro" })}</option>
         </select>
@@ -289,9 +267,17 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
             )}
           </span>
           <label htmlFor="privacyCheck" className={styles.checkText}>
-            <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}</span>
+            <span>
+              {intl.formatMessage({
+                id: "contacto_PoliticaPrivacidad_1",
+              })}
+            </span>
             <Link href="/politica-privacidad" className={styles.link}>
-              <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
+              <span>
+                {intl.formatMessage({
+                  id: "contacto_PoliticaPrivacidad_2",
+                })}
+              </span>
             </Link>
           </label>
         </div>

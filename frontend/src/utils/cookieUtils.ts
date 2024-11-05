@@ -1,7 +1,6 @@
 // utils/cookieUtils.ts
 
 import { IntlShape } from "react-intl";
-import { toast, Slide } from "react-toastify";
 import { disableGA } from "@/utils/gaUtils";
 
 /**
@@ -45,6 +44,8 @@ export const createDeviceCookie = () => {
  * @param {Function} setCookieConsentAnalysisGoogle - Función para actualizar el estado de consentimiento de cookies de Google Analytics.
  * @param {boolean} cookieConsentPersonalization - Estado del consentimiento de cookies de personalización.
  * @param {Function} setCookieConsentPersonalization - Función para actualizar el estado de consentimiento de cookies de personalización.
+ *
+ * @returns {Promise<boolean>} - Retorna `true` si las cookies se borraron correctamente, de lo contrario `false`.
  */
 export const deleteCookies = async (
   intl: IntlShape,
@@ -57,7 +58,7 @@ export const deleteCookies = async (
   setCookieConsentAnalysisGoogle: (value: boolean) => void,
   cookieConsentPersonalization: boolean,
   setCookieConsentPersonalization: (value: boolean) => void
-) => {
+): Promise<boolean> => {
   try {
     const cookies = document.cookie.split("; ");
     // const domains = ["paraisodeljamon.com"]; // Producción
@@ -91,30 +92,8 @@ export const deleteCookies = async (
       }
     }
 
-    // Notificación de éxito al borrar cookies.
-    toast.success(intl.formatMessage({ id: "cookie_Borrado_Ok" }), {
-      position: "top-center",
-      autoClose: 4000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-      transition: Slide,
-    });
+    return true; // Indica que las cookies se borraron correctamente
   } catch (error) {
-    // Notificación de error si la eliminación de cookies falla.
-    toast.error(intl.formatMessage({ id: "cookie_Borrado_Error" }), {
-      position: "top-center",
-      autoClose: 4000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: "dark",
-      transition: Slide,
-    });
+    return false; // Indica que hubo un error al borrar las cookies
   }
 };
