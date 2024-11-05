@@ -109,7 +109,7 @@ const Banner: React.FC<BannerProps> = ({ bannerType }) => {
         <div className={buttonsClasses}>
           {content.links.map((link, index) => (
             <Link key={index} href={link.href} passHref>
-              <button className={`btn btn-primary mx-auto ${styles.Button}`}>{link.text}</button>
+              <button className={`btn btn-primary mx-auto ${styles.button}`}>{link.text}</button>
             </Link>
           ))}
         </div>

@@ -32,14 +32,13 @@
 }
 
 .empleoContainer {
-  /* background-image: url("/images/banner/fondoempleo.jpg"); /* Imagen de fondo específica para Empleo */
-  background-color: blue;
-  height: 800px;
+  background-image: url("/images/banner/fondoempleo.jpg"); /* Imagen de fondo específica para Nosotros */
 }
 
 /* Contenido interno de los contenedores principales */
 .FrameContent {
   width: 100%; /* Ancho completo del contenedor */
+  height: 100%;
   max-width: 1200px; /* Ancho máximo de 1200 píxeles */
   display: flex; /* Define un contenedor flex */
   flex-direction: row; /* Dirección de los elementos en fila */
@@ -73,7 +72,6 @@
   align-items: center; /* Centra los elementos horizontalmente */
   color: white; /* Color del texto blanco */
   text-shadow: 1px 1px 2px #4a403a, -1px -1px 2px #4a403a, 1px -1px 2px #4a403a, -1px 1px 2px #4a403a; /* Sombra del texto para mejor legibilidad */
-  background-color: chocolate;
 }
 
 /* Sección de botones dentro de los contenedores */
@@ -84,11 +82,9 @@
   gap: 15px; /* Espacio de 15 píxeles entre los elementos */
   justify-content: center; /* Centra los elementos verticalmente */
   align-items: center; /* Centra los elementos horizontalmente */
-  background-color: chartreuse;
 }
-
 .FrameContentSizeLarge {
-  height: 300px; /* Altura del contenedor para Size Large en móvil */
+  height: 275px; /* Altura del contenedor para Size Large en móvil */
 }
 
 .FrameContentSizeSmall {
@@ -117,7 +113,7 @@
 }
 
 /* Estilos para los botones del banner */
-.Button {
+.button {
   width: 150px; /* Ancho de 150 píxeles */
   max-width: 200px; /* Ancho máximo de 200 píxeles */
   --bs-btn-bg: rgba(74, 64, 58, 0.8); /* Variable CSS para el color de fondo del botón */
@@ -143,6 +139,14 @@
     flex-direction: column; /* Cambia la dirección a columna */
     border-top: none; /* Elimina el borde superior */
     padding: 0; /* Elimina padding */
+  }
+
+  .FrameContentSizeLarge {
+    height: 300px; /* Altura del contenedor para Size Large en móvil */
+  }
+
+  .FrameContentSizeSmall {
+    height: 250px; /* Altura del contenedor para Size Small en móvil */
   }
 
   /* Línea divisoria horizontal */
