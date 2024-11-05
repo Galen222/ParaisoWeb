@@ -10,6 +10,7 @@ from sqlalchemy.future import select
 from typing import List
 from ..models import models, schemas
 from ..dependencies import get_db, verify_token  # Importa la dependencia
+from sqlalchemy import func
 
 router = APIRouter()
 
@@ -39,8 +40,7 @@ async def get_blog_posts(
             select(models.Blog)
             .where(models.Blog.idioma == idioma)
             .order_by(
-                models.Blog.fecha_actualizacion.desc().nullslast(),  # Ordenar por fecha de actualización
-                models.Blog.fecha_publicacion.desc()                 # Si no hay fecha de actualización, ordenar por fecha de publicación
+                func.coalesce(models.Blog.fecha_actualizacion, models.Blog.fecha_publicacion).desc()
             )
         )
         return result.scalars().all()
@@ -76,6 +76,7 @@ async def get_blog_post_by_slug(
             raise HTTPException(status_code=404, detail="Blog not found")
         return blog_post
     except Exception as e:
+        print(f"Error al obtener los posts del blog: {e}")  # Imprimir el error en la consola
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/blog/by-id/{id_noticia}", response_model=schemas.Blog)
