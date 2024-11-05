@@ -6,7 +6,7 @@
 
 /* Estilos para las notificaciones Toastify */
 .Toastify__toast {
-  background-color: #4a403a; /* Fondo marrón oscuro para las notificaciones */
+  background-color: var(--text_color); /* Fondo marrón oscuro para las notificaciones */
 }
 
 /* Estilos para dispositivos tipo tablet */

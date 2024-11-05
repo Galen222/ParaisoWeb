@@ -386,7 +386,6 @@
     width: 100%; /* Ancho completo */
     margin-top: 15px; /* Márgen superior de 15 píxeles */
     justify-content: space-between; /* Distribuye el espacio entre las banderas */
-    /* background-color: #4a403a; */
     background-color: rgba(74, 64, 58, 0.5); /* Fondo semi-transparente */
     align-items: center; /* Centra verticalmente las banderas */
     padding: 10px 0px; /* Padding superior e inferior de 10 píxeles */
@@ -420,7 +419,6 @@
     overflow: hidden; /* Oculta cualquier contenido desbordado */
     transition: visibility 0s 0.3s, opacity 0.3s ease-in-out, max-height 0.3s ease-in-out; /* Transiciones para mostrar/ocultar el menú */
     margin-top: -1px; /* Márgen superior de -1 píxel */
-    /* background-color: #4a403a; */
     background-color: rgba(74, 64, 58, 0.8); /* Fondo semi-transparente */
   }
 
@@ -460,7 +458,6 @@
     padding: 0px; /* Sin padding */
     transform: translateX(-50%) translateY(0px); /* Ajusta la posición */
     transition: none; /* Elimina las transiciones */
-    /* background-color: #4a403a; */
     background-color: rgba(74, 64, 58, 0.8); /* Fondo semi-transparente */
   }
 

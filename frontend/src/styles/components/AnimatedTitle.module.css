@@ -23,7 +23,7 @@
   white-space: nowrap; /* Evita que el texto se divida en múltiples líneas */
   font-size: 86px; /* Tamaño de fuente grande para destacar el texto */
   color: white; /* Color del texto blanco */
-  text-shadow: 1px 1px 2px #4a403a, -1px -1px 2px #4a403a, 1px -1px 2px #4a403a, -1px 1px 2px #4a403a; /* Sombra múltiple para mejorar la legibilidad y darle profundidad al texto */
+  text-shadow: 1px 1px 2px var(--text_color), -1px -1px 2px var(--text_color), 1px -1px 2px var(--text_color), -1px 1px 2px var(--text_color); /* Sombra múltiple para mejorar la legibilidad y darle profundidad al texto */
 }
 
 /* Estilos para dispositivos tipo tablet */
@@ -37,7 +37,7 @@
 @media (max-width: 767px) {
   .animationFont {
     font-size: 36px; /* Reduce aún más el tamaño de fuente a 36 píxeles para dispositivos móviles */
-    color: #4a403a; /* Cambia el color del texto a un tono marrón oscuro para mejor contraste */
+    color: var(--text_color); /* Cambia el color del texto a un tono marrón oscuro para mejor contraste */
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white; /* Sombra blanca para mejorar la legibilidad sobre fondos oscuros */
     overflow: visible; /* Permite que el contenido no se corte y se muestre completamente */
   }

@@ -57,7 +57,8 @@
 .blogLink {
   text-decoration: none; /* Elimina el subrayado del enlace */
   color: white; /* Color del texto blanco */
-  text-shadow: -1px -1px 0 #4a403a, /* Sombra del texto para mejorar la legibilidad */ 1px -1px 0 #4a403a, -1px 1px 0 #4a403a, 1px 1px 0 #4a403a;
+  text-shadow: -1px -1px 0 var(--text_color), /* Sombra del texto para mejorar la legibilidad */ 1px -1px 0 var(--text_color), -1px 1px 0 var(--text_color),
+    1px 1px 0 var(--text_color);
   font-size: 34px; /* Tamaño de fuente de 34 píxeles */
   margin-top: 20px; /* Márgen superior de 20 píxeles */
 }

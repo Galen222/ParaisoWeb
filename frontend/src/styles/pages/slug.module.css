@@ -46,11 +46,11 @@
   width: 200px; /* Ancho fijo de 200 píxeles */
   color: var(--text_color); /* Color del texto definido en la variable CSS */
   --bs-btn-bg: white; /* Variable CSS para el color de fondo del botón */
-  --bs-btn-bg-border-color: #4a403a; /* Variable CSS para el color del borde del botón */
-  --bs-btn-hover-bg: #4a403a; /* Variable CSS para el color de fondo al pasar el ratón */
-  --bs-btn-hover-border-color: #4a403a; /* Variable CSS para el color del borde al pasar el ratón */
-  --bs-btn-active-bg: #4a403a; /* Variable CSS para el color de fondo al activar el botón */
-  --bs-btn-active-border-color: #4a403a; /* Variable CSS para el color del borde al activar el botón */
+  --bs-btn-bg-border-color: var(--text_color); /* Variable CSS para el color del borde del botón */
+  --bs-btn-hover-bg: var(--text_color); /* Variable CSS para el color de fondo al pasar el ratón */
+  --bs-btn-hover-border-color: var(--text_color); /* Variable CSS para el color del borde al pasar el ratón */
+  --bs-btn-active-bg: var(--text_color); /* Variable CSS para el color de fondo al activar el botón */
+  --bs-btn-active-border-color: var(--text_color); /* Variable CSS para el color del borde al activar el botón */
   --bs-btn-disabled-bg: white; /* Variable CSS para el color de fondo cuando está deshabilitado */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), /* Sombra sutil para dar efecto de profundidad */ 0 6px 20px rgba(0, 0, 0, 0.19);
   transform: translateZ(0); /* Optimiza el rendimiento de la animación */

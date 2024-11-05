@@ -8,7 +8,7 @@
 .contactLocation {
   display: inline-block; /* Muestra el contenedor en línea pero permite aplicar ancho y alto */
   width: 80%; /* Ocupa el 80% del ancho del contenedor padre */
-  border: 2px solid #4a403a; /* Borde marrón oscuro de 2 píxeles */
+  border: 2px solid var(--text_color); /* Borde marrón oscuro de 2 píxeles */
   border-radius: 10px; /* Bordes redondeados de 10 píxeles */
   padding: 10px; /* Espaciado interno de 10 píxeles alrededor del contenido */
   margin-bottom: 16px; /* Márgen inferior de 16 píxeles para separar de otros elementos */

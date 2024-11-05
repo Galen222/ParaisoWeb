@@ -1,6 +1,6 @@
 /* Contenedor principal del cargador */
 .loader {
-  --point-color: #4a403a; /* Color de los elementos del cargador */
+  --point-color: var(--text_color); /* Color de los elementos del cargador */
   --size: 6px; /* Tamaño de los puntos del cargador */
   overflow: hidden; /* Oculta cualquier contenido que se desborde del contenedor */
   width: 100vw; /* Usa el ancho completo de la ventana de visualización */

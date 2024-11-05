@@ -1,7 +1,7 @@
 /* Contenedor principal del pie de página */
 .footer {
   width: 100%; /* Ancho completo del pie de página */
-  background-color: #4a403a; /* Color de fondo marrón oscuro */
+  background-color: var(--text_color); /* Color de fondo marrón oscuro */
   color: white; /* Color de texto blanco */
   text-align: center; /* Centra el texto horizontalmente */
   padding: 0; /* Elimina el padding interno */

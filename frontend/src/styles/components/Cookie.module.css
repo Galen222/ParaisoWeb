@@ -102,14 +102,14 @@ input:checked + .slider:before {
 /* Botón de aceptar cookies */
 .acceptButton {
   width: 200px; /* Ancho fijo de 200 píxeles */
-  --bs-btn-bg: #4a403a; /* Variable CSS para el color de fondo */
-  --bs-btn-border-color: #4a403a; /* Variable CSS para el color del borde */
+  --bs-btn-bg: var(--text_color); /* Variable CSS para el color de fondo */
+  --bs-btn-border-color: var(--text_color); /* Variable CSS para el color del borde */
   --bs-btn-hover-bg: #198754; /* Variable CSS para el color de fondo al pasar el ratón */
   --bs-btn-hover-border-color: #198754; /* Variable CSS para el color del borde al pasar el ratón */
   --bs-btn-active-bg: #198754; /* Variable CSS para el color de fondo al activar el botón */
   --bs-btn-active-border-color: #198754; /* Variable CSS para el color del borde al activar el botón */
-  --bs-btn-disabled-bg: #4a403a; /* Variable CSS para el color de fondo cuando está deshabilitado */
-  --bs-btn-disabled-border-color: #4a403a; /* Variable CSS para el color del borde cuando está deshabilitado */
+  --bs-btn-disabled-bg: var(--text_color); /* Variable CSS para el color de fondo cuando está deshabilitado */
+  --bs-btn-disabled-border-color: var(--text_color); /* Variable CSS para el color del borde cuando está deshabilitado */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19); /* Sombra para dar efecto de profundidad */
   transform: translateZ(0); /* Optimiza el rendimiento de la animación */
 }
@@ -117,14 +117,14 @@ input:checked + .slider:before {
 /* Botón de cancelar cookies */
 .cancelButton {
   width: 200px; /* Ancho fijo de 200 píxeles */
-  --bs-btn-bg: #4a403a; /* Variable CSS para el color de fondo */
-  --bs-btn-border-color: #4a403a; /* Variable CSS para el color del borde */
+  --bs-btn-bg: var(--text_color); /* Variable CSS para el color de fondo */
+  --bs-btn-border-color: var(--text_color); /* Variable CSS para el color del borde */
   --bs-btn-hover-bg: #dc3545; /* Variable CSS para el color de fondo al pasar el ratón */
   --bs-btn-hover-border-color: #dc3545; /* Variable CSS para el color del borde al pasar el ratón */
   --bs-btn-active-bg: #dc3545; /* Variable CSS para el color de fondo al activar el botón */
   --bs-btn-active-border-color: #dc3545; /* Variable CSS para el color del borde al activar el botón */
-  --bs-btn-disabled-bg: #4a403a; /* Variable CSS para el color de fondo cuando está deshabilitado */
-  --bs-btn-disabled-border-color: #4a403a; /* Variable CSS para el color del borde cuando está deshabilitado */
+  --bs-btn-disabled-bg: var(--text_color); /* Variable CSS para el color de fondo cuando está deshabilitado */
+  --bs-btn-disabled-border-color: var(--text_color); /* Variable CSS para el color del borde cuando está deshabilitado */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19); /* Sombra para dar efecto de profundidad */
   transform: translateZ(0); /* Optimiza el rendimiento de la animación */
 }

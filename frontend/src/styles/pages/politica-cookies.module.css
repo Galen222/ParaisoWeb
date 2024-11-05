@@ -17,14 +17,14 @@
 /* Botón de eliminación */
 .deleteButton {
   width: 400px; /* Ancho fijo de 400 píxeles */
-  --bs-btn-bg: #4a403a; /* Color de fondo predeterminado del botón */
-  --bs-btn-border-color: #4a403a; /* Color de borde predeterminado del botón */
+  --bs-btn-bg: var(--text_color); /* Color de fondo predeterminado del botón */
+  --bs-btn-border-color: var(--text_color); /* Color de borde predeterminado del botón */
   --bs-btn-hover-bg: #dc3545; /* Color de fondo al pasar el ratón (rojo) */
   --bs-btn-hover-border-color: #dc3545; /* Color de borde al pasar el ratón (rojo) */
   --bs-btn-active-bg: #dc3545; /* Color de fondo al hacer clic */
   --bs-btn-active-border-color: #dc3545; /* Color de borde al hacer clic */
-  --bs-btn-disabled-bg: #4a403a; /* Color de fondo cuando el botón está deshabilitado */
-  --bs-btn-disabled-border-color: #4a403a; /* Color de borde cuando el botón está deshabilitado */
+  --bs-btn-disabled-bg: var(--text_color); /* Color de fondo cuando el botón está deshabilitado */
+  --bs-btn-disabled-border-color: var(--text_color); /* Color de borde cuando el botón está deshabilitado */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), 0 6px 20px rgba(0, 0, 0, 0.19); /* Sombra para dar profundidad */
   transform: translateZ(0); /* Optimiza el rendimiento de la animación */
 }

@@ -71,7 +71,7 @@
   justify-content: center; /* Centra los elementos verticalmente */
   align-items: center; /* Centra los elementos horizontalmente */
   color: white; /* Color del texto blanco */
-  text-shadow: 1px 1px 2px #4a403a, -1px -1px 2px #4a403a, 1px -1px 2px #4a403a, -1px 1px 2px #4a403a; /* Sombra del texto para mejor legibilidad */
+  text-shadow: 1px 1px 2px var(--text_color), -1px -1px 2px var(--text_color), 1px -1px 2px var(--text_color), -1px 1px 2px var(--text_color); /* Sombra del texto para mejor legibilidad */
 }
 
 /* Sección de botones dentro de los contenedores */
@@ -184,7 +184,7 @@
 
   /* Ajuste de color y sombra del texto en móviles */
   .textSection {
-    color: #4a403a; /* Cambia el color del texto a un tono marrón oscuro */
+    color: var(--text_color); /* Cambia el color del texto a un tono marrón oscuro */
     text-shadow: 1px 1px 2px white, -1px -1px 2px white, 1px -1px 2px white, -1px 1px 2px white; /* Sombra blanca para mejorar la legibilidad */
   }
 

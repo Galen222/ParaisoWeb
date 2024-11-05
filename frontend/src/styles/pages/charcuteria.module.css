@@ -1,7 +1,7 @@
 /* Contenedor principal para la sección de charcutería */
 .charcuteriaContainer {
   line-height: 1.5; /* Altura de línea de 1.5 para mejorar la legibilidad del texto */
-  color: #4a403a; /* Color de texto en tono marrón oscuro */
+  color: var(--text_color); /* Color de texto en tono marrón oscuro */
   margin: 0; /* Elimina márgenes predeterminados */
   padding: 0; /* Elimina padding predeterminado */
   background-attachment: fixed; /* Fija la imagen de fondo al viewport para efecto parallax */
@@ -69,7 +69,8 @@
 /* Estilo para los párrafos dentro de la cara frontal */
 .front p {
   color: white; /* Color del texto en blanco */
-  text-shadow: -1px -1px 0 #4a403a, /* Sombra del texto para mejorar la legibilidad */ 1px -1px 0 #4a403a, -1px 1px 0 #4a403a, 1px 1px 0 #4a403a;
+  text-shadow: -1px -1px 0 var(--text_color), /* Sombra del texto para mejorar la legibilidad */ 1px -1px 0 var(--text_color), -1px 1px 0 var(--text_color),
+    1px 1px 0 var(--text_color);
 }
 
 /* Pseudo-elemento para añadir una capa superpuesta en la cara frontal */

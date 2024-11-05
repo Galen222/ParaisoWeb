@@ -14,7 +14,7 @@
 
   /* Estilo para la pista de la barra de scroll (fondo) */
   ::-webkit-scrollbar-track {
-    background-color: #4a403a; /* Color de fondo de la pista de la barra de scroll */
+    background-color: var(--text_color); /* Color de fondo de la pista de la barra de scroll */
   }
 }
 
@@ -22,7 +22,7 @@
 @-moz-document url-prefix() {
   html {
     scrollbar-width: thin; /* Define el ancho de la barra de scroll como fino */
-    scrollbar-color: #7a726b #4a403a; /* Color del pulgar y de la pista (fondo) en Firefox */
+    scrollbar-color: #7a726b var(--text_color); /* Color del pulgar y de la pista (fondo) en Firefox */
   }
 }
 
@@ -43,5 +43,5 @@ body::-webkit-scrollbar-thumb {
 }
 
 body::-webkit-scrollbar-track {
-  background-color: #4a403a; /* Color de la pista de la barra de scroll */
+  background-color: var(--text_color); /* Color de la pista de la barra de scroll */
 }
