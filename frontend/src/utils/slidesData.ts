@@ -6,7 +6,7 @@ import { IntlShape } from "react-intl";
  * Interfaz para representar los datos de un slide en un carrusel.
  * Los slides pueden ser de tipo imagen o texto.
  */
-interface Slide {
+export interface Slide {
   type: "image" | "text"; // Tipo de slide: imagen o texto.
   src?: string; // URL de la imagen (opcional si es tipo "text").
   alt?: string; // Texto alternativo para la imagen (opcional).

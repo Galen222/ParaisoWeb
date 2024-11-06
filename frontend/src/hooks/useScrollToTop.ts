@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
  * @property {boolean} isScrollButtonVisible - Indica si el botón de desplazamiento al inicio es visible.
  * @property {() => void} scrollToTop - Función para desplazar la página hasta la parte superior.
  */
-interface UseScrollToTopOutput {
+export interface UseScrollToTopOutput {
   isScrollButtonVisible: boolean;
   scrollToTop: () => void;
 }

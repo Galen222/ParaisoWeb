@@ -12,7 +12,7 @@ import styles from "../styles/pages/politica-privacidad.module.css";
 /**
  * Interfaz para las propiedades de la página de Política de Privacidad.
  */
-interface PoliticaPrivacidadPageProps {
+export interface PoliticaPrivacidadPageProps {
   loadingMessages: boolean;
 }
 

@@ -14,7 +14,7 @@ import useScrollToTop from "../hooks/useScrollToTop";
  * Propiedades para el componente `Home`.
  * @property {boolean} loadingMessages - Estado de carga de los mensajes de internacionalización.
  */
-interface HomeProps {
+export interface HomeProps {
   loadingMessages: boolean;
 }
 

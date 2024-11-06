@@ -15,7 +15,7 @@ import useScrollToTop from "../hooks/useScrollToTop";
 /**
  * Interfaz para las propiedades del componente de la página San Bernardo.
  */
-interface SanBernardoPageProps {
+export interface SanBernardoPageProps {
   loadingMessages: boolean; // Indica si los mensajes están cargando.
   mapLocale: string; // Locale para el mapa a mostrar.
 }
@@ -23,7 +23,7 @@ interface SanBernardoPageProps {
 /**
  * Tipo del componente que incluye `pageTitleText` como propiedad estática.
  */
-type SanBernardoPageComponent = ComponentType<SanBernardoPageProps> & { pageTitleText?: string };
+export type SanBernardoPageComponent = ComponentType<SanBernardoPageProps> & { pageTitleText?: string };
 
 /**
  * Componente que representa la página San Bernardo.

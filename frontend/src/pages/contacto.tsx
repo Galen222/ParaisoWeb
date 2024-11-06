@@ -16,14 +16,14 @@ import styles from "../styles/pages/contacto.module.css";
  * Propiedades para el componente `ContactPage`.
  * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
  */
-interface ContactPageProps {
+export interface ContactPageProps {
   loadingMessages: boolean;
 }
 
 /**
  * Tipo de componente para `ContactPage` que incluye una propiedad opcional `pageTitleText`.
  */
-type ContactPageComponent = ComponentType<ContactPageProps> & { pageTitleText?: string };
+export type ContactPageComponent = ComponentType<ContactPageProps> & { pageTitleText?: string };
 
 /**
  * Componente funcional para la página de Contacto.

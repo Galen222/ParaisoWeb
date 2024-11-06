@@ -12,23 +12,23 @@ import useScrollToTop from "../hooks/useScrollToTop";
 /**
  * Interfaz para las propiedades del componente de reservas.
  */
-interface ReservasProps {
+export interface ReservasPageProps {
   loadingMessages: boolean; // Indica si los mensajes están en estado de carga.
 }
 
 /**
  * Tipo del componente que incluye `pageTitleText` como propiedad estática.
  */
-type ReservasPageComponent = ComponentType<ReservasProps> & { pageTitleText?: string };
+export type ReservasPageComponent = ComponentType<ReservasPageProps> & { pageTitleText?: string };
 
 /**
  * Componente funcional para la página de reservas.
  *
- * @param {ReservasProps} props - Las propiedades del componente.
+ * @param {ReservasPageProps} props - Las propiedades del componente.
  * @param {boolean} props.loadingMessages - Estado de carga de los mensajes.
  * @returns {JSX.Element} El componente de la página de reservas.
  */
-const Reservas: ReservasPageComponent = ({ loadingMessages }: ReservasProps) => {
+const ReservasPage: ReservasPageComponent = ({ loadingMessages }: ReservasPageProps) => {
   const intl = useIntl(); // Inicia el hook de internacionalización para acceder a las funciones de traducción.
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para controlar el botón de desplazamiento.
 
@@ -71,6 +71,6 @@ const Reservas: ReservasPageComponent = ({ loadingMessages }: ReservasProps) => 
 };
 
 // Define `pageTitleText` como una propiedad estática del componente `Reservas`.
-Reservas.pageTitleText = "reservas";
+ReservasPage.pageTitleText = "reservas";
 
-export default Reservas; // Exporta el componente para que pueda ser utilizado en otras partes de la aplicación.
+export default ReservasPage; // Exporta el componente para que pueda ser utilizado en otras partes de la aplicación.

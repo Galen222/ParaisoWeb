@@ -9,7 +9,7 @@ import styles from "../styles/components/AnimatedTitle.module.css";
  * @property {string} pageTitleText - Identificador base para el texto del título de la página en varios idiomas.
  * @property {boolean} cookiesModalClosed - Indica si el modal de cookies ha sido cerrado.
  */
-interface AnimatedTitleProps {
+export interface AnimatedTitleProps {
   pageTitleText: string;
   cookiesModalClosed: boolean;
 }

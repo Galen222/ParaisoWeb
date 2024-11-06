@@ -11,7 +11,7 @@ declare module "react-slick" {
   /**
    * Interfaz para las propiedades (settings) del componente de slider.
    */
-  interface Settings {
+  export interface Settings {
     accessibility?: boolean; // Habilita la accesibilidad para el slider.
     arrows?: boolean; // Muestra flechas de navegación.
     dots?: boolean; // Muestra puntos de navegación.

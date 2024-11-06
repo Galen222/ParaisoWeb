@@ -30,7 +30,7 @@ import { useCookieLogic } from "../hooks/useCookieLogic";
  * Extiende `AppProps` de Next.js e incluye una propiedad opcional `pageTitleText`
  * para definir el título de la página.
  */
-interface CustomAppProps extends NextAppProps {
+export interface CustomAppProps extends NextAppProps {
   Component: NextAppProps["Component"] & { pageTitleText?: string };
 }
 

@@ -10,7 +10,7 @@ import { getBlogPosts, BlogPost } from "../services/blogService";
  * @property {boolean} loading - Indica si los datos están en proceso de carga.
  * @property {string | null} error - Mensaje de error, si ocurre uno, o `null` si no hay error.
  */
-interface UseFetchBlogReturn {
+export interface UseFetchBlogReturn {
   data: BlogPost[] | null;
   loading: boolean;
   error: string | null;

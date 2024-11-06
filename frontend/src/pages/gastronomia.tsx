@@ -15,18 +15,24 @@ import styles from "../styles/pages/gastronomia.module.css";
  * Propiedades para el componente `GastronomiaPage`.
  * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
  */
-interface GastronomiaPageProps {
+export interface GastronomiaPageProps {
   loadingMessages: boolean;
 }
 
 /**
- * Componente funcional para la página de Gastronomía.
- * Incluye texto descriptivo, carousels de imágenes, y la funcionalidad de descarga del menú.
- *
- * @param {GastronomiaPageProps} props - Propiedades para el componente `GastronomiaPage`.
- * @returns {JSX.Element} Página de Gastronomía.
+ * Tipo del componente que incluye `pageTitleText` como propiedad estática.
  */
-const GastronomiaPage: ComponentType<GastronomiaPageProps> & { pageTitleText?: string } = ({ loadingMessages }) => {
+export type GastronomiaPageComponent = ComponentType<GastronomiaPageProps> & { pageTitleText?: string };
+
+/**
+ * Componente funcional para la página de reservas.
+ *
+ * @param {GastronomiaPageProps} props - Las propiedades del componente.
+ * @param {boolean} props.loadingMessages - Estado de carga de los mensajes.
+ * @returns {JSX.Element} El componente de la página de reservas.
+ *
+ */
+const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: GastronomiaPageProps) => {
   const intl = useIntl(); // Hook para la internacionalización
   const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para el botón de desplazamiento hacia arriba
   const { downloadFile, isDownloading } = useDownloadFile(); // Hook para descarga de archivos

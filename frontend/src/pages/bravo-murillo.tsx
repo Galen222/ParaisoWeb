@@ -17,7 +17,7 @@ import useScrollToTop from "../hooks/useScrollToTop";
  * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
  * @property {string} mapLocale - Idioma del mapa, usado en el componente `Map`.
  */
-interface BravoMurilloPageProps {
+export interface BravoMurilloPageProps {
   loadingMessages: boolean;
   mapLocale: string;
 }
@@ -25,7 +25,7 @@ interface BravoMurilloPageProps {
 /**
  * Tipo de componente para `BravoMurilloPage` que incluye una propiedad opcional `pageTitleText`.
  */
-type BravoMurilloPageComponent = ComponentType<BravoMurilloPageProps> & { pageTitleText?: string };
+export type BravoMurilloPageComponent = ComponentType<BravoMurilloPageProps> & { pageTitleText?: string };
 
 /**
  * Componente funcional para la página del restaurante "Bravo Murillo".

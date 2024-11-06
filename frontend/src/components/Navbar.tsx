@@ -16,7 +16,7 @@ import styles from "../styles/components/Navbar.module.css";
  * @property {boolean} cookiesModalClosed - Indica si el modal de cookies ha sido cerrado.
  * @property {string} pageTitleText - Texto del título de la página para el componente AnimatedTitle.
  */
-interface NavbarProps {
+export interface NavbarProps {
   onLocaleChange: (locale: string) => void;
   loadingMessages: boolean;
   cookiesModalClosed: boolean;

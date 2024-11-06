@@ -9,7 +9,7 @@ import styles from "../styles/components/Localization.module.css"; // Crea un ar
  * @property {string} localizationName - Nombre del lugar o ubicación para mostrar información localizada.
  * Este valor se utiliza como parte de los identificadores de traducción para obtener el contenido específico.
  */
-interface LocalizationProps {
+export interface LocalizationProps {
   localizationName: string;
 }
 

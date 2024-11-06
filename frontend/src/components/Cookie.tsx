@@ -15,7 +15,7 @@ import { useToastMessage } from "../hooks/useToast";
  * @property {function} onCookiesPolicyLinkClick - Función que se ejecuta al hacer clic en el enlace de la política de cookies.
  * @property {function} onPrivacyPolicyLinkClick - Función que se ejecuta al hacer clic en el enlace de la política de privacidad.
  */
-interface CookieProps {
+export interface CookieProps {
   onAccept: () => void;
   onAcceptAll: () => void;
   onDeclineAll: () => void;

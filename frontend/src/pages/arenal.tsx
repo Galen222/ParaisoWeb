@@ -17,7 +17,7 @@ import useScrollToTop from "../hooks/useScrollToTop";
  * @property {boolean} loadingMessages - Indica si los mensajes de la página están en proceso de carga.
  * @property {string} mapLocale - Idioma del mapa, usado en el componente `Map`.
  */
-interface ArenalPageProps {
+export interface ArenalPageProps {
   loadingMessages: boolean;
   mapLocale: string;
 }
@@ -25,7 +25,7 @@ interface ArenalPageProps {
 /**
  * Tipo de componente para `ArenalPage` que incluye una propiedad opcional `pageTitleText`.
  */
-type ArenalPageComponent = ComponentType<ArenalPageProps> & { pageTitleText?: string };
+export type ArenalPageComponent = ComponentType<ArenalPageProps> & { pageTitleText?: string };
 
 /**
  * Componente de la página del restaurante "Arenal".

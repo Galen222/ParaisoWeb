@@ -13,7 +13,7 @@ import styles from "../styles/pages/error.module.css"; // Importa los estilos es
  * @property {number} statusCode - Código de estado HTTP que causó el error.
  * @property {boolean} loadingMessages - Estado de carga de los mensajes.
  */
-interface ErrorPageProps {
+export interface ErrorPageProps {
   statusCode: number;
   loadingMessages: boolean;
 }

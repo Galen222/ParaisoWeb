@@ -11,7 +11,7 @@ import { getBannerContent } from "../utils/bannersData";
  * @property {"restaurantes" | "gastronomia" | "charcuteria" | "nosotros" | "empleo"} bannerType - Tipo de banner a mostrar.
  * Cada tipo representa una sección diferente con contenido específico.
  */
-interface BannerProps {
+export interface BannerProps {
   bannerType: "restaurantes" | "gastronomia" | "charcuteria" | "nosotros" | "empleo";
 }
 

@@ -14,14 +14,14 @@ import styles from "../styles/pages/charcuteria.module.css";
  * Propiedades para el componente `CharcuteriaPage`.
  * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
  */
-interface CharcuteriaPageProps {
+export interface CharcuteriaPageProps {
   loadingMessages: boolean;
 }
 
 /**
  * Tipo de componente para `CharcuteriaPage` que incluye una propiedad opcional `pageTitleText`.
  */
-type CharcuteriaPageComponent = ComponentType<CharcuteriaPageProps> & { pageTitleText?: string };
+export type CharcuteriaPageComponent = ComponentType<CharcuteriaPageProps> & { pageTitleText?: string };
 
 /**
  * Componente funcional para la página de Charcutería.

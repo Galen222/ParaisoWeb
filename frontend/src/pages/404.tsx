@@ -12,7 +12,7 @@ import type { ComponentType } from "react";
  * Propiedades para el componente `Custom404Page`.
  * @property {boolean} loadingMessages - Indica si los mensajes de la página están en proceso de carga.
  */
-interface Custom404PageProps {
+export interface Custom404PageProps {
   loadingMessages: boolean;
 }
 

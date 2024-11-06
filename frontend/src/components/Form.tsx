@@ -12,7 +12,7 @@ import styles from "../styles/components/Form.module.css";
  * Propiedades para el componente Form.
  * @property {function} onSubmit - Función que se ejecuta al enviar el formulario exitosamente.
  */
-interface FormProps {
+export interface FormProps {
   onSubmit: () => void;
 }
 

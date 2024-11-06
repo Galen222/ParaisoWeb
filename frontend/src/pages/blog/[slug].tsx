@@ -20,14 +20,14 @@ import styles from "../../styles/pages/slug.module.css";
  * Propiedades para el componente BlogDetailsPage.
  * @property {boolean} loadingMessages - Indica si los mensajes de la página están cargando.
  */
-interface BlogDetailsPageProps {
+export interface BlogDetailsPageProps {
   loadingMessages: boolean;
 }
 
 /**
  * Tipo extendido de componente para BlogDetailsPage con una propiedad opcional `pageTitleText`.
  */
-type BlogDetailsPageComponent = ComponentType<BlogDetailsPageProps> & { pageTitleText?: string };
+export type BlogDetailsPageComponent = ComponentType<BlogDetailsPageProps> & { pageTitleText?: string };
 
 /**
  * Componente para la página de detalles de un blog.

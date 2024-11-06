@@ -7,7 +7,7 @@ import styles from "../styles/components/Loader.module.css";
  * Propiedades para el componente Loader.
  * @property {string} [className] - Clase CSS opcional para personalizar el estilo del loader.
  */
-interface LoaderProps {
+export interface LoaderProps {
   className?: string;
 }
 

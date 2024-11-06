@@ -11,7 +11,7 @@ import { getBlogPostById } from "../services/blogService";
  * @property {string} idioma - Idioma actual de la noticia.
  * @property {string} slug - Slug de la noticia en el idioma actual.
  */
-interface BlogDetails {
+export interface BlogDetails {
   id_noticia: number;
   idioma: string;
   slug: string;

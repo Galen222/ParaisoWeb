@@ -10,7 +10,7 @@ import { getCharcuteriaProducts, CharcuteriaProduct } from "../services/charcute
  * @property {boolean} loading - Indica si los datos están en proceso de carga.
  * @property {string | null} error - Mensaje de error, si ocurre uno, o `null` si no hay error.
  */
-interface UseFetchCharcuteriaReturn {
+export interface UseFetchCharcuteriaReturn {
   data: CharcuteriaProduct[] | null;
   loading: boolean;
   error: string | null;

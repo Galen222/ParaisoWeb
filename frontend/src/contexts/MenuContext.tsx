@@ -11,7 +11,7 @@ import React, { createContext, useContext, useState, ReactNode } from "react";
  * @property {() => void} openRestaurantsMenu - Función para abrir el submenú de restaurantes.
  * @property {() => void} closeRestaurantsMenu - Función para cerrar el submenú de restaurantes.
  */
-interface MenuContextType {
+export interface MenuContextType {
   mobileMenu: boolean;
   toggleMobileMenu: () => void;
   closeMobileMenu: () => void;
@@ -21,7 +21,7 @@ interface MenuContextType {
 }
 
 // Crear el contexto del menú
-const MenuContext = createContext<MenuContextType | undefined>(undefined);
+export const MenuContext = createContext<MenuContextType | undefined>(undefined);
 
 /**
  * Hook personalizado para acceder al contexto del menú.
@@ -41,7 +41,7 @@ export const useMenu = () => {
  * Propiedades para el proveedor del menú.
  * @property {ReactNode} children - Elementos secundarios que estarán envueltos por el proveedor.
  */
-interface MenuProviderProps {
+export interface MenuProviderProps {
   children: ReactNode;
 }
 

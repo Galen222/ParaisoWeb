@@ -9,7 +9,7 @@ import styles from "../styles/components/Transport.module.css"; // Crea un archi
  * @property {string} transportName - Nombre del lugar o ubicación para mostrar información de transporte relacionada.
  * Este valor se utiliza como parte de los identificadores de traducción para obtener el contenido específico.
  */
-interface TransportProps {
+export interface TransportProps {
   transportName: string;
 }
 

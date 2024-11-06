@@ -13,7 +13,7 @@ import styles from "../styles/pages/aviso-legal.module.css";
  * Propiedades para el componente `AvisoLegalPage`.
  * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
  */
-interface AvisoLegalPageProps {
+export interface AvisoLegalPageProps {
   loadingMessages: boolean;
 }
 

@@ -15,14 +15,14 @@ import styles from "../styles/pages/blog.module.css";
  * Propiedades para el componente `BlogPage`.
  * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
  */
-interface BlogPageProps {
+export interface BlogPageProps {
   loadingMessages: boolean;
 }
 
 /**
  * Tipo de componente para `BlogPage` que incluye una propiedad opcional `pageTitleText`.
  */
-type BlogPageComponent = ComponentType<BlogPageProps> & { pageTitleText?: string };
+export type BlogPageComponent = ComponentType<BlogPageProps> & { pageTitleText?: string };
 
 /**
  * Componente funcional para la página del blog.

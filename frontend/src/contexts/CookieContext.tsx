@@ -17,7 +17,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
  * @property {boolean} AcceptCookiePersonalization - Indica si se ha aceptado el uso de cookies de personalización.
  * @property {(value: boolean) => void} setAcceptCookiePersonalization - Función para aceptar o rechazar el uso de cookies de personalización.
  */
-interface CookieConsentContextType {
+export interface CookieConsentContextType {
   cookieConsentAnalysis: boolean;
   setCookieConsentAnalysis: (consent: boolean) => void;
   cookieConsentAnalysisGoogle: boolean;

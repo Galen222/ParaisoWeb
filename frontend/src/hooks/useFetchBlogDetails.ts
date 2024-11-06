@@ -10,7 +10,7 @@ import { getBlogPostBySlug, BlogPost } from "../services/blogService";
  * @property {boolean} loadingBlogDetails - Indica si los detalles están en proceso de carga.
  * @property {string | null} error - Mensaje de error, si ocurre uno, o `null` si no hay error.
  */
-interface UseFetchBlogDetailsReturn {
+export interface UseFetchBlogDetailsReturn {
   data: BlogPost | null;
   loadingBlogDetails: boolean;
   error: string | null;

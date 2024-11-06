@@ -14,7 +14,7 @@ import styles from "../styles/components/Map.module.css";
  * @property {string} url - Enlace directo a Google Maps para la ubicación.
  * @property {string} telephone - Número de teléfono de la ubicación.
  */
-type Location = {
+export type Location = {
   lat: number;
   lng: number;
   address: string;
@@ -27,7 +27,7 @@ type Location = {
  * Tipo de dato para un objeto que contiene múltiples ubicaciones.
  * La clave es el identificador único de la ubicación.
  */
-type Locations = {
+export type Locations = {
   [key: string]: Location;
 };
 
@@ -72,7 +72,7 @@ const locations: Locations = {
  * @property {keyof Locations} locationKey - Clave que identifica la ubicación a mostrar.
  * @property {string} mapLocale - Código de idioma para la localización del mapa.
  */
-type MapProps = {
+export type MapProps = {
   locationKey: keyof Locations;
   mapLocale: string;
 };

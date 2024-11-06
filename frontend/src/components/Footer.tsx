@@ -12,7 +12,7 @@ import styles from "../styles/components/Footer.module.css";
  * Propiedades para el componente Footer.
  * @property {boolean} loadingMessages - Indica si los mensajes se están cargando, mostrando un loader en su lugar.
  */
-interface FooterProps {
+export interface FooterProps {
   loadingMessages: boolean;
 }
 

@@ -15,7 +15,7 @@ import useScrollToTop from "../hooks/useScrollToTop";
 /**
  * Interfaz para las propiedades de la página Reina Victoria.
  */
-interface ReinaVictoriaPageProps {
+export interface ReinaVictoriaPageProps {
   loadingMessages: boolean;
   mapLocale: string;
 }
@@ -23,7 +23,7 @@ interface ReinaVictoriaPageProps {
 /**
  * Tipo del componente para incluir `pageTitleText` como una propiedad estática.
  */
-type ReinaVictoriaPageComponent = ComponentType<ReinaVictoriaPageProps> & { pageTitleText?: string };
+export type ReinaVictoriaPageComponent = ComponentType<ReinaVictoriaPageProps> & { pageTitleText?: string };
 
 /**
  * Componente que representa la página Reina Victoria.

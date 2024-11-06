@@ -16,7 +16,7 @@ import styles from "../styles/pages/politica-cookies.module.css";
 /**
  * Interfaz para las propiedades de la página de Política de Cookies.
  */
-interface PoliticaCookiesPageProps {
+export interface PoliticaCookiesPageProps {
   loadingMessages: boolean;
 }
 

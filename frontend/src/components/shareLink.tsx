@@ -21,7 +21,7 @@ import {
  * @property {string} url - URL de la página o contenido a compartir.
  * @property {string} title - Título que se muestra o envía en las opciones de compartir.
  */
-interface ShareLinkProps {
+export interface ShareLinkProps {
   url: string;
   title: string;
 }

@@ -14,14 +14,14 @@ import styles from "../styles/pages/about.module.css"; // Importa los estilos es
  * Propiedades para el componente AboutPage.
  * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
  */
-interface AboutPageProps {
+export interface AboutPageProps {
   loadingMessages: boolean;
 }
 
 /**
  * Tipo de componente para AboutPage que incluye una propiedad opcional `pageTitleText`.
  */
-type AboutPageComponent = ComponentType<AboutPageProps> & { pageTitleText?: string };
+export type AboutPageComponent = ComponentType<AboutPageProps> & { pageTitleText?: string };
 
 /**
  * Componente funcional para la página "About" de la aplicación.

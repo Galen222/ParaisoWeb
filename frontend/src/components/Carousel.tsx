@@ -25,7 +25,7 @@ interface Slide {
  * @property {string} carouselType - Tipo de carrusel, utilizado para determinar
  * qué conjunto de diapositivas se mostrará.
  */
-interface CarouselProps {
+export interface CarouselProps {
   carouselType: string;
 }
 
