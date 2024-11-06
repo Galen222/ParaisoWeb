@@ -1,14 +1,16 @@
-// hooks/useToastMessage.ts
-
 import { useIntl } from "react-intl";
 import { toast, Slide, ToastOptions } from "react-toastify";
+
+interface ToastMessage {
+  showToast: (messageId: string, duration: number, type?: "success" | "error" | "info" | "warning") => void;
+}
 
 /**
  * Hook personalizado para mostrar mensajes toast.
  *
- * @returns {Object} Objeto que contiene la función `showToast` para mostrar un toast.
+ * @returns {ToastMessage} Objeto que contiene la función `showToast` para mostrar un toast.
  */
-export function useToastMessage() {
+export function useToastMessage(): ToastMessage {
   const intl = useIntl();
 
   /**

@@ -32,7 +32,7 @@ export interface NavbarProps {
  * @param {NavbarProps} props - Propiedades del componente Navbar.
  * @returns {JSX.Element} Barra de navegación con enlaces y selección de idioma.
  */
-const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookiesModalClosed, pageTitleText }) => {
+const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookiesModalClosed, pageTitleText }: NavbarProps): JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
   const deviceType = useDeviceType(); // Detecta el tipo de dispositivo (móvil o escritorio)
   const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();

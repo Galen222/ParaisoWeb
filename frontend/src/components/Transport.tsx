@@ -23,7 +23,7 @@ export interface TransportProps {
  * @param {TransportProps} props - Propiedades del componente Transport.
  * @returns {JSX.Element} Información de transporte para la ubicación especificada.
  */
-const Transport: React.FC<TransportProps> = ({ transportName }) => {
+const Transport: React.FC<TransportProps> = ({ transportName }: TransportProps): JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
 
   return (

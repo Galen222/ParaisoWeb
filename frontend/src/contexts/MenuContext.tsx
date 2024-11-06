@@ -29,7 +29,7 @@ export const MenuContext = createContext<MenuContextType | undefined>(undefined)
  * @throws Error si se utiliza fuera de un `MenuProvider`.
  * @returns {MenuContextType} El contexto del menú.
  */
-export const useMenu = () => {
+export const useMenu = (): MenuContextType => {
   const context = useContext(MenuContext);
   if (!context) {
     throw new Error("useMenu debe ser usado con MobileMenuProvider");
@@ -54,7 +54,7 @@ export interface MenuProviderProps {
  * @param {MenuProviderProps} props - Propiedades del proveedor de contexto.
  * @returns {JSX.Element} Proveedor del contexto del menú para controlar el estado del menú.
  */
-export const MenuProvider: React.FC<MenuProviderProps> = ({ children }) => {
+export const MenuProvider: React.FC<MenuProviderProps> = ({ children }: MenuProviderProps): JSX.Element => {
   // Estado y funciones para el menú móvil
   const [mobileMenu, setMobileMenu] = useState(false);
   const toggleMobileMenu = () => setMobileMenu(!mobileMenu); // Alterna el estado del menú móvil

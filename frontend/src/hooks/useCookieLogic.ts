@@ -13,7 +13,7 @@ import { initGA } from "@/utils/gaUtils"; // Importa la función desde utils
  *
  * @returns {Object} Objeto con variables y funciones para la gestión de cookies y consentimiento.
  */
-export function useCookieLogic() {
+export function useCookieLogic(): object {
   const [locale, setLocale] = useState<string>("es"); // Estado del idioma actual
   const [mapLocale, setMapLocale] = useState<string>(""); // Estado del idioma del mapa
   const [messages, setMessages] = useState({}); // Estado para los mensajes de localización

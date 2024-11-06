@@ -21,7 +21,7 @@ export interface LoaderProps {
  * @param {LoaderProps} props - Propiedades del componente Loader.
  * @returns {JSX.Element} Indicador de carga animado.
  */
-const Loader: React.FC<LoaderProps> = ({ className }) => {
+const Loader: React.FC<LoaderProps> = ({ className }: LoaderProps): JSX.Element => {
   let loaderClasses = styles.loader;
   if (className) {
     loaderClasses = `${styles.loader} ${styles[className]}`;

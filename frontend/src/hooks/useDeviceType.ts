@@ -8,7 +8,7 @@ import { useState, useEffect } from "react";
  *
  * @returns {string} - Tipo de dispositivo ("mobile", "tablet" o "pc").
  */
-const useDeviceType = () => {
+const useDeviceType = (): string => {
   const [deviceType, setDeviceType] = useState("pc"); // Estado inicial para el tipo de dispositivo
 
   useEffect(() => {

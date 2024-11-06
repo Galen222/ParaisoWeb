@@ -44,7 +44,7 @@ const CookieConsentContext = createContext<CookieConsentContextType | undefined>
  * @param {ReactNode} children - Componentes hijos que estarán dentro del proveedor.
  * @returns {JSX.Element} Proveedor del contexto de consentimiento de cookies.
  */
-export function CookieConsentProvider({ children }: { children: ReactNode }) {
+export function CookieConsentProvider({ children }: { children: ReactNode }): JSX.Element {
   // Estados para el consentimiento y aceptación de diferentes tipos de cookies
   const [cookieConsentAnalysis, setCookieConsentAnalysis] = useState<boolean>(false);
   const [cookieConsentAnalysisGoogle, setCookieConsentAnalysisGoogle] = useState<boolean>(false);
@@ -81,7 +81,7 @@ export function CookieConsentProvider({ children }: { children: ReactNode }) {
  * @throws Error si se usa fuera de un `CookieConsentProvider`.
  * @returns {CookieConsentContextType} El contexto de consentimiento de cookies.
  */
-export function useCookieConsent() {
+export function useCookieConsent(): CookieConsentContextType {
   const context = useContext(CookieConsentContext);
   if (!context) {
     throw new Error("useCookieConsent debe ser usado con CookieConsentProvider");

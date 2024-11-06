@@ -32,7 +32,13 @@ export interface CookieProps {
  * @param {CookieProps} props - Propiedades del componente Cookie.
  * @returns {JSX.Element} Modal de preferencias de cookies.
  */
-const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, onCookiesPolicyLinkClick, onPrivacyPolicyLinkClick }) => {
+const Cookie: React.FC<CookieProps> = ({
+  onAccept,
+  onAcceptAll,
+  onDeclineAll,
+  onCookiesPolicyLinkClick,
+  onPrivacyPolicyLinkClick,
+}: CookieProps): JSX.Element => {
   const intl = useIntl();
   const [isCustomizing, setIsCustomizing] = useState(false); // Estado para manejar si se están personalizando las cookies
 
@@ -73,7 +79,7 @@ const Cookie: React.FC<CookieProps> = ({ onAccept, onAcceptAll, onDeclineAll, on
    * Verifica si todas las opciones de cookies están deshabilitadas, lo cual permitiría desactivar el botón de aceptar.
    * @returns {boolean} Verdadero si todas las cookies están deshabilitadas, falso de lo contrario.
    */
-  const checkCookiesState = () => {
+  const checkCookiesState = (): boolean => {
     return !(AcceptCookieAnalysis || AcceptCookieAnalysisGoogle || AcceptCookiePersonalization);
   };
 

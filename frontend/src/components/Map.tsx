@@ -87,7 +87,7 @@ export type MapProps = {
  * @param {MapProps} props - Propiedades del componente MapComponent.
  * @returns {JSX.Element} Mapa de Google Maps con marcador e información de la ubicación.
  */
-const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
+const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps): JSX.Element => {
   const intl = useIntl();
   const mapRef = useRef<HTMLDivElement>(null); // Referencia para el contenedor del mapa
   const mapInstanceRef = useRef<google.maps.Map>(); // Referencia para la instancia del mapa

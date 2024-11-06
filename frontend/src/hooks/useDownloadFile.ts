@@ -11,7 +11,7 @@ import { useToastMessage } from "./useToast";
  *
  * @returns {Object} Objeto con la función `downloadFile` para iniciar la descarga y el estado `isDownloading`.
  */
-export function useDownloadFile() {
+export function useDownloadFile(): object {
   const intl = useIntl(); // Inicializa el hook de internacionalización
   const [isDownloading, setIsDownloading] = useState(false); // Estado para controlar el proceso de descarga
   const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones

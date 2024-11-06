@@ -26,7 +26,7 @@ export interface FormProps {
  * @param {FormProps} props - Propiedades del componente Form.
  * @returns {JSX.Element} Formulario de contacto.
  */
-const Form: React.FC<FormProps> = ({ onSubmit }) => {
+const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
   const [isPushingSend, setIsPushingSend] = useState(false); // Estado para la animación del botón de enviar
   const [isPushingFile, setIsPushingFile] = useState(false); // Estado para la animación del botón de subir archivo
@@ -153,7 +153,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }) => {
    * Verifica si el formulario está completo y todos los campos requeridos están llenos y válidos.
    * @returns {boolean} Verdadero si el formulario está listo para enviar, falso de lo contrario.
    */
-  const CheckFormComplete = () => {
+  const CheckFormComplete = (): boolean => {
     return (
       formData.name.trim() !== "" &&
       formData.email.trim() !== "" &&

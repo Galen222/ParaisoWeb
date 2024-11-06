@@ -36,7 +36,7 @@ export interface ShareLinkProps {
  * @param {ShareLinkProps} props - Propiedades del componente ShareLink.
  * @returns {JSX.Element} Botones de redes sociales para compartir un enlace.
  */
-const ShareLink: React.FC<ShareLinkProps> = ({ url, title }) => {
+const ShareLink: React.FC<ShareLinkProps> = ({ url, title }: ShareLinkProps): JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
 
   return (

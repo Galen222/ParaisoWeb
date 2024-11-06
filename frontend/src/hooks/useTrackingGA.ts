@@ -28,7 +28,7 @@ export function useVisitedPageTrackingGA(currentPage: string) {
  *
  * @returns {(usedButton: string) => void} - Función para registrar el clic en el botón con el nombre `usedButton`.
  */
-export function useButtonClickTrackingGA() {
+export function useButtonClickTrackingGA(): (usedButton: string) => void {
   const { cookieConsentAnalysisGoogle } = useCookieConsent(); // Verifica el consentimiento de cookies
 
   return (usedButton: string): void => {

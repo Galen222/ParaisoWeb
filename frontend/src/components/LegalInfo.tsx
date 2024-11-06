@@ -17,7 +17,7 @@ import styles from "../styles/components/LegalInfo.module.css";
  *
  * @returns {JSX.Element} Tabla con información legal de la empresa.
  */
-const LegalInfo: React.FC = () => {
+const LegalInfo: React.FC = (): JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
 
   return (

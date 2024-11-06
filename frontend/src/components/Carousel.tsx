@@ -39,7 +39,7 @@ export interface CarouselProps {
  * @param {CarouselProps} props - Propiedades para el componente Carousel.
  * @returns {JSX.Element} Carrusel de diapositivas.
  */
-const Carousel = ({ carouselType }: CarouselProps) => {
+const Carousel = ({ carouselType }: CarouselProps): JSX.Element => {
   // `intl` es una instancia del hook useIntl, utilizada para obtener mensajes localizados.
   const intl = useIntl();
 

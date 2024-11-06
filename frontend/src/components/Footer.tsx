@@ -25,7 +25,7 @@ export interface FooterProps {
  * @param {FooterProps} props - Propiedades del componente Footer.
  * @returns {JSX.Element} Pie de página con enlaces y loader opcional.
  */
-const Footer: React.FC<FooterProps> = ({ loadingMessages }) => {
+const Footer: React.FC<FooterProps> = ({ loadingMessages }: FooterProps): JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
 
   const deviceType = useDeviceType(); // Detecta el tipo de dispositivo
