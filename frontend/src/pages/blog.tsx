@@ -48,7 +48,7 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
   }
 
   // Ruta de la imagen de error
-  const imageFileName = "/images/web/error.png";
+  const imageError = "/images/web/error.png";
 
   // Renderiza un mensaje de error si ocurre un error en la carga de datos
   if (error) {
@@ -56,7 +56,7 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
       <div className={errorStyles.errorContainer}>
         <p className={errorStyles.errorText}>{error}</p>
         <div className={errorStyles.imageContainer}>
-          <img src={imageFileName} alt="Error" />
+          <img src={imageError} alt="Error" />
         </div>
       </div>
     );

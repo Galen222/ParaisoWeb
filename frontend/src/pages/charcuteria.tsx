@@ -55,7 +55,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
 
   // Muestra un loader si los mensajes o los productos están en proceso de carga
   if (loadingProducts || loadingMessages) {
-    return <Loader />;
+    return <Loader className="BD" />;
   }
 
   // Ruta de la imagen de error

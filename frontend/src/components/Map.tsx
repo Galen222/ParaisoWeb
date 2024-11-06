@@ -97,26 +97,40 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
   const [isLoaded, setIsLoaded] = useState(false); // Indica si el mapa se ha cargado
   const [loadError, setLoadError] = useState<string | null>(null); // Estado para errores de carga
 
-  // Carga el API de Google Maps y configura el idioma
+  /**
+   * Carga el API de Google Maps y configura el idioma usando importLibrary().
+   * Reemplaza el uso de loader.load() que está deprecado.
+   */
   useEffect(() => {
-    const loader = new Loader({
-      apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-      version: "weekly",
-      libraries: ["marker"],
-      language: mapLocale,
-    });
+    const init = async () => {
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
+      if (!apiKey) {
+        setLoadError("La clave de API de Google Maps no está configurada.");
+        return;
+      }
 
-    loader
-      .load()
-      .then(() => {
-        setIsLoaded(true); // Marca el estado como cargado
-      })
-      .catch((err) => {
-        setLoadError(err.message); // Guarda el mensaje de error
+      const loader = new Loader({
+        apiKey,
+        version: "weekly",
+        language: mapLocale,
       });
+
+      try {
+        // Importa las librerías necesarias usando importLibrary()
+        await Promise.all([loader.importLibrary("maps"), loader.importLibrary("marker")]);
+        setIsLoaded(true); // Marca el estado como cargado
+      } catch (err: any) {
+        setLoadError(err.message || "No se pudo cargar Google Maps.");
+      }
+    };
+
+    init();
   }, [mapLocale]);
 
-  // Inicializa el mapa y el marcador al cargar el mapa
+  /**
+   * Inicializa el mapa y el marcador al cargar el mapa.
+   * Se ejecuta una vez que el API de Google Maps ha sido cargado exitosamente.
+   */
   useEffect(() => {
     if (isLoaded && mapRef.current && !mapInstanceRef.current) {
       mapInstanceRef.current = new google.maps.Map(mapRef.current, {
@@ -129,14 +143,18 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
     }
   }, [isLoaded, location]);
 
-  // Actualiza el idioma de localización si cambia en la web
+  /**
+   * Actualiza el idioma de localización si cambia en la web.
+   */
   useEffect(() => {
     if (currentLocale !== intl.locale) {
       setCurrentLocale(intl.locale);
     }
   }, [intl.locale]);
 
-  // Recarga el marcador si cambia el idioma en la web
+  /**
+   * Recarga el marcador si cambia el idioma en la web.
+   */
   useEffect(() => {
     if (mapInstanceRef.current) {
       loadMarker();
@@ -147,58 +165,69 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }) => {
    * Carga el marcador en el mapa, mostrando un InfoWindow con detalles al hacer clic.
    */
   const loadMarker = async () => {
-    const { AdvancedMarkerElement } = (await google.maps.importLibrary("marker")) as any;
-    const marker = new AdvancedMarkerElement({
-      map: mapInstanceRef.current,
-      position: { lat: location.lat, lng: location.lng },
-      title: location.address_url,
-    });
+    if (!google.maps) return;
 
-    // Contenido del InfoWindow en formato HTML
-    const contentString = `<div class="fw-bold">
-      <h5>Paraíso del Jamón</h5>
-      <p>${location.address} ${intl.formatMessage({ id: "Map_Marker_Pais" })}</p>
-      <p>${intl.formatMessage({
-        id: "Map_Marker_Telefono",
-      })}<a class="text-decoration-none" href="tel:${location.telephone}" target="_blank" rel="noopener noreferrer">
-     ${location.telephone}
-    </a></p>
-      <p><a class="text-decoration-none" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-        location.address_url
-      )}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({ id: "Map_Marker_Texto1" })}</a></p>
-      <p><a class="text-decoration-none" href="${location.url}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({
-      id: "Map_Marker_Texto2",
-    })}</a></p>
-    </div>`;
-
-    if (infoWindowRef.current) {
-      infoWindowRef.current.setContent(contentString);
-    } else {
-      infoWindowRef.current = new google.maps.InfoWindow({
-        content: contentString,
+    try {
+      // Importa la librería 'marker' si aún no ha sido importada
+      const { AdvancedMarkerElement } = (await google.maps.importLibrary("marker")) as any;
+      const marker = new AdvancedMarkerElement({
+        map: mapInstanceRef.current!,
+        position: { lat: location.lat, lng: location.lng },
+        title: location.address_url,
       });
-    }
 
-    // Agrega un evento al marcador para abrir el InfoWindow al hacer clic
-    marker.addListener("click", () => {
-      if (infoWindowRef.current && mapInstanceRef.current) {
-        infoWindowRef.current.open({
-          anchor: marker,
-          map: mapInstanceRef.current,
-          shouldFocus: false,
+      // Contenido del InfoWindow en formato HTML
+      const contentString = `<div class="fw-bold">
+        <h5>Paraíso del Jamón</h5>
+        <p>${location.address} ${intl.formatMessage({ id: "Map_Marker_Pais" })}</p>
+        <p>${intl.formatMessage({
+          id: "Map_Marker_Telefono",
+        })}<a class="text-decoration-none" href="tel:${location.telephone}" target="_blank" rel="noopener noreferrer">
+       ${location.telephone}
+      </a></p>
+        <p><a class="text-decoration-none" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
+          location.address_url
+        )}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({ id: "Map_Marker_Texto1" })}</a></p>
+        <p><a class="text-decoration-none" href="${location.url}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({
+        id: "Map_Marker_Texto2",
+      })}</a></p>
+      </div>`;
+
+      if (infoWindowRef.current) {
+        infoWindowRef.current.setContent(contentString);
+      } else {
+        infoWindowRef.current = new google.maps.InfoWindow({
+          content: contentString,
         });
       }
-    });
+
+      // Agrega un evento al marcador para abrir el InfoWindow al hacer clic
+      marker.addListener("click", () => {
+        if (infoWindowRef.current && mapInstanceRef.current) {
+          infoWindowRef.current.open({
+            anchor: marker,
+            map: mapInstanceRef.current,
+            shouldFocus: false,
+          });
+        }
+      });
+    } catch (error: any) {
+      console.error("Error al cargar el marcador:", error);
+      setLoadError("No se pudo cargar el marcador en el mapa.");
+    }
   };
 
+  // Renderiza un mensaje de error si ocurrió algún problema al cargar el mapa
   if (loadError) {
     return <div>{intl.formatMessage({ id: "Map_Error_Texto" })}</div>;
   }
 
+  // Renderiza un mensaje de carga mientras el mapa se está cargando
   if (!isLoaded) {
     return <div>{intl.formatMessage({ id: "Map_Loading_Texto" })}</div>;
   }
 
+  // Renderiza el contenedor del mapa una vez que se ha cargado
   return (
     <div>
       <div ref={mapRef} className={styles.mapContainer}></div>

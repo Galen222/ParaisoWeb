@@ -65,14 +65,14 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
     return <Loader className="BD" />;
   }
 
-  const imageFileName = "/images/web/error.png"; // Imagen de error por defecto
+  const imageError = "/images/web/error.png"; // Imagen de error por defecto
 
   if (error) {
     return (
       <div className={errorStyles.errorContainer}>
         <p className={errorStyles.errorText}>{error}</p>
         <div className={errorStyles.imageContainer}>
-          <img src={imageFileName} alt="Error" />
+          <img src={imageError} alt="Error" />
         </div>
       </div>
     );
