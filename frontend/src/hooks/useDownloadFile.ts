@@ -1,17 +1,23 @@
-// hooks/useDownloadFile.ts
-
 import { useState } from "react";
 import { saveAs } from "file-saver";
 import { useIntl } from "react-intl"; // Hook para internacionalización
 import { useToastMessage } from "./useToast";
 
 /**
+ * Interfaz para el objeto retornado por el hook `useDownloadFile`.
+ */
+interface DownloadFileHook {
+  downloadFile: (filePath: string, fileName: string, successMessageId: string, errorMessageId: string) => Promise<void>;
+  isDownloading: boolean;
+}
+
+/**
  * Hook personalizado para gestionar la descarga de archivos.
  * Permite descargar un archivo y muestra notificaciones de éxito o error.
  *
- * @returns {Object} Objeto con la función `downloadFile` para iniciar la descarga y el estado `isDownloading`.
+ * @returns {DownloadFileHook} Objeto con la función `downloadFile` para iniciar la descarga y el estado `isDownloading`.
  */
-export function useDownloadFile(): object {
+export function useDownloadFile(): DownloadFileHook {
   const intl = useIntl(); // Inicializa el hook de internacionalización
   const [isDownloading, setIsDownloading] = useState(false); // Estado para controlar el proceso de descarga
   const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones

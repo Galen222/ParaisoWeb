@@ -1,19 +1,33 @@
-// hooks/useCookieLogic.ts
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
 import { createDeviceCookie } from "@/utils/cookieUtils";
 import { initGA } from "@/utils/gaUtils"; // Importa la función desde utils
 
+// Define la interfaz para las propiedades devueltas por el hook
+interface CookieLogic {
+  locale: string;
+  mapLocale: string;
+  messages: Record<string, any>;
+  loadingMessages: boolean;
+  showCookieModal: boolean;
+  cookiesModalClosed: boolean;
+  handleLocaleChange: (newLocale: string) => void;
+  handleCookiesPolicyLinkClick: () => void;
+  handlePrivacyPolicyLinkClick: () => void;
+  handleAcceptCookies: () => void;
+  handleDeclineAllCookies: () => void;
+  handleAcceptAllCookies: () => void;
+}
+
 /**
  * Hook personalizado para gestionar la lógica de consentimiento de cookies.
  * Controla la configuración del idioma, carga de mensajes, y la presentación del modal de cookies,
  * además de gestionar los consentimientos para análisis, personalización y cookies de Google.
  *
- * @returns {Object} Objeto con variables y funciones para la gestión de cookies y consentimiento.
+ * @returns {CookieLogic} Objeto con variables y funciones para la gestión de cookies y consentimiento.
  */
-export function useCookieLogic(): object {
+export function useCookieLogic(): CookieLogic {
   const [locale, setLocale] = useState<string>("es"); // Estado del idioma actual
   const [mapLocale, setMapLocale] = useState<string>(""); // Estado del idioma del mapa
   const [messages, setMessages] = useState({}); // Estado para los mensajes de localización
