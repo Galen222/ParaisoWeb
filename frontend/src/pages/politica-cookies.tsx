@@ -23,8 +23,7 @@ interface PoliticaCookiesPageProps {
 /**
  * Componente que representa la página de Política de Cookies.
  *
- * @param {PoliticaCookiesPageProps} props - Las propiedades del componente.
- * @param {boolean} props.loadingMessages - Indica si los mensajes están cargando.
+ * @param {boolean} loadingMessages - Indica si los mensajes están cargando.
  * @returns {JSX.Element} El componente de la página de Política de Cookies.
  */
 const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {

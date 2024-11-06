@@ -19,8 +19,7 @@ interface PoliticaPrivacidadPageProps {
 /**
  * Componente que representa la página de Política de Privacidad.
  *
- * @param {PoliticaPrivacidadPageProps} props - Las propiedades del componente.
- * @param {boolean} props.loadingMessages - Indica si los mensajes están cargando.
+ * @param {boolean} loadingMessages - Indica si los mensajes están cargando.
  * @returns {JSX.Element} El componente de la página de Política de Privacidad.
  */
 const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps) => {
