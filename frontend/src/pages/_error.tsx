@@ -27,7 +27,6 @@ interface ErrorPageProps {
  */
 const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
   const intl = useIntl(); // Hook para manejar la internacionalización
-  const [loading, setLoading] = useState(true);
 
   // Realiza el seguimiento de visitas a la página de error para análisis interno y Google Analytics
   useVisitedPageTracking(`error_${statusCode}`);
@@ -69,13 +68,6 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
   }
 
   const imageFileName = "/images/web/error.png"; // Ruta de la imagen de error
-
-  // Controla el estado de carga de la página de error
-  useEffect(() => {
-    if (intl) {
-      setLoading(false);
-    }
-  }, [intl]);
 
   if (loadingMessages) {
     return <Loader />; // Muestra un loader mientras los mensajes están cargando

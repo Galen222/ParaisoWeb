@@ -45,7 +45,7 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
    * Aquí se pueden agregar acciones adicionales tras el envío.
    */
   const handleFormSubmit = () => {
-    // Aquí puedes realizar acciones adicionales después del envío
+    // Aquí se pueden realizar acciones adicionales después del envío
   };
 
   // Muestra un loader si los mensajes están en proceso de carga
