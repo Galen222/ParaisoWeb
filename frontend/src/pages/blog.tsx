@@ -36,7 +36,7 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
   const { data: blogs, loading: loadingBlog, error } = useFetchBlog();
 
   // Hook para manejar el botón de desplazamiento hacia arriba
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
 
   // Seguimiento de la visita a la página "blog" para análisis interno y Google Analytics
   useVisitedPageTracking("blog");
@@ -81,7 +81,7 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
       {/* Botón de desplazamiento hacia arriba */}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

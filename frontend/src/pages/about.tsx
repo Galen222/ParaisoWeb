@@ -33,7 +33,7 @@ export type AboutPageComponent = ComponentType<AboutPageProps> & { pageTitleText
  */
 const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
   const intl = useIntl(); // Hook para manejar la internacionalización
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para manejar el botón de scroll
 
   // Seguimiento de visitas a la página "About" para análisis interno y Google Analytics
   useVisitedPageTracking("about");
@@ -91,7 +91,7 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
       </div>
       <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" /> {/* Botón para desplazarse hacia arriba */}
           </button>
         )}

@@ -42,7 +42,7 @@ const ArenalPage: ArenalPageComponent = ({ loadingMessages, mapLocale }) => {
   useVisitedPageTracking(restaurante);
   useVisitedPageTrackingGA(restaurante);
 
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para el botón de desplazamiento
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para el botón de desplazamiento
   const locationKey = restaurante; // Clave de localización para el mapa
 
   // Muestra un loader si los mensajes están en proceso de carga
@@ -67,7 +67,7 @@ const ArenalPage: ArenalPageComponent = ({ loadingMessages, mapLocale }) => {
       </div>
       <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" /> {/* Botón para desplazarse hacia arriba */}
           </button>
         )}

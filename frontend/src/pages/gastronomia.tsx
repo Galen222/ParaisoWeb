@@ -34,7 +34,7 @@ export type GastronomiaPageComponent = ComponentType<GastronomiaPageProps> & { p
  */
 const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: GastronomiaPageProps) => {
   const intl = useIntl(); // Hook para la internacionalización
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para el botón de desplazamiento hacia arriba
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para el botón de desplazamiento hacia arriba
   const { downloadFile, isDownloading } = useDownloadFile(); // Hook para descarga de archivos
   const [isPushingDownloadMenuFile, setIsPushingDownloadMenuFile] = useState(false); // Estado para animación
 
@@ -135,7 +135,7 @@ const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: Gastrono
       {/* Botón de desplazamiento hacia arriba */}
       <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

@@ -41,7 +41,7 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
   const router = useRouter();
   const { slug } = router.query;
   const intl = useIntl();
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
   const [isPushingBack, setIsPushingBack] = useState(false); // Estado para animaciones del botón de regreso
 
   useVisitedPageTracking("blog-noticia");
@@ -125,7 +125,7 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
       )}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

@@ -44,8 +44,9 @@
 /* En dispositivos con ancho máximo de 768px, ajustamos el diseño */
 @media (max-width: 768px) {
   .footer {
-    /* position: static; /* Elimina la posición fija en dispositivos móviles */
+    position: static; /* Elimina la posición fija en dispositivos móviles */
     height: auto; /* Permite que la altura se ajuste automáticamente */
+    padding-bottom: env(safe-area-inset-bottom); /* Añade padding para el área segura en dispositivos con notch */
   }
 
   .footer p {
@@ -66,8 +67,8 @@
 @media (max-width: 1024px) {
   .footer {
     height: auto; /* Permite que la altura se ajuste automáticamente */
-    overflow-x: hidden;
-    box-sizing: border-box;
+    overflow-x: hidden; /* Evita el desbordamiento horizontal */
+    box-sizing: border-box; /* Asegura que el padding y el border se incluyan en el ancho total */
   }
 }
 

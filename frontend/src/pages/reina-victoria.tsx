@@ -48,7 +48,7 @@ const ReinaVictoriaPage: ReinaVictoriaPageComponent = ({ loadingMessages, mapLoc
   /**
    * Hooks para manejar la visibilidad del botón de scroll y la acción de desplazarse hacia arriba.
    */
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
 
   /**
    * Clave de localización para el componente de mapa.
@@ -90,7 +90,7 @@ const ReinaVictoriaPage: ReinaVictoriaPageComponent = ({ loadingMessages, mapLoc
       {/* Botón para desplazarse hacia arriba cuando es visible */}
       <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

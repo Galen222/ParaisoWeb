@@ -40,7 +40,7 @@ const SanBernardoPage: SanBernardoPageComponent = ({ loadingMessages, mapLocale 
   let restaurante = "san-bernardo";
 
   const intl = useIntl(); // Hook para la internacionalización.
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para controlar el botón de desplazamiento.
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para controlar el botón de desplazamiento.
 
   // Seguimiento de la visita a la página "san-bernardo".
   useVisitedPageTracking(restaurante);
@@ -84,7 +84,7 @@ const SanBernardoPage: SanBernardoPageComponent = ({ loadingMessages, mapLocale 
       {/* Botón para desplazarse hacia arriba, visible según el estado de scroll */}
       <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

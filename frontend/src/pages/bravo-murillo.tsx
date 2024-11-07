@@ -38,7 +38,7 @@ export type BravoMurilloPageComponent = ComponentType<BravoMurilloPageProps> & {
 const BravoMurilloPage: BravoMurilloPageComponent = ({ loadingMessages, mapLocale }) => {
   const restaurante = "bravo-murillo"; // Identificador del restaurante
   const intl = useIntl(); // Hook para la internacionalización
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para el botón de desplazamiento hacia arriba
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para el botón de desplazamiento hacia arriba
 
   // Seguimiento de la visita a la página "Bravo Murillo" para análisis interno y Google Analytics
   useVisitedPageTracking(restaurante);
@@ -69,7 +69,7 @@ const BravoMurilloPage: BravoMurilloPageComponent = ({ loadingMessages, mapLocal
       <div className="scrollToTopContainer">
         {/* Botón de desplazamiento hacia arriba */}
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

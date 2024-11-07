@@ -34,7 +34,7 @@ export type ContactPageComponent = ComponentType<ContactPageProps> & { pageTitle
  */
 const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps) => {
   const intl = useIntl(); // Hook para la internacionalización
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para el botón de desplazamiento hacia arriba
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para el botón de desplazamiento hacia arriba
 
   // Seguimiento de la visita a la página "Contacto" para análisis interno y Google Analytics
   useVisitedPageTracking("contacto");
@@ -103,7 +103,7 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
       {/* Botón de desplazamiento hacia arriba */}
       <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

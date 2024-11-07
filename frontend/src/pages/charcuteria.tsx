@@ -35,7 +35,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
   const { data: products, loading: loadingProducts, error } = useFetchCharcuteria();
 
   // Hook para manejar el botón de desplazamiento hacia arriba
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
 
   // Seguimiento de la visita a la página "charcuteria" para análisis interno y Google Analytics
   useVisitedPageTracking("charcuteria");
@@ -109,7 +109,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
       {/* Botón de desplazamiento hacia arriba */}
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

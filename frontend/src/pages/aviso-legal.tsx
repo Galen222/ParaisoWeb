@@ -27,7 +27,7 @@ export interface AvisoLegalPageProps {
 const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
   const intl = useIntl(); // Hook para manejar la internacionalización
 
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de desplazamiento hacia arriba
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para manejar el botón de desplazamiento hacia arriba
 
   // Seguimiento de la visita a la página "Aviso Legal" para análisis interno y Google Analytics
   useVisitedPageTracking("aviso-legal");
@@ -199,7 +199,7 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
       </div>
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

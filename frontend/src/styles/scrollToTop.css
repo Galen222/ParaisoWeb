@@ -1,52 +1,36 @@
 /* scrollToTop.css */
-
 .scrollToTopContainer {
   margin-top: 40px;
 }
 
-/* Botón para desplazarse al inicio de la página */
 .scrollToTop {
-  position: fixed; /* Posicionamiento fijo en la ventana */
-  right: calc(25% + 20px); /* Posicionado a la derecha con cálculo dinámico */
-  bottom: 70px; /* Separación de 70 píxeles desde el fondo */
-  height: 40px; /* Altura de 40 píxeles */
-  width: 40px; /* Ancho de 40 píxeles */
-  text-align: center; /* Centra el texto horizontalmente */
-  line-height: 40px; /* Centra el texto verticalmente */
-  background: rgba(74, 64, 58, 0.5); /* Fondo semi-transparente */
-  border-radius: 20px; /* Bordes redondeados para formar un círculo */
-  cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-  z-index: 6; /* Nivel de apilamiento para sobreponerse a otros elementos */
-  display: flex; /* Usa flexbox para centrar el contenido */
-  align-items: center; /* Centra verticalmente */
-  justify-content: center; /* Centra horizontalmente */
+  height: 40px;
+  width: 40px;
+  text-align: center;
+  background: rgba(74, 64, 58, 0.5);
+  border-radius: 20px;
+  cursor: pointer;
+  z-index: 6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: bottom 0.3s ease-in-out; /* Transición suave de la posición */
 }
 
-/* Efecto al pasar el ratón sobre el botón de desplazamiento */
 .scrollToTop:hover {
-  background: var(--text_color); /* Cambia el fondo a color marrón oscuro */
+  background: var(--text_color);
 }
 
-/* Estilos para la imagen dentro del botón de desplazamiento */
 .scrollToTop img {
-  width: 20px; /* Ancho de la imagen ajustado a 20 píxeles */
-  height: auto; /* Mantiene la proporción de la imagen */
+  width: 20px;
+  height: auto;
 }
 
 /* Estilos para dispositivos tipo tablet */
 @media (max-width: 1024px) {
   /* Ajustes de posición del botón de desplazamiento en tablet */
-  .scrollToTop {
-    right: 20px; /* Posicionado a 20 píxeles desde la derecha */
-    bottom: 90px; /* Separación de 90 píxeles desde el fondo */
-  }
-}
 
-/* Estilos para dispositivos móviles con pantallas muy pequeñas */
-@media (max-width: 385px) {
-  /* Ajustes de posición del botón de desplazamiento en pantallas pequeñas */
-  .scrollToTop {
-    right: 20px; /* Posicionado a 20 píxeles desde la derecha */
-    bottom: 110px; /* Separación de 110 píxeles desde el fondo */
+  .scrollToTopContainer {
+    margin-top: 30px;
   }
 }

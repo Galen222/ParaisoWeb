@@ -20,7 +20,7 @@ export interface HomeProps {
 
 /**
  * Componente de la página principal de la aplicación.
- * Incluye un título, texto de bienvenida, un carousel de imágenes y varios banners para distintas secciones.
+ * Incluye un título, texto de bienvenida, un carrusel de imágenes y varios banners para distintas secciones.
  * Realiza seguimiento de la visita a la página y muestra un botón para volver al inicio al hacer scroll.
  *
  * @param {HomeProps} props - Propiedades del componente `Home`.
@@ -28,7 +28,7 @@ export interface HomeProps {
  */
 const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMessages }) => {
   const intl = useIntl(); // Hook de internacionalización
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
 
   // Seguimiento de la visita a la página "Inicio" para analítica
   useVisitedPageTracking("inicio");
@@ -51,7 +51,7 @@ const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMe
         <p className="ti-20p">{intl.formatMessage({ id: "inicio_Texto1" })}</p>
       </div>
 
-      {/* Carousel de imágenes principal */}
+      {/* Carrusel de imágenes principal */}
       <div>
         <Carousel carouselType="inicio" />
       </div>
@@ -66,7 +66,7 @@ const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMe
       {/* Botón para desplazarse hacia arriba */}
       <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

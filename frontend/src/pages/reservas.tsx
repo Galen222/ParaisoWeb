@@ -30,7 +30,7 @@ export type ReservasPageComponent = ComponentType<ReservasPageProps> & { pageTit
  */
 const ReservasPage: ReservasPageComponent = ({ loadingMessages }: ReservasPageProps) => {
   const intl = useIntl(); // Inicia el hook de internacionalización para acceder a las funciones de traducción.
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop(); // Hook para controlar el botón de desplazamiento.
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para controlar el botón de desplazamiento.
 
   // Realiza el seguimiento de la visita a la página de reservas.
   useVisitedPageTracking("reservas");
@@ -61,7 +61,7 @@ const ReservasPage: ReservasPageComponent = ({ loadingMessages }: ReservasPagePr
       {/* Botón para desplazarse hacia arriba, visible según el estado de scroll */}
       <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

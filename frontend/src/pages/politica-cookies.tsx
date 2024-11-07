@@ -44,7 +44,7 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
   /**
    * Hooks para manejar la visibilidad del botón de scroll y la acción de desplazarse hacia arriba.
    */
-  const { isScrollButtonVisible, scrollToTop } = useScrollToTop();
+  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
 
   /**
    * Contexto para manejar el consentimiento de cookies.
@@ -537,7 +537,7 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
       </div>
       <div>
         {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop">
+          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />
           </button>
         )}

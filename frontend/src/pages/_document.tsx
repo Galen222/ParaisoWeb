@@ -49,6 +49,7 @@ class MyDocument extends Document {
       <Html lang={locale}>
         <Head>
           <link rel="icon" href="/images/web/iconoLogo.ico" />
+          <meta name="theme-color" content="#4a403a" />
         </Head>
         <body>
           <Main />

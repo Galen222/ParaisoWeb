@@ -1,52 +1,98 @@
-// hooks/useScrollToTop.ts
-
 import { useState, useEffect } from "react";
 
-/**
- * Interfaz para el valor de retorno del hook `useScrollToTop`.
- * @property {boolean} isScrollButtonVisible - Indica si el botón de desplazamiento al inicio es visible.
- * @property {() => void} scrollToTop - Función para desplazar la página hasta la parte superior.
- */
 export interface UseScrollToTopOutput {
   isScrollButtonVisible: boolean;
+  scrollButtonStyle: React.CSSProperties;
   scrollToTop: () => void;
 }
 
-/**
- * Hook personalizado para controlar la visibilidad de un botón de "volver al inicio"
- * cuando el usuario se desplaza hacia abajo en la página. También proporciona la función
- * para desplazar la página suavemente hasta la parte superior.
- *
- * @returns {UseScrollToTopOutput} Objeto con el estado de visibilidad del botón y la función de desplazamiento al inicio.
- */
 const useScrollToTop = (): UseScrollToTopOutput => {
-  const [isScrollButtonVisible, setisScrollButtonVisible] = useState<boolean>(false); // Estado de visibilidad del botón
+  const [isScrollButtonVisible, setIsScrollButtonVisible] = useState<boolean>(false);
+  const [scrollButtonStyle, setScrollButtonStyle] = useState<React.CSSProperties>({});
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const [isSmallScreen, setIsSmallScreen] = useState<boolean>(false);
+
+  // Función para detectar si estamos en móvil y si la pantalla es pequeña
+  const checkScreenSize = () => {
+    setIsMobile(window.innerWidth <= 767); // Ajusta este valor según tu breakpoint
+    setIsSmallScreen(window.innerWidth <= 396); // Detecta si la pantalla es igual o menor a 396px
+  };
 
   useEffect(() => {
-    /**
-     * Función que evalúa la posición de desplazamiento vertical y
-     * actualiza la visibilidad del botón si el desplazamiento supera los 400px.
-     */
-    const toggleVisibility = () => {
-      if (window.scrollY > 400) {
-        setisScrollButtonVisible(true);
+    checkScreenSize();
+
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const viewportHeight = window.innerHeight;
+      const documentHeight = document.documentElement.scrollHeight;
+      const footerHeight = 60; // Altura del footer
+      const distanceToStickAboveFooter = isSmallScreen ? 35 : 10; // 20px si la pantalla es igual o menor a 396px, de lo contrario 10px
+      const scrollTrigger = 400; // Punto de scroll donde aparece el botón
+
+      if (scrollTop > scrollTrigger) {
+        setIsScrollButtonVisible(true);
+
+        if (isMobile) {
+          const distanceFromBottom = documentHeight - (scrollTop + viewportHeight);
+
+          if (distanceFromBottom <= footerHeight) {
+            // El botón se mueve la distancia especificada por encima del footer al llegar al final del scroll en móviles
+            setScrollButtonStyle({
+              position: "fixed",
+              bottom: `${footerHeight - distanceFromBottom + distanceToStickAboveFooter}px`,
+              right: "20px",
+              transition: "all 0.3s ease-in-out",
+              opacity: 1,
+              pointerEvents: "auto",
+            });
+          } else {
+            // Posición inicial a 20px desde el fondo de la pantalla en móviles
+            setScrollButtonStyle({
+              position: "fixed",
+              bottom: "20px",
+              right: "20px",
+              transition: "all 0.3s ease-in-out",
+              opacity: 1,
+              pointerEvents: "auto",
+            });
+          }
+        } else {
+          // En modo escritorio, el botón permanece fijo a 70px del fondo
+          setScrollButtonStyle({
+            position: "fixed",
+            bottom: "70px",
+            right: "calc(25% + 20px)",
+            transition: "all 0.3s ease-in-out",
+            opacity: 1,
+            pointerEvents: "auto",
+          });
+        }
       } else {
-        setisScrollButtonVisible(false);
+        setIsScrollButtonVisible(false);
+        setScrollButtonStyle({
+          opacity: 0,
+          pointerEvents: "none",
+        });
       }
     };
 
-    window.addEventListener("scroll", toggleVisibility); // Escucha el evento de desplazamiento
-    return () => window.removeEventListener("scroll", toggleVisibility); // Limpia el evento al desmontar el componente
-  }, []);
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("resize", () => {
+      checkScreenSize();
+      handleScroll();
+    });
 
-  /**
-   * Desplaza la página suavemente hasta la parte superior.
-   */
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", checkScreenSize);
+    };
+  }, [isMobile, isSmallScreen]);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  return { isScrollButtonVisible, scrollToTop }; // Retorna el estado de visibilidad y la función de desplazamiento
+  return { isScrollButtonVisible, scrollButtonStyle, scrollToTop };
 };
 
 export default useScrollToTop;
