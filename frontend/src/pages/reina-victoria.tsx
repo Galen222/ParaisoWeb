@@ -88,7 +88,7 @@ const ReinaVictoriaPage: ReinaVictoriaPageComponent = ({ loadingMessages, mapLoc
       </div>
 
       {/* Botón para desplazarse hacia arriba cuando es visible */}
-      <div>
+      <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />

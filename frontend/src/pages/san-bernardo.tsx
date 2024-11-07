@@ -82,7 +82,7 @@ const SanBernardoPage: SanBernardoPageComponent = ({ loadingMessages, mapLocale 
       </div>
 
       {/* Botón para desplazarse hacia arriba, visible según el estado de scroll */}
-      <div>
+      <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />

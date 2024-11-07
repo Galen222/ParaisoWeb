@@ -66,7 +66,7 @@ const BravoMurilloPage: BravoMurilloPageComponent = ({ loadingMessages, mapLocal
       <div className="mt-25p">
         <Map locationKey={locationKey} mapLocale={mapLocale} /> {/* Mapa de la ubicación del restaurante */}
       </div>
-      <div>
+      <div className="scrollToTopContainer">
         {/* Botón de desplazamiento hacia arriba */}
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollToTop">

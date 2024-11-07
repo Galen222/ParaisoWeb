@@ -17,9 +17,8 @@
 
 /* Contenedor de imágenes */
 .imageContainer {
-  display: flex; /* Utiliza flexbox para organizar las imágenes en una fila */
-  justify-content: center; /* Centra las imágenes horizontalmente */
-  flex-wrap: nowrap; /* Evita que las imágenes se envuelvan a la siguiente línea */
+  display: grid; /* Utiliza grid para organizar las imágenes */
+  grid-template-columns: repeat(3, 1fr); /* Crea 3 columnas de igual tamaño */
   gap: 20px; /* Espacio entre imágenes */
   margin-top: 10px; /* Márgen superior de 10 píxeles */
   margin-bottom: 25px; /* Márgen inferior de 25 píxeles */
@@ -27,8 +26,7 @@
 
 /* Imágenes dentro del contenedor de imágenes */
 .responsiveImage {
-  width: 100%; /* Ancho completo de la imagen */
-  max-width: 300px; /* Ancho máximo de 300 píxeles */
+  width: 100%; /* Ocupa todo el ancho de la celda */
   height: auto; /* Mantiene la proporción de la imagen */
   object-fit: cover; /* Cubre el contenedor sin distorsionar la imagen */
   border-radius: 8px; /* Bordes redondeados de 8 píxeles */
@@ -40,18 +38,16 @@
   transform: scale(1.12); /* Agranda la imagen al 112% cuando el usuario pasa el ratón */
 }
 
-/* Oculta el carrusel en modo escritorio en la página de gastronomía */
+/* Oculta el carrusel en modo escritorio */
 .mobileCarousel {
   display: none; /* Oculta el carrusel en dispositivos de escritorio */
 }
-
 /* Media Queries para dispositivos tipo tablet */
 @media (max-width: 1024px) {
   .downloadMenuButton {
     width: 300px; /* Reduce el ancho del botón de descarga a 300 píxeles en tablets */
   }
 }
-
 /* Media Queries para dispositivos móviles */
 @media (max-width: 767px) {
   /* Ocultar las imágenes en línea en dispositivos móviles */
@@ -59,7 +55,7 @@
     display: none; /* Oculta el contenedor de imágenes en pantallas pequeñas */
   }
 
-  /* Mostrar el carrusel solo en móvil en la página de gastronomía */
+  /* Mostrar el carrusel solo en dispositivos móviles */
   .mobileCarousel {
     display: block; /* Muestra el carrusel en dispositivos móviles */
   }

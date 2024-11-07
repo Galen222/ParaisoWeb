@@ -89,7 +89,7 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
       <div className="mt-25p">
         <h3 className="ti-20p">{intl.formatMessage({ id: "about_Texto6" })}</h3>
       </div>
-      <div>
+      <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" /> {/* Botón para desplazarse hacia arriba */}

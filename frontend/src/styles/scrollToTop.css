@@ -1,5 +1,9 @@
 /* scrollToTop.css */
 
+.scrollToTopContainer {
+  margin-top: 40px;
+}
+
 /* Botón para desplazarse al inicio de la página */
 .scrollToTop {
   position: fixed; /* Posicionamiento fijo en la ventana */

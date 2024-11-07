@@ -101,7 +101,7 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
       </div>
 
       {/* Botón de desplazamiento hacia arriba */}
-      <div>
+      <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />

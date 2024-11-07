@@ -64,7 +64,7 @@ const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMe
       <Banner bannerType="empleo" />
 
       {/* Botón para desplazarse hacia arriba */}
-      <div>
+      <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" />

@@ -65,7 +65,7 @@ const ArenalPage: ArenalPageComponent = ({ loadingMessages, mapLocale }) => {
       <div className="mt-25p">
         <Map locationKey={locationKey} mapLocale={mapLocale} /> {/* Mapa del restaurante "Arenal" */}
       </div>
-      <div>
+      <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollToTop">
             <img src="/images/web/flechaArriba.png" alt="Subir" /> {/* Botón para desplazarse hacia arriba */}

@@ -7,7 +7,6 @@
   background-position: center; /* Centra la imagen de fondo */
   border-radius: 10px; /* Bordes redondeados de 10 píxeles */
   margin-top: 40px; /* Márgen superior de 40 píxeles */
-  margin-bottom: 40px; /* Márgen inferior de 40 píxeles */
   box-sizing: border-box; /* Incluye padding y borde en el cálculo del ancho y alto */
   display: flex; /* Define un contenedor flex */
   justify-content: center; /* Centra los elementos horizontalmente */
