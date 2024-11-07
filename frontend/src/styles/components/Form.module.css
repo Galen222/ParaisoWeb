@@ -192,7 +192,7 @@
 }
 
 /* Ajustes adicionales para dispositivos móviles */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   /* Ajusta la posición vertical del texto de la casilla en móvil */
   .checkText {
     transform: translateY(-3px); /* Ajusta la posición vertical del texto */

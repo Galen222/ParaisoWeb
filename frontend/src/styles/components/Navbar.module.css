@@ -337,7 +337,7 @@
 }
 
 /* Media Queries para dispositivos móviles */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   /* Ajustes generales de la barra de navegación en móviles */
   .navbar {
     position: relative; /* Cambia a posicionamiento relativo */

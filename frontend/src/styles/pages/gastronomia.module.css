@@ -49,7 +49,7 @@
   }
 }
 /* Media Queries para dispositivos móviles */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   /* Ocultar las imágenes en línea en dispositivos móviles */
   .imageContainer {
     display: none; /* Oculta el contenedor de imágenes en pantallas pequeñas */

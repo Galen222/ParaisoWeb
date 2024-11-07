@@ -37,7 +37,7 @@
 }
 
 /* Estilos para dispositivos móviles */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   /* Reducir los márgenes laterales del contenedor 'listas' en móvil */
   .listas {
     margin-left: 20px; /* Márgen izquierdo reducido a 20 píxeles */

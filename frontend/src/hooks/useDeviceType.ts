@@ -17,9 +17,9 @@ const useDeviceType = (): string => {
      */
     const handleResize = () => {
       const width = window.innerWidth;
-      if (width <= 767) {
-        setDeviceType("mobile"); // Dispositivo móvil si el ancho es menor o igual a 767px
-      } else if (width > 767 && width <= 1024) {
+      if (width <= 768) {
+        setDeviceType("mobile"); // Dispositivo móvil si el ancho es menor o igual a 768px
+      } else if (width > 768 && width <= 1024) {
         setDeviceType("tablet"); // Dispositivo tablet si el ancho es entre 768px y 1024px
       } else {
         setDeviceType("pc"); // Dispositivo de escritorio para anchos mayores a 1024px

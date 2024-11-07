@@ -133,7 +133,7 @@
 }
 
 /* Estilos para dispositivos móviles */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .FrameContent {
     flex-direction: column; /* Cambia la dirección a columna */
     border-top: none; /* Elimina el borde superior */

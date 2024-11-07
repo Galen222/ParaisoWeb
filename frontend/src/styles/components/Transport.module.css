@@ -33,8 +33,8 @@
   margin-top: 5px; /* Añade un margen superior de 5 píxeles */
 }
 
-/* Modo móvil para dispositivos con ancho máximo de 767px */
-@media (max-width: 767px) {
+/* Modo móvil para dispositivos con ancho máximo de 768px */
+@media (max-width: 768px) {
   .transportContainer {
     flex-direction: column; /* Cambia a una disposición en columna para pantallas pequeñas */
     align-items: center; /* Centra los elementos horizontalmente */

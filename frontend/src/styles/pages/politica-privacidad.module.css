@@ -16,8 +16,8 @@
   text-decoration: underline; /* Agrega subrayado al pasar el ratón, indicando interactividad */
 }
 
-/* Modo móvil para dispositivos con ancho máximo de 767px */
-@media (max-width: 767px) {
+/* Modo móvil para dispositivos con ancho máximo de 768px */
+@media (max-width: 768px) {
   /* Ajustes de márgenes en listas para pantallas pequeñas */
   .listas {
     margin-left: 20px; /* Reduce el margen izquierdo a 20 píxeles */

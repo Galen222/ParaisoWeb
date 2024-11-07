@@ -34,3 +34,12 @@
     margin-top: 30px;
   }
 }
+
+/* Estilos para dispositivos tipo tablet */
+@media (max-width: 768px) {
+  /* Ajustes de posición del botón de desplazamiento en tablet */
+
+  .scrollToTopContainer {
+    margin-top: 30px;
+  }
+}

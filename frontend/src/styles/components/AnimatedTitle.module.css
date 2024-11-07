@@ -36,7 +36,7 @@
 }
 
 /* Estilos para dispositivos móviles */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   .animationFont {
     font-size: 36px; /* Reduce aún más el tamaño de fuente a 36 píxeles para dispositivos móviles */
     color: var(--text_color); /* Cambia el color del texto a un tono marrón oscuro para mejor contraste */

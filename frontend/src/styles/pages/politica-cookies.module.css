@@ -45,7 +45,7 @@
 }
 
 /* Media Queries para dispositivos móviles */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   /* Ajustes de márgenes en listas para pantallas pequeñas */
   .listas {
     margin-left: 20px; /* Reduce el márgen izquierdo a 20 píxeles */

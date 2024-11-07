@@ -99,7 +99,7 @@ body {
 }
 
 /* Estilos para dispositivos móviles */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   /* Estilos para títulos h3 dentro del contenedor principal en móvil */
   .pageContainer h3 {
     font-weight: bold; /* Fuente en negrita */

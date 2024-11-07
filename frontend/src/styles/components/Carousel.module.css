@@ -28,7 +28,7 @@
 }
 
 /* Estilos responsivos para dispositivos móviles */
-@media (max-width: 767px) {
+@media (max-width: 768px) {
   /* Ajustes del contenedor del carrusel en dispositivos móviles */
   .carouselContainer {
     width: 90%; /* Aumenta el ancho al 90% para aprovechar mejor el espacio en pantallas pequeñas */
