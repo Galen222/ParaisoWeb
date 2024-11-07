@@ -496,7 +496,8 @@
 
   /* Ajustes del contenedor del título animado en móviles */
   .animatedTitleContainer {
-    width: 100vw; /* Ancho completo de la ventana en móviles */
+    width: 96%; /* Ancho completo de la ventana en móviles */
+    max-width: 100%;
     padding-top: 10px; /* Padding superior de 10 píxeles */
     padding-bottom: 10px; /* Padding inferior de 10 píxeles */
   }

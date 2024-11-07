@@ -2,7 +2,7 @@
 
 /* Contenedor para las animaciones */
 .animationContainer {
-  width: 96vw; /* Asegura que el contenedor ocupe el 96% del ancho de la ventana gráfica */
+  width: 96%; /* Asegura que el contenedor ocupe el 96% del ancho de la ventana gráfica */
   max-width: 100%; /* Evita que el contenedor exceda el ancho del dispositivo */
   position: relative; /* Posicionamiento relativo para que los elementos hijos puedan posicionarse de manera absoluta respecto a este contenedor */
   /* padding-bottom: 30px; */ /* Padding inferior comentado, posiblemente para ajustes futuros */

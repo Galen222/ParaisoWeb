@@ -6,11 +6,17 @@
 }
 
 /* Estilos generales para el cuerpo de la página */
+html,
 body {
   font-family: "Courgette", sans-serif; /* Fuente principal de la página */
   background-color: #f1eee3; /* Color de fondo claro */
   margin: 0; /* Elimina el margen por defecto del navegador */
   overflow-x: hidden; /* Evita el desplazamiento horizontal */
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  position: relative;
+  box-sizing: border-box;
 }
 
 /* Contenedor principal de la página */

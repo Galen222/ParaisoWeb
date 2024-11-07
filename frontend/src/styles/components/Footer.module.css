@@ -3,7 +3,7 @@
 /* Contenedor principal del pie de página */
 .footer {
   width: 100%; /* Ancho completo del pie de página */
-  background-color: var(--text_color); /* Color de fondo marrón oscuro */
+  background-color: var(--text_color); /* Color de fondo */
   color: white; /* Color de texto blanco */
   text-align: center; /* Centra el texto horizontalmente */
   padding: 0; /* Elimina el padding interno */
@@ -33,16 +33,47 @@
   text-decoration: underline; /* Agrega subrayado al pasar el ratón */
 }
 
+/* Estilos para los elementos span específicos */
+.rightsText,
+.separator,
+.links {
+  display: inline; /* Muestra los elementos en línea */
+}
+
+/* Media Queries para dispositivos móviles */
+/* En dispositivos con ancho máximo de 768px, ajustamos el diseño */
+@media (max-width: 768px) {
+  .footer {
+    /* position: static; /* Elimina la posición fija en dispositivos móviles */
+    height: auto; /* Permite que la altura se ajuste automáticamente */
+  }
+
+  .footer p {
+    text-align: center; /* Centra el texto */
+  }
+
+  .separator {
+    display: none; /* Oculta el separador en dispositivos móviles */
+  }
+
+  .links {
+    display: block; /* Muestra los enlaces en bloque para que aparezcan debajo del texto de derechos */
+    margin-top: 5px; /* Agrega un margen superior */
+  }
+}
+
 /* Media Queries para dispositivos tipo tablet */
 @media (max-width: 1024px) {
   .footer {
-    height: 80px; /* Aumenta la altura del pie de página a 80 píxeles en tablets */
+    height: auto; /* Permite que la altura se ajuste automáticamente */
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 }
 
 /* Media Queries para dispositivos móviles con pantalla muy pequeña */
 @media (max-width: 385px) {
   .footer {
-    height: 100px; /* Aumenta la altura del pie de página a 100 píxeles en pantallas muy pequeñas */
+    height: auto; /* Permite que la altura se ajuste automáticamente */
   }
 }
