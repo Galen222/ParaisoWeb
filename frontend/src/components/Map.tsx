@@ -15,6 +15,7 @@ import styles from "../styles/components/Map.module.css";
  * @property {string} telephone - Número de teléfono de la ubicación.
  */
 export type Location = {
+  name: string;
   lat: number;
   lng: number;
   address: string;
@@ -34,6 +35,7 @@ export type Locations = {
 // Lista de ubicaciones para los diferentes puntos de contacto
 const locations: Locations = {
   "san-bernardo": {
+    name: "Paraíso del Jamón",
     lat: 40.42182213478454,
     lng: -3.7077311767926227,
     address: "San Bernardo, 8, 28015 Madrid, ",
@@ -42,6 +44,7 @@ const locations: Locations = {
     telephone: "+34 532 83 50",
   },
   "bravo-murillo": {
+    name: "Paraíso del Jamón II",
     lat: 40.449348434670554,
     lng: -3.7033976601087657,
     address: "Bravo Murillo, 124, 28020 Madrid, ",
@@ -50,6 +53,7 @@ const locations: Locations = {
     telephone: "+34 553 97 83",
   },
   "reina-victoria": {
+    name: "Paraíso del Jamón III",
     lat: 40.44667864352768,
     lng: -3.704447234180926,
     address: "Reina Victoria, 3, 28003 Madrid, ",
@@ -58,6 +62,7 @@ const locations: Locations = {
     telephone: "+34 534 18 20",
   },
   arenal: {
+    name: "Paraíso del Jamón IV",
     lat: 40.41781005932472,
     lng: -3.7082838848125155,
     address: "Arenal, 26, 28015 Madrid, ",
@@ -178,7 +183,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
 
       // Contenido del InfoWindow en formato HTML
       const contentString = `<div class="fw-bold">
-        <h5>Paraíso del Jamón</h5>
+        <h5>${location.name}</h5>
         <p>${location.address} ${intl.formatMessage({ id: "Map_Marker_Pais" })}</p>
         <p>${intl.formatMessage({
           id: "Map_Marker_Telefono",
