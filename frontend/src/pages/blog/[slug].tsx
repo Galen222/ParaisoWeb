@@ -121,15 +121,15 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
               </button>
             </Link>
           </div>
+          <div className="scrollToTopContainer">
+            {isScrollButtonVisible && (
+              <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
+                <img src="/images/web/flechaArriba.png" alt="Subir" />
+              </button>
+            )}
+          </div>
         </div>
       )}
-      <div>
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
-          </button>
-        )}
-      </div>
     </div>
   );
 };

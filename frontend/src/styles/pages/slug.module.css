@@ -4,11 +4,11 @@
 .blogDetailsContainer {
   max-width: 900px; /* Ancho máximo de 900 píxeles para limitar la extensión del contenido */
   margin: 0 auto; /* Centra el contenedor horizontalmente dentro de su elemento padre */
-  margin-bottom: 130px; /* Márgen inferior de 130 píxeles para separar del siguiente contenido */
   text-align: justify; /* Justifica el texto para alinear ambos lados */
   color: var(--text_color); /* Aplica el color de texto definido en la variable CSS */
   font-size: 18px; /* Tamaño de fuente de 18 píxeles para una lectura cómoda */
   padding: 15px; /* Espaciado interno de 15 píxeles alrededor del contenido */
+  margin-bottom: 90px; /* Márgen inferior de 90 píxeles */
 }
 
 /* Estilo para el título del blog */

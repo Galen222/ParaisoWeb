@@ -79,7 +79,7 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
         ))}
       </div>
       {/* Botón de desplazamiento hacia arriba */}
-      <div>
+      <div className="scrollToTopContainer">
         {isScrollButtonVisible && (
           <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
             <img src="/images/web/flechaArriba.png" alt="Subir" />

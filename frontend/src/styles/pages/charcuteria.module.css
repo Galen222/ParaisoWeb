@@ -13,7 +13,7 @@
 /* Contenedor para las tarjetas del contenido */
 .content {
   display: flex; /* Utiliza flexbox para organizar las tarjetas en una fila */
-  margin: 0 auto 130px auto; /* Centra el contenedor horizontalmente y añade margen inferior de 130px */
+  margin: 0 auto; /* Centra el contenedor horizontalmente */
   align-items: center; /* Centra las tarjetas verticalmente */
   flex-wrap: wrap; /* Permite que las tarjetas se envuelvan a la siguiente línea si no caben en una fila */
   max-width: 1000px; /* Ancho máximo de 1000 píxeles para limitar la extensión del contenido */
@@ -152,8 +152,9 @@
     scroll-snap-type: x mandatory; /* Activa el snap al desplazarse horizontalmente */
     align-items: flex-start; /* Alinea las tarjetas al inicio verticalmente */
     width: 90%; /* Limita el contenedor al 90% del ancho de la pantalla */
-    margin: 20px auto 130px auto; /* Añade margen superior de 20px y margen inferior de 130px */
+    margin: 20px auto 0px auto; /* Añade margen superior de 20px */
     height: 400px; /* Limita la altura para evitar el flujo vertical */
+    margin-bottom: 90px; /* Márgen inferior de 90 píxeles */
   }
 
   .card {
