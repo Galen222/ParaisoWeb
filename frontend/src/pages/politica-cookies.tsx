@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useCookieConsent } from "../contexts/CookieContext";
 import Loader from "../components/Loader";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import useDeviceType from "../hooks/useDeviceType";
-import useScrollToTop from "../hooks/useScrollToTop";
 import { useToastMessage } from "../hooks/useToast";
 import { deleteCookies } from "../utils/cookieUtils";
 import styles from "../styles/pages/politica-cookies.module.css";
@@ -26,7 +26,7 @@ export interface PoliticaCookiesPageProps {
  * @param {boolean} loadingMessages - Indica si los mensajes están cargando.
  * @returns {JSX.Element} El componente de la página de Política de Cookies.
  */
-const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
+const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps): JSX.Element => {
   const intl = useIntl();
   const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones
 
@@ -40,11 +40,6 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
    */
   const deviceType = useDeviceType();
   const isMobile = deviceType === "mobile";
-
-  /**
-   * Hooks para manejar la visibilidad del botón de scroll y la acción de desplazarse hacia arriba.
-   */
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
 
   /**
    * Contexto para manejar el consentimiento de cookies.
@@ -535,13 +530,7 @@ const PoliticaCookiesPage = ({ loadingMessages }: PoliticaCookiesPageProps) => {
           })}
         </p>
       </div>
-      <div>
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
-          </button>
-        )}
-      </div>
+      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
 };

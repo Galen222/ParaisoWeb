@@ -7,8 +7,8 @@ import Carousel from "../components/Carousel";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
-import useScrollToTop from "../hooks/useScrollToTop";
 import { useDownloadFile } from "../hooks/useDownloadFile";
+import ScrollToTopButton from "../components/ScrollToTopButton"; // Importa el componente reutilizable
 import styles from "../styles/pages/gastronomia.module.css";
 
 /**
@@ -25,16 +25,14 @@ export interface GastronomiaPageProps {
 export type GastronomiaPageComponent = ComponentType<GastronomiaPageProps> & { pageTitleText?: string };
 
 /**
- * Componente funcional para la página de reservas.
+ * Componente funcional para la página de gastronomía.
  *
  * @param {GastronomiaPageProps} props - Las propiedades del componente.
  * @param {boolean} props.loadingMessages - Estado de carga de los mensajes.
- * @returns {JSX.Element} El componente de la página de reservas.
- *
+ * @returns {JSX.Element} El componente de la página de gastronomía.
  */
-const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: GastronomiaPageProps) => {
+const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: GastronomiaPageProps): JSX.Element => {
   const intl = useIntl(); // Hook para la internacionalización
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para el botón de desplazamiento hacia arriba
   const { downloadFile, isDownloading } = useDownloadFile(); // Hook para descarga de archivos
   const [isPushingDownloadMenuFile, setIsPushingDownloadMenuFile] = useState(false); // Estado para animación
 
@@ -58,6 +56,25 @@ const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: Gastrono
     );
   };
 
+  // Rutas de las imágenes y textos alternativos
+  const images = {
+    raciones: [
+      { src: "/images/gastronomia/raciones1.png", alt: intl.formatMessage({ id: "gastronomia_Carousel_Alt1" }) },
+      { src: "/images/gastronomia/raciones2.png", alt: intl.formatMessage({ id: "gastronomia_Carousel_Alt2" }) },
+      { src: "/images/gastronomia/raciones3.png", alt: intl.formatMessage({ id: "gastronomia_Carousel_Alt3" }) },
+    ],
+    combinados: [
+      { src: "/images/gastronomia/combinados1.png", alt: intl.formatMessage({ id: "gastronomia_Carousel_Alt4" }) },
+      { src: "/images/gastronomia/combinados2.png", alt: intl.formatMessage({ id: "gastronomia_Carousel_Alt5" }) },
+      { src: "/images/gastronomia/combinados3.png", alt: intl.formatMessage({ id: "gastronomia_Carousel_Alt6" }) },
+    ],
+    bocadillos: [
+      { src: "/images/gastronomia/bocadillos1.png", alt: intl.formatMessage({ id: "gastronomia_Carousel_Alt7" }) },
+      { src: "/images/gastronomia/bocadillos2.png", alt: intl.formatMessage({ id: "gastronomia_Carousel_Alt8" }) },
+      { src: "/images/gastronomia/bocadillos3.png", alt: intl.formatMessage({ id: "gastronomia_Carousel_Alt9" }) },
+    ],
+  };
+
   // Muestra un loader si los mensajes están en proceso de carga
   if (loadingMessages) {
     return <Loader />;
@@ -69,7 +86,6 @@ const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: Gastrono
       <div>
         <h1 className="text-center">{intl.formatMessage({ id: "gastronomia_Titulo1" })}</h1>
       </div>
-
       {/* Descripción y botón de descarga del menú */}
       <div className="mt-25p mb-25p">
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto1" })}</p>
@@ -83,63 +99,47 @@ const GastronomiaPage: GastronomiaPageComponent = ({ loadingMessages }: Gastrono
           </button>
         </div>
       </div>
-
       {/* Sección de raciones */}
       <div className="mt-25p mb-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo2" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto2" })}</p>
-      </div>
-
-      {/* Carousel de imágenes para raciones */}
-      <div className="mt-25p mb-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo3" })}</h3>
-        <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto3" })}</p>
         <div className={`${styles.imageContainer}`}>
-          <img src="/images/gastronomia/raciones1.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt1" })} className={styles.responsiveImage} />
-          <img src="/images/gastronomia/raciones2.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt2" })} className={styles.responsiveImage} />
-          <img src="/images/gastronomia/raciones3.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt3" })} className={styles.responsiveImage} />
+          {images.raciones.map((image, index) => (
+            <img key={index} src={image.src} alt={image.alt} className={styles.responsiveImage} />
+          ))}
         </div>
         <div className={styles.mobileCarousel}>
           <Carousel carouselType="gastronomia1" />
         </div>
       </div>
-
       {/* Sección de platos combinados */}
       <div className="mt-25p mb-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo4" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto4" })}</p>
         <div className={`${styles.imageContainer}`}>
-          <img src="/images/gastronomia/combinados1.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt4" })} className={styles.responsiveImage} />
-          <img src="/images/gastronomia/combinados2.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt5" })} className={styles.responsiveImage} />
-          <img src="/images/gastronomia/combinados3.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt6" })} className={styles.responsiveImage} />
+          {images.combinados.map((image, index) => (
+            <img key={index} src={image.src} alt={image.alt} className={styles.responsiveImage} />
+          ))}
         </div>
         <div className={styles.mobileCarousel}>
           <Carousel carouselType="gastronomia2" />
         </div>
       </div>
-
       {/* Sección de bocadillos */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo5" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto5" })}</p>
         <div className={`${styles.imageContainer}`}>
-          <img src="/images/gastronomia/bocadillos1.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt7" })} className={styles.responsiveImage} />
-          <img src="/images/gastronomia/bocadillos2.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt8" })} className={styles.responsiveImage} />
-          <img src="/images/gastronomia/bocadillos3.png" alt={intl.formatMessage({ id: "gastronomia_Carousel_Alt9" })} className={styles.responsiveImage} />
+          {images.bocadillos.map((image, index) => (
+            <img key={index} src={image.src} alt={image.alt} className={styles.responsiveImage} />
+          ))}
         </div>
         <div className={styles.mobileCarousel}>
           <Carousel carouselType="gastronomia3" />
         </div>
       </div>
-
       {/* Botón de desplazamiento hacia arriba */}
-      <div className="scrollToTopContainer">
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
-          </button>
-        )}
-      </div>
+      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
 };

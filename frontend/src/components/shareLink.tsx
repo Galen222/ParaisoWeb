@@ -1,5 +1,3 @@
-// src/components/ShareLink.tsx
-
 import React from "react";
 import { useIntl } from "react-intl";
 import Styles from "../styles/components/ShareLink.module.css";
@@ -16,53 +14,42 @@ import {
   TelegramIcon,
 } from "react-share";
 
-/**
- * Propiedades para el componente ShareLink.
- * @property {string} url - URL de la página o contenido a compartir.
- * @property {string} title - Título que se muestra o envía en las opciones de compartir.
- */
 export interface ShareLinkProps {
   url: string;
   title: string;
 }
 
-/**
- * Componente ShareLink
- *
- * Renderiza una serie de botones de redes sociales y correo electrónico para compartir
- * una URL específica con un título. Incluye opciones de compartir en Twitter, Facebook,
- * WhatsApp, Telegram y Email.
- *
- * @param {ShareLinkProps} props - Propiedades del componente ShareLink.
- * @returns {JSX.Element} Botones de redes sociales para compartir un enlace.
- */
 const ShareLink: React.FC<ShareLinkProps> = ({ url, title }: ShareLinkProps): JSX.Element => {
-  const intl = useIntl(); // Hook para obtener mensajes localizados
+  const intl = useIntl();
+
+  // Prefijo para cada título
+  const fullTitle = `El Paraíso del Jamón - ${title}`;
+  const messageWithLink = `${fullTitle}\n\n${intl.formatMessage({ id: "sharedLink_cuerpo" })}\n${url}`;
 
   return (
     <div className="text-end d-inline-flex align-items-center ptl-3">
-      {/* Botón para compartir en Twitter con título y URL */}
-      <TwitterShareButton url={url} title={title}>
+      {/* Twitter: Incluir el nombre de la web y el título */}
+      <TwitterShareButton url={url} title={`${fullTitle}\n\n${intl.formatMessage({ id: "sharedLink_cuerpo" })}`}>
         <XIcon size={32} round={true} className={Styles.icon} />
       </TwitterShareButton>
 
-      {/* Botón para compartir en Facebook con URL y hashtag generado a partir del título */}
+      {/* Facebook: Se mantiene igual, pero el título se incluye al generar el hashtag */}
       <FacebookShareButton url={url} hashtag={`#${title.replace(/\s+/g, "")}`}>
         <FacebookIcon size={32} round={true} className={Styles.icon} />
       </FacebookShareButton>
 
-      {/* Botón para compartir en WhatsApp con título y URL */}
-      <WhatsappShareButton url={url} title={title}>
+      {/* WhatsApp: Incluir el nombre de la web y el título */}
+      <WhatsappShareButton url={url} title={messageWithLink}>
         <WhatsappIcon size={32} round={true} className={Styles.icon} />
       </WhatsappShareButton>
 
-      {/* Botón para compartir en Telegram con título y URL */}
-      <TelegramShareButton url={url} title={title}>
+      {/* Telegram: Incluir el nombre de la web y el título */}
+      <TelegramShareButton url={url} title={messageWithLink}>
         <TelegramIcon size={32} round={true} className={Styles.icon} />
       </TelegramShareButton>
 
-      {/* Botón para compartir por Email con asunto (título) y cuerpo internacionalizado */}
-      <EmailShareButton url={url} subject={title} body={`${intl.formatMessage({ id: "sharedLink_cuerpo" })} ${url}`}>
+      {/* Email: Incluir el nombre de la web en el asunto y en el cuerpo */}
+      <EmailShareButton url={url} subject={fullTitle} body={messageWithLink}>
         <EmailIcon size={32} round={true} />
       </EmailShareButton>
     </div>

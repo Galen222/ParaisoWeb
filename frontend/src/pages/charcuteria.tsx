@@ -3,10 +3,11 @@
 import React, { useState, useEffect } from "react";
 import type { ComponentType } from "react";
 import Loader from "../components/Loader";
+import { useIntl } from "react-intl";
 import { useFetchCharcuteria } from "../hooks/useFetchCharcuteria";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import useScrollToTop from "../hooks/useScrollToTop";
+import ScrollToTopButton from "../components/ScrollToTopButton"; // Importa el nuevo componente
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/charcuteria.module.css";
 
@@ -30,12 +31,9 @@ export type CharcuteriaPageComponent = ComponentType<CharcuteriaPageProps> & { p
  * @param {CharcuteriaPageProps} props - Propiedades para el componente `CharcuteriaPage`.
  * @returns {JSX.Element} Página de Charcutería.
  */
-const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: CharcuteriaPageProps) => {
-  // Hook para obtener los productos de charcutería
-  const { data: products, loading: loadingProducts, error } = useFetchCharcuteria();
-
-  // Hook para manejar el botón de desplazamiento hacia arriba
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
+const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: CharcuteriaPageProps): JSX.Element => {
+  const intl = useIntl(); // Hook para la internacionalización
+  const { data: products, loading: loadingProducts, error } = useFetchCharcuteria(); // Hook para obtener los productos de charcutería
 
   // Seguimiento de la visita a la página "charcuteria" para análisis interno y Google Analytics
   useVisitedPageTracking("charcuteria");
@@ -59,7 +57,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
   }
 
   // Ruta de la imagen de error
-  const imageFileName = "/images/web/error.png";
+  const imageError = "/images/web/error.png";
 
   // Renderiza un mensaje de error si ocurre un error en la carga de datos
   if (error) {
@@ -67,7 +65,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
       <div className={errorStyles.errorContainer}>
         <p className={errorStyles.errorText}>{error}</p>
         <div className={errorStyles.imageContainer}>
-          <img src={imageFileName} alt="Error" />
+          <img src={imageError} alt="Error" />
         </div>
       </div>
     );
@@ -107,13 +105,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
         ))}
       </div>
       {/* Botón de desplazamiento hacia arriba */}
-      <div className="scrollToTopContainer">
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
-          </button>
-        )}
-      </div>
+      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
 };

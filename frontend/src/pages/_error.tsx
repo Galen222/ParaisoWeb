@@ -1,6 +1,6 @@
 // pages/_error.tsx
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useIntl } from "react-intl"; // Hook para internacionalización
 import { NextPageContext } from "next"; // Tipo para el contexto de la página de Next.js
 import Loader from "../components/Loader";
@@ -25,7 +25,7 @@ export interface ErrorPageProps {
  * @param {ErrorPageProps} props - Propiedades del componente ErrorPage.
  * @returns {JSX.Element} Componente de página de error.
  */
-const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
+const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps): JSX.Element => {
   const intl = useIntl(); // Hook para manejar la internacionalización
 
   // Realiza el seguimiento de visitas a la página de error para análisis interno y Google Analytics
@@ -67,7 +67,7 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
       break;
   }
 
-  const imageFileName = "/images/web/error.png"; // Ruta de la imagen de error
+  const imageError = "/images/web/error.png"; // Ruta de la imagen de error
 
   if (loadingMessages) {
     return <Loader />; // Muestra un loader mientras los mensajes están cargando
@@ -78,7 +78,7 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
       <h1>{statusCode}</h1> {/* Muestra el código de estado HTTP */}
       <p className="text-center">{message}</p> {/* Muestra el mensaje de error */}
       <div className={styles.imageContainer}>
-        <img src={imageFileName} alt={`Error ${statusCode}`} /> {/* Muestra la imagen de error */}
+        <img src={imageError} alt={`Error ${statusCode}`} /> {/* Muestra la imagen de error */}
       </div>
     </div>
   );
@@ -91,9 +91,9 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps) => {
  * @param {NextPageContext} context - Contexto de la página de Next.js.
  * @returns {{ statusCode: number }} Código de estado HTTP como una propiedad.
  */
-ErrorPage.getInitialProps = ({ res, err }: NextPageContext) => {
-  const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
+ErrorPage.getInitialProps = ({ res, err }: NextPageContext): { statusCode: number } => {
+  const statusCode = res?.statusCode ?? err?.statusCode ?? 404;
   return { statusCode };
 };
 
-export default ErrorPage; // Exporta el componente ErrorPage como predeterminado
+export default ErrorPage; // Exporta el componente ErrorPage como predeterminado.

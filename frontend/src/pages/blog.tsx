@@ -4,10 +4,10 @@ import React from "react";
 import Link from "next/link";
 import type { ComponentType } from "react";
 import Loader from "../components/Loader";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import { useFetchBlog } from "../hooks/useFetchBlog";
-import useScrollToTop from "../hooks/useScrollToTop";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/blog.module.css";
 
@@ -31,12 +31,9 @@ export type BlogPageComponent = ComponentType<BlogPageProps> & { pageTitleText?:
  * @param {BlogPageProps} props - Propiedades para el componente `BlogPage`.
  * @returns {JSX.Element} Página del Blog.
  */
-const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
+const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps): JSX.Element => {
   // Hook para obtener las publicaciones del blog
   const { data: blogs, loading: loadingBlog, error } = useFetchBlog();
-
-  // Hook para manejar el botón de desplazamiento hacia arriba
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
 
   // Seguimiento de la visita a la página "blog" para análisis interno y Google Analytics
   useVisitedPageTracking("blog");
@@ -78,14 +75,7 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps) => {
           </Link>
         ))}
       </div>
-      {/* Botón de desplazamiento hacia arriba */}
-      <div className="scrollToTopContainer">
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
-          </button>
-        )}
-      </div>
+      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
 };

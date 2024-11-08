@@ -3,10 +3,10 @@
 import React from "react";
 import Link from "next/link";
 import Loader from "../components/Loader";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/pages/aviso-legal.module.css";
 
 /**
@@ -24,10 +24,8 @@ export interface AvisoLegalPageProps {
  * @param {AvisoLegalPageProps} props - Propiedades para el componente `AvisoLegalPage`.
  * @returns {JSX.Element} Página de Aviso Legal.
  */
-const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
+const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps): JSX.Element => {
   const intl = useIntl(); // Hook para manejar la internacionalización
-
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para manejar el botón de desplazamiento hacia arriba
 
   // Seguimiento de la visita a la página "Aviso Legal" para análisis interno y Google Analytics
   useVisitedPageTracking("aviso-legal");
@@ -49,7 +47,6 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Principal_Texto2" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Principal_Texto3" })}</p>
       </div>
-
       {/* Datos Identificativos */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Titulo" })}</h3>
@@ -57,7 +54,7 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto1" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto2" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto3" })}</li>
-          <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto4" })}</li>
+          {/* <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto4" })}</li> */}
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto5" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto6" })}</li>
           <li>
@@ -68,7 +65,6 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
           </li>
         </ul>
       </div>
-
       {/* Secciones adicionales de contenido legal */}
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Objeto_Titulo" })}</h3>
@@ -197,13 +193,7 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps) => {
         <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Actualizacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Actualizacion_Texto" })}</p>
       </div>
-      <div>
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
-          </button>
-        )}
-      </div>
+      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
 };

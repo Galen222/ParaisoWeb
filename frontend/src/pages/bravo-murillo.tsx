@@ -10,7 +10,7 @@ import Transport from "../components/Transport";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import useScrollToTop from "../hooks/useScrollToTop";
+import ScrollToTopButton from "../components/ScrollToTopButton"; // Importa el nuevo componente
 
 /**
  * Propiedades para el componente `BravoMurilloPage`.
@@ -35,10 +35,9 @@ export type BravoMurilloPageComponent = ComponentType<BravoMurilloPageProps> & {
  * @param {BravoMurilloPageProps} props - Propiedades para el componente `BravoMurilloPage`.
  * @returns {JSX.Element} Página del restaurante "Bravo Murillo".
  */
-const BravoMurilloPage: BravoMurilloPageComponent = ({ loadingMessages, mapLocale }) => {
+const BravoMurilloPage: BravoMurilloPageComponent = ({ loadingMessages, mapLocale }: BravoMurilloPageProps): JSX.Element => {
   const restaurante = "bravo-murillo"; // Identificador del restaurante
   const intl = useIntl(); // Hook para la internacionalización
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para el botón de desplazamiento hacia arriba
 
   // Seguimiento de la visita a la página "Bravo Murillo" para análisis interno y Google Analytics
   useVisitedPageTracking(restaurante);
@@ -66,14 +65,7 @@ const BravoMurilloPage: BravoMurilloPageComponent = ({ loadingMessages, mapLocal
       <div className="mt-25p">
         <Map locationKey={locationKey} mapLocale={mapLocale} /> {/* Mapa de la ubicación del restaurante */}
       </div>
-      <div className="scrollToTopContainer">
-        {/* Botón de desplazamiento hacia arriba */}
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
-          </button>
-        )}
-      </div>
+      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
 };

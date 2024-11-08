@@ -23,12 +23,12 @@ export interface Custom404PageProps {
  * @param {Custom404PageProps} props - Propiedades para el componente `Custom404`.
  * @returns {JSX.Element} Página de error 404.
  */
-const Custom404Page = ({ loadingMessages }: Custom404PageProps) => {
+const Custom404Page = ({ loadingMessages }: Custom404PageProps): JSX.Element => {
   const intl = useIntl(); // Hook para manejar la internacionalización
 
   // Realiza el seguimiento de la visita a la página de error 404
-  useVisitedPageTracking("404");
-  useVisitedPageTrackingGA("404");
+  useVisitedPageTracking("error_404");
+  useVisitedPageTrackingGA("error_404");
 
   // Muestra un loader si los mensajes están en proceso de carga
   if (loadingMessages) {
@@ -37,13 +37,13 @@ const Custom404Page = ({ loadingMessages }: Custom404PageProps) => {
 
   // Mensaje de error para la página 404
   const message = intl.formatMessage({ id: "error_Error404" });
-  const imagePath = `/images/web/404.png`; // Ruta de la imagen de error 404
+  const imageError = `/images/web/404.png`; // Ruta de la imagen de error 404
 
   return (
     <div className="pageContainer">
       <p className="text-center">{message}</p> {/* Muestra el mensaje de error */}
       <div className={styles.imageContainer}>
-        <img src={imagePath} alt="Error 404" /> {/* Muestra la imagen de error 404 */}
+        <img src={imageError} alt="Error 404" /> {/* Muestra la imagen de error 404 */}
       </div>
     </div>
   );

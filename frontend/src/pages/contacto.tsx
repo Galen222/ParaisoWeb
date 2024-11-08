@@ -9,7 +9,7 @@ import Form from "../components/Form";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import useScrollToTop from "../hooks/useScrollToTop";
+import ScrollToTopButton from "../components/ScrollToTopButton"; // Importa el componente reutilizable
 import styles from "../styles/pages/contacto.module.css";
 
 /**
@@ -32,9 +32,8 @@ export type ContactPageComponent = ComponentType<ContactPageProps> & { pageTitle
  * @param {ContactPageProps} props - Propiedades para el componente `ContactPage`.
  * @returns {JSX.Element} Página de Contacto.
  */
-const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps) => {
+const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps): JSX.Element => {
   const intl = useIntl(); // Hook para la internacionalización
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para el botón de desplazamiento hacia arriba
 
   // Seguimiento de la visita a la página "Contacto" para análisis interno y Google Analytics
   useVisitedPageTracking("contacto");
@@ -70,17 +69,14 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
         </p>
         <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto4" })}</p>
       </div>
-
       {/* Formulario de contacto */}
       <div className={styles.formContainer}>
         <Form onSubmit={handleFormSubmit} />
       </div>
-
       {/* Información legal */}
       <div>
         <LegalInfo />
       </div>
-
       {/* Información adicional de contacto y enlaces de email */}
       <div>
         <p className="ti-20p">
@@ -91,7 +87,6 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
           {intl.formatMessage({ id: "contacto_Texto4_2" })}
         </p>
       </div>
-
       {/* Localizaciones de las sedes del negocio */}
       <div>
         <Localization localizationName="san-bernardo" />
@@ -99,15 +94,8 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
         <Localization localizationName="reina-victoria" />
         <Localization localizationName="arenal" />
       </div>
-
       {/* Botón de desplazamiento hacia arriba */}
-      <div className="scrollToTopContainer">
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
-          </button>
-        )}
-      </div>
+      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
 };

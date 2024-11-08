@@ -7,10 +7,10 @@ import Map from "../components/Map";
 import Carousel from "../components/Carousel";
 import Localization from "../components/Localization";
 import Transport from "../components/Transport";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import useScrollToTop from "../hooks/useScrollToTop";
 
 /**
  * Propiedades para el componente `ArenalPage`.
@@ -34,16 +34,13 @@ export type ArenalPageComponent = ComponentType<ArenalPageProps> & { pageTitleTe
  * @param {ArenalPageProps} props - Propiedades para el componente `ArenalPage`.
  * @returns {JSX.Element} Página del restaurante "Arenal".
  */
-const ArenalPage: ArenalPageComponent = ({ loadingMessages, mapLocale }) => {
+const ArenalPage: ArenalPageComponent = ({ loadingMessages, mapLocale }: ArenalPageProps): JSX.Element => {
   const restaurante = "arenal"; // Nombre del restaurante
   const intl = useIntl(); // Hook para la internacionalización
 
   // Seguimiento de la visita a la página "Arenal" para análisis interno y Google Analytics
   useVisitedPageTracking(restaurante);
   useVisitedPageTrackingGA(restaurante);
-
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para el botón de desplazamiento
-  const locationKey = restaurante; // Clave de localización para el mapa
 
   // Muestra un loader si los mensajes están en proceso de carga
   if (loadingMessages) {
@@ -63,15 +60,9 @@ const ArenalPage: ArenalPageComponent = ({ loadingMessages, mapLocale }) => {
         <Transport transportName="arenal" /> {/* Componente de transporte con información sobre cómo llegar */}
       </div>
       <div className="mt-25p">
-        <Map locationKey={locationKey} mapLocale={mapLocale} /> {/* Mapa del restaurante "Arenal" */}
+        <Map locationKey={restaurante} mapLocale={mapLocale} /> {/* Mapa del restaurante "Arenal" */}
       </div>
-      <div className="scrollToTopContainer">
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" /> {/* Botón para desplazarse hacia arriba */}
-          </button>
-        )}
-      </div>
+      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
 };

@@ -2,14 +2,14 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import type { ComponentType } from "react";
 import Loader from "../../components/Loader";
 import ShareLink from "../../components/ShareLink";
+import ScrollToTopButton from "../../components/ScrollToTopButton";
 import ReactMarkdown from "react-markdown";
-import { useRouter } from "next/router";
 import { useIntl } from "react-intl";
 import { useFetchBlogDetails } from "../../hooks/useFetchBlogDetails";
-import useScrollToTop from "../../hooks/useScrollToTop";
 import { useVisitedPageTracking } from "../../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../../hooks/useTrackingGA";
 import { useHandleLanguageChange } from "../../hooks/useHandleLanguageChange";
@@ -37,11 +37,10 @@ export type BlogDetailsPageComponent = ComponentType<BlogDetailsPageProps> & { p
  * @param {BlogDetailsPageProps} props - Propiedades para el componente BlogDetailsPage.
  * @returns {JSX.Element} Página de detalles de la publicación del blog.
  */
-const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDetailsPageProps) => {
+const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDetailsPageProps): JSX.Element => {
   const router = useRouter();
   const { slug } = router.query;
   const intl = useIntl();
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
   const [isPushingBack, setIsPushingBack] = useState(false); // Estado para animaciones del botón de regreso
 
   useVisitedPageTracking("blog-noticia");
@@ -53,9 +52,10 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
   // Usa el hook para manejar el cambio de idioma
   useHandleLanguageChange(blogDetails);
 
-  /**
-   * Maneja la animación del botón de regreso.
-   */
+  // Imagen de error por defecto
+  const imageError = "/images/web/error.png";
+
+  // Maneja la animación del botón de regreso
   const handleBack = async () => {
     setIsPushingBack(true);
   };
@@ -64,8 +64,6 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
   if (loadingMessages || loadingBlogDetails) {
     return <Loader className="BD" />;
   }
-
-  const imageError = "/images/web/error.png"; // Imagen de error por defecto
 
   if (error) {
     return (
@@ -98,15 +96,22 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
           <div className="mt-25p">
             <ShareLink url={typeof window !== "undefined" ? window.location.href : ""} title={blogDetails.titulo} />
           </div>
-          <div className="mt-25p">
-            <img src={blogDetails.imagen_url} alt={blogDetails.titulo} className={styles.blogImage} />
-          </div>
+          {/* Imagen principal del blog */}
+          {blogDetails.imagen_url && (
+            <div className="mt-25p">
+              <img src={blogDetails.imagen_url} alt={blogDetails.titulo} className={styles.blogImage} />
+            </div>
+          )}
+          {/* Contenido del blog */}
           <div className={`mt-25p ${styles.blogText}`}>
             <ReactMarkdown>{blogDetails.contenido}</ReactMarkdown>
           </div>
-          <div className="mt-25p">
-            {blogDetails.imagen_url_2 && <img src={blogDetails.imagen_url_2} alt={blogDetails.titulo} className={styles.blogImage} />}
-          </div>
+          {/* Imagen secundaria del blog, si está presente */}
+          {blogDetails.imagen_url_2 && (
+            <div className="mt-25p">
+              <img src={blogDetails.imagen_url_2} alt={blogDetails.titulo} className={styles.blogImage} />
+            </div>
+          )}
           <div>
             <ShareLink url={typeof window !== "undefined" ? window.location.href : ""} title={blogDetails.titulo} />
           </div>
@@ -121,13 +126,8 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
               </button>
             </Link>
           </div>
-          <div className="scrollToTopContainer">
-            {isScrollButtonVisible && (
-              <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-                <img src="/images/web/flechaArriba.png" alt="Subir" />
-              </button>
-            )}
-          </div>
+          {/* Botón para desplazarse hacia arriba */}
+          <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
         </div>
       )}
     </div>
@@ -137,4 +137,4 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
 // Título de la página
 BlogDetailsPage.pageTitleText = "blog";
 
-export default BlogDetailsPage;
+export default BlogDetailsPage; // Exporta el componente para ser usado en la aplicación

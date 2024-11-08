@@ -38,6 +38,16 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
   const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();
   const isMobile = deviceType === "mobile"; // Booleano que indica si es un dispositivo móvil
 
+  // Variables para imágenes y textos alternativos
+  const imageLogo = "/images/navbar/imagenLogo.png";
+  const imageLogoAlt = "Logo Paraíso Del Jamón";
+  const imageFlagES = "/images/flags/es.png";
+  const imageFlagESAlt = "Español";
+  const imageFlagEN = "/images/flags/en.png";
+  const imageFlagENAlt = "English";
+  const imageFlagDE = "/images/flags/de.png";
+  const imageFlagDEAlt = "Deutsch";
+
   /**
    * Maneja el clic en el menú desplegable de restaurantes.
    * Si el menú de restaurantes no está abierto, lo abre.
@@ -58,7 +68,7 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
         <div className={styles.imgLogoContainer}>
           {/* Logo que enlaza a la página principal */}
           <Link href="/" onClick={closeMobileMenu}>
-            <img src="/images/navbar/imagenLogo.png" alt="Logo Paraíso Del Jamón" className={styles.imgLogo} />
+            <img src={imageLogo} alt={imageLogoAlt} className={styles.imgLogo} />
           </Link>
         </div>
         <div className={styles.textLogoContainer}>
@@ -76,8 +86,8 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
           {/* Selector de idioma con banderas */}
           <div className={styles.flags}>
             <img
-              src="/images/flags/es.png"
-              alt="Español"
+              src={imageFlagES}
+              alt={imageFlagESAlt}
               className={styles.flag}
               onClick={() => {
                 onLocaleChange("es");
@@ -85,8 +95,8 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
               }}
             />
             <img
-              src="/images/flags/en.png"
-              alt="English"
+              src={imageFlagEN}
+              alt={imageFlagENAlt}
               className={styles.flag}
               onClick={() => {
                 onLocaleChange("en");
@@ -94,8 +104,8 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
               }}
             />
             <img
-              src="/images/flags/de.png"
-              alt="Deutsch"
+              src={imageFlagDE}
+              alt={imageFlagDEAlt}
               className={styles.flag}
               onClick={() => {
                 onLocaleChange("de");

@@ -8,7 +8,7 @@ import Banner from "../components/Banner";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import useScrollToTop from "../hooks/useScrollToTop";
+import ScrollToTopButton from "../components/ScrollToTopButton"; // Importa el componente reutilizable
 
 /**
  * Propiedades para el componente `Home`.
@@ -26,9 +26,8 @@ export interface HomeProps {
  * @param {HomeProps} props - Propiedades del componente `Home`.
  * @returns {JSX.Element} - Página de inicio.
  */
-const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMessages }) => {
+const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMessages }: HomeProps): JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
 
   // Seguimiento de la visita a la página "Inicio" para analítica
   useVisitedPageTracking("inicio");
@@ -45,32 +44,22 @@ const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMe
       <div>
         <h1 className="text-center">{intl.formatMessage({ id: "inicio_Titulo1" })}</h1>
       </div>
-
       {/* Texto descriptivo */}
       <div className="mt-25p">
         <p className="ti-20p">{intl.formatMessage({ id: "inicio_Texto1" })}</p>
       </div>
-
       {/* Carrusel de imágenes principal */}
       <div>
         <Carousel carouselType="inicio" />
       </div>
-
       {/* Banners para las distintas secciones */}
       <Banner bannerType="restaurantes" />
       <Banner bannerType="gastronomia" />
       <Banner bannerType="charcuteria" />
       <Banner bannerType="nosotros" />
       <Banner bannerType="empleo" />
-
       {/* Botón para desplazarse hacia arriba */}
-      <div className="scrollToTopContainer">
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
-          </button>
-        )}
-      </div>
+      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
 };

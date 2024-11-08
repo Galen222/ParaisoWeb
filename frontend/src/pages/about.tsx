@@ -4,10 +4,10 @@ import React from "react";
 import type { ComponentType } from "react";
 import Loader from "../components/Loader";
 import Carousel from "../components/Carousel";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import useScrollToTop from "../hooks/useScrollToTop";
 import styles from "../styles/pages/about.module.css"; // Importa los estilos específicos para la página About
 
 /**
@@ -31,13 +31,21 @@ export type AboutPageComponent = ComponentType<AboutPageProps> & { pageTitleText
  * @param {AboutPageProps} props - Propiedades del componente AboutPage.
  * @returns {JSX.Element} Componente de la página "About".
  */
-const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
+const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps): JSX.Element => {
   const intl = useIntl(); // Hook para manejar la internacionalización
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para manejar el botón de scroll
 
   // Seguimiento de visitas a la página "About" para análisis interno y Google Analytics
   useVisitedPageTracking("about");
   useVisitedPageTrackingGA("about");
+
+  // Variables para las imágenes y los textos alternativos internacionalizados
+  const images = [
+    { src: "/images/about/nosotros1.png", alt: intl.formatMessage({ id: "about_Carousel_Alt1" }) },
+    { src: "/images/about/nosotros2.png", alt: intl.formatMessage({ id: "about_Carousel_Alt2" }) },
+    { src: "/images/about/nosotros3.png", alt: intl.formatMessage({ id: "about_Carousel_Alt3" }) },
+    { src: "/images/about/nosotros4.png", alt: intl.formatMessage({ id: "about_Carousel_Alt4" }) },
+    { src: "/images/about/nosotros5.png", alt: intl.formatMessage({ id: "about_Carousel_Alt5" }) },
+  ];
 
   // Muestra un loader si los mensajes están en proceso de carga
   if (loadingMessages) {
@@ -54,9 +62,9 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
         <p className="ti-20p">{intl.formatMessage({ id: "about_Texto2a" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "about_Texto2b" })}</p>
         <div className={`${styles.imageContainer}`}>
-          <img src="/images/about/nosotros1.png" alt={intl.formatMessage({ id: "about_Carousel_Alt1" })} className={styles.responsiveImage} />
-          <img src="/images/about/nosotros2.png" alt={intl.formatMessage({ id: "about_Carousel_Alt2" })} className={styles.responsiveImage} />
-          <img src="/images/about/nosotros3.png" alt={intl.formatMessage({ id: "about_Carousel_Alt3" })} className={styles.responsiveImage} />
+          {images.slice(0, 3).map((image, index) => (
+            <img key={index} src={image.src} alt={image.alt} className={styles.responsiveImage} />
+          ))}
         </div>
         <p className="ti-20p">{intl.formatMessage({ id: "about_Texto2c" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "about_Texto2d" })}</p>
@@ -79,8 +87,9 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
         <p className="ti-20p">{intl.formatMessage({ id: "about_Texto4" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "about_Texto5" })}</p>
         <div className={`${styles.imageContainer}`}>
-          <img src="/images/about/nosotros4.png" alt={intl.formatMessage({ id: "about_Carousel_Alt4" })} className={styles.responsiveImage} />
-          <img src="/images/about/nosotros5.png" alt={intl.formatMessage({ id: "about_Carousel_Alt5" })} className={styles.responsiveImage} />
+          {images.slice(3).map((image, index) => (
+            <img key={index} src={image.src} alt={image.alt} className={styles.responsiveImage} />
+          ))}
         </div>
         <div className={styles.mobileCarousel}>
           <Carousel carouselType="about2" /> {/* Segundo carrusel para móviles */}
@@ -89,13 +98,7 @@ const AboutPage: AboutPageComponent = ({ loadingMessages }: AboutPageProps) => {
       <div className="mt-25p">
         <h3 className="ti-20p">{intl.formatMessage({ id: "about_Texto6" })}</h3>
       </div>
-      <div className="scrollToTopContainer">
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" /> {/* Botón para desplazarse hacia arriba */}
-          </button>
-        )}
-      </div>
+      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
 };

@@ -4,10 +4,10 @@ import React from "react";
 import type { ComponentType } from "react";
 import Loader from "../components/Loader";
 import Localization from "../components/Localization";
+import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl"; // Importa el hook useIntl, que permite la internacionalización de la aplicación.
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import useScrollToTop from "../hooks/useScrollToTop";
 
 /**
  * Interfaz para las propiedades del componente de reservas.
@@ -28,9 +28,8 @@ export type ReservasPageComponent = ComponentType<ReservasPageProps> & { pageTit
  * @param {boolean} props.loadingMessages - Estado de carga de los mensajes.
  * @returns {JSX.Element} El componente de la página de reservas.
  */
-const ReservasPage: ReservasPageComponent = ({ loadingMessages }: ReservasPageProps) => {
+const ReservasPage: ReservasPageComponent = ({ loadingMessages }: ReservasPageProps): JSX.Element => {
   const intl = useIntl(); // Inicia el hook de internacionalización para acceder a las funciones de traducción.
-  const { isScrollButtonVisible, scrollButtonStyle, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll // Hook para controlar el botón de desplazamiento.
 
   // Realiza el seguimiento de la visita a la página de reservas.
   useVisitedPageTracking("reservas");
@@ -49,7 +48,6 @@ const ReservasPage: ReservasPageComponent = ({ loadingMessages }: ReservasPagePr
         <p className="ti-20p">{intl.formatMessage({ id: "reservas_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "reservas_Texto2" })}</p>
       </div>
-
       {/* Sección de localización para las distintas ubicaciones */}
       <div className="mt-25p">
         <Localization localizationName="san-bernardo" />
@@ -57,15 +55,8 @@ const ReservasPage: ReservasPageComponent = ({ loadingMessages }: ReservasPagePr
         <Localization localizationName="reina-victoria" />
         <Localization localizationName="arenal" />
       </div>
-
-      {/* Botón para desplazarse hacia arriba, visible según el estado de scroll */}
-      <div className="scrollToTopContainer">
-        {isScrollButtonVisible && (
-          <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
-            <img src="/images/web/flechaArriba.png" alt="Subir" />
-          </button>
-        )}
-      </div>
+      {/* Botón para desplazarse hacia arriba */}
+      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
 };
