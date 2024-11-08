@@ -5,7 +5,7 @@ import { createDeviceCookie } from "@/utils/cookieUtils";
 import { initGA } from "@/utils/gaUtils"; // Importa la función desde utils
 
 // Define la interfaz para las propiedades devueltas por el hook
-interface CookieLogic {
+export interface CookieLogic {
   locale: string;
   mapLocale: string;
   messages: Record<string, any>;

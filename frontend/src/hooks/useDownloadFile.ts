@@ -6,7 +6,7 @@ import { useToastMessage } from "./useToast";
 /**
  * Interfaz para el objeto retornado por el hook `useDownloadFile`.
  */
-interface DownloadFileHook {
+export interface DownloadFileHook {
   downloadFile: (filePath: string, fileName: string, successMessageId: string, errorMessageId: string) => Promise<void>;
   isDownloading: boolean;
 }

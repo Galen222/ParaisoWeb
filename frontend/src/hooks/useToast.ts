@@ -1,7 +1,7 @@
 import { useIntl } from "react-intl";
 import { toast, Slide, ToastOptions } from "react-toastify";
 
-interface ToastMessage {
+export interface ToastMessage {
   showToast: (messageId: string, duration: number, type?: "success" | "error" | "info" | "warning") => void;
 }
 
