@@ -11,7 +11,7 @@
   width: 100%; /* Ancho completo de la ventana gráfica */
   height: 100%; /* Altura completa de la ventana gráfica */
   background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente negro para oscurecer el contenido detrás */
-  z-index: 15; /* Asegura que el fondo esté por encima de otros elementos */
+  z-index: 10; /* Asegura que el fondo esté por encima de otros elementos */
 }
 
 /* Modal de cookies */

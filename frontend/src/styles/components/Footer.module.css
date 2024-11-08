@@ -14,7 +14,7 @@
   position: fixed; /* Posiciona el pie de página de manera fija */
   bottom: 0; /* Alinea el pie de página al fondo de la ventana */
   left: 0; /* Alinea el pie de página al lado izquierdo de la ventana */
-  z-index: 5; /* Define el orden de apilamiento para que esté por encima de otros elementos */
+  z-index: 7; /* Define el orden de apilamiento para que esté por encima de otros elementos */
 }
 
 /* Estilos para los párrafos dentro del pie de página */

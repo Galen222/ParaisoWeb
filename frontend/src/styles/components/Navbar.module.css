@@ -34,7 +34,6 @@
   width: 25%; /* Ancho del 25% del contenedor padre */
   display: flex; /* Utiliza flexbox para centrar el logo */
   justify-content: center; /* Centra horizontalmente el logo */
-  z-index: 3; /* Asegura que el logo esté por encima de otros elementos */
 }
 
 /* Estilo para la imagen del logo */
@@ -246,7 +245,7 @@
   transform: translateX(-50%) translateY(10px); /* Ajusta la posición para centrar */
   background-color: rgba(74, 64, 58, 0.8); /* Fondo semi-transparente */
   box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
-  z-index: 1; /* Asegura que el menú esté por encima de otros elementos */
+  z-index: 2; /* Asegura que el menú esté por encima de otros elementos */
   width: 160px; /* Ancho fijo del menú desplegable */
   transition: all 0.5s ease-out; /* Transición suave para las propiedades */
   opacity: 0; /* Inicialmente invisible */
