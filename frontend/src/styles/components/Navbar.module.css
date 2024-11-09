@@ -56,7 +56,7 @@
   font-size: 40px; /* Tamaño de fuente de 40 píxeles */
   color: #e3011a; /* Color rojo oscuro para el texto */
   text-align: center; /* Centra el texto */
-  text-shadow: 1px 1px 4px #e3011a; /* Sombra del texto para mejorar legibilidad */
+  text-shadow: 2px 2px 4px #000000; /* Sombra del texto para mejorar legibilidad */
 }
 
 /* Contenedor para las banderas de selección de idioma */
