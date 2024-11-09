@@ -40,18 +40,6 @@
   display: inline; /* Muestra los elementos en línea */
 }
 
-/* Estilo específico para el contenedor de texto cuando el idioma es alemán */
-.textContainerGerman {
-  display: block; /* Muestra el contenido en bloques independientes */
-  text-align: center; /* Centra el contenido de cada línea */
-}
-
-/* Estilo para el enlace de política de cookies cuando el idioma es alemán */
-.cookieLinkGerman {
-  display: block; /* Muestra el enlace en una línea independiente */
-  margin-top: 5px; /* Agrega un margen superior para separar visualmente */
-}
-
 /* Media Queries para ajustar el pie de página en dispositivos móviles */
 @media (max-width: 768px) {
   .footer {

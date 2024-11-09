@@ -29,6 +29,7 @@ const Footer: React.FC<FooterProps> = ({ loadingMessages }: FooterProps): JSX.El
 
   // Verifica si el idioma actual es alemán
   const isGerman = locale === "de";
+  console.log("idioma aleman: ", isGerman);
 
   /**
    * Función para manejar el clic en los enlaces.
@@ -44,12 +45,12 @@ const Footer: React.FC<FooterProps> = ({ loadingMessages }: FooterProps): JSX.El
       <Link href="/aviso-legal" className={styles.link} onClick={handleLinkClick}>
         {intl.formatMessage({ id: "Footer_AvisoLegal" })}
       </Link>
-      {" | "}
+      {isGerman ? <br /> : " | "}
+      {/* Si el idioma es alemán, muestra la política de privacidad y política de cookies en una nueva línea */}
       <Link href="/politica-privacidad" className={styles.link} onClick={handleLinkClick}>
         {intl.formatMessage({ id: "Footer_PoliticaPrivacidad" })}
       </Link>
-      {/* Condición para mostrar la barra y el enlace de Política de Cookies si no es alemán */}
-      {!isGerman && " | "}
+      {" | "}
       <Link href="/politica-cookies" className={`${styles.link} ${isGerman ? styles.cookieLinkGerman : ""}`} onClick={handleLinkClick}>
         {intl.formatMessage({ id: "Footer_PoliticaCookies" })}
       </Link>
@@ -65,7 +66,7 @@ const Footer: React.FC<FooterProps> = ({ loadingMessages }: FooterProps): JSX.El
     <footer className={styles.footer}>
       <div>
         {/* Si el idioma es alemán, se aplica una clase especial al contenedor de texto */}
-        <p className={isGerman ? styles.textContainerGerman : ""}>
+        <p>
           <span className={styles.rightsText}>{intl.formatMessage({ id: "Footer_Rights" }, { year: new Date().getFullYear() })}</span>
           <span className={styles.separator}> | </span>
           <span className={styles.links}>{links}</span>
