@@ -8,23 +8,12 @@ Las tablas varían según el entorno (producción o local).
 
 from sqlalchemy import Column, Integer, String, Text, DateTime, func, PrimaryKeyConstraint
 from sqlalchemy.ext.declarative import declarative_base
-from backend.core.config import ENVIRONMENT
 
 # Creación de la clase base para los modelos
 Base = declarative_base()
 
-# -----------------------------
-# Configuración de los nombres de tablas según el entorno
-# -----------------------------
-# Dependiendo del valor de la variable de entorno 'ENVIRONMENT', se seleccionan nombres de tablas diferentes.
-# Esto permite tener tablas separadas para desarrollo local y producción, evitando conflictos y facilitando pruebas.
-TABLE_NAME_CHARCUTERIA = "charcuteria" if ENVIRONMENT == "production" else "charcuteria-local"
-TABLE_NAME_BLOG = "blog" if ENVIRONMENT == "production" else "blog-local"
-
-# Las siguientes líneas están comentadas y representan los nombres de tablas fijas.
-# Se utilizan para referencia o en caso de que desees mantener nombres de tablas constantes.
-# TABLE_NAME_CHARCUTERIA = "charcuteria"
-# TABLE_NAME_BLOG = "blog"
+TABLE_NAME_CHARCUTERIA = "charcuteria"
+TABLE_NAME_BLOG = "blog"
 
 # -----------------------------
 # Definición del modelo para la tabla 'charcuteria'
@@ -34,7 +23,7 @@ class Charcuteria(Base):
     Modelo ORM para la tabla de productos de charcutería.
     La tabla varía su nombre según el entorno (producción o local).
     """
-    __tablename__ = TABLE_NAME_CHARCUTERIA  # Nombre de la tabla según el entorno configurado
+    __tablename__ = TABLE_NAME_CHARCUTERIA
 
     # Definición de las columnas de la tabla
     id_producto = Column(Integer, index=True)       # Identificador único del producto
@@ -61,7 +50,7 @@ class Blog(Base):
     Modelo ORM para la tabla de publicaciones de blog.
     La tabla varía su nombre según el entorno configurado (producción o local).
     """
-    __tablename__ = TABLE_NAME_BLOG  # Nombre de la tabla según el entorno configurado
+    __tablename__ = TABLE_NAME_BLOG
 
     # Definición de las columnas de la tabla
     id_noticia = Column(Integer, index=True, nullable=False)       # Identificador único de la noticia

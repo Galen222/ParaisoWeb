@@ -7,23 +7,6 @@ Gestiona la carga y validación de las variables de entorno necesarias para la a
 
 from pydantic import BaseSettings
 from pathlib import Path
-import os
-from dotenv import load_dotenv
-
-# -----------------------------
-# Cargar las variables de entorno desde el archivo .env
-# -----------------------------
-# Utiliza la función `load_dotenv` para cargar las variables definidas en el archivo `.env` al entorno.
-# Esto permite acceder a ellas a través de `os.getenv`.
-load_dotenv()
-
-# -----------------------------
-# Determinar el entorno actual de la aplicación
-# -----------------------------
-# Obtiene la variable de entorno `ENVIRONMENT_BACKEND` para determinar si la aplicación se está ejecutando
-# en modo de desarrollo, producción u otro entorno definido.
-# Si la variable no está definida, por defecto se establece como "development".
-ENVIRONMENT = os.getenv("ENVIRONMENT_BACKEND", "development")
 
 class Settings(BaseSettings):
     """

@@ -8,7 +8,6 @@ Configura la instancia de FastAPI, aplica middleware, registra routers y maneja 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .routers import contacto, charcuteria, blog, token
-from .core.config import ENVIRONMENT  # Importa la variable de entorno
 
 # -----------------------------
 # Creación de la instancia de FastAPI
@@ -56,13 +55,8 @@ from .models.models import Base
 async def startup():
     """
     Evento que se ejecuta al iniciar la aplicación.
-    - Imprime mensajes de inicio en la consola.
     - Crea las tablas de la base de datos si no existen.
     """
-    print("----------------------------------------------------")
-    print(f"SERVIDOR BACKEND FUNCIONANDO EN MODO {ENVIRONMENT}")
-    print("----------------------------------------------------")
-    
     # Inicia una conexión asíncrona con la base de datos.
     async with engine.begin() as conn:
         # Crea todas las tablas definidas en Base.metadata si no existen.
