@@ -1,20 +1,20 @@
 /* components/Footer.module.css */
 
-/* Contenedor principal del pie de página */
+/* Estilos principales del contenedor del pie de página */
 .footer {
   width: 100%; /* Ancho completo del pie de página */
-  background-color: var(--text_color); /* Color de fondo */
+  background-color: var(--text_color); /* Color de fondo del pie de página */
   color: white; /* Color de texto blanco */
-  text-align: center; /* Centra el texto horizontalmente */
+  text-align: center; /* Centra el contenido horizontalmente */
   padding: 0; /* Elimina el padding interno */
   height: 60px; /* Altura fija de 60 píxeles */
   display: flex; /* Utiliza flexbox para alinear el contenido */
   align-items: center; /* Centra verticalmente el contenido */
   justify-content: center; /* Centra horizontalmente el contenido */
-  position: fixed; /* Posiciona el pie de página de manera fija */
+  position: fixed; /* Fija el pie de página al fondo de la ventana */
   bottom: 0; /* Alinea el pie de página al fondo de la ventana */
   left: 0; /* Alinea el pie de página al lado izquierdo de la ventana */
-  z-index: 7; /* Define el orden de apilamiento para que esté por encima de otros elementos */
+  z-index: 7; /* Define el orden de apilamiento para superponer el pie de página sobre otros elementos */
 }
 
 /* Estilos para los párrafos dentro del pie de página */
@@ -23,7 +23,7 @@
   font-size: 16px; /* Tamaño de fuente de 16 píxeles */
 }
 
-/* Estilos para los enlaces */
+/* Estilos para los enlaces en el pie de página */
 .link {
   text-decoration: none; /* Elimina el subrayado de los enlaces */
 }
@@ -33,24 +33,35 @@
   text-decoration: underline; /* Agrega subrayado al pasar el ratón */
 }
 
-/* Estilos para los elementos span específicos */
+/* Estilos específicos para los elementos span dentro del pie de página */
 .rightsText,
 .separator,
 .links {
   display: inline; /* Muestra los elementos en línea */
 }
 
-/* Media Queries para dispositivos móviles */
-/* En dispositivos con ancho máximo de 768px, ajustamos el diseño */
+/* Estilo específico para el contenedor de texto cuando el idioma es alemán */
+.textContainerGerman {
+  display: block; /* Muestra el contenido en bloques independientes */
+  text-align: center; /* Centra el contenido de cada línea */
+}
+
+/* Estilo para el enlace de política de cookies cuando el idioma es alemán */
+.cookieLinkGerman {
+  display: block; /* Muestra el enlace en una línea independiente */
+  margin-top: 5px; /* Agrega un margen superior para separar visualmente */
+}
+
+/* Media Queries para ajustar el pie de página en dispositivos móviles */
 @media (max-width: 768px) {
   .footer {
-    position: static; /* Elimina la posición fija en dispositivos móviles */
-    height: auto; /* Permite que la altura se ajuste automáticamente */
-    padding-bottom: env(safe-area-inset-bottom); /* Añade padding para el área segura en dispositivos con notch */
+    position: static; /* Cambia la posición fija para permitir que se adapte a la altura de la pantalla */
+    height: auto; /* Permite que la altura se ajuste automáticamente en función del contenido */
+    padding-bottom: env(safe-area-inset-bottom); /* Agrega un padding inferior para dispositivos con notch */
   }
 
   .footer p {
-    text-align: center; /* Centra el texto */
+    text-align: center; /* Centra el texto en dispositivos móviles */
   }
 
   .separator {
@@ -58,8 +69,8 @@
   }
 
   .links {
-    display: block; /* Muestra los enlaces en bloque para que aparezcan debajo del texto de derechos */
-    margin-top: 5px; /* Agrega un margen superior */
+    display: block; /* Muestra los enlaces en bloque, uno debajo del otro */
+    margin-top: 5px; /* Agrega un margen superior entre el texto de derechos y los enlaces */
   }
 }
 
@@ -68,11 +79,11 @@
   .footer {
     height: auto; /* Permite que la altura se ajuste automáticamente */
     overflow-x: hidden; /* Evita el desbordamiento horizontal */
-    box-sizing: border-box; /* Asegura que el padding y el border se incluyan en el ancho total */
+    box-sizing: border-box; /* Incluye el padding y el borde en el cálculo del ancho total */
   }
 }
 
-/* Media Queries para dispositivos móviles con pantalla muy pequeña */
+/* Media Queries para dispositivos móviles con pantallas muy pequeñas */
 @media (max-width: 385px) {
   .footer {
     height: auto; /* Permite que la altura se ajuste automáticamente */

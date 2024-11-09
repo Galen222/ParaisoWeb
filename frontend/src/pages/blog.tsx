@@ -24,6 +24,9 @@ export interface BlogPageProps {
  */
 export type BlogPageComponent = ComponentType<BlogPageProps> & { pageTitleText?: string };
 
+// Define la ruta base de las imágenes
+const IMAGE_BASE_URL = "/images/blog/";
+
 /**
  * Componente funcional para la página del blog.
  * Muestra una lista de publicaciones del blog en formato de tarjetas enlazadas a sus detalles.
@@ -66,7 +69,7 @@ const BlogPage: BlogPageComponent = ({ loadingMessages }: BlogPageProps): JSX.El
           <Link className={styles.blogLink} href={`/blog/${blog.slug}`} key={blog.id_noticia} passHref>
             <div className={styles.blogCard}>
               <div className={styles.imageContainer}>
-                <img src={blog.imagen_url} alt={blog.titulo} className={styles.blogImage} />
+                <img src={`${IMAGE_BASE_URL}${blog.imagen_url}`} alt={blog.titulo} className={styles.blogImage} />
               </div>
               <div className={styles.blogText}>
                 <p>{blog.titulo}</p>

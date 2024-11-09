@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useIntl } from "react-intl"; // Importar para obtener el idioma actual
 
 export interface UseScrollToTopOutput {
   isScrollButtonVisible: boolean;
@@ -13,11 +14,23 @@ const useScrollToTop = (): UseScrollToTopOutput => {
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isMobileSmallScreen, setIsMobileSmallScreen] = useState<boolean>(false);
 
+  const intl = useIntl(); // Obtiene la información de internacionalización
+  const locale = intl.locale; // Idioma actual
+
   // Función para detectar el tamaño de la pantalla
   const checkScreenSize = () => {
-    setIsTablet(window.innerWidth <= 1024);
-    setIsMobile(window.innerWidth <= 768);
-    setIsMobileSmallScreen(window.innerWidth <= 396);
+    const mobileSmallScreen = window.innerWidth <= 396;
+    const mobileScreen = window.innerWidth <= 768;
+    const tabletScreen = window.innerWidth <= 1024;
+
+    setIsTablet(tabletScreen);
+    setIsMobile(mobileScreen);
+    setIsMobileSmallScreen(mobileSmallScreen);
+
+    // Si el idioma es "de" y el dispositivo es móvil, activar el comportamiento de `isMobileSmallScreen`
+    if (locale === "de" && mobileScreen) {
+      setIsMobileSmallScreen(true);
+    }
   };
 
   useEffect(() => {
@@ -40,7 +53,7 @@ const useScrollToTop = (): UseScrollToTopOutput => {
 
         switch (true) {
           case isMobileSmallScreen:
-            rightPosition = "20px"; // Para pantallas pequeñas, mantener 20px
+            rightPosition = "20px"; // Para pantallas pequeñas y modo alemán en móvil, mantener 20px
             if (distanceFromBottom <= footerHeight) {
               bottomPosition = `${footerHeight - distanceFromBottom + distanceToStickAboveFooter}px`;
             }
@@ -88,7 +101,7 @@ const useScrollToTop = (): UseScrollToTopOutput => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", checkScreenSize);
     };
-  }, [isMobile, isMobileSmallScreen, isTablet]);
+  }, [isMobile, isMobileSmallScreen, isTablet, locale]);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });

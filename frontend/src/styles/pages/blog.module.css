@@ -16,7 +16,6 @@
   margin: 0 auto 130px auto; /* Márgenes superior de 0, laterales automáticos para centrar y margen inferior de 130 píxeles */
   max-width: 1000px; /* Ancho máximo de 1000 píxeles para limitar el ancho del contenido */
   margin-top: 20px; /* Márgen superior de 20 píxeles */
-  margin-bottom: 130px; /* Márgen inferior de 130 píxeles */
 }
 
 /* Estilo para cada tarjeta del blog */
@@ -61,13 +60,17 @@
   color: white; /* Color del texto blanco */
   text-shadow: -1px -1px 0 var(--text_color), /* Sombra del texto para mejorar la legibilidad */ 1px -1px 0 var(--text_color), -1px 1px 0 var(--text_color),
     1px 1px 0 var(--text_color);
-  font-size: 34px; /* Tamaño de fuente de 34 píxeles */
+  font-size: 28px; /* Tamaño de fuente de 34 píxeles */
   margin-top: 20px; /* Márgen superior de 20 píxeles */
+  display: inline-block; /* Permite que se respeten las restricciones de ancho */
 }
 
 /* Sección de texto dentro de la tarjeta del blog */
 .blogText {
-  width: 100%; /* Ancho completo del contenedor padre */
+  width: 100%; /* Limita el ancho del texto al 100% de la tarjeta */
+  max-width: 100%; /* Ancho máximo del 100% */
+  height: 40%; /* Limita el alto del texto al 40% de la tarjeta */
+  max-height: 40%; /* Alto máximo del 40%*/
   background-color: rgba(175, 36, 36, 0.904); /* Fondo semi-transparente en tono rojo */
   padding: 15px; /* Espaciado interno de 15 píxeles */
   flex: 1; /* Permite que la sección de texto crezca para ocupar el espacio disponible */
@@ -76,6 +79,7 @@
   justify-content: center; /* Centra los elementos verticalmente */
   align-items: center; /* Centra los elementos horizontalmente */
   text-align: center; /* Centra el texto dentro de la sección */
+  overflow: hidden; /* Oculta el texto que exceda el contenedor */
 }
 
 /* Media queries para dispositivos tipo tablet */
@@ -88,6 +92,10 @@
   .blogCard {
     width: 90%; /* Ancho del 90% del contenedor padre */
     max-width: 450px; /* Ancho máximo de 450 píxeles */
+  }
+
+  .blogLink {
+    font-size: 24px; /* Reduce el tamaño de fuente a 30 píxeles para mejorar la legibilidad en pantallas medianas */
   }
 }
 
@@ -104,6 +112,6 @@
   }
 
   .blogLink {
-    font-size: 30px; /* Reduce el tamaño de fuente a 30 píxeles para mejorar la legibilidad en pantallas pequeñas */
+    font-size: 22px; /* Reduce el tamaño de fuente a 24 píxeles para mejorar la legibilidad en pantallas pequeñas */
   }
 }

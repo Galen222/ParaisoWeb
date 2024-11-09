@@ -29,6 +29,9 @@ export interface BlogDetailsPageProps {
  */
 export type BlogDetailsPageComponent = ComponentType<BlogDetailsPageProps> & { pageTitleText?: string };
 
+// Define la ruta base de las imágenes
+const IMAGE_BASE_URL = "/images/blog/";
+
 /**
  * Componente para la página de detalles de un blog.
  * Muestra el contenido de una publicación específica, permite compartir la publicación,
@@ -89,7 +92,9 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
             </p>
             <p className={styles.blogDate}>
               {intl.formatMessage({ id: "blog_details_Publicado" })} {new Date(blogDetails.fecha_publicacion).toLocaleDateString()}
+              {/* Verifica si la fecha de actualización es diferente a la de publicación */}
               {blogDetails.fecha_actualizacion &&
+                new Date(blogDetails.fecha_actualizacion).toLocaleDateString() !== new Date(blogDetails.fecha_publicacion).toLocaleDateString() &&
                 ` | ${intl.formatMessage({ id: "blog_details_Actualizado" })} ${new Date(blogDetails.fecha_actualizacion).toLocaleDateString()}`}
             </p>
           </div>
@@ -99,7 +104,7 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
           {/* Imagen principal del blog */}
           {blogDetails.imagen_url && (
             <div className="mt-25p">
-              <img src={blogDetails.imagen_url} alt={blogDetails.titulo} className={styles.blogImage} />
+              <img src={`${IMAGE_BASE_URL}${blogDetails.imagen_url}`} alt={blogDetails.titulo} className={styles.blogImage} />
             </div>
           )}
           {/* Contenido del blog */}
@@ -109,7 +114,7 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
           {/* Imagen secundaria del blog, si está presente */}
           {blogDetails.imagen_url_2 && (
             <div className="mt-25p">
-              <img src={blogDetails.imagen_url_2} alt={blogDetails.titulo} className={styles.blogImage} />
+              <img src={`${IMAGE_BASE_URL}${blogDetails.imagen_url_2}`} alt={blogDetails.titulo} className={styles.blogImage} />
             </div>
           )}
           <div>
@@ -137,4 +142,4 @@ const BlogDetailsPage: BlogDetailsPageComponent = ({ loadingMessages }: BlogDeta
 // Título de la página
 BlogDetailsPage.pageTitleText = "blog";
 
-export default BlogDetailsPage; // Exporta el componente para ser usado en la aplicación
+export default BlogDetailsPage; // Exporta el componente para ser usado en la aplicación.

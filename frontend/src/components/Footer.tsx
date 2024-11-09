@@ -1,5 +1,3 @@
-// components/Footer.tsx
-
 import React from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
@@ -27,6 +25,10 @@ export interface FooterProps {
 const Footer: React.FC<FooterProps> = ({ loadingMessages }: FooterProps): JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
   const { closeMobileMenu } = useMenu(); // Cierra el menú móvil si está abierto
+  const locale = intl.locale; // Idioma actual
+
+  // Verifica si el idioma actual es alemán
+  const isGerman = locale === "de";
 
   /**
    * Función para manejar el clic en los enlaces.
@@ -46,21 +48,24 @@ const Footer: React.FC<FooterProps> = ({ loadingMessages }: FooterProps): JSX.El
       <Link href="/politica-privacidad" className={styles.link} onClick={handleLinkClick}>
         {intl.formatMessage({ id: "Footer_PoliticaPrivacidad" })}
       </Link>
-      {" | "}
-      <Link href="/politica-cookies" className={styles.link} onClick={handleLinkClick}>
+      {/* Condición para mostrar la barra y el enlace de Política de Cookies si no es alemán */}
+      {!isGerman && " | "}
+      <Link href="/politica-cookies" className={`${styles.link} ${isGerman ? styles.cookieLinkGerman : ""}`} onClick={handleLinkClick}>
         {intl.formatMessage({ id: "Footer_PoliticaCookies" })}
       </Link>
     </>
   );
 
+  // Muestra un loader mientras los mensajes están cargando
   if (loadingMessages) {
-    return <Loader />; // Muestra un loader mientras los mensajes están cargando
+    return <Loader />;
   }
 
   return (
     <footer className={styles.footer}>
       <div>
-        <p>
+        {/* Si el idioma es alemán, se aplica una clase especial al contenedor de texto */}
+        <p className={isGerman ? styles.textContainerGerman : ""}>
           <span className={styles.rightsText}>{intl.formatMessage({ id: "Footer_Rights" }, { year: new Date().getFullYear() })}</span>
           <span className={styles.separator}> | </span>
           <span className={styles.links}>{links}</span>
