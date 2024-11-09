@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { useIntl } from "react-intl"; // Importar para obtener el idioma actual
 
 export interface UseScrollToTopOutput {
   isScrollButtonVisible: boolean;
@@ -8,41 +7,30 @@ export interface UseScrollToTopOutput {
 }
 
 /**
- * Custom hook que gestiona la visibilidad y el estilo de un botón para desplazarse al inicio de la página.
+ * Hook personalizado que gestiona la visibilidad y el estilo de un botón para desplazarse al inicio de la página.
  *
- * @returns {UseScrollToTopOutput} Un objeto que contiene la visibilidad del botón, el estilo del botón, y la función para desplazarse al inicio.
+ * @returns {UseScrollToTopOutput} Un objeto que contiene la visibilidad del botón, el estilo del botón y la función para desplazarse al inicio.
  */
 const useScrollToTop = (): UseScrollToTopOutput => {
   // Estado que indica si el botón de desplazamiento es visible
   const [isScrollButtonVisible, setIsScrollButtonVisible] = useState<boolean>(false);
   // Estado que contiene el estilo actual del botón de desplazamiento
   const [scrollButtonStyle, setScrollButtonStyle] = useState<React.CSSProperties>({});
-  // Estado que determina si el dispositivo es una tablet
-  const [isTablet, setIsTablet] = useState<boolean>(false);
   // Estado que determina si el dispositivo es un móvil
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  // Estado que indica si es un móvil de pantalla pequeña
-  const [isMobileSmallScreen, setIsMobileSmallScreen] = useState<boolean>(false);
-
-  const intl = useIntl(); // Hook para obtener la información de internacionalización
-  const locale = intl.locale; // Idioma actual
+  // Estado que determina si el dispositivo es una tablet
+  const [isTablet, setIsTablet] = useState<boolean>(false);
 
   /**
    * Función para verificar el tamaño de la pantalla y actualizar los estados relevantes.
    */
   const checkScreenSize = () => {
-    const mobileSmallScreen = window.innerWidth <= 396; // Pantallas pequeñas
-    const mobileScreen = window.innerWidth <= 768; // Pantallas móviles
-    const tabletScreen = window.innerWidth <= 1024; // Pantallas de tablet
+    const screenWidth = window.innerWidth;
+    const mobileScreen = screenWidth <= 768; // Pantallas móviles
+    const tabletScreen = screenWidth > 768 && screenWidth <= 1024; // Pantallas de tablet
 
-    setIsTablet(tabletScreen);
     setIsMobile(mobileScreen);
-    setIsMobileSmallScreen(mobileSmallScreen);
-
-    // Si el idioma es "de" (alemán) y el dispositivo es móvil, activar el comportamiento de `isMobileSmallScreen`
-    if (locale === "de" && mobileScreen) {
-      setIsMobileSmallScreen(true);
-    }
+    setIsTablet(tabletScreen);
   };
 
   useEffect(() => {
@@ -56,8 +44,11 @@ const useScrollToTop = (): UseScrollToTopOutput => {
       const scrollTop = window.scrollY; // Posición de desplazamiento vertical actual
       const viewportHeight = window.innerHeight; // Altura de la ventana de visualización
       const documentHeight = document.documentElement.scrollHeight; // Altura total del documento
-      const footerHeight = 60; // Altura del footer
-      const distanceToStickAboveFooter = isMobileSmallScreen ? 35 : 10; // Distancia de ajuste en móviles pequeños y otros dispositivos
+
+      // Determina la altura del footer según el dispositivo
+      const footerHeight = isMobile ? 80 : 60; // 80px en móviles, 60px en tablets y escritorio
+
+      const distanceToStickAboveFooter = 20; // Distancia del botón al footer
       const scrollTrigger = 400; // Punto de desplazamiento donde aparece el botón
 
       if (scrollTop > scrollTrigger) {
@@ -65,29 +56,22 @@ const useScrollToTop = (): UseScrollToTopOutput => {
         const distanceFromBottom = documentHeight - (scrollTop + viewportHeight); // Distancia desde la parte inferior del documento
 
         let bottomPosition = "20px"; // Posición por defecto del botón desde abajo
-        let rightPosition = "20px"; // Posición por defecto del botón desde la derecha
+        let rightPosition = "20px"; // Posición del botón desde la derecha
 
-        switch (true) {
-          case isMobileSmallScreen:
-            rightPosition = "20px"; // Mantiene 20px en pantallas pequeñas y móviles en modo alemán
-            if (distanceFromBottom <= footerHeight) {
-              bottomPosition = `${footerHeight - distanceFromBottom + distanceToStickAboveFooter}px`;
-            }
-            break;
-          case isMobile:
-            rightPosition = "20px"; // Para móviles
-            if (distanceFromBottom <= footerHeight) {
-              bottomPosition = `${footerHeight - distanceFromBottom + distanceToStickAboveFooter}px`;
-            }
-            break;
-          case isTablet:
-            rightPosition = "20px"; // Para tablets
-            bottomPosition = locale === "de" ? "65px" : "40px"; // Si el idioma es alemán, subir 20px más
-            break;
-          default:
-            rightPosition = "calc(25% + 20px)"; // Para escritorio
-            bottomPosition = "70px";
-            break;
+        if (isMobile) {
+          // Ajustes para dispositivos móviles
+          if (distanceFromBottom <= footerHeight) {
+            bottomPosition = `${footerHeight - distanceFromBottom + distanceToStickAboveFooter}px`;
+          }
+        } else {
+          // Ajustes para tablets y escritorio
+          if (isTablet) {
+            rightPosition = "20px"; // Posición a 20px desde la derecha en tablets
+          } else {
+            rightPosition = "calc(25% + 20px)"; // Posición en escritorio
+          }
+          bottomPosition = "80px"; // Posición fija desde abajo
+          // No ajustamos bottomPosition al acercarnos al footer porque el footer es fijo
         }
 
         // Actualiza el estilo del botón
@@ -121,7 +105,7 @@ const useScrollToTop = (): UseScrollToTopOutput => {
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", checkScreenSize);
     };
-  }, [isMobile, isMobileSmallScreen, isTablet, locale]); // Dependencias que disparan el efecto
+  }, [isMobile, isTablet]);
 
   /**
    * Función que permite desplazarse suavemente al inicio de la página.

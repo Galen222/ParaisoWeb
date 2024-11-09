@@ -3,6 +3,7 @@
 import React from "react";
 import { useIntl } from "react-intl";
 import useScrollToTop from "../hooks/useScrollToTop"; // Importa el hook personalizado
+import styles from "../styles/components/ScrollToTopButton.module.css";
 
 /**
  * Componente `ScrollToTopButton`.
@@ -27,8 +28,8 @@ const ScrollToTopButton: React.FC = (): JSX.Element | null => {
   }
 
   return (
-    <div className="scrollToTopContainer">
-      <button onClick={scrollToTop} className="scrollToTop" style={scrollButtonStyle}>
+    <div className={styles.scrollToTopContainer}>
+      <button onClick={scrollToTop} className={styles.scrollToTop} style={scrollButtonStyle}>
         <img src={scrollButtonImage.src} alt={scrollButtonImage.alt} /> {/* Botón para desplazarse hacia arriba */}
       </button>
     </div>

@@ -54,9 +54,9 @@
   font-family: "Playfair Display SC", serif; /* Familia de fuentes personalizada */
   font-weight: 700; /* Peso de fuente negrita */
   font-size: 40px; /* Tamaño de fuente de 40 píxeles */
-  color: rgb(197, 12, 12); /* Color rojo oscuro para el texto */
+  color: #e3011a; /* Color rojo oscuro para el texto */
   text-align: center; /* Centra el texto */
-  text-shadow: 1px 1px 4px rgba(250, 26, 26, 0.8); /* Sombra del texto para mejorar legibilidad */
+  text-shadow: 1px 1px 4px #e3011a; /* Sombra del texto para mejorar legibilidad */
 }
 
 /* Contenedor para las banderas de selección de idioma */
@@ -360,6 +360,9 @@
   .navbarTop {
     width: 100%; /* Ancho completo */
     flex-direction: column; /* Dispone los elementos en columna */
+    position: relative; /* Posición relativa para el logo */
+    z-index: 3; /* Para que el logo se vea por encima de la linea negra */
+    margin-top: 5px;
   }
 
   /* Ajustes del contenedor del logo en móviles */

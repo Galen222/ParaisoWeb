@@ -40,11 +40,19 @@
   display: inline; /* Muestra los elementos en línea */
 }
 
+/* Media Queries para dispositivos tipo tablet */
+@media (max-width: 1024px) {
+  .footer {
+    overflow-x: hidden; /* Evita el desbordamiento horizontal */
+    box-sizing: border-box; /* Incluye el padding y el borde en el cálculo del ancho total */
+  }
+}
+
 /* Media Queries para ajustar el pie de página en dispositivos móviles */
 @media (max-width: 768px) {
   .footer {
     position: static; /* Cambia la posición fija para permitir que se adapte a la altura de la pantalla */
-    height: auto; /* Permite que la altura se ajuste automáticamente en función del contenido */
+    height: 80px; /* Permite que la altura se ajuste automáticamente en función del contenido */
     padding-bottom: env(safe-area-inset-bottom); /* Agrega un padding inferior para dispositivos con notch */
   }
 
@@ -58,22 +66,11 @@
 
   .links {
     display: block; /* Muestra los enlaces en bloque, uno debajo del otro */
-    margin-top: 5px; /* Agrega un margen superior entre el texto de derechos y los enlaces */
   }
 }
 
-/* Media Queries para dispositivos tipo tablet */
-@media (max-width: 1024px) {
-  .footer {
-    height: auto; /* Permite que la altura se ajuste automáticamente */
-    overflow-x: hidden; /* Evita el desbordamiento horizontal */
-    box-sizing: border-box; /* Incluye el padding y el borde en el cálculo del ancho total */
-  }
-}
-
-/* Media Queries para dispositivos móviles con pantallas muy pequeñas */
-@media (max-width: 385px) {
-  .footer {
-    height: auto; /* Permite que la altura se ajuste automáticamente */
+@media (max-width: 396px) {
+  .rightsText {
+    font-size: 15px;
   }
 }

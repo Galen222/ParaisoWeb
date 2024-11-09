@@ -12,7 +12,6 @@ import "animate.css"; // Estilos de la libreria de animación
 import "@/styles/fonts.css"; // Estilos de fuentes añadidas
 import "@/styles/animateButton.css"; // Estilos de animación de botones
 import "@/styles/scrollbar.css"; // Estilos de la barra de scroll del navegador
-import "@/styles/scrollToTop.css"; // Estilos del botón de scroll de las páginas
 import "@/styles/globals.css"; // Estilos globales
 
 import type { AppProps as NextAppProps } from "next/app";
