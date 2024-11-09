@@ -24,6 +24,9 @@ export interface CharcuteriaPageProps {
  */
 export type CharcuteriaPageComponent = ComponentType<CharcuteriaPageProps> & { pageTitleText?: string };
 
+// Define la ruta base de las imágenes
+const IMAGE_BASE_URL = "/images/charcuteria/";
+
 /**
  * Componente funcional para la página de Charcutería.
  * Muestra una lista de productos en tarjetas interactivas, con la opción de voltear en pantallas pequeñas.
@@ -88,7 +91,7 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
               }}
             >
               {/* Lado frontal de la tarjeta con imagen y nombre del producto */}
-              <div className={styles.front} style={{ backgroundImage: `url(${product.imagen_url})` }}>
+              <div className={styles.front} style={{ backgroundImage: `url(${IMAGE_BASE_URL}${product.imagen_url})` }}>
                 <p>{product.nombre}</p>
                 {product.categoria && <p className={styles.category}>{product.categoria}</p>}
               </div>
