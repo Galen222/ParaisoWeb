@@ -4,50 +4,31 @@ import Document, { Html, Head, Main, NextScript, DocumentContext } from "next/do
 
 /**
  * Clase personalizada de documento para Next.js.
- * Permite configurar el idioma del atributo `lang` en `<html>` basado en una cookie o en la configuración de idioma del navegador.
+ * Configura el atributo `lang` en `<html>` dinámicamente.
  */
 class MyDocument extends Document {
   /**
    * Método estático para obtener las propiedades iniciales del documento.
-   * Intenta determinar el idioma preferido del usuario a partir de una cookie `_locale` o, en su defecto,
-   * mediante el encabezado `accept-language` del navegador.
    *
    * @param {DocumentContext} ctx - Contexto del documento de Next.js.
-   * @returns {Promise} Propiedades iniciales del documento, incluyendo el `locale` determinado.
+   * @returns {Promise} Propiedades iniciales del documento.
    */
   static async getInitialProps(ctx: DocumentContext): Promise<any> {
     const initialProps = await Document.getInitialProps(ctx);
-    let locale = "es"; // Idioma por defecto
-
-    // Intenta obtener el idioma preferido del usuario desde la cookie '_locale'
-    const cookieLocale = ctx.req?.headers.cookie
-      ?.split("; ")
-      .find((row) => row.startsWith("_locale="))
-      ?.split("=")[1];
-
-    // Valida `cookieLocale` y lo usa si coincide con los valores esperados
-    if (cookieLocale && ["es", "en", "de"].includes(cookieLocale)) {
-      locale = cookieLocale;
-    } else if (ctx.req?.headers["accept-language"]) {
-      // Alternativa: Obtiene el idioma del navegador si no hay cookie válida
-      const browserLang = ctx.req.headers["accept-language"].split(",")[0].slice(0, 2);
-      locale = ["es", "en", "de"].includes(browserLang) ? browserLang : "es";
-    }
-
-    return { ...initialProps, locale };
+    return { ...initialProps };
   }
 
   /**
-   * Renderiza el documento HTML con el idioma especificado.
-   * Importante que la etiqueta lang tenga el idioma correspondiente
+   * Renderiza el documento HTML.
+   * El atributo `lang` se maneja en `_app.tsx`, por lo que se puede establecer en un valor predeterminado aquí.
    *
-   * @returns {JSX.Element} Estructura HTML con el atributo `lang` en la etiqueta `<html>`.
+   * @returns {JSX.Element} Estructura HTML con el atributo `lang`.
    */
   render(): JSX.Element {
-    const { locale } = this.props;
-
     return (
-      <Html lang={locale}>
+      <Html lang="es-ES">
+        {" "}
+        {/* Valor predeterminado, se sobrescribe en _app.tsx */}
         <Head>
           {/* Meta Tags y Enlaces Globales */}
           <link rel="icon" href="/images/web/iconoLogo.ico" />

@@ -1,6 +1,6 @@
 // pages/_app.tsx
 
-import React from "react";
+import React, { useEffect } from "react";
 import Head from "next/head";
 import "bootstrap/dist/css/bootstrap.min.css"; // Estilos de Bootstrap
 import "react-toastify/dist/ReactToastify.css"; // Estilos de React-Toastify
@@ -26,6 +26,8 @@ import Loader from "../components/Loader";
 import { useCookieLogic } from "../hooks/useCookieLogic";
 import { DefaultSeo } from "next-seo"; // Importa DefaultSeo
 import SEO from "../next-seo.config"; // Importa la configuración de SEO
+
+import useLocaleFormatted from "../hooks/useLocaleFormatted"; // Importa el hook personalizado
 
 /**
  * Extiende `AppProps` de Next.js e incluye una propiedad opcional `pageTitleText`
@@ -57,6 +59,13 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): JSX.El
     handleAcceptAllCookies,
     mapLocale,
   } = useCookieLogic(); // Lógica personalizada para manejo de cookies e internacionalización
+
+  const formattedLocale = useLocaleFormatted(locale); // Pasar el locale directamente
+
+  // Actualiza el atributo `lang` del documento HTML cada vez que cambia el locale
+  useEffect(() => {
+    document.documentElement.lang = formattedLocale;
+  }, [formattedLocale]);
 
   if (loadingMessages) {
     return <Loader />; // Muestra un loader mientras los mensajes están cargando

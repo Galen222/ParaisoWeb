@@ -58,7 +58,7 @@ const SEO: DefaultSeoProps = {
   // Configuración de Open Graph para mejorar la apariencia en redes sociales
   openGraph: {
     type: "website", // Tipo de contenido
-    locale: "es_ES", // Idioma y región
+    locale: "es-ES", // Idioma y región
     url: siteUrl, // URL canónica del sitio
     siteName: "El Paraíso Del Jamón", // Nombre del sitio
     images: [
@@ -66,7 +66,7 @@ const SEO: DefaultSeoProps = {
         url: `${siteUrl}/images/navbar/imagenLogo.png`, // URL de la imagen
         width: 1200, // Ancho de la imagen
         height: 630, // Alto de la imagen
-        alt: "Logo de El Paraíso Del Jamón", // Texto alternativo de la imagen
+        alt: "Logo El Paraíso Del Jamón", // Texto alternativo de la imagen
       },
     ],
   },

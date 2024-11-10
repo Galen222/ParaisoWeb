@@ -1,33 +1,36 @@
-// hooks/useLocaleFormatted.js
+// hooks/useLocaleFormatted.ts
 
-import { useRouter } from "next/router";
+import { useMemo } from "react";
 
 /**
- * Hook personalizado para formatear el locale actual al formato requerido por SEO.
- * Convierte los códigos de idioma ('en', 'de', 'es') a formatos completos ('en_US', 'de_DE', 'es_ES').
+ * Hook personalizado para formatear el locale al formato requerido por next-seo y HTML lang.
  *
- * @returns {string} Locale formateado (por ejemplo, 'en_US', 'de_DE', 'es_ES').
+ * @param {string} locale - Locale actual (e.g., 'en', 'de', 'es').
+ * @returns {string} - Locale formateado (e.g., 'en-US', 'de-DE', 'es-ES').
  */
-const useLocaleFormatted = () => {
-  const router = useRouter();
-  const { locale } = router;
-
+const useLocaleFormatted = (locale: string): string => {
   /**
-   * Función para mapear el locale corto al formato completo requerido para SEO
+   * Convierte el locale corto al formato completo requerido por SEO y HTML lang.
    *
-   * @returns {string} Locale formateado.
+   * @param {string} locale - Locale actual (e.g., 'en', 'de', 'es').
+   * @returns {string} - Locale formateado (e.g., 'en-US', 'de-DE', 'es-ES').
    */
-  const formattedLocale = (() => {
+  const formatLocale = (locale: string): string => {
     switch (locale) {
       case "en":
-        return "en_US"; // Inglés de Estados Unidos
+        return "en-US"; // Inglés de Estados Unidos
       case "de":
-        return "de_DE"; // Alemán de Alemania
+        return "de-DE"; // Alemán de Alemania
       case "es":
       default:
-        return "es_ES"; // Español de España
+        return "es-ES"; // Español de España
     }
-  })();
+  };
+
+  /**
+   * useMemo para memorizar el valor formateado y recalcularlo solo cuando el locale cambia.
+   */
+  const formattedLocale = useMemo(() => formatLocale(locale), [locale]);
 
   return formattedLocale;
 };

@@ -30,7 +30,10 @@ export interface HomeProps {
  */
 const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMessages }: HomeProps): JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización
-  const formattedLocale = useLocaleFormatted(); // Obtiene el locale formateado
+  const locale = intl.locale.split("-")[0]; // Obtener el código del idioma (e.g., 'es', 'en', 'de')
+  const formattedLocale = useLocaleFormatted(locale); // Pasar el locale como parámetro
+
+  console.log("Idioma formateado: ", formattedLocale);
 
   // Seguimiento de la visita a la página "Inicio" para analítica
   useVisitedPageTracking("inicio");
@@ -45,13 +48,17 @@ const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMe
     <div className="pageContainer">
       {/* Configuración de SEO específica de la página */}
       <NextSeo
-        title={intl.formatMessage({ id: "inicio_Titulo1" }) || "Inicio - El Paraíso Del Jamón"}
-        description={intl.formatMessage({ id: "inicio_Texto1" }) || "Descripción de la página de inicio."}
+        title={`${intl.formatMessage({ id: "inicio_Titulo_Texto1" })} ${intl.formatMessage({
+          id: "inicio_Titulo_Texto2",
+        })}`}
+        description={intl.formatMessage({ id: "inicio_SEO_descripcion" })}
         canonical={`${process.env.NEXT_PUBLIC_SITE_URL}/`}
         openGraph={{
           url: `${process.env.NEXT_PUBLIC_SITE_URL}/`,
-          title: intl.formatMessage({ id: "inicio_Titulo1" }) || "Inicio - El Paraíso Del Jamón",
-          description: intl.formatMessage({ id: "inicio_Texto1" }) || "Descripción de la página de inicio.",
+          title: `${intl.formatMessage({ id: "inicio_Titulo_Texto1" })} ${intl.formatMessage({
+            id: "inicio_Titulo_Texto2",
+          })}`,
+          description: intl.formatMessage({ id: "inicio_SEO_descripcion" }),
           images: [
             {
               url: `${process.env.NEXT_PUBLIC_SITE_URL}/images/navbar/imagenLogo.png`,
@@ -60,7 +67,7 @@ const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMe
               alt: "Logo de El Paraíso Del Jamón",
             },
           ],
-          locale: formattedLocale, // Establece el locale dinámicamente
+          locale: formattedLocale, // Ya retorna 'es-ES'
           siteName: "El Paraíso Del Jamón",
         }}
         twitter={{
