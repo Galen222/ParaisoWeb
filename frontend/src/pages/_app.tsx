@@ -24,6 +24,8 @@ import Footer from "../components/Footer";
 import Cookie from "../components/Cookie";
 import Loader from "../components/Loader";
 import { useCookieLogic } from "../hooks/useCookieLogic";
+import { DefaultSeo } from "next-seo"; // Importa DefaultSeo
+import SEO from "../next-seo.config"; // Importa la configuración de SEO
 
 /**
  * Extiende `AppProps` de Next.js e incluye una propiedad opcional `pageTitleText`
@@ -40,7 +42,7 @@ export interface CustomAppProps extends NextAppProps {
  * @param {CustomAppProps} props - Propiedades del componente.
  * @returns {JSX.Element} Componente de la aplicación principal.
  */
-function MainComponent({ Component, pageProps, router }: CustomAppProps) {
+function MainComponent({ Component, pageProps, router }: CustomAppProps): JSX.Element {
   const {
     locale,
     messages,
@@ -69,6 +71,7 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps) {
         <meta name="description" content="Paraíso del Jamón" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
+      <DefaultSeo {...SEO} />
       <IntlProvider locale={locale} messages={messages}>
         <MenuProvider>
           <React.StrictMode>
@@ -104,7 +107,7 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps) {
  * @param {CustomAppProps} props - Propiedades del componente de la aplicación.
  * @returns {JSX.Element} Componente principal de la aplicación con proveedor de cookies.
  */
-export default function App({ Component, pageProps, router }: CustomAppProps) {
+export default function App({ Component, pageProps, router }: CustomAppProps): JSX.Element {
   return (
     <CookieConsentProvider>
       <MainComponent Component={Component} pageProps={pageProps} router={router} />

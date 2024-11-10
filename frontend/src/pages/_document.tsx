@@ -15,7 +15,7 @@ class MyDocument extends Document {
    * @param {DocumentContext} ctx - Contexto del documento de Next.js.
    * @returns {Promise} Propiedades iniciales del documento, incluyendo el `locale` determinado.
    */
-  static async getInitialProps(ctx: DocumentContext) {
+  static async getInitialProps(ctx: DocumentContext): Promise<any> {
     const initialProps = await Document.getInitialProps(ctx);
     let locale = "es"; // Idioma por defecto
 
@@ -43,7 +43,7 @@ class MyDocument extends Document {
    *
    * @returns {JSX.Element} Estructura HTML con el atributo `lang` en la etiqueta `<html>`.
    */
-  render() {
+  render(): JSX.Element {
     const { locale } = this.props;
 
     return (
