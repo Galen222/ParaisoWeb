@@ -25,6 +25,7 @@ const ShareLink: React.FC<ShareLinkProps> = ({ url, title }: ShareLinkProps): JS
   // Prefijo para cada título
   const fullTitle = `El Paraíso del Jamón - ${title}`;
   const messageWithLink = `${fullTitle}\n\n${intl.formatMessage({ id: "sharedLink_cuerpo" })}\n${url}`;
+  const telegramMessage = `${intl.formatMessage({ id: "sharedLink_cuerpo" })}\nEl Paraíso Del Jamón`;
 
   return (
     <div className="text-end d-inline-flex align-items-center ptl-3">
@@ -44,7 +45,7 @@ const ShareLink: React.FC<ShareLinkProps> = ({ url, title }: ShareLinkProps): JS
       </WhatsappShareButton>
 
       {/* Telegram: Incluir el nombre de la web y el título */}
-      <TelegramShareButton url={url} title={messageWithLink}>
+      <TelegramShareButton url={url} title={telegramMessage}>
         <TelegramIcon size={32} round={true} className={Styles.icon} />
       </TelegramShareButton>
 

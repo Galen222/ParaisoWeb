@@ -39,6 +39,7 @@ class MyDocument extends Document {
 
   /**
    * Renderiza el documento HTML con el idioma especificado.
+   * Importante que la etiqueta lang tenga el idioma correspondiente
    *
    * @returns {JSX.Element} Estructura HTML con el atributo `lang` en la etiqueta `<html>`.
    */
@@ -48,6 +49,7 @@ class MyDocument extends Document {
     return (
       <Html lang={locale}>
         <Head>
+          {/* Meta Tags y Enlaces Globales */}
           <link rel="icon" href="/images/web/iconoLogo.ico" />
           <meta name="theme-color" content="#4a403a" />
         </Head>
