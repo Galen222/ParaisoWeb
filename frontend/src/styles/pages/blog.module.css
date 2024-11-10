@@ -2,10 +2,11 @@
 
 /* Contenedor principal del blog */
 .blogContainer {
-  margin: 0; /* Elimina los márgenes predeterminados */
-  padding: 0; /* Elimina el padding predeterminado */
   background-attachment: fixed; /* Fija la imagen de fondo al viewport para crear un efecto parallax */
   overflow: hidden; /* Oculta cualquier contenido que exceda los límites del contenedor */
+  max-width: 50%;
+  margin: auto; /* Centra el contenedor */
+  padding: 20px; /* Añade un padding para dar margen */
 }
 
 /* Contenedor para el contenido de las tarjetas del blog */
@@ -20,10 +21,10 @@
 
 /* Estilo para cada tarjeta del blog */
 .blogCard {
-  max-width: 370px; /* Ancho máximo de 370 píxeles */
+  max-width: 350px; /* Ancho máximo de 350 píxeles */
   min-width: 260px; /* Ancho mínimo de 260 píxeles */
   height: 500px; /* Altura fija de 500 píxeles */
-  margin: 1rem; /* Márgen de 1 rem alrededor de cada tarjeta */
+  margin: 1rem auto; /* Márgen de 1 rem alrededor de cada tarjeta y centradas*/
   position: relative; /* Posicionamiento relativo para permitir posicionamiento absoluto de elementos internos */
   border: 1px solid #ddd; /* Borde gris claro de 1 píxel */
   border-radius: 10px; /* Bordes redondeados de 10 píxeles */
@@ -83,7 +84,11 @@
 }
 
 /* Media queries para dispositivos tipo tablet */
-@media screen and (max-width: 800px) {
+@media (max-width: 1024px) {
+  .blogContainer {
+    max-width: 100%; /* Ancho completo del contenedor padre */
+    padding: 16px; /* Reduce el padding a 16 píxeles */
+  }
   .content {
     flex-direction: column; /* Cambia la dirección a columna para apilar las tarjetas verticalmente */
     align-items: center; /* Centra las tarjetas horizontalmente */

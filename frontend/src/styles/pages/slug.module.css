@@ -2,13 +2,13 @@
 
 /* Contenedor principal para los detalles del blog */
 .blogDetailsContainer {
-  max-width: 900px; /* Ancho máximo de 900 píxeles para limitar la extensión del contenido */
   margin: 0 auto; /* Centra el contenedor horizontalmente dentro de su elemento padre */
   text-align: justify; /* Justifica el texto para alinear ambos lados */
   color: var(--text_color); /* Aplica el color de texto definido en la variable CSS */
   font-size: 18px; /* Tamaño de fuente de 18 píxeles para una lectura cómoda */
-  padding: 15px; /* Espaciado interno de 15 píxeles alrededor del contenido */
   margin-bottom: 90px; /* Márgen inferior de 90 píxeles */
+  max-width: 50%;
+  padding: 20px; /* Añade un padding para dar margen */
 }
 
 /* Estilo para el título del blog */
@@ -56,4 +56,10 @@
   --bs-btn-disabled-bg: white; /* Variable CSS para el color de fondo cuando está deshabilitado */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25), /* Sombra sutil para dar efecto de profundidad */ 0 6px 20px rgba(0, 0, 0, 0.19);
   transform: translateZ(0); /* Optimiza el rendimiento de la animación */
+}
+@media (max-width: 1024px) {
+  .blogDetailsContainer {
+    max-width: 100%;
+    padding: 16px; /* Añade un padding para dar margen */
+  }
 }
