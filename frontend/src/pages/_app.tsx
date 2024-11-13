@@ -2,19 +2,19 @@
 
 import React, { useEffect } from "react";
 import Head from "next/head";
-import "bootstrap/dist/css/bootstrap.min.css"; // Estilos de Bootstrap
-import "react-toastify/dist/ReactToastify.css"; // Estilos de React-Toastify
-import "@/styles/toastify.css"; // Estilos personalizados de React-Toastify
-import "slick-carousel/slick/slick.css"; // Estilos de Slick (Carousel)
-import "slick-carousel/slick/slick-theme.css"; // Estilos de Slick (Carousel)
-import "@/styles/carousel.css"; // Estilos personalizados de Slick (Carousel)
-import "animate.css"; // Estilos de la libreria de animación
-import "@/styles/fonts.css"; // Estilos de fuentes añadidas
-import "@/styles/animateButton.css"; // Estilos de animación de botones
-import "@/styles/scrollbar.css"; // Estilos de la barra de scroll del navegador
-import "@/styles/globals.css"; // Estilos globales
+import "bootstrap/dist/css/bootstrap.min.css";
+import "react-toastify/dist/ReactToastify.css";
+import "../styles/toastify.css";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import "../styles/carousel.css";
+import "animate.css";
+import "../styles/fonts.css";
+import "../styles/animateButton.css";
+import "../styles/scrollbar.css";
+import "../styles/globals.css";
 
-import type { AppProps as NextAppProps } from "next/app";
+import type { AppProps } from "next/app";
 import { IntlProvider } from "react-intl";
 import { ToastContainer } from "react-toastify";
 import { CookieConsentProvider } from "../contexts/CookieContext";
@@ -22,56 +22,63 @@ import { MenuProvider } from "../contexts/MenuContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cookie from "../components/Cookie";
-import Loader from "../components/Loader";
 import { useCookieLogic } from "../hooks/useCookieLogic";
-import { DefaultSeo } from "next-seo"; // Importa DefaultSeo
-import SEO from "../next-seo.config"; // Importa la configuración de SEO
+import { useMapLocale } from "../hooks/useMapLocale";
+import { DefaultSeo } from "next-seo";
+import getSEOConfig from "../next-seo.config";
+import useLocaleFormatted from "../hooks/useLocaleFormatted";
 
-import useLocaleFormatted from "../hooks/useLocaleFormatted"; // Importa el hook personalizado
+// Importa los mensajes de traducción de forma estática
+import esMessages from "../locales/es/common.json";
+import enMessages from "../locales/en/common.json";
+import deMessages from "../locales/de/common.json";
 
-/**
- * Extiende `AppProps` de Next.js e incluye una propiedad opcional `pageTitleText`
- * para definir el título de la página.
- */
-export interface CustomAppProps extends NextAppProps {
-  Component: NextAppProps["Component"] & { pageTitleText?: string };
+// Mapea los locales a sus respectivos mensajes
+const messages: Record<string, Record<string, string>> = {
+  es: esMessages,
+  en: enMessages,
+  de: deMessages,
+};
+
+export interface CustomAppProps extends AppProps {
+  Component: AppProps["Component"] & { pageTitleText?: string };
 }
 
-/**
- * Componente principal para manejar el layout y el contexto global.
- * Incluye proveedores de contexto, gestión de cookies y lógica de idioma.
- *
- * @param {CustomAppProps} props - Propiedades del componente.
- * @returns {JSX.Element} Componente de la aplicación principal.
- */
 function MainComponent({ Component, pageProps, router }: CustomAppProps): JSX.Element {
   const {
-    locale,
-    messages,
-    loadingMessages,
     showCookieModal,
     cookiesModalClosed,
-    handleLocaleChange,
     handleCookiesPolicyLinkClick,
     handlePrivacyPolicyLinkClick,
     handleAcceptCookies,
     handleDeclineAllCookies,
     handleAcceptAllCookies,
-    mapLocale,
-  } = useCookieLogic(); // Lógica personalizada para manejo de cookies e internacionalización
+  } = useCookieLogic();
 
-  const formattedLocale = useLocaleFormatted(locale); // Pasar el locale directamente
+  const mapLocale = useMapLocale();
+  const appLocale = router.locale || "es";
+  const formattedLocale = useLocaleFormatted(appLocale);
 
-  // Actualiza el atributo `lang` del documento HTML cada vez que cambia el locale
+  const currentMessages = messages[appLocale] || messages["es"];
+
+  // Actualiza el atributo `lang` del documento HTML
   useEffect(() => {
-    document.documentElement.lang = formattedLocale;
-  }, [formattedLocale]);
+    const updateLang = (): void => {
+      document.documentElement.lang = formattedLocale;
+    };
 
-  if (loadingMessages) {
-    return <Loader />; // Muestra un loader mientras los mensajes están cargando
-  }
+    // Ejecutar inmediatamente
+    updateLang();
 
-  const pageTitleText = Component.pageTitleText || "default"; // Define el título de la página si está disponible
+    // También ejecutar después de la navegación
+    router.events.on("routeChangeComplete", updateLang);
+
+    return () => {
+      router.events.off("routeChangeComplete", updateLang);
+    };
+  }, [formattedLocale, router.events]);
+
+  const pageTitleText = Component.pageTitleText || "default";
 
   return (
     <>
@@ -80,8 +87,8 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): JSX.El
         <meta name="description" content="Paraíso del Jamón" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <DefaultSeo {...SEO} />
-      <IntlProvider locale={locale} messages={messages}>
+      <IntlProvider locale={appLocale} messages={currentMessages}>
+        <DefaultSeo {...getSEOConfig(appLocale, currentMessages)} />
         <MenuProvider>
           <React.StrictMode>
             {showCookieModal && (
@@ -93,14 +100,9 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): JSX.El
                 onPrivacyPolicyLinkClick={handlePrivacyPolicyLinkClick}
               />
             )}
-            <Navbar
-              onLocaleChange={handleLocaleChange}
-              loadingMessages={loadingMessages}
-              cookiesModalClosed={cookiesModalClosed}
-              pageTitleText={pageTitleText}
-            />
+            <Navbar cookiesModalClosed={cookiesModalClosed} pageTitleText={pageTitleText} />
             <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} mapLocale={mapLocale} />
-            <Footer loadingMessages={loadingMessages} />
+            <Footer />
             <ToastContainer />
           </React.StrictMode>
         </MenuProvider>
@@ -109,17 +111,10 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): JSX.El
   );
 }
 
-/**
- * Componente de entrada principal de Next.js.
- * Incluye el proveedor de consentimiento de cookies y renderiza `MainComponent`.
- *
- * @param {CustomAppProps} props - Propiedades del componente de la aplicación.
- * @returns {JSX.Element} Componente principal de la aplicación con proveedor de cookies.
- */
-export default function App({ Component, pageProps, router }: CustomAppProps): JSX.Element {
+export default function App(props: CustomAppProps): JSX.Element {
   return (
     <CookieConsentProvider>
-      <MainComponent Component={Component} pageProps={pageProps} router={router} />
+      <MainComponent {...props} />
     </CookieConsentProvider>
   );
 }

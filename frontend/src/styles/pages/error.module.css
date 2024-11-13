@@ -26,7 +26,7 @@
 }
 
 /* Media Queries para dispositivos con ancho máximo de 800 píxeles */
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 768px) {
   /* Ajustes para el contenedor de error en dispositivos más pequeños */
   .errorContainer {
     max-width: 100%; /* Expande el ancho al 100% del contenedor padre */

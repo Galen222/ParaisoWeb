@@ -1,68 +1,95 @@
 // pages/charcuteria.tsx
 
 import React, { useState, useEffect } from "react";
-import type { ComponentType } from "react";
-import Loader from "../components/Loader";
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { useIntl } from "react-intl";
+import Loader from "../components/Loader";
 import { useFetchCharcuteria } from "../hooks/useFetchCharcuteria";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import ScrollToTopButton from "../components/ScrollToTopButton"; // Importa el nuevo componente
+import ScrollToTopButton from "../components/ScrollToTopButton";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/charcuteria.module.css";
+import { NextSeo, OrganizationJsonLd } from "next-seo";
+import getSEOConfig from "../next-seo.config";
+import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
+import useCurrentUrl from "../hooks/useCurrentUrl";
+// Importa los mensajes de traducción
+import esMessages from "../locales/es/common.json";
+import enMessages from "../locales/en/common.json";
+import deMessages from "../locales/de/common.json";
+// Mapea los locales a sus respectivos mensajes
+const messages: Record<string, Record<string, string>> = {
+  es: esMessages,
+  en: enMessages,
+  de: deMessages,
+};
 
 /**
- * Propiedades para el componente `CharcuteriaPage`.
- * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
+ * Tipo del componente que incluye `pageTitleText` como propiedad estática.
  */
-export interface CharcuteriaPageProps {
-  loadingMessages: boolean;
-}
+export type CharcuteriaPageComponent = NextPage & { pageTitleText?: string };
 
 /**
- * Tipo de componente para `CharcuteriaPage` que incluye una propiedad opcional `pageTitleText`.
+ * URL base para las imágenes de charcutería.
  */
-export type CharcuteriaPageComponent = ComponentType<CharcuteriaPageProps> & { pageTitleText?: string };
-
-// Define la ruta base de las imágenes
 const IMAGE_BASE_URL = "/images/charcuteria/";
 
 /**
- * Componente funcional para la página de Charcutería.
- * Muestra una lista de productos en tarjetas interactivas, con la opción de voltear en pantallas pequeñas.
+ * Componente de la página de Charcutería.
  *
- * @param {CharcuteriaPageProps} props - Propiedades para el componente `CharcuteriaPage`.
- * @returns {JSX.Element} Página de Charcutería.
+ * @returns {JSX.Element} Elemento JSX de la página.
  */
-const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: CharcuteriaPageProps): JSX.Element => {
-  const intl = useIntl(); // Hook para la internacionalización
-  const { data: products, loading: loadingProducts, error } = useFetchCharcuteria(); // Hook para obtener los productos de charcutería
+const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+  const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
+  const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
+  const currentMessages = messages[currentLocale] || messages["es"];
+  const { data: products, loading: loadingProducts, error } = useFetchCharcuteria();
 
-  // Seguimiento de la visita a la página "charcuteria" para análisis interno y Google Analytics
+  // Seguimiento de la visita a la página "charcuteria" para analítica
   useVisitedPageTracking("charcuteria");
   useVisitedPageTrackingGA("charcuteria");
 
-  // Estado para habilitar el flip al hacer clic en dispositivos pequeños
-  const [isClickFlipEnabled, setIsClickFlipEnabled] = useState<boolean>(window.innerWidth <= 800);
+  /**
+   * Estado para determinar si el flip de las tarjetas está habilitado basado en el ancho de la ventana.
+   *
+   * @type {[boolean, Function]}
+   */
+  const [isClickFlipEnabled, setIsClickFlipEnabled] = useState<boolean>(false);
 
-  // Evento de redimensionamiento para activar el flip en dispositivos de pantalla pequeña
+  /**
+   * Efecto que habilita el flip de las tarjetas si el ancho de la ventana es menor o igual a 800px.
+   */
   useEffect(() => {
-    const handleResize = () => {
+    if (typeof window !== "undefined") {
+      // Establece el estado inicial
       setIsClickFlipEnabled(window.innerWidth <= 800);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+
+      /**
+       * Función para manejar el evento de redimensionamiento de la ventana.
+       */
+      const handleResize = () => {
+        setIsClickFlipEnabled(window.innerWidth <= 800);
+      };
+
+      // Añade el event listener para el redimensionamiento
+      window.addEventListener("resize", handleResize);
+
+      // Limpia el event listener al desmontar el componente
+      return () => window.removeEventListener("resize", handleResize);
+    }
   }, []);
 
-  // Muestra un loader si los mensajes o los productos están en proceso de carga
-  if (loadingProducts || loadingMessages) {
-    return <Loader className="BD" />;
-  }
-
-  // Ruta de la imagen de error
+  /**
+   * URL de la imagen de error a mostrar en caso de fallo en la carga de productos.
+   */
   const imageError = "/images/web/error.png";
 
-  // Renderiza un mensaje de error si ocurre un error en la carga de datos
+  /**
+   * Renderiza un mensaje de error si ocurre un problema al obtener los productos.
+   */
   if (error) {
     return (
       <div className={errorStyles.errorContainer}>
@@ -76,7 +103,35 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
 
   return (
     <div className={styles.charcuteriaContainer}>
+      {/* Configuración de SEO específica de la página */}
+      <NextSeo
+        {...getSEOConfig(currentLocale, currentMessages)}
+        title={intl.formatMessage({ id: "charcuteria_SEO_Titulo" })}
+        description={intl.formatMessage({ id: "charcuteria_SEO_Descripcion" })}
+        openGraph={{
+          title: intl.formatMessage({ id: "charcuteria_SEO_Titulo" }),
+          description: intl.formatMessage({ id: "charcuteria_SEO_Descripcion" }),
+          locale: currentUrl,
+        }}
+      />
+      {/* JSON-LD para Organización */}
+      <OrganizationJsonLd
+        type="Organization"
+        id={currentUrl}
+        name="El Paraíso Del Jamón"
+        url={currentUrl}
+        logo={`${siteUrl}/images/navbar/imagenLogo.png`}
+        contactPoint={[
+          {
+            telephone: "+34 532 83 50",
+            email: "info@paraisodeljamon.com",
+          },
+        ]}
+      />
       <div className={styles.content}>
+        <div>
+          <h1 className="ti-20p texto text-start">{intl.formatMessage({ id: "charcuteria_Texto" })}</h1>
+        </div>
         {/* Mapeo de los productos de charcutería en tarjetas */}
         {products?.map((product) => (
           <div className={styles.card} key={product.id_producto}>
@@ -107,8 +162,9 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
           </div>
         ))}
       </div>
-      {/* Botón de desplazamiento hacia arriba */}
-      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
+      {/* Mostrar el loader mientras se cargan los productos */}
+      {loadingProducts && <Loader className="BD" />}
+      <ScrollToTopButton />
     </div>
   );
 };
@@ -116,4 +172,23 @@ const CharcuteriaPage: CharcuteriaPageComponent = ({ loadingMessages }: Charcute
 // Define `pageTitleText` como una propiedad estática del componente `CharcuteriaPage`
 CharcuteriaPage.pageTitleText = "charcuteria";
 
-export default CharcuteriaPage; // Exporta el componente para su uso en la aplicación
+/**
+ * Obtiene las propiedades del servidor para la página de Charcutería.
+ * Aplica redirección basada en cookies.
+ *
+ * @param {GetServerSidePropsContext} context - Contexto de la página de Next.js.
+ * @returns {Promise<{ props: {} } | { redirect: { destination: string, permanent: boolean } }>} Propiedades o redirección.
+ */
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
+  // Aplicar redirección basada en cookies
+  const redirectResponse = redirectByCookie(context, "/charcuteria");
+  if (redirectResponse.redirect) {
+    return redirectResponse;
+  }
+
+  return {
+    props: {},
+  };
+};
+
+export default CharcuteriaPage;

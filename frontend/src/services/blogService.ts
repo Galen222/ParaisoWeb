@@ -50,7 +50,7 @@ export const getBlogPosts = async (idioma: string): Promise<BlogPost[]> => {
     });
     return response.data;
   } catch (error) {
-    /* console.error("Error recibiendo la lista de blogs: ", error); */
+    /* // console.error("Error recibiendo la lista de blogs: ", error); */
     throw error;
   }
 };
@@ -73,7 +73,7 @@ export const getBlogPostById = async (id: number, idioma: string): Promise<BlogP
     });
     return response.data;
   } catch (error) {
-    /* console.error("Error recibiendo el blog por Id: ", error); */
+    /* // console.error("Error recibiendo el blog por Id: ", error); */
     throw error;
   }
 };
@@ -95,7 +95,7 @@ export const getBlogPostBySlug = async (slug: string): Promise<BlogPost> => {
     });
     return response.data;
   } catch (error) {
-    /* console.error("Error recibiendo el blog por slug: ", error); */
+    /* // console.error("Error recibiendo el blog por slug: ", error); */
     throw error;
   }
 };

@@ -35,7 +35,7 @@ export type Locations = {
 // Lista de ubicaciones para los diferentes puntos de contacto
 const locations: Locations = {
   "san-bernardo": {
-    name: "Paraíso del Jamón",
+    name: "Paraíso del Jamón I",
     lat: 40.42182213478454,
     lng: -3.7077311767926227,
     address: "San Bernardo, 8, 28015 Madrid, ",
@@ -65,7 +65,7 @@ const locations: Locations = {
     name: "Paraíso del Jamón IV",
     lat: 40.41781005932472,
     lng: -3.7082838848125155,
-    address: "Arenal, 26, 28015 Madrid, ",
+    address: "Arenal, 26, 28013 Madrid, ",
     address_url: "Paraíso del Jamón Calle de Arenal",
     url: "https://www.google.com/maps?ll=40.41781,-3.708284&z=20&t=m&gl=US&mapclient=apiv3&cid=3523718250256320549",
     telephone: "+34 541 95 19",
@@ -104,7 +104,6 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
 
   /**
    * Carga el API de Google Maps y configura el idioma usando importLibrary().
-   * Reemplaza el uso de loader.load() que está deprecado.
    */
   useEffect(() => {
     const init = async () => {
@@ -133,23 +132,8 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
   }, [mapLocale]);
 
   /**
-   * Inicializa el mapa y el marcador al cargar el mapa.
-   * Se ejecuta una vez que el API de Google Maps ha sido cargado exitosamente.
-   */
-  useEffect(() => {
-    if (isLoaded && mapRef.current && !mapInstanceRef.current) {
-      mapInstanceRef.current = new google.maps.Map(mapRef.current, {
-        center: { lat: location.lat, lng: location.lng },
-        zoom: 20,
-        mapId: "3c9679b7244c46e5",
-      });
-
-      loadMarker();
-    }
-  }, [isLoaded, location]);
-
-  /**
-   * Actualiza el idioma de localización si cambia en la web.
+   * Actualiza el idioma de localización si cambia en la web,
+   * para asegurar que el contenido del marcador esté internacionalizado.
    */
   useEffect(() => {
     if (currentLocale !== intl.locale) {
@@ -165,6 +149,22 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
       loadMarker();
     }
   }, [currentLocale]);
+
+  /**
+   * Inicializa el mapa y el marcador al cargar el mapa.
+   * Se ejecuta una vez que el API de Google Maps ha sido cargado exitosamente.
+   */
+  useEffect(() => {
+    if (isLoaded && mapRef.current && !mapInstanceRef.current) {
+      mapInstanceRef.current = new google.maps.Map(mapRef.current, {
+        center: { lat: location.lat, lng: location.lng },
+        zoom: 20,
+        mapId: "3c9679b7244c46e5",
+      });
+
+      loadMarker();
+    }
+  }, [isLoaded, location]);
 
   /**
    * Carga el marcador en el mapa, mostrando un InfoWindow con detalles al hacer clic.
@@ -217,7 +217,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
         }
       });
     } catch (error: any) {
-      console.error("Error al cargar el marcador:", error);
+      // console.error("Error al cargar el marcador:", error);
       setLoadError("No se pudo cargar el marcador en el mapa.");
     }
   };
@@ -240,4 +240,5 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
   );
 };
 
+// Exporta el componente con memo para optimización
 export default React.memo(MapComponent);

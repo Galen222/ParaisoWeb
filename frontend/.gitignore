@@ -50,8 +50,12 @@ docs
 # pm2 start ecosystem.config.js
 ecosystem.config.js
 /logs
-frontdev2.bat
+frontprod2.bat
 
 # typedoc config
-
 typedoc.json
+
+# sitemap config
+next-sitemap.config.js
+generate-sitemap.js
+frontsite.bat

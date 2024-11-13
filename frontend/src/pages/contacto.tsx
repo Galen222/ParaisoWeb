@@ -1,39 +1,47 @@
 // pages/contacto.tsx
 
 import React from "react";
-import type { ComponentType } from "react";
-import Loader from "../components/Loader";
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import Localization from "../components/Localization";
 import LegalInfo from "../components/LegalInfo";
 import Form from "../components/Form";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import ScrollToTopButton from "../components/ScrollToTopButton"; // Importa el componente reutilizable
+import ScrollToTopButton from "../components/ScrollToTopButton";
+import { redirectByCookie } from "../utils/redirectByCookie";
+import { NextSeo, OrganizationJsonLd } from "next-seo";
+import getSEOConfig from "../next-seo.config";
+import useCurrentUrl from "../hooks/useCurrentUrl";
 import styles from "../styles/pages/contacto.module.css";
+// Importa los mensajes de traducción
+import esMessages from "../locales/es/common.json";
+import enMessages from "../locales/en/common.json";
+import deMessages from "../locales/de/common.json";
+// Mapea los locales a sus respectivos mensajes
+const messages: Record<string, Record<string, string>> = {
+  es: esMessages,
+  en: enMessages,
+  de: deMessages,
+};
 
 /**
- * Propiedades para el componente `ContactPage`.
- * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
+ * Tipo del componente que incluye `pageTitleText` como propiedad estática.
  */
-export interface ContactPageProps {
-  loadingMessages: boolean;
-}
-
-/**
- * Tipo de componente para `ContactPage` que incluye una propiedad opcional `pageTitleText`.
- */
-export type ContactPageComponent = ComponentType<ContactPageProps> & { pageTitleText?: string };
+export type ContactoPageComponent = NextPage & { pageTitleText?: string };
 
 /**
  * Componente funcional para la página de Contacto.
  * Incluye información de contacto, un formulario, detalles legales y ubicaciones.
  *
- * @param {ContactPageProps} props - Propiedades para el componente `ContactPage`.
  * @returns {JSX.Element} Página de Contacto.
  */
-const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps): JSX.Element => {
-  const intl = useIntl(); // Hook para la internacionalización
+const ContactoPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+  const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
+  const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
+  const currentMessages = messages[currentLocale] || messages["es"];
 
   // Seguimiento de la visita a la página "Contacto" para análisis interno y Google Analytics
   useVisitedPageTracking("contacto");
@@ -43,20 +51,44 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
    * Función para manejar el envío del formulario de contacto.
    * Aquí se pueden agregar acciones adicionales tras el envío.
    */
-  const handleFormSubmit = () => {
-    // Aquí se pueden realizar acciones adicionales después del envío
-  };
-
-  // Muestra un loader si los mensajes están en proceso de carga
-  if (loadingMessages) {
-    return <Loader />;
-  }
+  const handleFormSubmit = () => {};
 
   return (
     <div className="pageContainer">
+      {/* Configuración de SEO específica de la página */}
+      <NextSeo
+        {...getSEOConfig(currentLocale, currentMessages)}
+        title={intl.formatMessage({ id: "contacto_SEO_Titulo" })}
+        description={intl.formatMessage({ id: "contacto_SEO_Descripcion" })}
+        openGraph={{
+          title: intl.formatMessage({ id: "contacto_SEO_Titulo" }),
+          description: intl.formatMessage({ id: "contacto_SEO_Descripcion" }),
+          images: [
+            {
+              url: "/images/contacto/contacto.png",
+              alt: intl.formatMessage({ id: "contacto_Carousel_Alt4" }),
+            },
+          ],
+          locale: currentUrl,
+        }}
+      />
+      {/* JSON-LD para Organización */}
+      <OrganizationJsonLd
+        type="Organization"
+        id={currentUrl}
+        name="El Paraíso Del Jamón"
+        url={currentUrl}
+        logo={`${siteUrl}/images/navbar/imagenLogo.png`}
+        contactPoint={[
+          {
+            telephone: "+34 532 83 50",
+            email: "info@paraisodeljamon.com",
+          },
+        ]}
+      />
       {/* Información introductoria de contacto */}
       <div>
-        <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto1" })}</p>
+        <h1 className="ti-20p texto text-center">{intl.formatMessage({ id: "contacto_Texto1" })}</h1>
         <p className="ti-20p">
           {intl.formatMessage({ id: "contacto_Texto2a" })}
           <span className="fw-bold">{intl.formatMessage({ id: "contacto_Texto2b" })}</span>
@@ -95,12 +127,31 @@ const ContactPage: ContactPageComponent = ({ loadingMessages }: ContactPageProps
         <Localization localizationName="arenal" />
       </div>
       {/* Botón de desplazamiento hacia arriba */}
-      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
+      <ScrollToTopButton />
     </div>
   );
 };
 
 // Define `pageTitleText` como una propiedad estática del componente `ContactPage`
-ContactPage.pageTitleText = "contacto";
+ContactoPage.pageTitleText = "contacto";
 
-export default ContactPage; // Exporta el componente para su uso en la aplicación
+/**
+ * Obtiene las propiedades del servidor para la página de Contacto.
+ * Aplica redirección basada en cookies.
+ *
+ * @param {GetServerSidePropsContext} context - Contexto de la página de Next.js.
+ * @returns {Promise<{ props: {} } | { redirect: { destination: string, permanent: boolean } }>} Propiedades o redirección.
+ */
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
+  // Aplicar redirección basada en cookies
+  const redirectResponse = redirectByCookie(context, "/contacto");
+  if (redirectResponse.redirect) {
+    return redirectResponse;
+  }
+
+  return {
+    props: {},
+  };
+};
+
+export default ContactoPage; // Exporta el componente para su uso en la aplicación

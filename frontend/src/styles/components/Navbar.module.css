@@ -72,6 +72,13 @@
   width: 40px; /* Ancho fijo de 40 píxeles */
   height: auto; /* Mantiene la proporción de la imagen */
   margin: 5px; /* Márgen de 5 píxeles alrededor de cada bandera */
+  transition: border 0.3s ease; /* Transición suave para el borde */
+}
+
+/* Estilo para la bandera activa */
+.activeFlag {
+  border: 1px solid #000; /* Borde negro de 1 píxel */
+  border-radius: 50%;
 }
 
 /* Icono del menú móvil */

@@ -51,10 +51,9 @@ const Banner: React.FC<BannerProps> = ({ bannerType }: BannerProps): JSX.Element
       <div className={frameContentClasses}>
         {/* Sección de texto que incluye el título y el texto destacado */}
         <div className={styles.textSection}>
-          <h1 className={styles.text}>{content.text}</h1>
-          <h1 className={styles.highlightText}>{content.highlightText}</h1>
+          <h2 className={styles.text}>{content.text}</h2>
+          <h3 className={styles.highlightText}>{content.highlightText}</h3>
         </div>
-
         {/* Sección de botones que enlaza a las páginas relacionadas */}
         <div className={buttonsClasses}>
           {content.links.map((link, index) => (

@@ -2,42 +2,79 @@
 
 import React from "react";
 import Link from "next/link";
-import Loader from "../components/Loader";
+import { useRouter } from "next/router";
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import { NextSeo, OrganizationJsonLd } from "next-seo"; // Importa NextSeo para la gestión de SEO
+import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import styles from "../styles/pages/aviso-legal.module.css";
+import getSEOConfig from "../next-seo.config";
+import useCurrentUrl from "../hooks/useCurrentUrl";
+// Importa los mensajes de traducción
+import esMessages from "../locales/es/common.json";
+import enMessages from "../locales/en/common.json";
+import deMessages from "../locales/de/common.json";
+// Mapea los locales a sus respectivos mensajes
+const messages: Record<string, Record<string, string>> = {
+  es: esMessages,
+  en: enMessages,
+  de: deMessages,
+};
 
 /**
- * Propiedades para el componente `AvisoLegalPage`.
- * @property {boolean} loadingMessages - Indica si los mensajes están en proceso de carga.
+ * Tipo de componente para `AvisoLegalPage` que incluye una propiedad opcional `pageTitleText`.
  */
-export interface AvisoLegalPageProps {
-  loadingMessages: boolean;
-}
+export type AvisoLegalComponent = NextPage & { pageTitleText?: string };
 
 /**
  * Componente funcional para la página de "Aviso Legal".
  * Muestra información legal y de privacidad, incluyendo enlaces a otras políticas.
  *
- * @param {AvisoLegalPageProps} props - Propiedades para el componente `AvisoLegalPage`.
  * @returns {JSX.Element} Página de Aviso Legal.
  */
-const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps): JSX.Element => {
-  const intl = useIntl(); // Hook para manejar la internacionalización
+const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+  const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
+  const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
+  const currentMessages = messages[currentLocale] || messages["es"];
+
+  const router = useRouter(); // Hook de Next.js para acceder al enrutador
 
   // Seguimiento de la visita a la página "Aviso Legal" para análisis interno y Google Analytics
   useVisitedPageTracking("aviso-legal");
   useVisitedPageTrackingGA("aviso-legal");
 
-  // Muestra un loader si los mensajes están en proceso de carga
-  if (loadingMessages) {
-    return <Loader />;
-  }
-
   return (
     <div className="pageContainer">
+      {/* Configuración de SEO específica de la página */}
+      <NextSeo
+        {...getSEOConfig(currentLocale, currentMessages)}
+        title={intl.formatMessage({ id: "aviso-legal_SEO_Titulo" })}
+        description={intl.formatMessage({ id: "aviso-legal_SEO_Descripcion" })}
+        openGraph={{
+          title: intl.formatMessage({ id: "aviso-legal_SEO_Titulo" }),
+          description: intl.formatMessage({ id: "aviso-legal_SEO_Descripcion" }),
+          locale: currentUrl,
+        }}
+      />
+      {/* JSON-LD para Organización */}
+      <OrganizationJsonLd
+        type="Organization"
+        id={currentUrl}
+        name="El Paraíso Del Jamón"
+        url={currentUrl}
+        logo={`${siteUrl}/images/navbar/imagenLogo.png`}
+        contactPoint={[
+          {
+            telephone: "+34 532 83 50",
+            email: "info@paraisodeljamon.com",
+          },
+        ]}
+      />
       <div>
         <h1 className="text-center">{intl.formatMessage({ id: "avisoLegal_Principal_Titulo" })}</h1>
       </div>
@@ -54,7 +91,6 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps): JSX.Element =
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto1" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto2" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto3" })}</li>
-          {/* <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto4" })}</li> */}
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto5" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto6" })}</li>
           <li>
@@ -74,7 +110,7 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps): JSX.Element =
         <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Privacidad_Titulo" })}</h3>
         <p className="ti-20p">
           {intl.formatMessage({ id: "avisoLegal_Privacidad_Texto" })}
-          <Link href="/politica-privacidad" className={styles.link}>
+          <Link href="/politica-privacidad" locale={router.locale} className={styles.link}>
             {intl.formatMessage({ id: "avisoLegal_Privacidad_Texto_Enlace" })}
           </Link>
           .
@@ -158,7 +194,7 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps): JSX.Element =
         <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Proteccion_Titulo" })}</h3>
         <p className="ti-20p">
           {intl.formatMessage({ id: "avisoLegal_Proteccion_Texto" })}
-          <Link href="/politica-privacidad" className={styles.link}>
+          <Link href="/politica-privacidad" locale={router.locale} className={styles.link}>
             {intl.formatMessage({ id: "avisoLegal_Proteccion_Texto_Enlace" })}
           </Link>
           .
@@ -169,7 +205,7 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps): JSX.Element =
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Cookies_Texto1" })}</p>
         <p className="ti-20p">
           {intl.formatMessage({ id: "avisoLegal_Cookies_Texto2" })}
-          <Link href="/politica-cookies" className={styles.link}>
+          <Link href="/politica-cookies" locale={router.locale} className={styles.link}>
             {intl.formatMessage({ id: "avisoLegal_Cookies_Texto2_Enlace" })}
           </Link>
           .
@@ -196,6 +232,28 @@ const AvisoLegalPage = ({ loadingMessages }: AvisoLegalPageProps): JSX.Element =
       <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
     </div>
   );
+};
+
+// Asigna `pageTitleText` como propiedad estática del componente `AvisoLegalPage`
+AvisoLegalPage.pageTitleText = "default";
+
+/**
+ * Función `getServerSideProps` para manejar la redirección basada en cookies.
+ *
+ * @param {GetServerSidePropsContext} context - Contexto de la página de Next.js.
+ * @returns {Promise<GetServerSidePropsResult<{}>>} Redirección o props vacíos.
+ */
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
+  // Aplicar redirección basada en cookies
+  const redirectResponse = redirectByCookie(context, "/aviso-legal");
+  if (redirectResponse.redirect) {
+    return redirectResponse;
+  }
+
+  // Retorna props vacíos, ya que la carga de mensajes se maneja globalmente
+  return {
+    props: {},
+  };
 };
 
 export default AvisoLegalPage; // Exporta el componente para su uso en la aplicación

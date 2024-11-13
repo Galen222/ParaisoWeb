@@ -1,8 +1,7 @@
 // pages/reina-victoria.tsx
 
 import React from "react";
-import type { ComponentType } from "react";
-import Loader from "../components/Loader";
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import Map from "../components/Map";
 import Carousel from "../components/Carousel";
 import Localization from "../components/Localization";
@@ -11,35 +10,46 @@ import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import { NextSeo, OrganizationJsonLd, LocalBusinessJsonLd } from "next-seo"; // Importa NextSeo para la gestión de SEO
+import getSEOConfig from "../next-seo.config";
+import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
+import { useMapLocale } from "../hooks/useMapLocale"; // Hook para obtener el locale del mapa
+import useCurrentUrl from "../hooks/useCurrentUrl";
+// Importa los mensajes de traducción
+import esMessages from "../locales/es/common.json";
+import enMessages from "../locales/en/common.json";
+import deMessages from "../locales/de/common.json";
+// Mapea los locales a sus respectivos mensajes
+const messages: Record<string, Record<string, string>> = {
+  es: esMessages,
+  en: enMessages,
+  de: deMessages,
+};
 
 /**
- * Interfaz para las propiedades de la página Reina Victoria.
+ * Tipo del componente que incluye `pageTitleText` como propiedad estática.
  */
-export interface ReinaVictoriaPageProps {
-  loadingMessages: boolean;
-  mapLocale: string;
-}
-
-/**
- * Tipo del componente para incluir `pageTitleText` como una propiedad estática.
- */
-export type ReinaVictoriaPageComponent = ComponentType<ReinaVictoriaPageProps> & { pageTitleText?: string };
+export type ReinaVictoriaPageComponent = NextPage & { pageTitleText?: string };
 
 /**
  * Componente que representa la página Reina Victoria.
+ * Muestra información y elementos específicos de localización, como un mapa, carrusel y detalles de transporte.
  *
- * @param {ReinaVictoriaPageProps} props - Las propiedades del componente.
- * @param {boolean} props.loadingMessages - Indica si los mensajes están cargando.
- * @param {string} props.mapLocale - Locale para el mapa a mostrar.
  * @returns {JSX.Element} El componente de la página Reina Victoria.
  */
-const ReinaVictoriaPage: ReinaVictoriaPageComponent = ({ loadingMessages, mapLocale }: ReinaVictoriaPageProps): JSX.Element => {
+const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
   /**
    * Nombre del restaurante para su uso en tracking y otros componentes.
    */
   const restaurante = "reina-victoria";
 
-  const intl = useIntl();
+  const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
+  const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
+  const currentMessages = messages[currentLocale] || messages["es"];
+
+  const mapLocale = useMapLocale(); // Obtiene el locale para el mapa
 
   // Seguimiento de la visita a la página "reina-victoria".
   useVisitedPageTracking(restaurante);
@@ -50,17 +60,75 @@ const ReinaVictoriaPage: ReinaVictoriaPageComponent = ({ loadingMessages, mapLoc
    */
   const locationKey = restaurante;
 
-  /**
-   * Muestra el cargador mientras se están cargando los mensajes.
-   */
-  if (loadingMessages) {
-    return <Loader />;
-  }
-
+  // Renderiza el componente con la estructura de la página Reina Victoria.
   return (
     <div className="pageContainer">
+      {/* Configuración de SEO específica de la página */}
+      <NextSeo
+        {...getSEOConfig(currentLocale, currentMessages)}
+        title={intl.formatMessage({ id: "reina-victoria_SEO_Titulo" })}
+        description={intl.formatMessage({ id: "reina-victoria_SEO_Descripcion" })}
+        openGraph={{
+          title: intl.formatMessage({ id: "reina-victoria_SEO_Titulo" }),
+          description: intl.formatMessage({ id: "reina-victoria_SEO_Descripcion" }),
+          images: [
+            {
+              url: "/images/carousel/rv/carousel-rv-1.png",
+              alt: intl.formatMessage({ id: "reina-victoria_Carousel_Alt1" }),
+            },
+          ],
+          locale: currentUrl,
+        }}
+      />
+      {/* JSON-LD para Organización */}
+      <OrganizationJsonLd
+        type="Organization"
+        id={currentUrl}
+        name="El Paraíso Del Jamón III"
+        url={currentUrl}
+        logo={`${siteUrl}/images/navbar/imagenLogo.png`}
+        contactPoint={[
+          {
+            telephone: "+34 532 83 50",
+            email: "info@paraisodeljamon.com",
+          },
+        ]}
+      />
+      {/* JSON-LD para LocalBusiness */}
+      <LocalBusinessJsonLd
+        type="Restaurant"
+        id={currentUrl}
+        name="El Paraíso Del Jamón IV"
+        description={intl.formatMessage({ id: "reina-victoria_SEO_Descripcion" })}
+        url={currentUrl}
+        telephone="+34 534 18 20"
+        address={{
+          streetAddress: "Reina Victoria, 3",
+          addressLocality: "Madrid",
+          addressRegion: "Madrid",
+          postalCode: "28003",
+          addressCountry: "ES",
+        }}
+        geo={{
+          latitude: 40.44667864352768,
+          longitude: -3.704447234180926,
+        }}
+        priceRange="$€"
+        servesCuisine={[intl.formatMessage({ id: "reina-victoria_SEO_Cocina" })]}
+        images={[`${siteUrl}/images/carousel/rv/carousel-rv-1.png`]}
+        openingHours={[
+          {
+            dayOfWeek: ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            opens: "07:00",
+            closes: "24:00",
+          },
+        ]}
+      />
+      {/* Texto principal de la página */}
       {/* Texto descriptivo del restaurante Reina Victoria */}
-      <div>{intl.formatMessage({ id: "reina-victoria_Texto" })}</div>
+      <div>
+        <h1 className="ti-20p texto text-start">{intl.formatMessage({ id: "reina-victoria_Texto" })}</h1>
+      </div>
       {/* Sección de localización del restaurante */}
       <div className="mt-25p">
         <Localization localizationName="reina-victoria" />
@@ -85,5 +153,23 @@ const ReinaVictoriaPage: ReinaVictoriaPageComponent = ({ loadingMessages, mapLoc
 
 // Define `pageTitleText` como una propiedad estática del componente `ReinaVictoriaPage`
 ReinaVictoriaPage.pageTitleText = "reina-victoria";
+
+/**
+ * Función `getServerSideProps` para la redirección basada en cookies.
+ *
+ * @param {GetServerSidePropsContext} context - Contexto de Next.js que contiene información de la solicitud.
+ * @returns {Promise<GetServerSidePropsResult<Record<string, any>>>} Propiedades de la página o redirección.
+ */
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  // Aplicar redirección basada en cookies
+  const redirectResponse = redirectByCookie(context, "/reina-victoria");
+  if (redirectResponse.redirect) {
+    return redirectResponse;
+  }
+
+  return {
+    props: {},
+  };
+};
 
 export default ReinaVictoriaPage; // Exporta el componente para su uso en la aplicación

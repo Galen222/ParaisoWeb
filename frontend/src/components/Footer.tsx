@@ -3,73 +3,62 @@
 import React from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useMenu } from "../contexts/MenuContext";
-import Loader from "../components/Loader";
 import styles from "../styles/components/Footer.module.css";
 
 /**
- * Propiedades para el componente Footer.
- * @property {boolean} loadingMessages - Indica si los mensajes se están cargando, mostrando un loader en su lugar.
- */
-export interface FooterProps {
-  loadingMessages: boolean;
-}
-
-/**
- * Componente Footer
+ * Componente de pie de página (Footer) que muestra enlaces a las políticas legales
+ * y un texto de derechos de autor./**
+ * Este componente incluye enlaces a las secciones de aviso legal, política de privacidad
+ * y política de cookies. Los enlaces están internacionalizados y se adaptan a la
+ * resolución de la pantalla.
  *
- * Muestra el pie de página con enlaces a páginas de políticas y un mensaje de derechos reservados.
- * Cierra el menú móvil cuando se hace clic en los enlaces.
- *
- * @param {FooterProps} props - Propiedades del componente Footer.
- * @returns {JSX.Element} Pie de página con enlaces y loader opcional.
+ * @returns {JSX.Element} Elemento JSX que representa el pie de página.
  */
-const Footer: React.FC<FooterProps> = ({ loadingMessages }: FooterProps): JSX.Element => {
-  const intl = useIntl(); // Hook para obtener mensajes localizados
-  const { closeMobileMenu } = useMenu(); // Cierra el menú móvil si está abierto
-
-  // Verifica si la pantalla es de movil pantalla pequeña
-  const isMobileSmallScreen = window.innerWidth <= 396;
+const Footer: React.FC = (): JSX.Element => {
+  const intl = useIntl();
+  const router = useRouter();
+  const { closeMobileMenu } = useMenu();
 
   /**
-   * Función para manejar el clic en los enlaces.
-   * Cierra el menú al hacer clic en cualquier enlace.
+   * Verifica si la pantalla es de tamaño pequeño (ancho menor o igual a 396 píxeles)
+   */
+  const isMobileSmallScreen = typeof window !== "undefined" ? window.innerWidth <= 396 : false;
+
+  /**
+   * Maneja el evento de click en un enlace.
+   * Cierra el menú móvil al hacer clic en un enlace.
    */
   const handleLinkClick = () => {
     closeMobileMenu();
   };
 
-  // Enlaces de las políticas legales
+  /**
+   * Enlaces a las políticas legales, formateados e internacionalizados
+   */
   const links = (
-    <>
-      <Link href="/aviso-legal" className={styles.link} onClick={handleLinkClick}>
+    <div>
+      <Link href="/aviso-legal" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
         {intl.formatMessage({ id: "Footer_AvisoLegal" })}
       </Link>
       {" | "}
-      {/* Si el idioma es alemán, muestra la política de privacidad y política de cookies en una nueva línea */}
-      <Link href="/politica-privacidad" className={styles.link} onClick={handleLinkClick}>
+      <Link href="/politica-privacidad" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
         {intl.formatMessage({ id: "Footer_PoliticaPrivacidad" })}
       </Link>
       {isMobileSmallScreen ? <br /> : " | "}
-      <Link href="/politica-cookies" className={styles.link} onClick={handleLinkClick}>
+      <Link href="/politica-cookies" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
         {intl.formatMessage({ id: "Footer_PoliticaCookies" })}
       </Link>
-    </>
+    </div>
   );
-
-  // Muestra un loader mientras los mensajes están cargando
-  if (loadingMessages) {
-    return <Loader />;
-  }
 
   return (
     <footer className={styles.footer}>
       <div>
-        <p>
-          <span className={styles.rightsText}>{intl.formatMessage({ id: "Footer_Rights" }, { year: new Date().getFullYear() })}</span>
-          <span className={styles.separator}> | </span>
-          <span className={styles.links}>{links}</span>
-        </p>
+        <span className={styles.rightsText}>{intl.formatMessage({ id: "Footer_Rights" }, { year: new Date().getFullYear() })}</span>
+        <span className={styles.separator}> | </span>
+        <span className={styles.links}>{links}</span>
       </div>
     </footer>
   );

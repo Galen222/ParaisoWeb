@@ -1,108 +1,117 @@
 // pages/index.tsx
 
 import React from "react";
-import type { ComponentType } from "react";
-import Loader from "../components/Loader";
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import Carousel from "../components/Carousel";
 import Banner from "../components/Banner";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import ScrollToTopButton from "../components/ScrollToTopButton"; // Importa el componente reutilizable
-import { NextSeo } from "next-seo"; // Importa NextSeo
-import useLocaleFormatted from "../hooks/useLocaleFormatted"; // Importa el hook personalizado
+import ScrollToTopButton from "../components/ScrollToTopButton";
+import { NextSeo, OrganizationJsonLd } from "next-seo";
+import getSEOConfig from "../next-seo.config";
+import { redirectByCookie } from "../utils/redirectByCookie";
+import useCurrentUrl from "../hooks/useCurrentUrl";
+// Importa los mensajes de traducción
+import esMessages from "../locales/es/common.json";
+import enMessages from "../locales/en/common.json";
+import deMessages from "../locales/de/common.json";
+// Mapea los locales a sus respectivos mensajes
+const messages: Record<string, Record<string, string>> = {
+  es: esMessages,
+  en: enMessages,
+  de: deMessages,
+};
 
 /**
- * Propiedades para el componente `Home`.
- * @property {boolean} loadingMessages - Estado de carga de los mensajes de internacionalización.
+ * Tipo de componente para `Home` que incluye una propiedad opcional `pageTitleText`.
  */
-export interface HomeProps {
-  loadingMessages: boolean;
-}
+export type HomeComponent = NextPage & { pageTitleText?: string };
 
 /**
- * Componente de la página principal de la aplicación.
- * Incluye un título, texto de bienvenida, un carrusel de imágenes y varios banners para distintas secciones.
- * Realiza seguimiento de la visita a la página y muestra un botón para volver al inicio al hacer scroll.
- *
- * @param {HomeProps} props - Propiedades del componente `Home`.
- * @returns {JSX.Element} - Página de inicio.
+ * Componente funcional para la página principal (Home).
+ * @returns {JSX.Element} El componente de la página principal.
  */
-const Home: ComponentType<HomeProps> & { pageTitleText?: string } = ({ loadingMessages }: HomeProps): JSX.Element => {
-  const intl = useIntl(); // Hook de internacionalización
-  const locale = intl.locale.split("-")[0]; // Obtener el código del idioma (e.g., 'es', 'en', 'de')
-  const formattedLocale = useLocaleFormatted(locale); // Pasar el locale como parámetro
+const Home: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+  const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
+  const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
+  const currentMessages = messages[currentLocale] || messages["es"];
 
-  console.log("Idioma formateado: ", formattedLocale);
-
-  // Seguimiento de la visita a la página "Inicio" para analítica
+  // Realiza el seguimiento de la visita a la página de inicio
   useVisitedPageTracking("inicio");
   useVisitedPageTrackingGA("inicio");
-
-  // Muestra el loader si los mensajes están en proceso de carga
-  if (loadingMessages) {
-    return <Loader />;
-  }
 
   return (
     <div className="pageContainer">
       {/* Configuración de SEO específica de la página */}
       <NextSeo
-        title={`${intl.formatMessage({ id: "inicio_Titulo_Texto1" })} ${intl.formatMessage({
-          id: "inicio_Titulo_Texto2",
-        })}`}
-        description={intl.formatMessage({ id: "inicio_SEO_descripcion" })}
-        canonical={`${process.env.NEXT_PUBLIC_SITE_URL}/`}
+        {...getSEOConfig(currentLocale, currentMessages)}
+        title={intl.formatMessage({ id: "inicio_SEO_Titulo" })}
+        description={intl.formatMessage({ id: "inicio_SEO_Descripcion" })}
         openGraph={{
-          url: `${process.env.NEXT_PUBLIC_SITE_URL}/`,
-          title: `${intl.formatMessage({ id: "inicio_Titulo_Texto1" })} ${intl.formatMessage({
-            id: "inicio_Titulo_Texto2",
-          })}`,
-          description: intl.formatMessage({ id: "inicio_SEO_descripcion" }),
-          images: [
-            {
-              url: `${process.env.NEXT_PUBLIC_SITE_URL}/images/navbar/imagenLogo.png`,
-              width: 1200,
-              height: 630,
-              alt: "Logo de El Paraíso Del Jamón",
-            },
-          ],
-          locale: formattedLocale, // Ya retorna 'es-ES'
-          siteName: "El Paraíso Del Jamón",
-        }}
-        twitter={{
-          /* 
-          handle: "@tuusuario",
-          site: "@tusitio",
-          */
-          cardType: "summary_large_image",
+          title: intl.formatMessage({ id: "inicio_SEO_Titulo" }),
+          description: intl.formatMessage({ id: "inicio_SEO_Descripcion" }),
+          url: currentUrl,
         }}
       />
-      {/* Título de bienvenida */}
+      {/* JSON-LD para Organización */}
+      <OrganizationJsonLd
+        type="Organization"
+        id={currentUrl}
+        name="El Paraíso Del Jamón"
+        url={currentUrl}
+        logo={`${siteUrl}/images/navbar/imagenLogo.png`}
+        contactPoint={[
+          {
+            telephone: "+34 532 83 50",
+            email: "info@paraisodeljamon.com",
+          },
+        ]}
+      />
+      {/* Título principal de la página */}
       <div>
         <h1 className="text-center">{intl.formatMessage({ id: "inicio_Titulo1" })}</h1>
       </div>
-      {/* Texto descriptivo */}
+      {/* Texto introductorio */}
       <div className="mt-25p">
         <p className="ti-20p">{intl.formatMessage({ id: "inicio_Texto1" })}</p>
       </div>
-      {/* Carrusel de imágenes principal */}
+      {/* Carrusel de imágenes */}
       <div>
         <Carousel carouselType="inicio" />
       </div>
-      {/* Banners para las distintas secciones */}
+      {/* Banners de las secciones destacadas */}
       <Banner bannerType="restaurantes" />
       <Banner bannerType="gastronomia" />
       <Banner bannerType="charcuteria" />
       <Banner bannerType="nosotros" />
       <Banner bannerType="empleo" />
-      {/* Botón para desplazarse hacia arriba */}
-      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
+      {/* Botón de desplazamiento hacia arriba */}
+      <ScrollToTopButton />
     </div>
   );
 };
 
-// Asigna `pageTitleText` como propiedad estática de `Home`
+// Define `pageTitleText` como una propiedad estática del componente `Home`
 Home.pageTitleText = "inicio";
 
-export default Home; // Exporta el componente para su uso en la aplicación
+/**
+ * Función `getServerSideProps` para manejar la redirección basada en cookies.
+ * @param {GetServerSidePropsContext} context - Contexto de Next.js que contiene información de la solicitud.
+ * @returns {Promise<GetServerSidePropsResult<{}>>} Redirección o props vacíos.
+ */
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
+  // Aplicar redirección basada en cookies
+  const redirectResponse = redirectByCookie(context, "");
+  if (redirectResponse.redirect) {
+    return redirectResponse;
+  }
+
+  return {
+    props: {},
+  };
+};
+
+export default Home; // Exporta el componente `Home` como predeterminado

@@ -52,6 +52,10 @@ body {
 }
 
 /* Clases utilitarias para tamaños de fuente */
+.texto {
+  font-size: 18px; /* Tamaño de fuente de 18 píxeles */
+}
+
 .fs-16p {
   font-size: 16px !important; /* Fuerza el tamaño de fuente a 16 píxeles */
 }
@@ -95,6 +99,9 @@ body {
     max-width: 100%; /* Ancho completo del contenedor padre */
     font-size: 22px; /* Aumenta el tamaño de fuente a 22 píxeles */
     padding: 16px; /* Reduce el padding a 16 píxeles */
+  }
+  .texto {
+    font-size: 22px; /* Aumenta el tamaño de fuente a 22 píxeles */
   }
 }
 

@@ -3,6 +3,7 @@
 import React from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import styles from "../styles/components/LegalInfo.module.css";
 
 /**
@@ -19,6 +20,7 @@ import styles from "../styles/components/LegalInfo.module.css";
  */
 const LegalInfo: React.FC = (): JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
+  const router = useRouter(); // Hook de Next.js para acceder al enrutador
 
   return (
     <div className="table-responsive">
@@ -56,7 +58,7 @@ const LegalInfo: React.FC = (): JSX.Element => {
             <td>
               {/* Mensaje con enlace a la política de privacidad */}
               {intl.formatMessage({ id: "contacto_Tabla_Celda6_2" })}
-              <Link href="/politica-privacidad" className={styles.link}>
+              <Link href="/politica-privacidad" locale={router.locale} className={styles.link}>
                 <span className="fs-16p">{intl.formatMessage({ id: "contacto_Tabla_Celda6_3" })}</span>
               </Link>
             </td>

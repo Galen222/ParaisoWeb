@@ -49,7 +49,7 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
               /* console.warn("No se encontró la traducción de la noticia en el idioma seleccionado."); */
             }
           } catch (err) {
-            /* console.error("Error al cambiar de idioma:", err); */
+            /* // console.error("Error al cambiar de idioma:", err); */
           }
         }
       }

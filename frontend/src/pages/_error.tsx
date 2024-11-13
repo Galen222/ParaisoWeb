@@ -1,31 +1,28 @@
 // pages/_error.tsx
 
 import React from "react";
+import type { NextPage, NextPageContext } from "next";
 import { useIntl } from "react-intl"; // Hook para internacionalización
-import { NextPageContext } from "next"; // Tipo para el contexto de la página de Next.js
-import Loader from "../components/Loader";
-import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import styles from "../styles/pages/error.module.css"; // Importa los estilos específicos para el módulo de error
+import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking"; // Hook personalizado para seguimiento de visitas
+import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA"; // Hook personalizado para seguimiento con Google Analytics
+import styles from "../styles/pages/error.module.css"; // Importa los estilos específicos para la página de error
 
 /**
  * Interfaz para las propiedades de ErrorPage.
  * @property {number} statusCode - Código de estado HTTP que causó el error.
- * @property {boolean} loadingMessages - Estado de carga de los mensajes.
  */
 export interface ErrorPageProps {
   statusCode: number;
-  loadingMessages: boolean;
 }
 
 /**
  * Componente funcional para manejar y mostrar páginas de error con mensajes internacionalizados.
- * También incluye seguimiento de visitas a páginas de error.
+ * Incluye seguimiento de visitas y configuraciones de SEO.
  *
  * @param {ErrorPageProps} props - Propiedades del componente ErrorPage.
  * @returns {JSX.Element} Componente de página de error.
  */
-const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps): JSX.Element => {
+const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }: ErrorPageProps): JSX.Element => {
   const intl = useIntl(); // Hook para manejar la internacionalización
 
   // Realiza el seguimiento de visitas a la página de error para análisis interno y Google Analytics
@@ -69,16 +66,15 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps): JSX.Element
 
   const imageError = "/images/web/error.png"; // Ruta de la imagen de error
 
-  if (loadingMessages) {
-    return <Loader />; // Muestra un loader mientras los mensajes están cargando
-  }
-
   return (
     <div className="pageContainer">
-      <h1>{statusCode}</h1> {/* Muestra el código de estado HTTP */}
-      <p className="text-center">{message}</p> {/* Muestra el mensaje de error */}
+      {/* Título que muestra el código de estado HTTP */}
+      <h1>{statusCode}</h1>
+      {/* Mensaje de error internacionalizado */}
+      <p className="text-center">{message}</p>
+      {/* Imagen ilustrativa del error */}
       <div className={styles.imageContainer}>
-        <img src={imageError} alt={`Error ${statusCode}`} /> {/* Muestra la imagen de error */}
+        <img src={imageError} alt={`Error ${statusCode}`} />
       </div>
     </div>
   );
@@ -89,11 +85,13 @@ const ErrorPage = ({ statusCode, loadingMessages }: ErrorPageProps): JSX.Element
  * Determina el código de estado HTTP a partir de la respuesta del servidor o del error.
  *
  * @param {NextPageContext} context - Contexto de la página de Next.js.
- * @returns {{ statusCode: number }} Código de estado HTTP como una propiedad.
+ * @returns {ErrorPageProps} Propiedades de la página de error con el código de estado.
  */
-ErrorPage.getInitialProps = ({ res, err }: NextPageContext): { statusCode: number } => {
+ErrorPage.getInitialProps = ({ res, err }: NextPageContext): ErrorPageProps => {
   const statusCode = res?.statusCode ?? err?.statusCode ?? 404;
-  return { statusCode };
+  return {
+    statusCode,
+  };
 };
 
 export default ErrorPage; // Exporta el componente ErrorPage como predeterminado.

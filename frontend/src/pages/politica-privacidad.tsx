@@ -1,50 +1,82 @@
-// pages/politica-privacidad.tsx
-
-import React, { useState } from "react";
+import React from "react";
+import { useRouter } from "next/router";
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"; // Tipos de Next.js
 import Link from "next/link";
-import Loader from "../components/Loader";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
+import { redirectByCookie } from "../utils/redirectByCookie"; // Función de redirección basada en cookies
 import styles from "../styles/pages/politica-privacidad.module.css";
-
+import { NextSeo, OrganizationJsonLd } from "next-seo";
+import getSEOConfig from "../next-seo.config";
+import useCurrentUrl from "../hooks/useCurrentUrl";
+// Importa los mensajes de traducción
+import esMessages from "../locales/es/common.json";
+import enMessages from "../locales/en/common.json";
+import deMessages from "../locales/de/common.json";
+// Mapea los locales a sus respectivos mensajes
+const messages: Record<string, Record<string, string>> = {
+  es: esMessages,
+  en: enMessages,
+  de: deMessages,
+};
 /**
  * Interfaz para las propiedades de la página de Política de Privacidad.
+ * @property {Record<string, any>} messages - Mensajes de localización.
  */
 export interface PoliticaPrivacidadPageProps {
-  loadingMessages: boolean;
+  messages: Record<string, any>;
 }
+
+/**
+ * Tipo del componente que incluye `pageTitleText` como propiedad estática.
+ */
+export type PoliticaPrivacidadPageComponent = NextPage & { pageTitleText?: string };
 
 /**
  * Componente que representa la página de Política de Privacidad.
  *
- * @param {boolean} loadingMessages - Indica si los mensajes están cargando.
  * @returns {JSX.Element} El componente de la página de Política de Privacidad.
  */
-const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps): JSX.Element => {
-  const intl = useIntl();
+const PoliticaPrivacidadPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+  const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
+  const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
+  const currentMessages = messages[currentLocale] || messages["es"];
 
-  /**
-   * Estado para indicar si se está cargando algún proceso adicional.
-   */
-  const [loading, setLoading] = useState(true);
-
-  /**
-   * Hooks para el seguimiento de la página visitada.
-   */
+  // Hooks para el seguimiento de la página visitada.
   useVisitedPageTracking("politica-privacidad");
   useVisitedPageTrackingGA("politica-privacidad");
 
-  /**
-   * Muestra el cargador mientras se están cargando los mensajes.
-   */
-  if (loadingMessages) {
-    return <Loader />;
-  }
-
   return (
     <div className="pageContainer">
+      {/* Configuración de SEO específica de la página */}
+      <NextSeo
+        {...getSEOConfig(currentLocale, currentMessages)}
+        title={intl.formatMessage({ id: "politica-privacidad_SEO_Titulo" })}
+        description={intl.formatMessage({ id: "politica-privacidad_SEO_Descripcion" })}
+        openGraph={{
+          title: intl.formatMessage({ id: "politica-privacidad_SEO_Titulo" }),
+          description: intl.formatMessage({ id: "politica-privacidad_SEO_Descripcion" }),
+          locale: currentUrl,
+        }}
+      />
+      {/* JSON-LD para Organización */}
+      <OrganizationJsonLd
+        type="Organization"
+        id={currentUrl}
+        name="El Paraíso Del Jamón"
+        url={currentUrl}
+        logo={`${siteUrl}/images/navbar/imagenLogo.png`}
+        contactPoint={[
+          {
+            telephone: "+34 532 83 50",
+            email: "info@paraisodeljamon.com",
+          },
+        ]}
+      />
       {/* Título principal de la página */}
       <div>
         <h1 className="text-center">{intl.formatMessage({ id: "politicaPrivacidad_Principal_Titulo" })}</h1>
@@ -281,9 +313,33 @@ const PoliticaPrivacidadPage = ({ loadingMessages }: PoliticaPrivacidadPageProps
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Actualizacion_Texto" })}</p>
       </div>
       {/* Botón para desplazarse hacia arriba */}
-      <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}
+      <ScrollToTopButton />
     </div>
   );
+};
+
+// Define `pageTitleText` como propiedad estática del componente `PoliticaPrivacidadPage`
+PoliticaPrivacidadPage.pageTitleText = "default";
+
+/**
+ * Obtiene las propiedades del lado del servidor para la página de Política de Privacidad.
+ * Aplica redirección basada en cookies.
+ *
+ * @param {GetServerSidePropsContext} context - Contexto de la página de Next.js.
+ * @returns {Promise<GetServerSidePropsResult<{}>>} Propiedades de la página o redirección.
+ */
+export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
+  // Aplicar redirección basada en cookies
+  const redirectResponse = redirectByCookie(context, "/politica-privacidad");
+  if (redirectResponse.redirect) {
+    return {
+      redirect: redirectResponse.redirect,
+    };
+  }
+
+  return {
+    props: {},
+  };
 };
 
 export default PoliticaPrivacidadPage;

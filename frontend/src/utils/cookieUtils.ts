@@ -1,7 +1,7 @@
 // utils/cookieUtils.ts
 
 import { IntlShape } from "react-intl";
-import { disableGA } from "@/utils/gaUtils";
+import { disableGA } from "../utils/gaUtils";
 
 /**
  * Obtiene el valor de una cookie específica por su nombre.

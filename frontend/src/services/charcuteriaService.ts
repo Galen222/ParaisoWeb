@@ -47,7 +47,7 @@ export const getCharcuteriaProducts = async (idioma: string): Promise<Charcuteri
     });
     return response.data;
   } catch (error) {
-    /* console.error("Error recibiendo los productos de charcuteria:", error); */
+    /* // console.error("Error recibiendo los productos de charcuteria:", error); */
     throw error;
   }
 };

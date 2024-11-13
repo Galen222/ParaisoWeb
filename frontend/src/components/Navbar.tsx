@@ -1,56 +1,97 @@
 // components/Navbar.tsx
 
-import React from "react";
+import React, { useEffect } from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
+import { useRouter } from "next/router";
 import useDeviceType from "../hooks/useDeviceType";
 import { useMenu } from "../contexts/MenuContext";
-import Loader from "../components/Loader";
 import AnimatedTitle from "../components/AnimatedTitle";
 import styles from "../styles/components/Navbar.module.css";
+import { useLocaleChange } from "../hooks/useLocaleChange";
 
 /**
- * Propiedades para el componente Navbar.
- * @property {(locale: string) => void} onLocaleChange - Función para cambiar el idioma de la aplicación.
- * @property {boolean} loadingMessages - Indica si los mensajes están cargando.
- * @property {boolean} cookiesModalClosed - Indica si el modal de cookies ha sido cerrado.
- * @property {string} pageTitleText - Texto del título de la página para el componente AnimatedTitle.
+ * Interfaz que define las propiedades del componente Navbar.
  */
 export interface NavbarProps {
-  onLocaleChange: (locale: string) => void;
-  loadingMessages: boolean;
+  /**
+   * Indica si el modal de cookies ha sido cerrado.
+   */
   cookiesModalClosed: boolean;
+
+  /**
+   * Texto que se muestra en el título animado de la página.
+   */
   pageTitleText: string;
 }
 
 /**
- * Componente Navbar
- *
- * Renderiza la barra de navegación de la aplicación, incluyendo enlaces a varias secciones,
- * un menú desplegable de restaurantes, selector de idioma y un título animado.
- *
- * @param {NavbarProps} props - Propiedades del componente Navbar.
- * @returns {JSX.Element} Barra de navegación con enlaces y selección de idioma.
+ * Constantes para las rutas y textos alternativos de las imágenes.
  */
-const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookiesModalClosed, pageTitleText }: NavbarProps): JSX.Element => {
-  const intl = useIntl(); // Hook para obtener mensajes localizados
-  const deviceType = useDeviceType(); // Detecta el tipo de dispositivo (móvil o escritorio)
-  const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();
-  const isMobile = deviceType === "mobile"; // Booleano que indica si es un dispositivo móvil
-
-  // Variables para imágenes y textos alternativos
-  const imageLogo = "/images/navbar/imagenLogo.png";
-  const imageLogoAlt = "Logo Paraíso Del Jamón";
-  const imageFlagES = "/images/flags/es.png";
-  const imageFlagESAlt = "Español";
-  const imageFlagEN = "/images/flags/en.png";
-  const imageFlagENAlt = "English";
-  const imageFlagDE = "/images/flags/de.png";
-  const imageFlagDEAlt = "Deutsch";
+const IMAGE_CONSTANTS = {
+  /**
+   * Ruta de la imagen del logo.
+   */
+  logo: "/images/navbar/imagenLogo.png",
 
   /**
-   * Maneja el clic en el menú desplegable de restaurantes.
-   * Si el menú de restaurantes no está abierto, lo abre.
+   * Texto alternativo para la imagen del logo.
+   */
+  logoAlt: "Logo Paraíso Del Jamón",
+
+  /**
+   * Rutas de las imágenes de las banderas por idioma.
+   */
+  flags: {
+    es: "/images/flags/es.png",
+    en: "/images/flags/en.png",
+    de: "/images/flags/de.png",
+  },
+
+  /**
+   * Textos alternativos para las banderas por idioma.
+   */
+  flagsAlt: {
+    es: "Español",
+    en: "English",
+    de: "Deutsch",
+  },
+};
+
+/**
+ * Componente de navegación (Navbar) que incluye el logo, enlaces de navegación,
+ * selección de idioma y un título animado.
+ *
+ * @param {NavbarProps} props - Propiedades del componente.
+ * @param {boolean} props.cookiesModalClosed - Indica si el modal de cookies ha sido cerrado.
+ * @param {string} props.pageTitleText - Texto del título animado de la página.
+ * @returns {JSX.Element} Elemento JSX que representa la barra de navegación.
+ */
+const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: NavbarProps): JSX.Element => {
+  const intl = useIntl(); // Hook para internacionalización
+  const router = useRouter(); // Hook de Next.js para acceder al enrutador
+  const { locales, defaultLocale } = router; // Obtiene los locales disponibles y el locale por defecto
+  const handleLocaleChange = useLocaleChange(); // Usa el hook para manejar el cambio de idioma
+
+  const deviceType = useDeviceType(); // Hook personalizado para detectar el tipo de dispositivo
+  const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu(); // Contexto para el menú
+
+  /**
+   * Indica si el dispositivo es móvil.
+   */
+  const isMobile = deviceType === "mobile";
+
+  /**
+   * Maneja el evento de clic en los enlaces de navegación.
+   * Cierra el menú móvil al hacer clic en un enlace.
+   */
+  const handleLinkClick = () => {
+    closeMobileMenu();
+  };
+
+  /**
+   * Maneja el evento de clic en el desplegable de restaurantes.
+   * Abre el menú de restaurantes si no está abierto.
    */
   const handleDropdownClick = () => {
     if (!restaurantsMenu) {
@@ -58,24 +99,23 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
     }
   };
 
-  if (loadingMessages) {
-    return <Loader />; // Muestra un loader mientras los mensajes están cargando
-  }
-
   return (
     <nav className={styles.navbar}>
+      {/* Sección superior de la barra de navegación que contiene el logo y las banderas */}
       <div className={styles.navbarTop}>
+        {/* Contenedor del logo */}
         <div className={styles.imgLogoContainer}>
-          {/* Logo que enlaza a la página principal */}
-          <Link href="/" onClick={closeMobileMenu}>
-            <img src={imageLogo} alt={imageLogoAlt} className={styles.imgLogo} />
+          <Link href="/" locale={router.locale} onClick={handleLinkClick}>
+            <img src={IMAGE_CONSTANTS.logo} alt={IMAGE_CONSTANTS.logoAlt} className={styles.imgLogo} />
           </Link>
         </div>
+        {/* Contenedor del texto del logo */}
         <div className={styles.textLogoContainer}>
           <span className={styles.textLogo}>PARAISO DEL JAMON</span>
         </div>
+        {/* Contenedor de las banderas y el icono del menú móvil */}
         <div className={styles.flagContainer}>
-          {/* Ícono del menú móvil que muestra u oculta el menú al hacer clic */}
+          {/* Icono para el menú móvil que permite abrir/cerrar el menú */}
           <div className={`${styles.mobileMenuIcon} ${mobileMenu ? styles.colapseSpin : ""}`} onClick={toggleMobileMenu}>
             <div className={styles.inner}>
               <span></span>
@@ -83,95 +123,83 @@ const Navbar: React.FC<NavbarProps> = ({ onLocaleChange, loadingMessages, cookie
               <span></span>
             </div>
           </div>
-          {/* Selector de idioma con banderas */}
+          {/* Contenedor de las banderas para seleccionar el idioma */}
           <div className={styles.flags}>
-            <img
-              src={imageFlagES}
-              alt={imageFlagESAlt}
-              className={styles.flag}
-              onClick={() => {
-                onLocaleChange("es");
-                closeMobileMenu();
-              }}
-            />
-            <img
-              src={imageFlagEN}
-              alt={imageFlagENAlt}
-              className={styles.flag}
-              onClick={() => {
-                onLocaleChange("en");
-                closeMobileMenu();
-              }}
-            />
-            <img
-              src={imageFlagDE}
-              alt={imageFlagDEAlt}
-              className={styles.flag}
-              onClick={() => {
-                onLocaleChange("de");
-                closeMobileMenu();
-              }}
-            />
+            {locales?.map((lng) => (
+              <img
+                key={lng}
+                src={IMAGE_CONSTANTS.flags[lng as keyof typeof IMAGE_CONSTANTS.flags]}
+                alt={IMAGE_CONSTANTS.flagsAlt[lng as keyof typeof IMAGE_CONSTANTS.flagsAlt]}
+                className={`${styles.flag} ${router.locale === lng ? styles.activeFlag : ""}`}
+                onClick={() => {
+                  handleLocaleChange(lng); // Cambia el idioma
+                  closeMobileMenu(); // Cierra el menú móvil
+                }}
+              />
+            ))}
           </div>
         </div>
       </div>
+      {/* Menú de navegación principal */}
       <div className={`${styles.navbarMenu} ${mobileMenu ? styles.showMenu : ""}`}>
         <div className={styles.links}>
-          <Link href="/" onClick={closeMobileMenu}>
+          {/* Enlace al inicio */}
+          <Link href="/" locale={router.locale} onClick={handleLinkClick}>
             {intl.formatMessage({ id: "navbar_inicio" })}
           </Link>
+          {/* Desplegable de restaurantes, solo visible en pantallas no móviles */}
           {!isMobile ? (
-            // Menú desplegable de restaurantes en dispositivos de escritorio
             <div className={styles.linksDropdown} onMouseEnter={openRestaurantsMenu} onMouseLeave={closeRestaurantsMenu} onClick={handleDropdownClick}>
               <span className={styles.noLink}>{intl.formatMessage({ id: "navbar_restaurantes" })}</span>
               <div className={`${styles.dropdown} ${restaurantsMenu ? styles.show : styles.hide}`}>
-                <Link href="/san-bernardo" onClick={closeRestaurantsMenu}>
+                <Link href="/san-bernardo" locale={router.locale} onClick={closeRestaurantsMenu}>
                   San Bernardo
                 </Link>
-                <Link href="/bravo-murillo" onClick={closeRestaurantsMenu}>
+                <Link href="/bravo-murillo" locale={router.locale} onClick={closeRestaurantsMenu}>
                   Bravo Murillo
                 </Link>
-                <Link href="/reina-victoria" onClick={closeRestaurantsMenu}>
+                <Link href="/reina-victoria" locale={router.locale} onClick={closeRestaurantsMenu}>
                   Reina Victoria
                 </Link>
-                <Link href="/arenal" onClick={closeRestaurantsMenu}>
+                <Link href="/arenal" locale={router.locale} onClick={closeRestaurantsMenu}>
                   Arenal
                 </Link>
               </div>
             </div>
           ) : (
-            // Menú desplegable de restaurantes en dispositivos móviles
+            /* Menú desplegable de restaurantes para pantallas móviles */
             <div className={`${styles.dropdown} ${styles.show}`}>
-              <Link href="/san-bernardo" onClick={closeMobileMenu}>
+              <Link href="/san-bernardo" locale={router.locale} onClick={handleLinkClick}>
                 San Bernardo
               </Link>
-              <Link href="/bravo-murillo" onClick={closeMobileMenu}>
+              <Link href="/bravo-murillo" locale={router.locale} onClick={handleLinkClick}>
                 Bravo Murillo
               </Link>
-              <Link href="/reina-victoria" onClick={closeMobileMenu}>
+              <Link href="/reina-victoria" locale={router.locale} onClick={handleLinkClick}>
                 Reina Victoria
               </Link>
-              <Link href="/arenal" onClick={closeMobileMenu}>
+              <Link href="/arenal" locale={router.locale} onClick={handleLinkClick}>
                 Arenal
               </Link>
             </div>
           )}
-          <Link href="/reservas" onClick={closeMobileMenu}>
+          {/* Enlaces adicionales de navegación */}
+          <Link href="/reservas" locale={router.locale} onClick={handleLinkClick}>
             {intl.formatMessage({ id: "navbar_reservas" })}
           </Link>
-          <Link href="/gastronomia" onClick={closeMobileMenu}>
+          <Link href="/gastronomia" locale={router.locale} onClick={handleLinkClick}>
             {intl.formatMessage({ id: "navbar_gastronomia" })}
           </Link>
-          <Link href="/charcuteria" onClick={closeMobileMenu}>
+          <Link href="/charcuteria" locale={router.locale} onClick={handleLinkClick}>
             {intl.formatMessage({ id: "navbar_charcuteria" })}
           </Link>
-          <Link href="/about" onClick={closeMobileMenu}>
+          <Link href="/about" locale={router.locale} onClick={handleLinkClick}>
             {intl.formatMessage({ id: "navbar_about" })}
           </Link>
-          <Link href="/blog" onClick={closeMobileMenu}>
+          <Link href="/blog" locale={router.locale} onClick={handleLinkClick}>
             {intl.formatMessage({ id: "navbar_blog" })}
           </Link>
-          <Link href="/contacto" onClick={closeMobileMenu}>
+          <Link href="/contacto" locale={router.locale} onClick={handleLinkClick}>
             {intl.formatMessage({ id: "navbar_contacto" })}
           </Link>
         </div>
