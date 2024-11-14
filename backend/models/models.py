@@ -21,7 +21,6 @@ TABLE_NAME_BLOG = "blog"
 class Charcuteria(Base):
     """
     Modelo ORM para la tabla de productos de charcutería.
-    La tabla varía su nombre según el entorno (producción o local).
     """
     __tablename__ = TABLE_NAME_CHARCUTERIA
 
@@ -29,6 +28,7 @@ class Charcuteria(Base):
     id_producto = Column(Integer, index=True)       # Identificador único del producto
     idioma = Column(String(5), nullable=False)      # Idioma del producto (e.g., 'es', 'en')
     nombre = Column(String(100), nullable=False)    # Nombre del producto
+    empresa = Column(String(200), nullable=True)    # Empresa del producto
     descripcion = Column(Text, nullable=False)      # Descripción detallada del producto
     imagen_url = Column(String(255), nullable=False)  # URL de la imagen del producto
     categoria = Column(String(50), nullable=False)  # Categoría del producto (e.g., 'embutidos', 'quesos')
@@ -48,7 +48,6 @@ class Charcuteria(Base):
 class Blog(Base):
     """
     Modelo ORM para la tabla de publicaciones de blog.
-    La tabla varía su nombre según el entorno configurado (producción o local).
     """
     __tablename__ = TABLE_NAME_BLOG
 

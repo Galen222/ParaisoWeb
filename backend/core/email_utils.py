@@ -1,5 +1,3 @@
-# backend/core/email_utils.py
-
 """
 Módulo de utilidades para el envío de correos electrónicos.
 Utiliza `aiosmtplib` para enviar correos de manera asíncrona.
@@ -38,7 +36,13 @@ async def send_contacto_email(
     msg = EmailMessage()
     msg['Subject'] = f'Nuevo mensaje de {name}'  # Asunto del correo
     msg['From'] = email                          # Remitente del correo
-    msg['To'] = 'info@paraisodeljamon.com'        # Destinatario del correo
+
+    # Comprobación de la razón para asignar el destinatario
+    if reason == "error":
+        msg['To'] = 'galendos@gmail.com'         # Destinatario alternativo para informar de errores
+    else:
+        msg['To'] = 'info@paraisodeljamon.com'   # Destinatario por defecto
+
     msg.set_content(f"Motivo: {reason}\n\nMensaje:\n{message}")  # Contenido del correo
 
     # Si se adjunta un archivo, se añade al correo

@@ -52,6 +52,7 @@ class CharcuteriaBase(BaseModel):
     """
     idioma: str            # Idioma del producto (ejemplo: 'es').
     nombre: str            # Nombre del producto.
+    empresa: str           # Empresa del producto
     descripcion: str       # Descripción detallada del producto.
     imagen_url: str        # URL de la imagen del producto.
     categoria: str         # Categoría del producto (ejemplo: 'Embutidos').
