@@ -72,7 +72,6 @@
   .rightsText {
     display: block;
     font-size: 12px;
-    margin-bottom: 5px;
   }
 
   .linksContainer {
@@ -81,7 +80,6 @@
 
   .linksContainer > .link:last-of-type {
     display: block;
-    margin-top: 5px;
   }
 
   .linksContainer > .separator:last-of-type {
