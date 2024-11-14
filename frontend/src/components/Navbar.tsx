@@ -63,8 +63,6 @@ const IMAGE_CONSTANTS = {
  * selección de idioma y un título animado.
  *
  * @param {NavbarProps} props - Propiedades del componente.
- * @param {boolean} props.cookiesModalClosed - Indica si el modal de cookies ha sido cerrado.
- * @param {string} props.pageTitleText - Texto del título animado de la página.
  * @returns {JSX.Element} Elemento JSX que representa la barra de navegación.
  */
 const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: NavbarProps): JSX.Element => {
