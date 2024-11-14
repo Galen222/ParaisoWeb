@@ -66,7 +66,7 @@ const ContactoPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
           images: [
             {
               url: "/images/contacto/contacto.png",
-              alt: intl.formatMessage({ id: "contacto_Carousel_Alt4" }),
+              alt: intl.formatMessage({ id: "contacto_SEO_Alt" }),
             },
           ],
           locale: currentUrl,

@@ -299,6 +299,7 @@
   "contacto_Alt": "Contact Us",
   "contacto_SEO_Titulo": "El Paraíso Del Jamón - Contact: We Are Here to Help",
   "contacto_SEO_Descripcion": "Contact El Paraíso Del Jamón for questions, feedback, or requests. Fill out the form and we will respond promptly.",
+  "contacto_SEO_Alt": "Contact us",
 
   "error_Error400": "Bad request. Please verify the data sent and try again.",
   "error_Error401": "Unauthorized. Please log in and try again.",

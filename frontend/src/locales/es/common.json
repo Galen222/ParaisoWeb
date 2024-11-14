@@ -206,7 +206,7 @@
   "blog_Texto": "Bienvenido a nuestro blog. Aquí podrá consultar artículos relacionados con el mundo del Jamón Ibérico, la Gastronomía española y nuestros bares restaurantes.",
   "blog_Error": "No se ha podido mostrar el blog, por favor intentelo más tarde. Si el problema persiste puede ponerse en contacto con nosotros por medio de la sección Contacto.",
   "blog_SEO_Titulo": "El Paraíso Del Jamon - Blog",
-  "blog_SEO_Descripción": "Bienvenido a nuestro blog. Aquí podrá consultar artículos relacionados con el mundo del Jamón Ibérico, la Gastronomía española y nuestros bares restaurantes.",
+  "blog_SEO_Descripcion": "Bienvenido a nuestro blog. Aquí podrá consultar artículos relacionados con el mundo del Jamón Ibérico, la Gastronomía española y nuestros bares restaurantes.",
 
   "blog_Details_Autor": "Por ",
   "blog_Details_Publicado": "Publicado: ",
@@ -299,6 +299,7 @@
   "contacto_Alt": "Contactanos",
   "contacto_SEO_Titulo": "El Paraíso Del Jamón - Contacto: Estamos Aquí para Ayudarte",
   "contacto_SEO_Descripcion": "Contacta con El Paraíso Del Jamón para preguntas, comentarios o solicitudes. Completa el formulario y te responderemos pronto.",
+  "contacto_SEO_Alt": "Contacte con nosotros",
 
   "error_Error400": "Solicitud incorrecta. Por favor, verifica los datos enviados e inténtalo de nuevo.",
   "error_Error401": "No autorizado. Por favor, inicia sesión e inténtalo de nuevo.",

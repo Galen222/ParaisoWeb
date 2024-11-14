@@ -1,5 +1,4 @@
-/* components/Footer.module.css */
-
+/* Footer.module.css */
 .footer {
   width: 100%;
   background-color: var(--text_color);
@@ -14,6 +13,10 @@
   bottom: 0;
   left: 0;
   z-index: 7;
+}
+
+.footer > div {
+  transform: translateY(-4px);
 }
 
 .footer p {
@@ -39,11 +42,6 @@
   display: inline;
 }
 
-.topLinks,
-.bottomLink {
-  display: inline;
-}
-
 .separator {
   display: inline;
 }
@@ -62,45 +60,45 @@
     padding-bottom: env(safe-area-inset-bottom);
   }
 
+  .footer > div {
+    transform: none;
+  }
+
   .footer p {
     text-align: center;
     font-size: 16px;
   }
 
   .rightsText {
+    display: block;
     font-size: 12px;
-  }
-}
-
-@media (max-width: 396px) {
-  .footer {
-    height: 80px; /* Mantenemos la altura de móvil */
-  }
-
-  .rightsText {
-    font-size: 15px;
+    margin-bottom: 5px;
   }
 
   .linksContainer {
     display: inline-block;
   }
 
-  .topLinks {
-    display: inline-block;
-  }
-
-  .bottomLink {
+  .linksContainer > .link:last-of-type {
     display: block;
     margin-top: 5px;
   }
 
-  /* Mantenemos visible el separador entre los dos primeros enlaces */
-  .separator {
-    display: inline;
+  .linksContainer > .separator:last-of-type {
+    display: none;
   }
 
-  /* Ocultamos el separador principal en móvil */
   .mainSeparator {
     display: none;
+  }
+}
+
+@media (max-width: 396px) {
+  .footer {
+    height: 80px;
+  }
+
+  .rightsText {
+    font-size: 15px;
   }
 }

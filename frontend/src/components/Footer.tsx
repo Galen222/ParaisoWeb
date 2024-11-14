@@ -16,20 +16,17 @@ const Footer: React.FC = (): JSX.Element => {
 
   const links = (
     <div className={styles.linksContainer}>
-      <div className={styles.topLinks}>
-        <Link href="/aviso-legal" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
-          {intl.formatMessage({ id: "Footer_AvisoLegal" })}
-        </Link>
-        <span className={styles.separator}> | </span>
-        <Link href="/politica-privacidad" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
-          {intl.formatMessage({ id: "Footer_PoliticaPrivacidad" })}
-        </Link>
-      </div>
-      <div className={styles.bottomLink}>
-        <Link href="/politica-cookies" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
-          {intl.formatMessage({ id: "Footer_PoliticaCookies" })}
-        </Link>
-      </div>
+      <Link href="/aviso-legal" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
+        {intl.formatMessage({ id: "Footer_AvisoLegal" })}
+      </Link>
+      <span className={styles.separator}> | </span>
+      <Link href="/politica-privacidad" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
+        {intl.formatMessage({ id: "Footer_PoliticaPrivacidad" })}
+      </Link>
+      <span className={styles.separator}> | </span>
+      <Link href="/politica-cookies" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
+        {intl.formatMessage({ id: "Footer_PoliticaCookies" })}
+      </Link>
     </div>
   );
 
