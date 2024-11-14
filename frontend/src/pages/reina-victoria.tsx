@@ -127,7 +127,7 @@ const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element
       {/* Texto principal de la página */}
       {/* Texto descriptivo del restaurante Reina Victoria */}
       <div>
-        <h1 className="ti-20p texto text-start">{intl.formatMessage({ id: "reina-victoria_Texto" })}</h1>
+        <h1 className="ti-20p texto">{intl.formatMessage({ id: "reina-victoria_Texto" })}</h1>
       </div>
       {/* Sección de localización del restaurante */}
       <div className="mt-25p">

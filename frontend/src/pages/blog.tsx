@@ -85,7 +85,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
         ]}
       />
       <div>
-        <h1 className="ti-20p texto text-start">{intl.formatMessage({ id: "blog_Texto" })}</h1>
+        <h1 className="ti-20p texto">{intl.formatMessage({ id: "blog_Texto" })}</h1>
       </div>
       <div className={styles.content}>
         {loadingBlog && (

@@ -88,7 +88,7 @@ const ContactoPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
       />
       {/* Información introductoria de contacto */}
       <div>
-        <h1 className="ti-20p texto text-center">{intl.formatMessage({ id: "contacto_Texto1" })}</h1>
+        <h1 className="ti-20p texto">{intl.formatMessage({ id: "contacto_Texto1" })}</h1>
         <p className="ti-20p">
           {intl.formatMessage({ id: "contacto_Texto2a" })}
           <span className="fw-bold">{intl.formatMessage({ id: "contacto_Texto2b" })}</span>

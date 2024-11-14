@@ -89,7 +89,7 @@ const AboutPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
         ]}
       />
       <div>
-        <h1 className="ti-20p texto text-start">{intl.formatMessage({ id: "about_Texto1" })}</h1>
+        <h1 className="ti-20p texto">{intl.formatMessage({ id: "about_Texto1" })}</h1>
       </div>
       <div className="mt-25p">
         <h3 className="mb-10p">{intl.formatMessage({ id: "about_Titulo2" })}</h3>

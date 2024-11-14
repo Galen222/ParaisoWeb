@@ -126,7 +126,7 @@ const ArenalPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
       />
       {/* Texto descriptivo del restaurante Arenal */}
       <div>
-        <h1 className="ti-20p texto text-start">{intl.formatMessage({ id: "arenal_Texto" })}</h1>
+        <h1 className="ti-20p texto">{intl.formatMessage({ id: "arenal_Texto" })}</h1>
       </div>
       {/* Sección de localización del restaurante */}
       <div className="mt-25p">

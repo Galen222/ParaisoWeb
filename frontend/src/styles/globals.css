@@ -52,8 +52,10 @@ body {
 }
 
 /* Clases utilitarias para tamaños de fuente */
+
 .texto {
   font-size: 18px; /* Tamaño de fuente de 18 píxeles */
+  text-align: justify !important;
 }
 
 .fs-16p {

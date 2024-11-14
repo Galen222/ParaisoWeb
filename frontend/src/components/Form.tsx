@@ -190,13 +190,13 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
           <option value="" disabled>
             {intl.formatMessage({ id: "contacto_SeleccioneMotivo" })}
           </option>
-          <option value="info">{intl.formatMessage({ id: "contacto_MotivoInfo" })}</option>
-          <option value="commercial">
+          <option value="informacion">{intl.formatMessage({ id: "contacto_MotivoInfo" })}</option>
+          <option value="comercial">
             {intl.formatMessage({
               id: "contacto_MotivoComercial",
             })}
           </option>
-          <option value="invoice">
+          <option value="factura">
             {intl.formatMessage({
               id: "contacto_MotivoFactura",
             })}
@@ -206,8 +206,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
               id: "contacto_MotivoCurriculum",
             })}
           </option>
-          <option value="bug">{intl.formatMessage({ id: "contacto_MotivoBug" })}</option>
-          <option value="other">{intl.formatMessage({ id: "contacto_MotivoOtro" })}</option>
+          <option value="error">{intl.formatMessage({ id: "contacto_MotivoBug" })}</option>
+          <option value="otro">{intl.formatMessage({ id: "contacto_MotivoOtro" })}</option>
         </select>
       </div>
 

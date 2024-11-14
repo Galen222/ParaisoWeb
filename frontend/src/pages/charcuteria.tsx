@@ -128,10 +128,13 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
           },
         ]}
       />
-      <div className={styles.content}>
+      {/* Renderizado condicional del encabezado */}
+      {!loadingProducts && products && (
         <div>
-          <h1 className="ti-20p texto text-start">{intl.formatMessage({ id: "charcuteria_Texto" })}</h1>
+          <h1 className="ti-20p texto">{intl.formatMessage({ id: "charcuteria_Texto" })}</h1>
         </div>
+      )}
+      <div className={styles.content}>
         {/* Mapeo de los productos de charcutería en tarjetas */}
         {products?.map((product) => (
           <div className={styles.card} key={product.id_producto}>
@@ -146,22 +149,27 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
               }}
             >
               {/* Lado frontal de la tarjeta con imagen y nombre del producto */}
-              <div className={styles.front} style={{ backgroundImage: `url(${IMAGE_BASE_URL}${product.imagen_url})` }}>
-                <p>{product.nombre}</p>
-                {product.categoria && <p className={styles.category}>{product.categoria}</p>}
+              <div className={styles.front}>
+                <img src={`${IMAGE_BASE_URL}${product.imagen_url}`} alt={product.nombre} className={styles.productImage} />
+                <div className={styles.textOverlay}>
+                  <p className={styles.frontProductName}>{product.nombre}</p>
+                  {product.categoria && <p className={styles.frontCategory}>{product.categoria}</p>}
+                </div>
               </div>
               {/* Lado posterior de la tarjeta con descripción del producto */}
               <div className={styles.back}>
                 <div>
-                  <p className={styles.productName}>{product.nombre}</p>
-                  {product.categoria && <p className={styles.category}>{product.categoria}</p>}
+                  <p className={styles.backProductName}>{product.nombre}</p>
+                  {product.categoria && <p className={styles.backCategory}>{product.categoria}</p>}
                   <p className={styles.descripcion}>{product.descripcion}</p>
+                  <p className={styles.empresa}>{product.empresa}</p>
                 </div>
               </div>
             </div>
           </div>
         ))}
       </div>
+
       {/* Mostrar el loader mientras se cargan los productos */}
       {loadingProducts && <Loader className="BD" />}
       <ScrollToTopButton />

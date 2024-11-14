@@ -1,76 +1,106 @@
 /* components/Footer.module.css */
 
-/* Estilos principales del contenedor del pie de página */
 .footer {
-  width: 100%; /* Ancho completo del pie de página */
-  background-color: var(--text_color); /* Color de fondo del pie de página */
-  color: white; /* Color de texto blanco */
-  text-align: center; /* Centra el contenido horizontalmente */
-  padding: 0; /* Elimina el padding interno */
-  height: 60px; /* Altura fija de 60 píxeles */
-  display: flex; /* Utiliza flexbox para alinear el contenido */
-  align-items: center; /* Centra verticalmente el contenido */
-  justify-content: center; /* Centra horizontalmente el contenido */
-  position: fixed; /* Fija el pie de página al fondo de la ventana */
-  bottom: 0; /* Alinea el pie de página al fondo de la ventana */
-  left: 0; /* Alinea el pie de página al lado izquierdo de la ventana */
-  z-index: 7; /* Define el orden de apilamiento para superponer el pie de página sobre otros elementos */
+  width: 100%;
+  background-color: var(--text_color);
+  color: white;
+  text-align: center;
+  padding: 0;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  z-index: 7;
 }
 
-/* Estilos para los párrafos dentro del pie de página */
 .footer p {
-  margin: 0; /* Elimina los márgenes predeterminados */
-  font-size: 16px; /* Tamaño de fuente de 16 píxeles */
+  margin: 0;
+  font-size: 16px;
 }
 
-/* Estilos para los enlaces en el pie de página */
 .link {
-  text-decoration: none; /* Elimina el subrayado de los enlaces */
+  text-decoration: none;
 }
 
-/* Efecto al pasar el ratón sobre los enlaces */
 .link:hover {
-  text-decoration: underline; /* Agrega subrayado al pasar el ratón */
+  text-decoration: underline;
 }
 
-/* Estilos específicos para los elementos span dentro del pie de página */
 .rightsText,
-.separator,
+.mainSeparator,
 .links {
-  display: inline; /* Muestra los elementos en línea */
+  display: inline;
 }
 
-/* Media Queries para dispositivos tipo tablet */
+.linksContainer {
+  display: inline;
+}
+
+.topLinks,
+.bottomLink {
+  display: inline;
+}
+
+.separator {
+  display: inline;
+}
+
 @media (max-width: 1024px) {
   .footer {
-    overflow-x: hidden; /* Evita el desbordamiento horizontal */
-    box-sizing: border-box; /* Incluye el padding y el borde en el cálculo del ancho total */
+    overflow-x: hidden;
+    box-sizing: border-box;
   }
 }
 
-/* Media Queries para ajustar el pie de página en dispositivos móviles */
 @media (max-width: 768px) {
   .footer {
-    position: static; /* Cambia la posición fija para permitir que se adapte a la altura de la pantalla */
-    height: 80px; /* Permite que la altura se ajuste automáticamente en función del contenido */
-    padding-bottom: env(safe-area-inset-bottom); /* Agrega un padding inferior para dispositivos con notch */
+    position: static;
+    height: 80px;
+    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .footer p {
-    text-align: center; /* Centra el texto en dispositivos móviles */
+    text-align: center;
+    font-size: 16px;
   }
 
-  .separator {
-    display: none; /* Oculta el separador en dispositivos móviles */
-  }
-
-  .links {
-    display: block; /* Muestra los enlaces en bloque, uno debajo del otro */
+  .rightsText {
+    font-size: 12px;
   }
 }
 
 @media (max-width: 396px) {
+  .footer {
+    height: 80px; /* Mantenemos la altura de móvil */
+  }
+
   .rightsText {
     font-size: 15px;
+  }
+
+  .linksContainer {
+    display: inline-block;
+  }
+
+  .topLinks {
+    display: inline-block;
+  }
+
+  .bottomLink {
+    display: block;
+    margin-top: 5px;
+  }
+
+  /* Mantenemos visible el separador entre los dos primeros enlaces */
+  .separator {
+    display: inline;
+  }
+
+  /* Ocultamos el separador principal en móvil */
+  .mainSeparator {
+    display: none;
   }
 }
