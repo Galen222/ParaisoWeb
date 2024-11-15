@@ -36,9 +36,11 @@ export type BlogDetailsPageComponent = NextPage & { pageTitleText?: string };
 const IMAGE_BASE_URL = "/images/blog/";
 
 /**
- * Props para el componente de la página de detalles del blog.
+ * Props para el componente `BlogDetailsPage`.
+ * @property {BlogPost | null} blogDetails - Contiene los detalles del artículo del blog.
+ * @property {string | null} error - Mensaje de error si no se puede cargar el artículo del blog.
  */
-interface BlogDetailsPageProps {
+export interface BlogDetailsPageProps {
   blogDetails: BlogPost | null;
   error: string | null;
 }
