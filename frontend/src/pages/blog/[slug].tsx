@@ -1,20 +1,17 @@
 // pages/blog/[slug].tsx
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useRouter } from "next/router";
-import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
-import Loader from "../../components/Loader";
+import type { NextPage, GetServerSideProps } from "next";
 import ShareLink from "../../components/ShareLink";
 import ScrollToTopButton from "../../components/ScrollToTopButton";
 import ReactMarkdown from "react-markdown";
 import { useIntl } from "react-intl";
-import { useFetchBlogDetails } from "../../hooks/useFetchBlogDetails";
 import { useVisitedPageTracking } from "../../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../../hooks/useTrackingGA";
 import { useHandleLanguageChange } from "../../hooks/useHandleLanguageChange";
 import errorStyles from "../../styles/pages/error.module.css";
 import styles from "../../styles/pages/slug.module.css";
-import { redirectByCookie } from "../../utils/redirectByCookie";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
 import getSEOConfig from "../../next-seo.config";
 import useCurrentUrl from "../../hooks/useCurrentUrl";
@@ -22,6 +19,8 @@ import useCurrentUrl from "../../hooks/useCurrentUrl";
 import esMessages from "../../locales/es/common.json";
 import enMessages from "../../locales/en/common.json";
 import deMessages from "../../locales/de/common.json";
+import { BlogPost, getBlogPostBySlug, getBlogPostById } from "../../services/blogService";
+import { getTimedToken } from "../../services/tokenService";
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {
   es: esMessages,
@@ -37,12 +36,14 @@ export type BlogDetailsPageComponent = NextPage & { pageTitleText?: string };
 const IMAGE_BASE_URL = "/images/blog/";
 
 /**
- * Componente funcional para la página de detalles de una publicación del blog.
- * Muestra el contenido completo de una publicación específica.
- *
- * @returns {JSX.Element} Página de detalles del Blog.
+ * Props para el componente de la página de detalles del blog.
  */
-const BlogDetailsPage: BlogDetailsPageComponent = (): JSX.Element => {
+interface BlogDetailsPageProps {
+  blogDetails: BlogPost | null;
+  error: string | null;
+}
+
+const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string } = ({ blogDetails, error }) => {
   const intl = useIntl();
   const router = useRouter();
   const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
@@ -50,30 +51,15 @@ const BlogDetailsPage: BlogDetailsPageComponent = (): JSX.Element => {
   const currentUrl = useCurrentUrl();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
 
-  const { slug } = router.query;
-  const [isPushingBack, setIsPushingBack] = useState(false);
-
   // Seguimiento de la visita a la página de detalles del blog para análisis interno y Google Analytics
   useVisitedPageTracking("blog-noticia");
   useVisitedPageTrackingGA("blog-noticia");
-
-  // Hook para obtener los detalles de la publicación del blog
-  const { data: blogDetails, loadingBlogDetails, error } = useFetchBlogDetails(slug as string);
 
   // Maneja cambios de idioma basados en los detalles del blog
   useHandleLanguageChange(blogDetails);
 
   // Ruta de la imagen de error
   const imageError = "/images/web/error.png";
-
-  /**
-   * Función para manejar la navegación de regreso al blog.
-   * Añade una animación antes de navegar.
-   */
-  const handleBack = () => {
-    setIsPushingBack(true);
-    router.push("/blog");
-  };
 
   // Crea las constantes para SEO
   const previewTitle = blogDetails?.titulo
@@ -157,32 +143,17 @@ const BlogDetailsPage: BlogDetailsPageComponent = (): JSX.Element => {
           <div>
             <ShareLink url={currentUrl} title={blogDetails.titulo} />
           </div>
-          <div className="text-center mt-25p">
-            <button
-              className={`btn btn-outline-secondary mx-auto ${styles.backButton} ${isPushingBack ? "animate-push" : ""}`}
-              onAnimationEnd={() => setIsPushingBack(false)}
-              onClick={handleBack}
-            >
-              {intl.formatMessage({ id: "blog_Details_Boton" })}
-            </button>
-          </div>
-          {/* Muestra el botón solo si no está cargando ni hay error */}
-          {!loadingBlogDetails && !error && <ScrollToTopButton />}
+          {/* Muestra el botón solo si no hay error */}
+          {!error && <ScrollToTopButton />}
         </div>
       )}
       {/* Renderiza el mensaje de error si existe */}
       {error && (
         <div className={errorStyles.errorContainer}>
-          <p className={errorStyles.errorText}>{intl.formatMessage({ id: "blog_Details_Error" })}</p>
+          <p className={errorStyles.errorText}>{error}</p>
           <div className={errorStyles.imageContainer}>
             <img src={imageError} alt="Error" />
           </div>
-        </div>
-      )}
-      {/* Muestra el Loader si está accediendo al back-end */}
-      {loadingBlogDetails && (
-        <div className={styles.loaderContainer}>
-          <Loader className="BD" />
         </div>
       )}
     </div>
@@ -193,21 +164,57 @@ const BlogDetailsPage: BlogDetailsPageComponent = (): JSX.Element => {
 BlogDetailsPage.pageTitleText = "blog";
 
 /**
- * Función `getServerSideProps` para la redirección basada en cookies.
+ * Función `getServerSideProps` para obtener los datos del artículo antes de renderizar la página.
  *
  * @param {GetServerSidePropsContext} context - Contexto de Next.js que contiene información de la solicitud.
- * @returns {Promise<GetServerSidePropsResult<{}>>} Redirección o props vacíos.
+ * @returns {Promise<GetServerSidePropsResult<BlogDetailsPageProps>>} Props con los datos del artículo o error.
  */
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
-  // Aplicar redirección basada en cookies si es necesario
-  const redirectResponse = redirectByCookie(context, "");
-  if (redirectResponse.redirect) {
-    return redirectResponse;
-  }
+export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = async (context) => {
+  const { slug } = context.params!;
+  const locale = context.locale || "es";
 
-  return {
-    props: {},
-  };
+  try {
+    const token = await getTimedToken();
+
+    // Obtenemos el artículo en el idioma actual (locale)
+    let blogDetails = await getBlogPostBySlug(slug as string, token, locale);
+
+    // Si el idioma del artículo no coincide con el idioma actual, intentamos obtener la versión traducida
+    if (blogDetails.idioma !== locale) {
+      const translatedBlogPost = await getBlogPostById(blogDetails.id_noticia, locale, token);
+      if (translatedBlogPost) {
+        // Redirigimos al slug correspondiente en el nuevo idioma
+        return {
+          redirect: {
+            destination: `/blog/${translatedBlogPost.slug}`,
+            permanent: false,
+          },
+        };
+      } else {
+        // Si no hay traducción, podemos mostrar un mensaje de error
+        return {
+          props: {
+            blogDetails: null,
+            error: "Artículo no disponible en el idioma seleccionado",
+          },
+        };
+      }
+    }
+
+    return {
+      props: {
+        blogDetails,
+        error: null,
+      },
+    };
+  } catch (err) {
+    return {
+      props: {
+        blogDetails: null,
+        error: "Error al cargar el artículo o el artículo no existe. Por favor, verifica la URL e inténtalo de nuevo.",
+      },
+    };
+  }
 };
 
-export default BlogDetailsPage; // Exporta el componente para su uso en la aplicación
+export default BlogDetailsPage;

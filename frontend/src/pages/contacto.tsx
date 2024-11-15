@@ -63,12 +63,6 @@ const ContactoPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
         openGraph={{
           title: intl.formatMessage({ id: "contacto_SEO_Titulo" }),
           description: intl.formatMessage({ id: "contacto_SEO_Descripcion" }),
-          images: [
-            {
-              url: "/images/contacto/contacto.png",
-              alt: intl.formatMessage({ id: "contacto_SEO_Alt" }),
-            },
-          ],
           locale: currentUrl,
         }}
       />

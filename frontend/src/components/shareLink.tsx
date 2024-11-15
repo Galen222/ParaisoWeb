@@ -24,13 +24,13 @@ const ShareLink: React.FC<ShareLinkProps> = ({ url, title }: ShareLinkProps): JS
 
   // Prefijo para cada título
   const fullTitle = `El Paraíso del Jamón - ${title}`;
-  const messageWithLink = `${fullTitle}\n\n${intl.formatMessage({ id: "sharedLink_cuerpo" })}\n${url}`;
-  const telegramMessage = `${intl.formatMessage({ id: "sharedLink_cuerpo" })}\nEl Paraíso Del Jamón`;
+  const messageWithLink = `${fullTitle}\n${intl.formatMessage({ id: "sharedLink_cuerpo" })}`;
+  const telegramMessage = `${intl.formatMessage({ id: "sharedLink_cuerpo" })} El Paraíso Del Jamón`;
 
   return (
     <div className="text-end d-inline-flex align-items-center ptl-3">
       {/* Twitter: Incluir el nombre de la web y el título */}
-      <TwitterShareButton url={url} title={`${fullTitle}\n\n${intl.formatMessage({ id: "sharedLink_cuerpo" })}`}>
+      <TwitterShareButton url={url} title={messageWithLink}>
         <XIcon size={32} round={true} className={Styles.icon} />
       </TwitterShareButton>
 
