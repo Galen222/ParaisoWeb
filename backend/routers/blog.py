@@ -1,5 +1,3 @@
-# backend/app/routers/blog.py
-
 """
 Router para manejar las publicaciones del blog.
 """
@@ -7,7 +5,7 @@ Router para manejar las publicaciones del blog.
 from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from typing import List
+from typing import List, Optional
 from ..models import models, schemas
 from ..dependencies import get_db, verify_token  # Importa la dependencia
 from sqlalchemy import func
@@ -50,14 +48,16 @@ async def get_blog_posts(
 @router.get("/blog/{slug}", response_model=schemas.Blog)
 async def get_blog_post_by_slug(
     slug: str = Path(...),
+    idioma: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db),
     token_verification: None = Depends(verify_token)  # Verifica el token temporal
 ):
     """
-    Obtiene una publicación de blog específica por su slug.
+    Obtiene una publicación de blog específica por su slug y opcionalmente por idioma.
 
     Args:
         slug (str): Slug único de la publicación.
+        idioma (str, optional): Idioma de la publicación.
         db (AsyncSession): Sesión de base de datos.
         token_verification (None): Resultado de la verificación del token.
 
@@ -68,15 +68,16 @@ async def get_blog_post_by_slug(
         schemas.Blog: Publicación de blog encontrada.
     """
     try:
-        result = await db.execute(
-            select(models.Blog).where(models.Blog.slug == slug)
-        )
+        query = select(models.Blog).where(models.Blog.slug == slug)
+        if idioma:
+            query = query.where(models.Blog.idioma == idioma)
+        result = await db.execute(query)
         blog_post = result.scalar_one_or_none()
         if blog_post is None:
             raise HTTPException(status_code=404, detail="Blog not found")
         return blog_post
     except Exception as e:
-        print(f"Error al obtener los posts del blog: {e}")  # Imprimir el error en la consola
+        print(f"Error al obtener el post del blog: {e}")  # Imprimir el error en la consola
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/blog/by-id/{id_noticia}", response_model=schemas.Blog)
