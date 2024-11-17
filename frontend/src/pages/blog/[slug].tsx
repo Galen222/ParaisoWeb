@@ -13,7 +13,7 @@ import { useHandleLanguageChange } from "../../hooks/useHandleLanguageChange";
 import errorStyles from "../../styles/pages/error.module.css";
 import styles from "../../styles/pages/slug.module.css";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
-import getSEOConfig from "../../next-seo.config";
+import getSEOConfig from "../../config/next-seo.config";
 import useCurrentUrl from "../../hooks/useCurrentUrl";
 // Importa los mensajes de traducción
 import esMessages from "../../locales/es/common.json";
