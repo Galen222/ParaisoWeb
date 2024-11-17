@@ -83,7 +83,7 @@ const SanBernardoPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
       <OrganizationJsonLd
         type="Organization"
         id={currentUrl}
-        name="El Paraíso Del Jamón"
+        name="Paraíso Del Jamón"
         url={currentUrl}
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
@@ -97,7 +97,7 @@ const SanBernardoPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
       <LocalBusinessJsonLd
         type="Restaurant"
         id={currentUrl}
-        name="El Paraíso Del Jamón I"
+        name="Paraíso Del Jamón I"
         description={intl.formatMessage({ id: "san-bernardo_SEO_Descripcion" })}
         url={currentUrl}
         telephone="+34 532 83 50"
@@ -124,9 +124,12 @@ const SanBernardoPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
         ]}
       />
       {/* Texto principal de la página */}
-      {/* Texto descriptivo del restaurante San Bernardo */}
       <div>
-        <h1 className="ti-20p texto">{intl.formatMessage({ id: "san-bernardo_Texto" })}</h1>
+        <h1>{intl.formatMessage({ id: "san-bernardo_Titulo" })}</h1>
+      </div>
+      {/* Texto descriptivo */}
+      <div className="mt-25p">
+        <p className="ti-20p">{intl.formatMessage({ id: "san-bernardo_Texto" })}</p>
       </div>
       {/* Sección de localización del restaurante */}
       <div className="mt-25p">

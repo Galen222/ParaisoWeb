@@ -1,3 +1,5 @@
+// pages/blog.tsx
+
 import React from "react";
 import Link from "next/link";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
@@ -56,7 +58,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
   const imageError = "/images/web/error.png";
 
   return (
-    <div className={styles.blogContainer}>
+    <>
       {/* Configuración de SEO específica de la página */}
       <NextSeo
         {...getSEOConfig(currentLocale, currentMessages)}
@@ -72,7 +74,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
       <OrganizationJsonLd
         type="Organization"
         id={currentUrl}
-        name="El Paraíso Del Jamón"
+        name="Paraíso Del Jamón"
         url={currentUrl}
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
@@ -82,48 +84,53 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
           },
         ]}
       />
-      {!loadingBlog && !error && (
-        <div>
-          <h1 className="ti-20p texto">{intl.formatMessage({ id: "blog_Texto" })}</h1>
+
+      {error ? (
+        <div className={errorStyles.errorContainer}>
+          <h2 className={errorStyles.errorText}>{intl.formatMessage({ id: "blog_Error" })}</h2>
+          <div className={errorStyles.imageContainer}>
+            <img src={imageError} alt="Error" />
+          </div>
+        </div>
+      ) : (
+        <div className={styles.blogContainer}>
+          {!loadingBlog && blogs && (
+            <>
+              {/* Título y descripción del blog */}
+              <div>
+                <h1 className="text-center">{intl.formatMessage({ id: "blog_Titulo" })}</h1>
+              </div>
+              <div className="mt-25p">
+                <p className="ti-20p">{intl.formatMessage({ id: "blog_Texto" })}</p>
+              </div>
+              {/* Contenido de las publicaciones del blog */}
+              <div className={styles.content}>
+                {blogs.map((blog) => (
+                  <Link className={styles.blogLink} href={`/blog/${blog.slug}`} key={blog.id_noticia} passHref>
+                    <div className={styles.blogCard}>
+                      <div className={styles.imageContainer}>
+                        <img src={`${IMAGE_BASE_URL}${blog.imagen_url}`} alt={blog.titulo} className={styles.blogImage} />
+                      </div>
+                      <div className={styles.blogText}>
+                        <h3>{blog.titulo}</h3>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              {/* Botón para volver al principio */}
+              <ScrollToTopButton />
+            </>
+          )}
+          {/* Muestra el Loader mientras se cargan las publicaciones del blog */}
+          {loadingBlog && (
+            <div className={styles.loaderContainer}>
+              <Loader className="BD" />
+            </div>
+          )}
         </div>
       )}
-      <div className={styles.content}>
-        {loadingBlog && (
-          // Muestra el Loader mientras se cargan las publicaciones del blog
-          <div className={styles.loaderContainer}>
-            <Loader className="BD" />
-          </div>
-        )}
-
-        {error && (
-          // Manejo general de errores
-          <div className={errorStyles.errorContainer}>
-            <p className={errorStyles.errorText}>{intl.formatMessage({ id: "blog_Error" })}</p>
-            <div className={errorStyles.imageContainer}>
-              <img src={imageError} alt="Error" />
-            </div>
-          </div>
-        )}
-
-        {!loadingBlog &&
-          !error &&
-          blogs &&
-          // Renderiza las tarjetas de las publicaciones del blog
-          blogs.map((blog) => (
-            <Link className={styles.blogLink} href={`/blog/${blog.slug}`} key={blog.id_noticia} passHref>
-              <div className={styles.blogCard}>
-                <div className={styles.imageContainer}>
-                  <img src={`${IMAGE_BASE_URL}${blog.imagen_url}`} alt={blog.titulo} className={styles.blogImage} />
-                </div>
-                <div className={styles.blogText}>
-                  <p>{blog.titulo}</p>
-                </div>
-              </div>
-            </Link>
-          ))}
-      </div>
-      {!loadingBlog && !error && <ScrollToTopButton />} {/* Muestra el botón solo si no está cargando ni hay error */}
-    </div>
+    </>
   );
 };
 

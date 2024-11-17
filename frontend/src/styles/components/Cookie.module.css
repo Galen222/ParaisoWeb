@@ -137,6 +137,7 @@ input:checked + .slider:before {
   margin-top: 20px; /* Márgen superior de 20 píxeles */
   text-align: center; /* Centra el texto del enlace */
   text-decoration: none; /* Elimina el subrayado del enlace */
+  color: #e3011a;
 }
 
 /* Efecto al pasar el ratón sobre los enlaces */

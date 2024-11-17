@@ -191,8 +191,8 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
           <Link href="/charcuteria" locale={router.locale} onClick={handleLinkClick}>
             {intl.formatMessage({ id: "navbar_charcuteria" })}
           </Link>
-          <Link href="/about" locale={router.locale} onClick={handleLinkClick}>
-            {intl.formatMessage({ id: "navbar_about" })}
+          <Link href="/nosotros" locale={router.locale} onClick={handleLinkClick}>
+            {intl.formatMessage({ id: "navbar_nosotros" })}
           </Link>
           <Link href="/blog" locale={router.locale} onClick={handleLinkClick}>
             {intl.formatMessage({ id: "navbar_blog" })}

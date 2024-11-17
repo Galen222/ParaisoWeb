@@ -70,7 +70,7 @@ const ContactoPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
       <OrganizationJsonLd
         type="Organization"
         id={currentUrl}
-        name="El Paraíso Del Jamón"
+        name="Paraíso Del Jamón"
         url={currentUrl}
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
@@ -82,7 +82,12 @@ const ContactoPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
       />
       {/* Información introductoria de contacto */}
       <div>
-        <h1 className="ti-20p texto">{intl.formatMessage({ id: "contacto_Texto1" })}</h1>
+        <div>
+          <h1 className="ti-20p">{intl.formatMessage({ id: "contacto_Titulo" })}</h1>
+        </div>
+        <div className="mt-25p">
+          <p className="ti-20p">{intl.formatMessage({ id: "contacto_Texto1" })}</p>
+        </div>
         <p className="ti-20p">
           {intl.formatMessage({ id: "contacto_Texto2a" })}
           <span className="fw-bold">{intl.formatMessage({ id: "contacto_Texto2b" })}</span>

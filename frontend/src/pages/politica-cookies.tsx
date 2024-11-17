@@ -186,7 +186,7 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): JSX.Eleme
       <OrganizationJsonLd
         type="Organization"
         id={currentUrl}
-        name="El Paraíso Del Jamón"
+        name="Paraíso Del Jamón"
         url={currentUrl}
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[

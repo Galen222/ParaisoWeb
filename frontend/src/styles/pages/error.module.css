@@ -4,9 +4,9 @@
 .errorContainer {
   max-width: 50%; /* Ancho máximo del 50% del contenedor padre */
   margin: auto; /* Centra el contenedor horizontalmente */
-  padding: 20px; /* Espaciado interno de 20 píxeles alrededor del contenido */
+  padding: auto; /* Espaciado interno de 20 píxeles alrededor del contenido */
   text-align: center; /* Centra el texto dentro del contenedor */
-  margin-bottom: 90px; /* Márgen inferior de 90 píxeles para separar del contenido siguiente */
+  margin-bottom: 80px; /* Márgen inferior de 90 píxeles para separar del contenido siguiente */
   font-size: 18px; /* Tamaño de fuente de 18 píxeles para una lectura cómoda */
   color: var(--text_color); /* Aplica el color de texto definido en la variable CSS */
 }

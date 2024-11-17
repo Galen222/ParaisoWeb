@@ -317,33 +317,33 @@ export const slidesData = (intl: IntlShape): { [key: string]: Slide[] } => ({
       alt: intl.formatMessage({ id: "gastronomia_Carousel_Alt9" }),
     },
   ],
-  about1: [
+  nosotros1: [
     {
       type: "image",
-      src: "/images/about/nosotros1.png",
-      alt: intl.formatMessage({ id: "about_Carousel_Alt1" }),
+      src: "/images/nosotros/nosotros1.png",
+      alt: intl.formatMessage({ id: "nosotros_Carousel_Alt1" }),
     },
     {
       type: "image",
-      src: "/images/about/nosotros2.png",
-      alt: intl.formatMessage({ id: "about_Carousel_Alt2" }),
+      src: "/images/nosotros/nosotros2.png",
+      alt: intl.formatMessage({ id: "nosotros_Carousel_Alt2" }),
     },
     {
       type: "image",
-      src: "/images/about/nosotros3.png",
-      alt: intl.formatMessage({ id: "about_Carousel_Alt3" }),
+      src: "/images/nosotros/nosotros3.png",
+      alt: intl.formatMessage({ id: "nosotros_Carousel_Alt3" }),
     },
   ],
-  about2: [
+  nosotros2: [
     {
       type: "image",
-      src: "/images/about/nosotros4.png",
-      alt: intl.formatMessage({ id: "about_Carousel_Alt4" }),
+      src: "/images/nosotros/nosotros4.png",
+      alt: intl.formatMessage({ id: "nosotros_Carousel_Alt4" }),
     },
     {
       type: "image",
-      src: "/images/about/nosotros5.png",
-      alt: intl.formatMessage({ id: "about_Carousel_Alt5" }),
+      src: "/images/nosotros/nosotros5.png",
+      alt: intl.formatMessage({ id: "nosotros_Carousel_Alt5" }),
     },
   ],
 });

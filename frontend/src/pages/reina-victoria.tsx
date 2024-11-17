@@ -84,7 +84,7 @@ const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element
       <OrganizationJsonLd
         type="Organization"
         id={currentUrl}
-        name="El Paraíso Del Jamón III"
+        name="Paraíso Del Jamón III"
         url={currentUrl}
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
@@ -98,7 +98,7 @@ const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element
       <LocalBusinessJsonLd
         type="Restaurant"
         id={currentUrl}
-        name="El Paraíso Del Jamón IV"
+        name="Paraíso Del Jamón III"
         description={intl.formatMessage({ id: "reina-victoria_SEO_Descripcion" })}
         url={currentUrl}
         telephone="+34 534 18 20"
@@ -125,9 +125,12 @@ const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element
         ]}
       />
       {/* Texto principal de la página */}
-      {/* Texto descriptivo del restaurante Reina Victoria */}
       <div>
-        <h1 className="ti-20p texto">{intl.formatMessage({ id: "reina-victoria_Texto" })}</h1>
+        <h1>{intl.formatMessage({ id: "reina-victoria_Titulo" })}</h1>
+      </div>
+      {/* Texto descriptivo */}
+      <div className="mt-25p">
+        <p className="ti-20p">{intl.formatMessage({ id: "reina-victoria_Texto" })}</p>
       </div>
       {/* Sección de localización del restaurante */}
       <div className="mt-25p">

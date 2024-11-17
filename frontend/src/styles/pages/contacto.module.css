@@ -13,6 +13,7 @@
 /* Estilo para los enlaces */
 .link {
   text-decoration: none; /* Elimina el subrayado de los enlaces para una apariencia más limpia */
+  color: #e3011a;
 }
 
 /* Efecto al pasar el ratón sobre los enlaces */

@@ -65,7 +65,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
 
   // Crea las constantes para SEO
   const previewTitle = blogDetails?.titulo
-    ? `El Paraíso Del Jamón - ${blogDetails.titulo.slice(0, 50)}...`
+    ? `Paraíso Del Jamón - ${blogDetails.titulo.slice(0, 50)}...`
     : intl.formatMessage({ id: "blog_Details_SEO_Titulo_Preview" });
 
   const previewContent = blogDetails?.contenido
@@ -95,7 +95,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
       <OrganizationJsonLd
         type="Organization"
         id={currentUrl}
-        name="El Paraíso Del Jamón"
+        name="Paraíso Del Jamón"
         url={currentUrl}
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[

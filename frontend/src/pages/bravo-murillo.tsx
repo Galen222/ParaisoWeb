@@ -83,7 +83,7 @@ const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): JSX.Element 
       <OrganizationJsonLd
         type="Organization"
         id={currentUrl}
-        name="El Paraíso Del Jamón"
+        name="Paraíso Del Jamón"
         url={currentUrl}
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
@@ -97,7 +97,7 @@ const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): JSX.Element 
       <LocalBusinessJsonLd
         type="Restaurant"
         id={currentUrl}
-        name="El Paraíso Del Jamón II"
+        name="Paraíso Del Jamón II"
         description={intl.formatMessage({ id: "bravo-murillo_SEO_Descripcion" })}
         url={currentUrl}
         telephone="+34 553 97 83"
@@ -123,9 +123,13 @@ const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): JSX.Element 
           },
         ]}
       />
-      {/* Texto descriptivo del restaurante Bravo Murillo */}
+      {/* Texto principal de la página */}
       <div>
-        <h1 className="ti-20p texto">{intl.formatMessage({ id: "bravo-murillo_Texto" })}</h1>
+        <h1>{intl.formatMessage({ id: "bravo-murillo_Titulo" })}</h1>
+      </div>
+      {/* Texto descriptivo */}
+      <div className="mt-25p">
+        <p className="ti-20p">{intl.formatMessage({ id: "bravo-murillo_Texto" })}</p>
       </div>
       {/* Sección de localización del restaurante */}
       <div className="mt-25p">

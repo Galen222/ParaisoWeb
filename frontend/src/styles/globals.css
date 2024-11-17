@@ -8,7 +8,12 @@
 /* Estilos generales para el cuerpo de la página */
 html,
 body {
+  /*font-family: "Roboto", sans-serif;
+  font-weight: normal;
+  font-style: normal; */
   font-family: "Courgette", sans-serif; /* Fuente principal de la página */
+  font-weight: normal;
+  font-style: normal;
   background-color: #f1eee3; /* Color de fondo claro */
   margin: 0; /* Elimina el margen por defecto del navegador */
   overflow-x: hidden; /* Evita el desplazamiento horizontal */
@@ -18,6 +23,14 @@ body {
   position: relative;
   box-sizing: border-box;
 }
+
+/*
+h1,h2,h3,h4,.btn {
+  font-family: "Courgette", sans-serif;
+  font-weight: normal;
+  font-style: normal;
+}
+*/
 
 /* Contenedor principal de la página */
 .pageContainer {
@@ -52,11 +65,6 @@ body {
 }
 
 /* Clases utilitarias para tamaños de fuente */
-
-.texto {
-  font-size: 18px; /* Tamaño de fuente de 18 píxeles */
-  text-align: justify !important;
-}
 
 .fs-16p {
   font-size: 16px !important; /* Fuerza el tamaño de fuente a 16 píxeles */
@@ -99,20 +107,18 @@ body {
   /* Ajustes del contenedor principal en tablet */
   .pageContainer {
     max-width: 100%; /* Ancho completo del contenedor padre */
-    font-size: 22px; /* Aumenta el tamaño de fuente a 22 píxeles */
+    font-size: 20px; /* Tamaño de fuente a 22 píxeles */
     padding: 16px; /* Reduce el padding a 16 píxeles */
-  }
-  .texto {
-    font-size: 22px; /* Aumenta el tamaño de fuente a 22 píxeles */
   }
 }
 
 /* Estilos para dispositivos móviles */
 @media (max-width: 768px) {
   /* Estilos para títulos h3 dentro del contenedor principal en móvil */
-  .pageContainer h3 {
-    font-weight: bold; /* Fuente en negrita */
+  h1,
+  h2 {
     text-align: center; /* Centra el texto */
+    font-weight: bold;
   }
 
   /* Elimina la indentación de texto en móvil */

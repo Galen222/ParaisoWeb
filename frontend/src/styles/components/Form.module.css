@@ -185,6 +185,7 @@
 /* Estilos para enlaces */
 .link {
   text-decoration: none; /* Elimina la subrayado del enlace */
+  color: #e3011a;
 }
 
 .link:hover {

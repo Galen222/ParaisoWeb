@@ -22,6 +22,7 @@
 
 .link {
   text-decoration: none;
+  color: #f1eee3;
 }
 
 .link:hover {
@@ -52,7 +53,7 @@
 @media (max-width: 768px) {
   .footer {
     position: static;
-    height: 80px;
+    height: 100px;
     padding-bottom: env(safe-area-inset-bottom);
   }
 
@@ -85,7 +86,7 @@
 
 @media (max-width: 396px) {
   .footer {
-    height: 80px;
+    height: 100px;
   }
 
   .rightsText {

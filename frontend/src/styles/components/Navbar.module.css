@@ -167,6 +167,9 @@
   justify-content: space-between; /* Distribuye el espacio entre los enlaces */
   align-items: center; /* Centra verticalmente los enlaces */
   flex-wrap: nowrap; /* Evita que los enlaces se envuelvan a la siguiente línea */
+  font-family: "Courgette", sans-serif; /* Fuente principal de la página */
+  font-weight: normal;
+  font-style: normal;
 }
 
 /* Estilo de los enlaces */

@@ -62,7 +62,7 @@ const ReservasPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
       <OrganizationJsonLd
         type="Organization"
         id={currentUrl}
-        name="El Paraíso Del Jamón"
+        name="Paraíso Del Jamón"
         url={currentUrl}
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
@@ -72,8 +72,12 @@ const ReservasPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
           },
         ]}
       />
-      {/* Contenido de la página de reservas con textos internacionalizados */}
+      {/* Texto principal de la página */}
       <div>
+        <h1>{intl.formatMessage({ id: "reservas_Titulo" })}</h1>
+      </div>
+      {/* Contenido de la página de reservas con textos internacionalizados */}
+      <div className="mt-25p">
         <p className="ti-20p">{intl.formatMessage({ id: "reservas_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "reservas_Texto2" })}</p>
       </div>

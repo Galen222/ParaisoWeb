@@ -7,6 +7,10 @@
   max-width: 50%;
   margin: auto; /* Centra el contenedor */
   padding: 20px; /* Añade un padding para dar margen */
+  color: var(--text_color); /* Color de texto */
+  line-height: 1.5; /* Altura de línea de 1.5 para mejorar la legibilidad del texto */
+  font-size: 18px; /* Tamaño de fuente de 18 píxeles */
+  text-align: justify; /* Justifica el texto dentro del contenedor */
 }
 
 /* Contenedor para el contenido de las tarjetas del blog */
@@ -88,6 +92,7 @@
   .blogContainer {
     max-width: 100%; /* Ancho completo del contenedor padre */
     padding: 16px; /* Reduce el padding a 16 píxeles */
+    font-size: 20px; /* Tamaño de fuente a 20 píxeles */
   }
   .content {
     flex-direction: column; /* Cambia la dirección a columna para apilar las tarjetas verticalmente */

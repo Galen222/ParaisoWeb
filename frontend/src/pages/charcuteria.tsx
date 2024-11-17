@@ -93,7 +93,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
   if (error) {
     return (
       <div className={errorStyles.errorContainer}>
-        <p className={errorStyles.errorText}>{error}</p>
+        <h2 className={errorStyles.errorText}>{error}</h2>
         <div className={errorStyles.imageContainer}>
           <img src={imageError} alt="Error" />
         </div>
@@ -118,7 +118,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
       <OrganizationJsonLd
         type="Organization"
         id={currentUrl}
-        name="El Paraíso Del Jamón"
+        name="Paraíso Del Jamón"
         url={currentUrl}
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
@@ -131,7 +131,12 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
       {/* Renderizado condicional del encabezado */}
       {!loadingProducts && products && (
         <div>
-          <h1 className="ti-20p texto">{intl.formatMessage({ id: "charcuteria_Texto" })}</h1>
+          <div>
+            <h1 className="text-center">{intl.formatMessage({ id: "charcuteria_Titulo" })}</h1>
+          </div>
+          <div className="mt-25p">
+            <p className="ti-20p">{intl.formatMessage({ id: "charcuteria_Texto" })}</p>
+          </div>
         </div>
       )}
       <div className={styles.content}>
@@ -152,17 +157,17 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
               <div className={styles.front}>
                 <img src={`${IMAGE_BASE_URL}${product.imagen_url}`} alt={product.nombre} className={styles.productImage} />
                 <div className={styles.textOverlay}>
-                  <p className={styles.frontProductName}>{product.nombre}</p>
-                  {product.categoria && <p className={styles.frontCategory}>{product.categoria}</p>}
+                  <h3 className={styles.frontProductName}>{product.nombre}</h3>
+                  {product.categoria && <h3 className={styles.frontCategory}>{product.categoria}</h3>}
                 </div>
               </div>
               {/* Lado posterior de la tarjeta con descripción del producto */}
               <div className={styles.back}>
                 <div>
-                  <p className={styles.backProductName}>{product.nombre}</p>
-                  {product.categoria && <p className={styles.backCategory}>{product.categoria}</p>}
+                  <h3 className={styles.backProductName}>{product.nombre}</h3>
+                  {product.categoria && <h3 className={styles.backCategory}>{product.categoria}</h3>}
                   <p className={styles.descripcion}>{product.descripcion}</p>
-                  <p className={styles.empresa}>{product.empresa}</p>
+                  <h3 className={styles.empresa}>{product.empresa}</h3>
                 </div>
               </div>
             </div>

@@ -84,7 +84,7 @@ const ArenalPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
       <OrganizationJsonLd
         type="Organization"
         id={currentUrl}
-        name="El Paraíso Del Jamón"
+        name="Paraíso Del Jamón"
         url={currentUrl}
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
@@ -98,7 +98,7 @@ const ArenalPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
       <LocalBusinessJsonLd
         type="Restaurant"
         id={currentUrl}
-        name="El Paraíso Del Jamón IV"
+        name="Paraíso Del Jamón IV"
         description={intl.formatMessage({ id: "arenal_SEO_Descripcion" })}
         url={currentUrl}
         telephone="+34 541 95 19"
@@ -124,9 +124,13 @@ const ArenalPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
           },
         ]}
       />
-      {/* Texto descriptivo del restaurante Arenal */}
+      {/* Texto principal de la página */}
       <div>
-        <h1 className="ti-20p texto">{intl.formatMessage({ id: "arenal_Texto" })}</h1>
+        <h1>{intl.formatMessage({ id: "arenal_Titulo" })}</h1>
+      </div>
+      {/* Texto descriptivo */}
+      <div className="mt-25p">
+        <p className="ti-20p">{intl.formatMessage({ id: "arenal_Texto" })}</p>
       </div>
       {/* Sección de localización del restaurante */}
       <div className="mt-25p">

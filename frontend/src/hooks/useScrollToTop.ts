@@ -49,7 +49,7 @@ const useScrollToTop = (): UseScrollToTopOutput => {
         const documentHeight = document.documentElement.scrollHeight; // Altura total del documento
 
         // Determina la altura del footer según el dispositivo
-        const footerHeight = isMobile ? 80 : 60; // 80px en móviles, 60px en tablets y escritorio
+        const footerHeight = isMobile ? 100 : 60; // 90px en móviles, 60px en tablets y escritorio
 
         const distanceToStickAboveFooter = 20; // Distancia del botón al footer
         const scrollTrigger = 400; // Punto de desplazamiento donde aparece el botón

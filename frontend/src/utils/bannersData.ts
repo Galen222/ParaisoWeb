@@ -34,9 +34,9 @@ export const getBannerContent = (intl: IntlShape) => ({
     buttons: "One",
   },
   nosotros: {
-    text: intl.formatMessage({ id: "banner_About_Texto1" }),
-    highlightText: intl.formatMessage({ id: "banner_About_Texto2" }),
-    links: [{ href: "/about", text: intl.formatMessage({ id: "banner_About_Texto3" }) }],
+    text: intl.formatMessage({ id: "banner_Nosotros_Texto1" }),
+    highlightText: intl.formatMessage({ id: "banner_Nosotros_Texto2" }),
+    links: [{ href: "/Nosotros", text: intl.formatMessage({ id: "banner_Nosotros_Texto3" }) }],
     reverse: true,
     reverseMobile: true,
     size: "Small",

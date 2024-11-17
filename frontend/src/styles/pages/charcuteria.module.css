@@ -9,6 +9,8 @@
   padding: 20px; /* Añade un padding para dar margen */
   background-attachment: fixed; /* Fija la imagen de fondo al viewport para efecto parallax */
   overflow: hidden; /* Elimina cualquier desplazamiento adicional */
+  font-size: 18px; /* Tamaño de fuente de 18 píxeles */
+  text-align: justify; /* Justifica el texto dentro del contenedor */
 }
 
 /* Contenedor para las tarjetas del contenido usando Grid */
@@ -252,6 +254,7 @@
   .charcuteriaContainer {
     max-width: 100%; /* Ajusta el ancho al 100% */
     padding: 16px; /* Padding reducido */
+    font-size: 20px; /* Tamaño de fuente a 20 píxeles */
   }
 
   .content {
