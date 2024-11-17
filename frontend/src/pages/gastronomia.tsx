@@ -9,7 +9,7 @@ import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import { useDownloadFile } from "../hooks/useDownloadFile";
 import ScrollToTopButton from "../components/ScrollToTopButton";
-import getSEOConfig from "../next-seo.config"; // Importa la configuración de SEO
+import getSEOConfig from "../config/next-seo.config"; // Importa la configuración de SEO
 import useCurrentUrl from "../hooks/useCurrentUrl";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Función de redirección basada en cookies
 import styles from "../styles/pages/gastronomia.module.css"; // Importa los estilos específicos de la página

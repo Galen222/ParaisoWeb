@@ -7,7 +7,7 @@ import { useIntl } from "react-intl"; // Hook de internacionalización
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking"; // Hook de seguimiento de visitas
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA"; // Hook de seguimiento de visitas para Google Analytics
 import { NextSeo, OrganizationJsonLd } from "next-seo"; // Componente para la configuración de SEO
-import getSEOConfig from "../next-seo.config";
+import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import useCurrentUrl from "../hooks/useCurrentUrl";
 // Importa los mensajes de traducción

@@ -11,7 +11,7 @@ import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import { NextSeo, OrganizationJsonLd } from "next-seo"; // Importa NextSeo para la gestión de SEO
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import styles from "../styles/pages/aviso-legal.module.css";
-import getSEOConfig from "../next-seo.config";
+import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
 // Importa los mensajes de traducción
 import esMessages from "../locales/es/common.json";

@@ -9,7 +9,7 @@ import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Función de redirección basada en cookies
 import styles from "../styles/pages/politica-privacidad.module.css";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
-import getSEOConfig from "../next-seo.config";
+import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
 // Importa los mensajes de traducción
 import esMessages from "../locales/es/common.json";

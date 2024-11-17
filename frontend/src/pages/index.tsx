@@ -9,7 +9,7 @@ import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
-import getSEOConfig from "../next-seo.config";
+import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import useCurrentUrl from "../hooks/useCurrentUrl";
 // Importa los mensajes de traducción

@@ -25,7 +25,7 @@ import Cookie from "../components/Cookie";
 import { useCookieLogic } from "../hooks/useCookieLogic";
 import { useMapLocale } from "../hooks/useMapLocale";
 import { DefaultSeo } from "next-seo";
-import getSEOConfig from "../next-seo.config";
+import getSEOConfig from "../config/next-seo.config";
 import useLocaleFormatted from "../hooks/useLocaleFormatted";
 
 // Importa los mensajes de traducción de forma estática

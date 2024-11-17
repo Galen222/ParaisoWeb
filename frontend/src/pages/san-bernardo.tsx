@@ -10,7 +10,7 @@ import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import { NextSeo, LocalBusinessJsonLd, OrganizationJsonLd } from "next-seo"; // Importa NextSeo para la gestión de SEO
-import getSEOConfig from "../next-seo.config";
+import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import { useMapLocale } from "../hooks/useMapLocale"; // Hook para obtener el locale del mapa
 import useCurrentUrl from "../hooks/useCurrentUrl";

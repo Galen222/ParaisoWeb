@@ -11,7 +11,7 @@ import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
-import getSEOConfig from "../next-seo.config";
+import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
 import styles from "../styles/pages/contacto.module.css";
 // Importa los mensajes de traducción

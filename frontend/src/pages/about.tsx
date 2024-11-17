@@ -9,7 +9,7 @@ import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import styles from "../styles/pages/about.module.css"; // Importa los estilos específicos para la página About
 import { NextSeo, OrganizationJsonLd } from "next-seo"; // Importa NextSeo para la gestión de SEO
-import getSEOConfig from "../next-seo.config";
+import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import useCurrentUrl from "../hooks/useCurrentUrl";
 // Importa los mensajes de traducción

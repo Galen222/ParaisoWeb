@@ -11,7 +11,7 @@ import styles from "../styles/pages/blog.module.css";
 import { useIntl } from "react-intl"; // Hook para internacionalización
 import { NextSeo, OrganizationJsonLd } from "next-seo"; // Importa NextSeo para configuraciones de SEO
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
-import getSEOConfig from "../next-seo.config";
+import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
 // Importa los mensajes de traducción
 import esMessages from "../locales/es/common.json";

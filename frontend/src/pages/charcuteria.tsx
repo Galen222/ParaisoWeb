@@ -11,7 +11,7 @@ import ScrollToTopButton from "../components/ScrollToTopButton";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/charcuteria.module.css";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
-import getSEOConfig from "../next-seo.config";
+import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import useCurrentUrl from "../hooks/useCurrentUrl";
 // Importa los mensajes de traducción
