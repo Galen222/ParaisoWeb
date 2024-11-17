@@ -76,17 +76,17 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.paraisodeljamon.com/about</loc>
+    <loc>https://www.paraisodeljamon.com/nosotros</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.paraisodeljamon.com/en/about</loc>
+    <loc>https://www.paraisodeljamon.com/en/nosotros</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.paraisodeljamon.com/de/about</loc>
+    <loc>https://www.paraisodeljamon.com/de/nosotros</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
