@@ -3,7 +3,6 @@
 """
 Módulo de modelos de la base de datos.
 Define las estructuras de las tablas 'charcuteria' y 'blog' utilizando SQLAlchemy ORM.
-Las tablas varían según el entorno (producción o local).
 """
 
 from sqlalchemy import Column, Integer, String, Text, DateTime, func, PrimaryKeyConstraint
