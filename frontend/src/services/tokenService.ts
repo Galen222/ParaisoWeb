@@ -13,7 +13,7 @@ import axios from "axios";
  * @throws {Error} - Si falla la obtención del token.
  */
 export const getTimedToken = async (): Promise<string> => {
-  const API_URL = process.env.NEXT_PUBLIC_API_URL; // Asegúrate de que esta variable esté definida
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
   if (!API_URL) {
     throw new Error("La variable de entorno NEXT_PUBLIC_API_URL no está definida.");
   }

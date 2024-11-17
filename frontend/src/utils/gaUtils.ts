@@ -1,6 +1,5 @@
 // utils/gaUtils.ts
 
-import { useState } from "react";
 import ReactGA from "react-ga4";
 
 /**

@@ -1,5 +1,3 @@
-// pages/blog.tsx
-
 import React from "react";
 import Link from "next/link";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
@@ -84,9 +82,11 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
           },
         ]}
       />
-      <div>
-        <h1 className="ti-20p texto">{intl.formatMessage({ id: "blog_Texto" })}</h1>
-      </div>
+      {!loadingBlog && !error && (
+        <div>
+          <h1 className="ti-20p texto">{intl.formatMessage({ id: "blog_Texto" })}</h1>
+        </div>
+      )}
       <div className={styles.content}>
         {loadingBlog && (
           // Muestra el Loader mientras se cargan las publicaciones del blog
