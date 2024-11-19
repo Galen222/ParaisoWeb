@@ -1,3 +1,5 @@
+# backend/routers/charcuteria.py
+
 """
 Router para manejar los productos de charcutería.
 """
@@ -5,7 +7,9 @@ Router para manejar los productos de charcutería.
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.exc import OperationalError
 from typing import List
+import traceback
 
 from ..models import models, schemas
 from ..dependencies import get_db, verify_token  # Importa la dependencia
@@ -33,7 +37,7 @@ async def get_charcuteria_products(
         List[schemas.Charcuteria]: Lista de productos de charcutería.
     """
     try:
-        # Consulta SQL modificada para ordenar por categoría y luego por nombre alfabéticamente
+        # Consulta SQL para ordenar por categoría y luego por nombre alfabéticamente
         result = await db.execute(
             select(models.Charcuteria)
             .where(models.Charcuteria.idioma == idioma)
@@ -41,5 +45,9 @@ async def get_charcuteria_products(
         )
         products = result.scalars().all()
         return products
+    except OperationalError as e:
+        # print(f"OperationalError en get_charcuteria_products: {e}")
+        raise HTTPException(status_code=500, detail="Error de conexión con la base de datos")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        # print("Excepción en get_charcuteria_products:", traceback.format_exc())
+        raise HTTPException(status_code=500, detail="Error interno del servidor")

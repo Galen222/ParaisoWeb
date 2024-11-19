@@ -25,8 +25,15 @@ def generate_timed_token() -> str:
     interval = int(time.time()) // TOKEN_INTERVAL_SECONDS
     message = f"{interval}".encode()
     key = SECRET_KEY.encode()
-    token = hmac.new(key, message, hashlib.sha256).digest()
-    return base64.urlsafe_b64encode(token).decode()
+    token_bytes = hmac.new(key, message, hashlib.sha256).digest()
+    token_encoded = base64.urlsafe_b64encode(token_bytes).decode()
+    # Añadimos print para depurar
+    # print(f"[generate_timed_token] interval: {interval}")
+    # print(f"[generate_timed_token] message: {message}")
+    # print(f"[generate_timed_token] key: {key}")
+    # print(f"[generate_timed_token] token (bytes): {token_bytes}")
+    # print(f"[generate_timed_token] token (encoded): {token_encoded}")
+    return token_encoded
 
 def verify_timed_token(token: str) -> bool:
     """
@@ -41,11 +48,19 @@ def verify_timed_token(token: str) -> bool:
     """
     current_interval = int(time.time()) // TOKEN_INTERVAL_SECONDS
     key = SECRET_KEY.encode()
+    # print(f"[verify_timed_token] current_interval: {current_interval}")
+    # print(f"[verify_timed_token] key: {key}")
+    # print(f"[verify_timed_token] token proporcionado: {token}")
 
     # Verificar el token para el intervalo actual y el anterior
     for interval in [current_interval, current_interval - 1]:
         message = f"{interval}".encode()
-        expected_token = base64.urlsafe_b64encode(hmac.new(key, message, hashlib.sha256).digest()).decode()
+        expected_token_bytes = hmac.new(key, message, hashlib.sha256).digest()
+        expected_token = base64.urlsafe_b64encode(expected_token_bytes).decode()
+        # print(f"[verify_timed_token] Verificando intervalo: {interval}")
+        # print(f"[verify_timed_token] expected_token: {expected_token}")
         if hmac.compare_digest(token, expected_token):
+            # print("[verify_timed_token] Token válido.")
             return True
+    # print("[verify_timed_token] Token inválido.")
     return False

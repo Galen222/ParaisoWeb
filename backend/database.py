@@ -12,14 +12,20 @@ from backend.core.config import settings  # Importa la configuración de setting
 # URL de la base de datos obtenida desde la configuración
 DATABASE_URL = settings.DATABASE_URL
 
-# Crea el motor asíncrono de SQLAlchemy
-# `echo=True` habilita el registro de todas las consultas SQL para propósitos de depuración
-# `future=True` habilita las características futuras de SQLAlchemy
-engine = create_async_engine(DATABASE_URL, echo=True, future=True)
+# Crea el motor asíncrono de SQLAlchemy con opciones para manejar conexiones caducadas
+engine = create_async_engine(
+    DATABASE_URL,
+    echo=True,        # Habilita el registro de todas las consultas SQL para depuración
+    future=True,      # Habilita características futuras de SQLAlchemy
+    pool_pre_ping=True,   # Verifica la conexión antes de usarla
+    pool_recycle=3600     # Recicla conexiones cada 1 hora (3600 segundos)
+)
 
 # Crea la fábrica de sesiones asíncronas
 # `expire_on_commit=False` evita que los objetos se marquen como expirados después de cada commit
 # `class_=AsyncSession` especifica el uso de sesiones asíncronas
 async_session = sessionmaker(
-    engine, expire_on_commit=False, class_=AsyncSession
+    engine,
+    expire_on_commit=False,  # Evita que los objetos expiren después de cada commit
+    class_=AsyncSession      # Especifica el uso de sesiones asíncronas
 )
