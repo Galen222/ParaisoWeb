@@ -15,7 +15,7 @@ from .routers import contacto, charcuteria, blog, token
 app = FastAPI(
     title="ParaisoWeb Backend",
     description="Gestionar el envío de formularios, base de datos de charcutería y blogs y tokens API temporales.",
-    version="0.9.9"
+    version="0.9.99"
 )
 
 # -----------------------------

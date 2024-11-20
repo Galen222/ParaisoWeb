@@ -5,8 +5,9 @@ Módulo de configuración para la aplicación backend.
 Gestiona la carga y validación de las variables de entorno necesarias para la aplicación.
 """
 
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 from pathlib import Path
+
 
 class Settings(BaseSettings):
     """
@@ -18,17 +19,13 @@ class Settings(BaseSettings):
     SMTP_USERNAME: str      # Nombre de usuario para autenticarse en el servidor SMTP.
     SMTP_PASSWORD: str      # Contraseña para autenticarse en el servidor SMTP.
     DATABASE_URL: str       # URL de conexión a la base de datos.
+    secret_key: str         # Clave secreta para la aplicación.
+    token_interval_seconds: int  # Intervalo de tiempo para tokens.
 
-    class Config:
-        """
-        Clase interna para configurar `BaseSettings`.
-        Especifica la ubicación del archivo de variables de entorno a cargar.
-        """
-        # Define la ruta al archivo `.env` ubicado en el directorio raíz del proyecto.
-        # `Path(__file__)` obtiene la ruta del archivo actual (`config.py`),
-        # `.resolve().parent.parent` sube dos niveles en la jerarquía de directorios.
-        # Finalmente, `str(...)` convierte el objeto Path a una cadena de texto.
-        env_file = str(Path(__file__).resolve().parent.parent / ".env")  # Sube un nivel
+    model_config = {
+        "from_attributes": True,
+        "env_file": str(Path(__file__).resolve().parent.parent / ".env")
+    }
 
 # -----------------------------
 # Instancia de configuración

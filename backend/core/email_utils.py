@@ -1,3 +1,5 @@
+# backend/core/email_utils.py
+
 """
 Módulo de utilidades para el envío de correos electrónicos.
 Utiliza `aiosmtplib` para enviar correos de manera asíncrona.

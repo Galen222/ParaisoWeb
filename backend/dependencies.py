@@ -5,7 +5,7 @@ Módulo de dependencias para FastAPI.
 Incluye funciones para manejar la sesión de la base de datos y la verificación de tokens temporales.
 """
 
-from fastapi import Header, HTTPException, status
+from fastapi import Header, HTTPException, status, Depends
 from .database import async_session
 from .core.auth_utils import verify_timed_token
 

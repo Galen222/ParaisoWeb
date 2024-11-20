@@ -1,3 +1,5 @@
+# backend/routers/blog.py
+
 """
 Router para manejar las publicaciones del blog.
 """

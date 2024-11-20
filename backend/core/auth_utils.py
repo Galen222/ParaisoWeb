@@ -8,12 +8,7 @@ import time
 import hmac
 import hashlib
 import base64
-import os
-from typing import Optional
-
-# Cargar variables de entorno
-SECRET_KEY = os.getenv("SECRET_KEY", "clave_secreta_predeterminada")
-TOKEN_INTERVAL_SECONDS = int(os.getenv("TOKEN_INTERVAL_SECONDS", "300"))  # 5 minutos por defecto
+from .config import settings
 
 def generate_timed_token() -> str:
     """
@@ -22,9 +17,9 @@ def generate_timed_token() -> str:
     Returns:
         str: Token temporal codificado en base64.
     """
-    interval = int(time.time()) // TOKEN_INTERVAL_SECONDS
+    interval = int(time.time()) // settings.token_interval_seconds
     message = f"{interval}".encode()
-    key = SECRET_KEY.encode()
+    key = settings.secret_key.encode()
     token_bytes = hmac.new(key, message, hashlib.sha256).digest()
     token_encoded = base64.urlsafe_b64encode(token_bytes).decode()
     # Añadimos print para depurar
@@ -46,21 +41,13 @@ def verify_timed_token(token: str) -> bool:
     Returns:
         bool: True si el token es válido, False de lo contrario.
     """
-    current_interval = int(time.time()) // TOKEN_INTERVAL_SECONDS
-    key = SECRET_KEY.encode()
-    # print(f"[verify_timed_token] current_interval: {current_interval}")
-    # print(f"[verify_timed_token] key: {key}")
-    # print(f"[verify_timed_token] token proporcionado: {token}")
+    current_interval = int(time.time()) // settings.token_interval_seconds
+    key = settings.secret_key.encode()
 
-    # Verificar el token para el intervalo actual y el anterior
     for interval in [current_interval, current_interval - 1]:
         message = f"{interval}".encode()
         expected_token_bytes = hmac.new(key, message, hashlib.sha256).digest()
         expected_token = base64.urlsafe_b64encode(expected_token_bytes).decode()
-        # print(f"[verify_timed_token] Verificando intervalo: {interval}")
-        # print(f"[verify_timed_token] expected_token: {expected_token}")
         if hmac.compare_digest(token, expected_token):
-            # print("[verify_timed_token] Token válido.")
             return True
-    # print("[verify_timed_token] Token inválido.")
     return False

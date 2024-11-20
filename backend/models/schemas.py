@@ -1,4 +1,4 @@
-# app/models/schemas.py
+# backend/models/schemas.py
 
 """
 Módulo de esquemas de Pydantic para la validación y serialización de datos.
@@ -74,11 +74,7 @@ class Charcuteria(CharcuteriaBase):
     id_producto: int       # Identificador único del producto.
     fecha: datetime        # Fecha de creación del registro.
 
-    class Config:
-        """
-        Configuración del esquema.
-        """
-        orm_mode = True    # Permite la conversión desde objetos ORM a esquemas Pydantic.
+    model_config = {"from_attributes": True}
 
 
 # -----------------------------
@@ -111,12 +107,8 @@ class Blog(BlogBase):
     Esquema para representar los datos de una publicación de blog.
     Incluye campos adicionales que se generan automáticamente.
     """
-    id_noticia: int           # Identificador único de la noticia.
-    fecha_publicacion: datetime   # Fecha de publicación de la noticia.
-    fecha_actualizacion: datetime # Fecha de última actualización de la noticia.
+    id_noticia: int                 # Identificador único de la noticia.
+    fecha_publicacion: datetime     # Fecha de publicación de la noticia.
+    fecha_actualizacion: datetime   # Fecha de última actualización de la noticia.
 
-    class Config:
-        """
-        Configuración del esquema.
-        """
-        orm_mode = True    # Permite la conversión desde objetos ORM a esquemas Pydantic.
+    model_config = {"from_attributes": True}
