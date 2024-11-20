@@ -55,12 +55,16 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
   };
 
   /**
-   * Valida el nombre ingresado permitiendo solo letras y espacios.
+   * Valida el nombre ingresado permitiendo letras en cualquier idioma, espacios, guiones y apóstrofes.
    * @param {ChangeEvent<HTMLInputElement>} e - Evento de cambio en el campo de nombre.
    */
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    if (/^[a-zA-ZäöüÄÖÜß\s]*$/.test(value)) {
+
+    // Expresión regular que permite letras en cualquier idioma, espacios, guiones y apóstrofes
+    const nameRegex = /^[\p{L}\s'-]*$/u;
+
+    if (nameRegex.test(value)) {
       setFormData({ ...formData, [name]: value });
     }
   };
