@@ -26,7 +26,8 @@ class ContactForm(BaseModel):
     def validate_name(cls, v: str) -> str:
         """
         Validador para el campo 'name'.
-        Asegura que el nombre solo contenga letras y espacios.
+        Permite caracteres alfabéticos, espacios, guiones y apóstrofes,
+        asegurando compatibilidad con nombres en múltiples idiomas.
 
         Args:
             v (str): Valor del campo 'name' a validar.
@@ -37,9 +38,13 @@ class ContactForm(BaseModel):
         Returns:
             str: Valor validado del campo 'name'.
         """
-        if not all(char.isalpha() or char.isspace() for char in v):
-            raise ValueError('El nombre solo debe contener letras y espacios')
-        return v
+        # Permitir letras, espacios, guiones y apóstrofes en cualquier idioma
+        valid_characters = set(" -'")  # Espacios, guiones y apóstrofes permitidos
+        if not all(char.isalpha() or char in valid_characters for char in v):
+            raise ValueError(
+                "El nombre solo puede contener letras, espacios, guiones (-) y apóstrofes (')."
+            )
+        return v.strip()
 
     @field_validator('reason')
     def validate_reason(cls, v: str) -> str:
