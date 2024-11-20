@@ -1,4 +1,4 @@
-# backend/core/email_utils.py
+# backend/core/email_utils.py 
 
 """
 Módulo de utilidades para el envío de correos electrónicos.
@@ -45,7 +45,15 @@ async def send_contacto_email(
     else:
         msg['To'] = 'info@paraisodeljamon.com'   # Destinatario por defecto
 
-    msg.set_content(f"Motivo: {reason}\n\nMensaje:\n{message}")  # Contenido del correo
+    # Construcción del contenido del correo incluyendo todos los campos
+    contenido = (
+        f"Este es un correo electronico envíado desde el sitio web por el formulario de contacto\n\n"
+        f"Nombre: {name}\n\n"
+        f"Correo Electrónico: {email}\n\n"
+        f"Motivo: {reason}\n\n"
+        f"Mensaje:n{message}"
+    )
+    msg.set_content(contenido)  # Contenido del correo
 
     # Si se adjunta un archivo, se añade al correo
     if file:

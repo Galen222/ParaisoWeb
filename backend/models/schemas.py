@@ -5,7 +5,7 @@ Módulo de esquemas de Pydantic para la validación y serialización de datos.
 Define los esquemas utilizados para la validación de entradas y la respuesta de la API.
 """
 
-from pydantic import BaseModel, EmailStr, validator
+from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional
 from datetime import datetime
 
@@ -22,23 +22,43 @@ class ContactForm(BaseModel):
     email: EmailStr      # Correo electrónico del remitente, validado como un EmailStr.
     message: str         # Mensaje enviado en el formulario.
 
-    @validator('name')
-    def name_validator(cls, v):
+    @field_validator('name')
+    def validate_name(cls, v: str) -> str:
         """
         Validador para el campo 'name'.
         Asegura que el nombre solo contenga letras y espacios.
-        
+
         Args:
             v (str): Valor del campo 'name' a validar.
-        
+
         Raises:
             ValueError: Si el nombre contiene caracteres no permitidos.
-        
+
         Returns:
             str: Valor validado del campo 'name'.
         """
         if not all(char.isalpha() or char.isspace() for char in v):
             raise ValueError('El nombre solo debe contener letras y espacios')
+        return v
+
+    @field_validator('reason')
+    def validate_reason(cls, v: str) -> str:
+        """
+        Validador para el campo 'reason'.
+        Asegura que el motivo esté dentro de los motivos permitidos.
+
+        Args:
+            v (str): Valor del campo 'reason' a validar.
+
+        Raises:
+            ValueError: Si el motivo no está en la lista permitida.
+
+        Returns:
+            str: Valor validado del campo 'reason'.
+        """
+        motivos_validos = {"informacion", "comercial", "factura", "curriculum", "error", "otro"}
+        if v not in motivos_validos:
+            raise ValueError(f"El motivo debe ser uno de: {', '.join(motivos_validos)}")
         return v
 
 
