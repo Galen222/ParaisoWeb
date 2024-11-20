@@ -1,8 +1,8 @@
 // pages/blog/[slug].tsx
 
-import React from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
-import type { NextPage, GetServerSideProps } from "next";
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import ShareLink from "../../components/ShareLink";
 import ScrollToTopButton from "../../components/ScrollToTopButton";
 import ReactMarkdown from "react-markdown";
@@ -21,6 +21,7 @@ import enMessages from "../../locales/en/common.json";
 import deMessages from "../../locales/de/common.json";
 import { BlogPost, getBlogPostBySlug, getBlogPostById } from "../../services/blogService";
 import { getTimedToken } from "../../services/tokenService";
+
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {
   es: esMessages,
@@ -29,14 +30,14 @@ const messages: Record<string, Record<string, string>> = {
 };
 
 /**
- * Tipo de componente para `BlogDetailsPage` que incluye una propiedad opcional `pageTitleText`.
+ * Tipo de componente para BlogDetailsPage que incluye una propiedad opcional pageTitleText.
  */
 export type BlogDetailsPageComponent = NextPage & { pageTitleText?: string };
 
 const IMAGE_BASE_URL = "/images/blog/";
 
 /**
- * Props para el componente `BlogDetailsPage`.
+ * Props para el componente BlogDetailsPage.
  * @property {BlogPost | null} blogDetails - Contiene los detalles del artículo del blog.
  * @property {string | null} error - Mensaje de error si no se puede cargar el artículo del blog.
  */
@@ -53,6 +54,9 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
   const currentUrl = useCurrentUrl();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
 
+  // Estado para manejar la animación del botón de volver atrás
+  const [isPushingBack, setIsPushingBack] = useState(false);
+
   // Seguimiento de la visita a la página de detalles del blog para análisis interno y Google Analytics
   useVisitedPageTracking("blog-noticia");
   useVisitedPageTrackingGA("blog-noticia");
@@ -62,6 +66,15 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
 
   // Ruta de la imagen de error
   const imageError = "/images/web/error.png";
+
+  /**
+   * Función para manejar la navegación de regreso al blog.
+   * Añade una animación antes de navegar.
+   */
+  const handleBack = () => {
+    setIsPushingBack(true);
+    router.push("/blog");
+  };
 
   // Crea las constantes para SEO
   const previewTitle = blogDetails?.titulo
@@ -119,8 +132,12 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
               {intl.formatMessage({ id: "blog_Details_Publicado" })} {new Date(blogDetails.fecha_publicacion).toLocaleDateString()}
               {/* Verifica si la fecha de actualización es diferente a la de publicación */}
               {blogDetails.fecha_actualizacion &&
-                new Date(blogDetails.fecha_actualizacion).toLocaleDateString() !== new Date(blogDetails.fecha_publicacion).toLocaleDateString() &&
-                ` | ${intl.formatMessage({ id: "blog_Details_Actualizado" })} ${new Date(blogDetails.fecha_actualizacion).toLocaleDateString()}`}
+                new Date(blogDetails.fecha_actualizacion).toLocaleDateString() !== new Date(blogDetails.fecha_publicacion).toLocaleDateString() && (
+                  <>
+                    {" "}
+                    | {intl.formatMessage({ id: "blog_Details_Actualizado" })} {new Date(blogDetails.fecha_actualizacion).toLocaleDateString()}
+                  </>
+                )}
             </p>
           </div>
           <div className="mt-25p">
@@ -145,6 +162,16 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
           <div>
             <ShareLink url={currentUrl} title={blogDetails.titulo} />
           </div>
+          {/* Botón de Volver Atrás */}
+          <div className="text-center mt-25p">
+            <button
+              className={`btn btn-outline-secondary mx-auto ${styles.backButton} ${isPushingBack ? "animate-push" : ""}`}
+              onAnimationEnd={() => setIsPushingBack(false)}
+              onClick={handleBack}
+            >
+              {intl.formatMessage({ id: "blog_Details_Boton" })}
+            </button>
+          </div>
           {/* Muestra el botón solo si no hay error */}
           {!error && <ScrollToTopButton />}
         </div>
@@ -156,6 +183,16 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
           <div className={errorStyles.imageContainer}>
             <img src={imageError} alt="Error" />
           </div>
+          {/* Botón de Volver Atrás en caso de error */}
+          <div className="text-center mt-25p">
+            <button
+              className={`btn btn-outline-secondary mx-auto ${styles.backButton} ${isPushingBack ? "animate-push" : ""}`}
+              onAnimationEnd={() => setIsPushingBack(false)}
+              onClick={handleBack}
+            >
+              {intl.formatMessage({ id: "blog_Details_Boton" })}
+            </button>
+          </div>
         </div>
       )}
     </div>
@@ -166,12 +203,14 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
 BlogDetailsPage.pageTitleText = "blog";
 
 /**
- * Función `getServerSideProps` para obtener los datos del artículo antes de renderizar la página.
+ * Función getServerSideProps para obtener los datos del artículo antes de renderizar la página.
  *
  * @param {GetServerSidePropsContext} context - Contexto de Next.js que contiene información de la solicitud.
  * @returns {Promise<GetServerSidePropsResult<BlogDetailsPageProps>>} Props con los datos del artículo o error.
  */
-export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = async (context) => {
+export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = async (
+  context: GetServerSidePropsContext
+): Promise<GetServerSidePropsResult<BlogDetailsPageProps>> => {
   const { slug } = context.params!;
   const locale = context.locale || "es";
 
