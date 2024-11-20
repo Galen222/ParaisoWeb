@@ -64,6 +64,16 @@ async def send_contacto_email(
     else:
         msg['To'] = 'info@paraisodeljamon.com'
 
+    # Generar el contenido alternativo en texto plano
+    contenido = (
+        f"Este es un correo electrónico enviado desde el sitio web por el formulario de contacto.\n\n"
+        f"Nombre: {name}\n\n"
+        f"Correo Electrónico: {email}\n\n"
+        f"Motivo: {reason}\n\n"
+        f"Mensaje:\n{message}"
+    )
+    msg.set_content(contenido)
+
     # Generar el contenido del correo en formato HTML
     html_content = contacto_email_template(name, email, reason, message)
     msg.add_alternative(html_content, subtype="html")  # Adjuntar contenido HTML

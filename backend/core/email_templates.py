@@ -57,8 +57,16 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                 padding: 20px;
                 text-align: center;
             }}
-            .header img {{
+            .logo-image {{
                 max-width: 150px;
+                height: auto;
+                margin: 0 auto;
+            }}
+            /* Ocultar imagen estándar solo en Outlook */
+            @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {{
+                .logo-image {{
+                    display: none !important;
+                }}
             }}
             .content {{
                 padding: 20px;
@@ -78,7 +86,22 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
     <body>
         <div class="email-container">
             <div class="header">
-                <img src="https://galenn.asuscomm.com/images/navbar/imagenLogo.png" alt="Logo">
+                <!--[if mso]>
+                <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td align="center" style="padding: 0;">
+                            <v:rect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" 
+                                style="height:89pt; width:150pt;" strokecolor="none">
+                                <v:fill type="frame" src="https://galenn.asuscomm.com/images/navbar/imagenLogo.png" />
+                                <w:wrap type="none"/>
+                            </v:rect>
+                        </td>
+                    </tr>
+                </table>
+                <![endif]-->
+                <!--[if !mso]><!-->
+                <img class="logo-image" src="https://galenn.asuscomm.com/images/navbar/imagenLogo.png" alt="Logo">
+                <!--<![endif]-->
             </div>
             <div class="content">
                 <h2>Nuevo mensaje</h2>
@@ -95,3 +118,4 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
     </body>
     </html>
     """
+    
