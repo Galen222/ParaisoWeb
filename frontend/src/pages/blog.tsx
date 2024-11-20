@@ -87,7 +87,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
 
       {error ? (
         <div className={errorStyles.errorContainer}>
-          <h2 className={errorStyles.errorText}>{intl.formatMessage({ id: "blog_Error" })}</h2>
+          <h3 className={errorStyles.errorText}>{intl.formatMessage({ id: "blog_Error" })}</h3>
           <div className={errorStyles.imageContainer}>
             <img src={imageError} alt="Error" />
           </div>

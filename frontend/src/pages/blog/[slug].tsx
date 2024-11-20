@@ -1,5 +1,3 @@
-// pages/blog/[slug].tsx
-
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
@@ -15,12 +13,18 @@ import styles from "../../styles/pages/slug.module.css";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
 import getSEOConfig from "../../config/next-seo.config";
 import useCurrentUrl from "../../hooks/useCurrentUrl";
-// Importa los mensajes de traducción
+
+// Mensajes de traducción
 import esMessages from "../../locales/es/common.json";
 import enMessages from "../../locales/en/common.json";
 import deMessages from "../../locales/de/common.json";
-import { BlogPost, getBlogPostBySlug, getBlogPostById } from "../../services/blogService";
-import { getTimedToken } from "../../services/tokenService";
+
+// Servicios
+import { BlogPost } from "../../services/blogService";
+
+// Funciones reutilizables
+import { redirectByCookieSlug } from "../../utils/redirectByCookieSlug";
+import { loadBlogData } from "../../services/blogLoader";
 
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {
@@ -29,54 +33,58 @@ const messages: Record<string, Record<string, string>> = {
   de: deMessages,
 };
 
-/**
- * Tipo de componente para BlogDetailsPage que incluye una propiedad opcional pageTitleText.
- */
-export type BlogDetailsPageComponent = NextPage & { pageTitleText?: string };
-
+// Base URL para las imágenes del blog
 const IMAGE_BASE_URL = "/images/blog/";
 
 /**
  * Props para el componente BlogDetailsPage.
- * @property {BlogPost | null} blogDetails - Contiene los detalles del artículo del blog.
- * @property {string | null} error - Mensaje de error si no se puede cargar el artículo del blog.
+ * @typedef {Object} BlogDetailsPageProps
+ * @property {BlogPost | null} blogDetails - Detalles de la publicación del blog.
+ * @property {string | null} error - Mensaje de error, si ocurre.
  */
 export interface BlogDetailsPageProps {
   blogDetails: BlogPost | null;
   error: string | null;
 }
 
+/**
+ * Componente para mostrar los detalles de un artículo del blog.
+ *
+ * @component
+ * @param {BlogDetailsPageProps} props - Props para el componente.
+ * @returns {JSX.Element} JSX renderizado.
+ */
 const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string } = ({ blogDetails, error }) => {
-  const intl = useIntl();
-  const router = useRouter();
-  const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
-  const currentMessages = messages[currentLocale] || messages["es"];
-  const currentUrl = useCurrentUrl();
+  const intl = useIntl(); // Hook de internacionalización
+  const router = useRouter(); // Hook para manejar la navegación
+  const currentLocale = intl.locale || "es"; // Idioma actual con fallback a "es"
+  const currentMessages = messages[currentLocale] || messages["es"]; // Mensajes en el idioma actual
+  const currentUrl = useCurrentUrl(); // URL actual
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
 
   // Estado para manejar la animación del botón de volver atrás
   const [isPushingBack, setIsPushingBack] = useState(false);
 
-  // Seguimiento de la visita a la página de detalles del blog para análisis interno y Google Analytics
+  // Rastreo de visitas a la página
   useVisitedPageTracking("blog-noticia");
   useVisitedPageTrackingGA("blog-noticia");
 
   // Maneja cambios de idioma basados en los detalles del blog
   useHandleLanguageChange(blogDetails);
 
-  // Ruta de la imagen de error
+  // Imagen predeterminada para errores
   const imageError = "/images/web/error.png";
 
   /**
    * Función para manejar la navegación de regreso al blog.
-   * Añade una animación antes de navegar.
+   * Inicia una animación antes de redirigir al usuario.
    */
   const handleBack = () => {
     setIsPushingBack(true);
     router.push("/blog");
   };
 
-  // Crea las constantes para SEO
+  // Título y descripción para SEO
   const previewTitle = blogDetails?.titulo
     ? `Paraíso Del Jamón - ${blogDetails.titulo.slice(0, 50)}...`
     : intl.formatMessage({ id: "blog_Details_SEO_Titulo_Preview" });
@@ -86,8 +94,8 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
     : intl.formatMessage({ id: "blog_Details_SEO_Contenido_Preview" });
 
   return (
-    <div className={styles.blogDetailsContainer}>
-      {/* Configuración de SEO específica de la página */}
+    <>
+      {/* Configuración de SEO */}
       <NextSeo
         {...getSEOConfig(currentLocale, currentMessages)}
         title={previewTitle}
@@ -96,12 +104,14 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
           title: previewTitle,
           description: previewContent,
           url: currentUrl,
-          images: [
-            {
-              url: `${IMAGE_BASE_URL}${blogDetails?.imagen_url}`,
-              alt: previewTitle,
-            },
-          ],
+          images: blogDetails?.imagen_url
+            ? [
+                {
+                  url: `${IMAGE_BASE_URL}${blogDetails.imagen_url}`,
+                  alt: previewTitle,
+                },
+              ]
+            : [],
         }}
       />
       {/* JSON-LD para Organización */}
@@ -118,144 +128,113 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
           },
         ]}
       />
-      {/* Renderiza el contenido del blog si está disponible */}
-      {blogDetails && (
-        <div>
-          <div className="mt-25p">
-            <h1 className={styles.blogTitle}>{blogDetails.titulo}</h1>
-          </div>
-          <div className="mt-25p">
-            <p className={styles.blogAuthor}>
-              {intl.formatMessage({ id: "blog_Details_Autor" })} {blogDetails.autor}
-            </p>
-            <p className={styles.blogDate}>
-              {intl.formatMessage({ id: "blog_Details_Publicado" })} {new Date(blogDetails.fecha_publicacion).toLocaleDateString()}
-              {/* Verifica si la fecha de actualización es diferente a la de publicación */}
-              {blogDetails.fecha_actualizacion &&
-                new Date(blogDetails.fecha_actualizacion).toLocaleDateString() !== new Date(blogDetails.fecha_publicacion).toLocaleDateString() && (
-                  <>
-                    {" "}
-                    | {intl.formatMessage({ id: "blog_Details_Actualizado" })} {new Date(blogDetails.fecha_actualizacion).toLocaleDateString()}
-                  </>
-                )}
-            </p>
-          </div>
-          <div className="mt-25p">
-            <ShareLink url={currentUrl} title={blogDetails.titulo} />
-          </div>
-          {/* Imagen principal del blog */}
-          {blogDetails.imagen_url && (
-            <div className="mt-25p">
-              <img src={`${IMAGE_BASE_URL}${blogDetails.imagen_url}`} alt={blogDetails.titulo} className={styles.blogImage} />
+      {/* Contenido principal */}
+      {!error ? (
+        <div className={styles.blogDetailsContainer}>
+          {/* Detalles del blog */}
+          {blogDetails && (
+            <div>
+              <div className="mt-25p">
+                <h1 className={styles.blogTitle}>{blogDetails.titulo}</h1>
+              </div>
+              <div className="mt-25p">
+                <p className={styles.blogAuthor}>
+                  {intl.formatMessage({ id: "blog_Details_Autor" })} {blogDetails.autor}
+                </p>
+                <p className={styles.blogDate}>
+                  {intl.formatMessage({ id: "blog_Details_Publicado" })} {new Date(blogDetails.fecha_publicacion).toLocaleDateString()}
+                  {blogDetails.fecha_actualizacion &&
+                    new Date(blogDetails.fecha_actualizacion).toLocaleDateString() !== new Date(blogDetails.fecha_publicacion).toLocaleDateString() && (
+                      <>
+                        {" "}
+                        | {intl.formatMessage({ id: "blog_Details_Actualizado" })} {new Date(blogDetails.fecha_actualizacion).toLocaleDateString()}
+                      </>
+                    )}
+                </p>
+              </div>
+              <div className="mt-25p">
+                <ShareLink url={currentUrl} title={blogDetails.titulo} />
+              </div>
+              {/* Imagen principal */}
+              {blogDetails.imagen_url && (
+                <div className="mt-25p">
+                  <img src={`${IMAGE_BASE_URL}${blogDetails.imagen_url}`} alt={blogDetails.titulo} className={styles.blogImage} />
+                </div>
+              )}
+              {/* Contenido del blog */}
+              <div className={`mt-25p ${styles.blogText}`}>
+                <ReactMarkdown>{blogDetails.contenido}</ReactMarkdown>
+              </div>
+              {/* Imagen secundaria */}
+              {blogDetails.imagen_url_2 && (
+                <div className="mt-25p">
+                  <img src={`${IMAGE_BASE_URL}${blogDetails.imagen_url_2}`} alt={blogDetails.titulo} className={styles.blogImage} />
+                </div>
+              )}
+              <div>
+                <ShareLink url={currentUrl} title={blogDetails.titulo} />
+              </div>
+              {/* Botón de Volver Atrás */}
+              <div className="text-center mt-25p">
+                <button
+                  className={`btn btn-outline-secondary mx-auto ${styles.backButton} ${isPushingBack ? "animate-push" : ""}`}
+                  onAnimationEnd={() => setIsPushingBack(false)}
+                  onClick={handleBack}
+                >
+                  {intl.formatMessage({ id: "blog_Details_Boton" })}
+                </button>
+              </div>
+              {/* Botón de desplazamiento hacia arriba */}
+              <ScrollToTopButton />
             </div>
           )}
-          {/* Contenido del blog */}
-          <div className={`mt-25p ${styles.blogText}`}>
-            <ReactMarkdown>{blogDetails.contenido}</ReactMarkdown>
-          </div>
-          {/* Imagen secundaria del blog, si está presente */}
-          {blogDetails.imagen_url_2 && (
-            <div className="mt-25p">
-              <img src={`${IMAGE_BASE_URL}${blogDetails.imagen_url_2}`} alt={blogDetails.titulo} className={styles.blogImage} />
-            </div>
-          )}
-          <div>
-            <ShareLink url={currentUrl} title={blogDetails.titulo} />
-          </div>
-          {/* Botón de Volver Atrás */}
-          <div className="text-center mt-25p">
-            <button
-              className={`btn btn-outline-secondary mx-auto ${styles.backButton} ${isPushingBack ? "animate-push" : ""}`}
-              onAnimationEnd={() => setIsPushingBack(false)}
-              onClick={handleBack}
-            >
-              {intl.formatMessage({ id: "blog_Details_Boton" })}
-            </button>
-          </div>
-          {/* Muestra el botón solo si no hay error */}
-          {!error && <ScrollToTopButton />}
         </div>
-      )}
-      {/* Renderiza el mensaje de error si existe */}
-      {error && (
+      ) : (
         <div className={errorStyles.errorContainer}>
-          <p className={errorStyles.errorText}>{error}</p>
+          {/* Mensaje de error obtenido desde la internacionalización */}
+          <h3 className={errorStyles.errorText}>{intl.formatMessage({ id: "blog_Details_Error" })}</h3>
           <div className={errorStyles.imageContainer}>
             <img src={imageError} alt="Error" />
           </div>
-          {/* Botón de Volver Atrás en caso de error */}
-          <div className="text-center mt-25p">
-            <button
-              className={`btn btn-outline-secondary mx-auto ${styles.backButton} ${isPushingBack ? "animate-push" : ""}`}
-              onAnimationEnd={() => setIsPushingBack(false)}
-              onClick={handleBack}
-            >
-              {intl.formatMessage({ id: "blog_Details_Boton" })}
-            </button>
-          </div>
         </div>
       )}
-    </div>
+    </>
   );
 };
 
-// Asigna un texto de título de página específico (si es necesario para otras funcionalidades)
-BlogDetailsPage.pageTitleText = "blog";
-
 /**
- * Función getServerSideProps para obtener los datos del artículo antes de renderizar la página.
+ * Función `getServerSideProps` para obtener los datos del blog o manejar redirecciones según idioma.
  *
- * @param {GetServerSidePropsContext} context - Contexto de Next.js que contiene información de la solicitud.
- * @returns {Promise<GetServerSidePropsResult<BlogDetailsPageProps>>} Props con los datos del artículo o error.
+ * @param {GetServerSidePropsContext} context - Contexto proporcionado por Next.js.
+ * @returns {Promise<GetServerSidePropsResult<BlogDetailsPageProps>>} Props o redirección.
  */
-export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = async (
-  context: GetServerSidePropsContext
-): Promise<GetServerSidePropsResult<BlogDetailsPageProps>> => {
+export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = async (context): Promise<GetServerSidePropsResult<BlogDetailsPageProps>> => {
   const { slug } = context.params!;
   const locale = context.locale || "es";
 
-  try {
-    const token = await getTimedToken();
-
-    // Obtenemos el artículo en el idioma actual (locale)
-    let blogDetails = await getBlogPostBySlug(slug as string, token, locale);
-
-    // Si el idioma del artículo no coincide con el idioma actual, intentamos obtener la versión traducida
-    if (blogDetails.idioma !== locale) {
-      const translatedBlogPost = await getBlogPostById(blogDetails.id_noticia, locale, token);
-      if (translatedBlogPost) {
-        // Redirigimos al slug correspondiente en el nuevo idioma
-        return {
-          redirect: {
-            destination: `/blog/${translatedBlogPost.slug}`,
-            permanent: false,
-          },
-        };
-      } else {
-        // Si no hay traducción, podemos mostrar un mensaje de error
-        return {
-          props: {
-            blogDetails: null,
-            error: "Artículo no disponible en el idioma seleccionado",
-          },
-        };
-      }
-    }
-
+  // Intentar redirigir basado en la cookie de idioma
+  const cookieRedirect = await redirectByCookieSlug(context);
+  if (cookieRedirect) {
     return {
-      props: {
-        blogDetails,
-        error: null,
-      },
-    };
-  } catch (err) {
-    return {
-      props: {
-        blogDetails: null,
-        error: "Error al cargar el artículo o el artículo no existe. Por favor, verifica la URL e inténtalo de nuevo.",
-      },
+      redirect: cookieRedirect.redirect, // Esto asegura que siempre devuelvas el formato correcto.
     };
   }
+
+  // Cargar los datos del artículo del blog
+  const blogData = await loadBlogData(slug as string, locale);
+
+  if (blogData.redirect) {
+    return {
+      redirect: blogData.redirect, // Similar, aseguramos que 'redirect' no sea undefined.
+    };
+  }
+
+  return {
+    props: {
+      blogDetails: blogData.blogDetails || null,
+      error: blogData.error || null,
+    },
+  };
 };
 
 export default BlogDetailsPage;

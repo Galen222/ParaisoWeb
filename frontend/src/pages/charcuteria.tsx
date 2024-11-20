@@ -93,7 +93,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
   if (error) {
     return (
       <div className={errorStyles.errorContainer}>
-        <h2 className={errorStyles.errorText}>{error}</h2>
+        <h3 className={errorStyles.errorText}>{error}</h3>
         <div className={errorStyles.imageContainer}>
           <img src={imageError} alt="Error" />
         </div>
