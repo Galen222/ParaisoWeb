@@ -145,7 +145,7 @@ BlogPage.pageTitleText = "blog";
  */
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
   // Aplicar redirección basada en cookies si es necesario
-  const redirectResponse = redirectByCookie(context, "");
+  const redirectResponse = redirectByCookie(context, "/blog");
   if (redirectResponse.redirect) {
     return redirectResponse;
   }

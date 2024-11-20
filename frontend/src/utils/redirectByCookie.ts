@@ -34,7 +34,7 @@ export function redirectByCookie(context: GetServerSidePropsContext, basePath: s
   }
 
   // Si la cookie es "en" o "de" y el locale actual no coincide, redirige
-  if ((localeCookie === "en" || localeCookie === "de") && locale !== localeCookie) {
+  if ((localeCookie === "en" || localeCookie === "de" || localeCookie === "es") && locale !== localeCookie) {
     // console.log(`[REDIRECT] Redirigiendo a /${localeCookie}${basePath}`);
     return {
       redirect: {
