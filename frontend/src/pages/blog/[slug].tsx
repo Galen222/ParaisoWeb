@@ -66,8 +66,8 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
   const [isPushingBack, setIsPushingBack] = useState(false);
 
   // Rastreo de visitas a la página
-  useVisitedPageTracking("blog-noticia");
-  useVisitedPageTrackingGA("blog-noticia");
+  useVisitedPageTracking("articulo");
+  useVisitedPageTrackingGA("articulo");
 
   // Maneja cambios de idioma basados en los detalles del blog
   useHandleLanguageChange(blogDetails);
