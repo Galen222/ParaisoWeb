@@ -1,7 +1,5 @@
-// components/Map.tsx
-
 import React, { useEffect, useRef, useState } from "react";
-import { Loader } from "@googlemaps/js-api-loader";
+import { getGoogleMapsLoader } from "../utils/GoogleMapsLoader"; // Cambio: Usamos el Singleton
 import { useIntl } from "react-intl";
 import styles from "../styles/components/Map.module.css";
 
@@ -113,14 +111,9 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
         return;
       }
 
-      const loader = new Loader({
-        apiKey,
-        version: "weekly",
-        language: mapLocale,
-      });
-
       try {
-        // Importa las librerías necesarias usando importLibrary()
+        // Cambio: Usamos el Singleton del Loader
+        const loader = getGoogleMapsLoader(apiKey, mapLocale);
         await Promise.all([loader.importLibrary("maps"), loader.importLibrary("marker")]);
         setIsLoaded(true); // Marca el estado como cargado
       } catch (err: any) {
@@ -217,7 +210,6 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
         }
       });
     } catch (error: any) {
-      // console.error("Error al cargar el marcador:", error);
       setLoadError("No se pudo cargar el marcador en el mapa.");
     }
   };
