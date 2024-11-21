@@ -4,6 +4,17 @@
 routers/blog.py
 
 Router para manejar las publicaciones del blog.
+
+Este módulo define los endpoints para:
+- Obtener una lista de publicaciones de blog.
+- Recuperar publicaciones individuales por su slug o ID.
+- Gestionar las publicaciones de blog con filtrado por idioma.
+
+Dependencias:
+- FastAPI: Para definir los endpoints y manejar las solicitudes.
+- SQLAlchemy: Para interactuar con la base de datos.
+- Schemas: Para validar y estructurar las respuestas de la API.
+- Servicios: Lógica de negocio implementada en `BlogService`.
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Path
@@ -23,13 +34,15 @@ async def get_blog_posts(
     token_verification: None = Depends(verify_token)  # Verifica el token temporal
 ):
     """
-    Obtiene una lista de publicaciones de blog filtradas por idioma 
-    y ordenadas por la fecha más reciente primero.
+    Obtiene una lista de publicaciones de blog filtradas por idioma y ordenadas por fecha.
+
+    Este endpoint permite consultar todas las publicaciones de un idioma específico,
+    ordenándolas por la fecha de publicación más reciente.
 
     Args:
         idioma (str, optional): Idioma de las publicaciones. Por defecto "es".
-        db (AsyncSession): Sesión de base de datos.
-        token_verification (None): Resultado de la verificación del token.
+        db (AsyncSession): Sesión de base de datos proporcionada por la dependencia.
+        token_verification (None): Verificación del token proporcionado.
 
     Raises:
         HTTPException: En caso de errores en la consulta.
@@ -43,6 +56,7 @@ async def get_blog_posts(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.get("/blog/{slug}", response_model=schemas.Blog)
 async def get_blog_post_by_slug(
     slug: str = Path(...),
@@ -51,20 +65,24 @@ async def get_blog_post_by_slug(
     token_verification: None = Depends(verify_token)  # Verifica el token temporal
 ):
     """
-    Obtiene una publicación de blog específica por su slug 
-    y opcionalmente por idioma.
+    Obtiene una publicación de blog específica por su slug y opcionalmente por idioma.
+
+    Este endpoint permite recuperar una publicación específica identificada por su slug,
+    con la posibilidad de filtrar por idioma.
 
     Args:
         slug (str): Slug único de la publicación.
-        idioma (str, optional): Idioma de la publicación.
-        db (AsyncSession): Sesión de base de datos.
-        token_verification (None): Resultado de la verificación del token.
+        idioma (str, optional): Idioma de la publicación. Si no se proporciona, busca en cualquier idioma.
+        db (AsyncSession): Sesión de base de datos proporcionada por la dependencia.
+        token_verification (None): Verificación del token proporcionado.
 
     Raises:
-        HTTPException: Si la publicación no se encuentra o en caso de errores.
+        HTTPException:
+            - 404: Si la publicación no se encuentra.
+            - 500: Si ocurre algún error interno.
 
     Returns:
-        schemas.Blog: Publicación de blog encontrada.
+        schemas.Blog: La publicación de blog encontrada.
     """
     try:
         blog_service = BlogService(db)
@@ -79,6 +97,7 @@ async def get_blog_post_by_slug(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
 @router.get("/blog/by-id/{id_noticia}", response_model=schemas.Blog)
 async def get_blog_post_by_id(
     id_noticia: int = Path(...),
@@ -89,17 +108,22 @@ async def get_blog_post_by_id(
     """
     Obtiene una publicación de blog específica por su ID y idioma.
 
+    Este endpoint permite recuperar una publicación específica identificada por su ID
+    y filtrada por idioma.
+
     Args:
         id_noticia (int): ID único de la noticia.
         idioma (str): Idioma de la noticia.
-        db (AsyncSession): Sesión de base de datos.
-        token_verification (None): Resultado de la verificación del token.
+        db (AsyncSession): Sesión de base de datos proporcionada por la dependencia.
+        token_verification (None): Verificación del token proporcionado.
 
     Raises:
-        HTTPException: Si la publicación no se encuentra o en caso de errores.
+        HTTPException:
+            - 404: Si la publicación no se encuentra.
+            - 500: Si ocurre algún error interno.
 
     Returns:
-        schemas.Blog: Publicación de blog encontrada.
+        schemas.Blog: La publicación de blog encontrada.
     """
     try:
         blog_service = BlogService(db)

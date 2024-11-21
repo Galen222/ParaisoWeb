@@ -10,10 +10,10 @@ Este archivo requiere el archivo `email_templates.py` para generar las
 plantillas HTML de los correos electrónicos.
 
 Dependencias:
-- aiosmtplib
-- fastapi.UploadFile
-- email.message.EmailMessage
-- core.config.settings
+- aiosmtplib: Cliente asíncrono para enviar correos mediante SMTP.
+- fastapi.UploadFile: Para manejar archivos adjuntos en los correos.
+- email.message.EmailMessage: Para construir el contenido del correo.
+- core.config.settings: Configuración global de la aplicación.
 """
 
 import aiosmtplib
@@ -35,6 +35,10 @@ async def send_contacto_email(
 ):
     """
     Envía un correo electrónico utilizando los datos del formulario de contacto.
+
+    Este método genera un correo basado en la plantilla proporcionada por
+    `contacto_email_template`. Si se proporciona un archivo, lo adjunta al correo.
+    La dirección del destinatario se determina en función del motivo del contacto.
 
     Args:
         name (str): Nombre del remitente.

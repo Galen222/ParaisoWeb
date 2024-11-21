@@ -1,4 +1,4 @@
-#backend/core/email_templates.py
+# backend/core/email_templates.py
 
 """
 core/email_templates.py
@@ -8,21 +8,25 @@ por el backend. Este archivo contiene funciones reutilizables para
 generar plantillas con diferentes diseños.
 
 Dependencias:
-- Ninguna externa
+- Ninguna externa.
 """
 
 def contacto_email_template(name: str, email: str, reason: str, message: str) -> str:
     """
-    Genera la plantilla HTML para un correo de contacto.
+    Genera una plantilla HTML para un correo de contacto.
+
+    Esta plantilla incluye información básica como el nombre del remitente,
+    su correo electrónico, el motivo del contacto y el mensaje enviado.
+    Además, el diseño es compatible con la mayoría de los clientes de correo electrónico.
 
     Args:
         name (str): Nombre del remitente.
         email (str): Correo electrónico del remitente.
-        reason (str): Motivo del contacto.
+        reason (str): Motivo del contacto (por ejemplo, "Información", "Error").
         message (str): Mensaje del remitente.
 
     Returns:
-        str: Contenido HTML del correo.
+        str: Plantilla HTML completa del correo de contacto.
 
     Example:
         >>> html = contacto_email_template(
@@ -31,6 +35,7 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
         >>>     reason="Informacion",
         >>>     message="Hola, tengo una duda sobre su servicio."
         >>> )
+        >>> print(html)
     """
     return f"""
     <!DOCTYPE html>
@@ -120,4 +125,3 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
     </body>
     </html>
     """
-    

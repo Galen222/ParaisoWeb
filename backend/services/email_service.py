@@ -4,6 +4,16 @@
 services/email_service.py
 
 Servicio para manejar el envío de correos electrónicos.
+
+Este módulo gestiona:
+- La construcción de correos electrónicos con contenido en texto plano y HTML.
+- La inclusión de archivos adjuntos opcionales.
+- El envío de correos electrónicos utilizando `aiosmtplib`.
+
+Dependencias:
+- FastAPI: Para manejar archivos adjuntos.
+- aiosmtplib: Cliente SMTP asíncrono para enviar correos electrónicos.
+- Servicios auxiliares: `FileService` para procesar archivos adjuntos.
 """
 
 import aiosmtplib
@@ -15,7 +25,17 @@ from ..core.email_templates import contacto_email_template
 from .file_service import FileService
 
 class EmailService:
+    """
+    Servicio para manejar el envío de correos electrónicos.
+
+    Este servicio encapsula la lógica necesaria para construir y enviar correos
+    electrónicos, incluyendo contenido HTML y texto plano, así como archivos adjuntos.
+    """
+
     def __init__(self):
+        """
+        Inicializa el servicio con las configuraciones SMTP y dependencias necesarias.
+        """
         self.smtp_server = settings.SMTP_SERVER
         self.smtp_port = settings.SMTP_PORT
         self.smtp_username = settings.SMTP_USERNAME
@@ -32,16 +52,20 @@ class EmailService:
     ) -> None:
         """
         Envía un correo electrónico del formulario de contacto.
-        
+
+        Este método construye el correo con contenido en texto plano y HTML,
+        y adjunta un archivo si se proporciona. La dirección del destinatario
+        se determina en función del motivo del contacto.
+
         Args:
             name (str): Nombre del remitente.
-            reason (str): Motivo del contacto.
-            email (str): Email del remitente.
-            message (str): Mensaje del correo.
+            reason (str): Motivo del contacto (e.g., "error", "información").
+            email (str): Dirección de correo electrónico del remitente.
+            message (str): Mensaje incluido en el correo.
             file (Optional[UploadFile]): Archivo adjunto opcional.
-            
+
         Raises:
-            Exception: Si hay errores en el envío del correo.
+            Exception: Si ocurre un error durante el envío del correo.
         """
         msg = EmailMessage()
         msg['Subject'] = f'Nuevo mensaje de {name}'

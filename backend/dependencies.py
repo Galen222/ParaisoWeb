@@ -4,7 +4,15 @@
 dependencies.py
 
 Módulo de dependencias para FastAPI.
-Incluye funciones para manejar la sesión de la base de datos y la verificación de tokens temporales.
+
+Este módulo define:
+- La gestión de la sesión de la base de datos.
+- La verificación de tokens temporales para proteger endpoints.
+
+Dependencias:
+- FastAPI: Para manejar dependencias en los endpoints.
+- SQLAlchemy: Para gestionar sesiones de base de datos asíncronas.
+- Utilidades de autenticación: Para verificar tokens temporales.
 """
 
 from fastapi import Header, HTTPException, status, Depends
@@ -15,29 +23,38 @@ async def get_db():
     """
     Proporciona una sesión de base de datos asíncrona.
 
-    Utiliza el contexto de `async_session` para garantizar que la sesión se cierre correctamente después de su uso.
+    Este método asegura que la sesión de base de datos se gestione de manera eficiente,
+    cerrándose automáticamente una vez finalizada su utilización.
 
     Yields:
         AsyncSession: Instancia de la sesión de la base de datos.
+
+    Raises:
+        HTTPException:
+            - 500: Si ocurre un error al conectar con la base de datos.
     """
     try:
         async with async_session() as session:
             yield session
     except Exception as e:
-        # print(f"Error al obtener la sesión de base de datos: {e}")
-        raise HTTPException(status_code=500, detail="Error al conectar con la base de datos")
+        raise HTTPException(
+            status_code=500,
+            detail="Error al conectar con la base de datos"
+        )
 
 async def verify_token(x_timed_token: str = Header(...)):
     """
-    Verifica el token temporal pasado en el encabezado `x-timed-token`.
+    Verifica el token temporal proporcionado en el encabezado `x-timed-token`.
 
-    Esta dependencia asegura que solo las solicitudes con un token válido puedan acceder a los endpoints protegidos.
+    Este método se utiliza como dependencia para endpoints que requieren autenticación,
+    garantizando que solo las solicitudes con tokens válidos tengan acceso.
 
     Args:
-        x_timed_token (str): Token temporal proporcionado en el encabezado de la solicitud.
+        x_timed_token (str): Token temporal incluido en el encabezado de la solicitud.
 
     Raises:
-        HTTPException: Si el token es inválido o ha expirado.
+        HTTPException:
+            - 403: Si el token es inválido o ha expirado.
 
     Returns:
         None
