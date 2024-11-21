@@ -50,7 +50,6 @@ export interface BlogDetailsPageProps {
 /**
  * Componente para mostrar los detalles de un artículo del blog.
  *
- * @component
  * @param {BlogDetailsPageProps} props - Props para el componente.
  * @returns {JSX.Element} JSX renderizado.
  */
