@@ -1,5 +1,7 @@
+# backend/core/email_utils.py
+
 """
-email_utils.py
+core/email_utils.py
 
 Módulo para enviar correos electrónicos desde el backend utilizando el cliente
 `aiosmtplib`. Contiene métodos para manejar la lógica de envío de correos.

@@ -1,6 +1,8 @@
 # backend/core/auth_utils.py
 
 """
+core/auth_utils.py
+
 Módulo de utilidades para la generación y verificación de tokens temporales.
 """
 

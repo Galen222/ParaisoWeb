@@ -1,12 +1,15 @@
-# app/main.py
+# backend/main.py
 
 """
+main.py
+
 Módulo principal de la aplicación FastAPI.
 Configura la instancia de FastAPI, aplica middleware, registra routers y maneja eventos de inicio.
 """
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from .middleware.logging import LoggingMiddleware
 from contextlib import asynccontextmanager
 from .routers import contacto, charcuteria, blog, token
 from .database import engine
@@ -38,9 +41,10 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="ParaisoWeb Backend",
     description="Gestionar el envío de formularios, base de datos de charcutería y blogs y tokens API temporales.",
-    version="0.9.99",
+    version="0.999.1",
     lifespan=lifespan  # Usa el lifespan handler en lugar de on_event
 )
+app.add_middleware(LoggingMiddleware)
 
 # -----------------------------
 # Configuración de CORS

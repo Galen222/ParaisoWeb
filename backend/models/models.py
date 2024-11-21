@@ -1,6 +1,8 @@
 # backend/models/models.py
 
 """
+models/models.py
+
 Módulo de modelos de la base de datos.
 Define las estructuras de las tablas 'charcuteria' y 'blog' utilizando SQLAlchemy ORM.
 """

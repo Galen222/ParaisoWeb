@@ -1,6 +1,8 @@
 # backend/core/config.py
 
 """
+core/config.py
+
 Módulo de configuración para la aplicación backend.
 Gestiona la carga y validación de las variables de entorno necesarias para la aplicación.
 """

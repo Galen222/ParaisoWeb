@@ -1,5 +1,7 @@
+#backend/core/email_templates.py
+
 """
-email_templates.py
+core/email_templates.py
 
 Módulo para generar plantillas HTML para correos electrónicos enviados
 por el backend. Este archivo contiene funciones reutilizables para

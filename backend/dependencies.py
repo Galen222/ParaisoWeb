@@ -1,6 +1,8 @@
 # backend/dependencies.py
 
 """
+dependencies.py
+
 Módulo de dependencias para FastAPI.
 Incluye funciones para manejar la sesión de la base de datos y la verificación de tokens temporales.
 """

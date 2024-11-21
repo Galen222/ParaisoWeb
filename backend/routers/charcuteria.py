@@ -1,17 +1,18 @@
 # backend/routers/charcuteria.py
 
 """
+routers/charcuteria.py
+
 Router para manejar los productos de charcutería.
 """
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
 from sqlalchemy.exc import OperationalError
 from typing import List
-from ..models import models, schemas
+from ..models import schemas
 from ..dependencies import verify_token, get_db
-
+from ..services.charcuteria_service import CharcuteriaService
 
 router = APIRouter()
 
@@ -36,13 +37,8 @@ async def get_charcuteria_products(
         List[schemas.Charcuteria]: Lista de productos de charcutería.
     """
     try:
-        # Consulta SQL para ordenar por categoría y luego por nombre alfabéticamente
-        result = await db.execute(
-            select(models.Charcuteria)
-            .where(models.Charcuteria.idioma == idioma)
-            .order_by(models.Charcuteria.categoria.asc(), models.Charcuteria.nombre.asc())
-        )
-        return result.scalars().all()
+        charcuteria_service = CharcuteriaService(db)
+        return await charcuteria_service.get_all_products(idioma)
     except OperationalError:
         raise HTTPException(status_code=500, detail="Error de conexión con la base de datos")
     except Exception as e:

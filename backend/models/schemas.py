@@ -1,6 +1,8 @@
 # backend/models/schemas.py
 
 """
+models/schemas.py
+
 Módulo de esquemas de Pydantic para la validación y serialización de datos.
 Define los esquemas utilizados para la validación de entradas y la respuesta de la API.
 """

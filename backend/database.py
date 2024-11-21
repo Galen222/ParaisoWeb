@@ -1,6 +1,8 @@
 # backend/database.py
 
 """
+database.py
+
 Módulo de configuración de la base de datos para FastAPI.
 Configura el motor de la base de datos asíncrona y la sesión de la base de datos.
 """
