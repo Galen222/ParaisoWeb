@@ -7,7 +7,30 @@ Configura la instancia de FastAPI, aplica middleware, registra routers y maneja 
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from .routers import contacto, charcuteria, blog, token
+from .database import engine
+from .models.models import Base
+
+# -----------------------------
+# Lifespan Event Handlers
+# -----------------------------
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan event handler para manejar el ciclo de vida de la aplicación.
+    """
+    # Evento de inicio (startup)
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    print("Aplicación iniciada y base de datos configurada.")
+    
+    # Yield para indicar que la app está lista para funcionar
+    yield
+
+    # Evento de cierre (shutdown)
+    await engine.dispose()
+    print("Conexión a la base de datos cerrada.")
 
 # -----------------------------
 # Creación de la instancia de FastAPI
@@ -15,7 +38,8 @@ from .routers import contacto, charcuteria, blog, token
 app = FastAPI(
     title="ParaisoWeb Backend",
     description="Gestionar el envío de formularios, base de datos de charcutería y blogs y tokens API temporales.",
-    version="0.9.99"
+    version="0.9.99",
+    lifespan=lifespan  # Usa el lifespan handler en lugar de on_event
 )
 
 # -----------------------------
@@ -45,19 +69,3 @@ app.include_router(charcuteria.router, prefix="/api")   # Endpoints para product
 app.include_router(blog.router, prefix="/api")          # Endpoints para publicaciones de blog
 app.include_router(token.router, prefix="/api")         # Endpoint para obtener tokens temporales
 
-# -----------------------------
-# Creación de las tablas en la base de datos al iniciar la aplicación
-# -----------------------------
-from .database import engine
-from .models.models import Base
-
-@app.on_event("startup")
-async def startup():
-    """
-    Evento que se ejecuta al iniciar la aplicación.
-    - Crea las tablas de la base de datos si no existen.
-    """
-    # Inicia una conexión asíncrona con la base de datos.
-    async with engine.begin() as conn:
-        # Crea todas las tablas definidas en Base.metadata si no existen.
-        await conn.run_sync(Base.metadata.create_all)

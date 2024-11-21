@@ -9,9 +9,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from typing import List, Optional
 from ..models import models, schemas
-from ..dependencies import get_db, verify_token  # Importa la dependencia
 from sqlalchemy import func
+from ..dependencies import verify_token, get_db
 
+# Inicializa el router para los endpoints relacionados con el blog
 router = APIRouter()
 
 @router.get("/blog", response_model=List[schemas.Blog])
@@ -21,8 +22,8 @@ async def get_blog_posts(
     token_verification: None = Depends(verify_token)  # Verifica el token temporal
 ):
     """
-    Obtiene una lista de publicaciones de blog filtradas por idioma y 
-    ordenadas por la fecha más reciente primero.
+    Obtiene una lista de publicaciones de blog filtradas por idioma 
+    y ordenadas por la fecha más reciente primero.
 
     Args:
         idioma (str, optional): Idioma de las publicaciones. Por defecto "es".
@@ -36,6 +37,7 @@ async def get_blog_posts(
         List[schemas.Blog]: Lista de publicaciones de blog.
     """
     try:
+        # Ejecuta la consulta para obtener las publicaciones de blog en el idioma indicado
         result = await db.execute(
             select(models.Blog)
             .where(models.Blog.idioma == idioma)
@@ -55,7 +57,8 @@ async def get_blog_post_by_slug(
     token_verification: None = Depends(verify_token)  # Verifica el token temporal
 ):
     """
-    Obtiene una publicación de blog específica por su slug y opcionalmente por idioma.
+    Obtiene una publicación de blog específica por su slug 
+    y opcionalmente por idioma.
 
     Args:
         slug (str): Slug único de la publicación.
@@ -70,16 +73,22 @@ async def get_blog_post_by_slug(
         schemas.Blog: Publicación de blog encontrada.
     """
     try:
+        # Construye la consulta para buscar la publicación por slug
         query = select(models.Blog).where(models.Blog.slug == slug)
         if idioma:
             query = query.where(models.Blog.idioma == idioma)
+        
+        # Ejecuta la consulta
         result = await db.execute(query)
         blog_post = result.scalar_one_or_none()
+
+        # Si no se encuentra la publicación, lanza un error 404
         if blog_post is None:
             raise HTTPException(status_code=404, detail="Blog not found")
+        
         return blog_post
     except Exception as e:
-        print(f"Error al obtener el post del blog: {e}")  # Imprimir el error en la consola
+        # print(f"Error al obtener el post del blog: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/blog/by-id/{id_noticia}", response_model=schemas.Blog)
@@ -105,12 +114,16 @@ async def get_blog_post_by_id(
         schemas.Blog: Publicación de blog encontrada.
     """
     try:
+        # Ejecuta la consulta para buscar la publicación por ID e idioma
         result = await db.execute(
             select(models.Blog).where(models.Blog.id_noticia == id_noticia, models.Blog.idioma == idioma)
         )
         blog_post = result.scalar_one_or_none()
+
+        # Si no se encuentra la publicación, lanza un error 404
         if blog_post is None:
             raise HTTPException(status_code=404, detail="Blog not found")
+        
         return blog_post
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

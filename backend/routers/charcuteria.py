@@ -9,10 +9,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.exc import OperationalError
 from typing import List
-import traceback
-
 from ..models import models, schemas
-from ..dependencies import get_db, verify_token  # Importa la dependencia
+from ..dependencies import verify_token, get_db
+
 
 router = APIRouter()
 
@@ -43,11 +42,8 @@ async def get_charcuteria_products(
             .where(models.Charcuteria.idioma == idioma)
             .order_by(models.Charcuteria.categoria.asc(), models.Charcuteria.nombre.asc())
         )
-        products = result.scalars().all()
-        return products
-    except OperationalError as e:
-        # print(f"OperationalError en get_charcuteria_products: {e}")
+        return result.scalars().all()
+    except OperationalError:
         raise HTTPException(status_code=500, detail="Error de conexión con la base de datos")
     except Exception as e:
-        # print("Excepción en get_charcuteria_products:", traceback.format_exc())
         raise HTTPException(status_code=500, detail="Error interno del servidor")
