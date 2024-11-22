@@ -40,7 +40,7 @@ const Localization: React.FC<LocalizationProps> = ({ localizationName }: Localiz
         {/* Teléfono de la ubicación con enlace para realizar llamada */}
         <p>
           <span className="fw-bold">{intl.formatMessage({ id: `contacto_Informacion_${localizationName}_Telefono_Texto` })}</span>
-          <a className={styles.link} href="tel:+345539783">
+          <a className={styles.link} href={`tel:${intl.formatMessage({ id: `contacto_Informacion_${localizationName}_Telefono_Numero` })}`}>
             {intl.formatMessage({ id: `contacto_Informacion_${localizationName}_Telefono_Numero` })}
           </a>
         </p>
