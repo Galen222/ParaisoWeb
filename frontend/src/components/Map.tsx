@@ -39,7 +39,7 @@ const locations: Locations = {
     address: "San Bernardo, 8, 28015 Madrid, ",
     address_url: "Paraíso del Jamón Calle de San Bernardo",
     url: "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
-    telephone: "+34 532 83 50",
+    telephone: "+34 91 532 83 50",
   },
   "bravo-murillo": {
     name: "Paraíso del Jamón II",
@@ -48,7 +48,7 @@ const locations: Locations = {
     address: "Bravo Murillo, 124, 28020 Madrid, ",
     address_url: "Paraíso del Jamón Calle de Bravo Murillo",
     url: "https://www.google.com/maps?ll=40.449348,-3.703398&z=20&t=m&gl=US&mapclient=apiv3&cid=17291774062565476387",
-    telephone: "+34 553 97 83",
+    telephone: "+34 91 553 97 83",
   },
   "reina-victoria": {
     name: "Paraíso del Jamón III",
@@ -57,7 +57,7 @@ const locations: Locations = {
     address: "Reina Victoria, 3, 28003 Madrid, ",
     address_url: "Paraíso del Jamón Calle de Reina Victoria",
     url: "https://www.google.com/maps?ll=40.446679,-3.704447&z=20&t=m&gl=US&mapclient=apiv3&cid=8431686105412493623",
-    telephone: "+34 534 18 20",
+    telephone: "+34 91 534 18 20",
   },
   arenal: {
     name: "Paraíso del Jamón IV",
@@ -66,7 +66,7 @@ const locations: Locations = {
     address: "Arenal, 26, 28013 Madrid, ",
     address_url: "Paraíso del Jamón Calle de Arenal",
     url: "https://www.google.com/maps?ll=40.41781,-3.708284&z=20&t=m&gl=US&mapclient=apiv3&cid=3523718250256320549",
-    telephone: "+34 541 95 19",
+    telephone: "+34 91 541 95 19",
   },
 };
 
