@@ -32,6 +32,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from typing import Callable
 import json
 from http import HTTPStatus
+import datetime  # Importar datetime para obtener la hora actual
 
 # Códigos ANSI para colorear la salida en terminal
 ANSI_GREEN = "\033[32m"  # Color verde para éxitos
@@ -93,9 +94,9 @@ class ColoredFormatter(logging.Formatter):
             str: Mensaje formateado con los colores apropiados
         """
         if record.levelno == logging.ERROR:
-            return f"{ANSI_RED}ERROR-LOG:{ANSI_RESET} {record.getMessage()}"
+            return f"{ANSI_RED}ERROR-LOG{ANSI_RESET}: {record.getMessage()}"
         elif record.levelno == logging.INFO:
-            return f"{ANSI_GREEN}INFO-LOG:{ANSI_RESET} {record.getMessage()}"
+            return f"{ANSI_GREEN}INFO-LOG{ANSI_RESET}: {record.getMessage()}"
         return record.getMessage()
 
 # Configurar el logger personalizado
@@ -148,6 +149,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         # Capturar tiempo de inicio y datos básicos de la petición
         start_time = time.time()
         client_host = request.client.host if request.client else "unknown"
+        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Hora actual
         
         # Procesar la petición
         response = await call_next(request)
@@ -172,11 +174,12 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             
             # Registrar el error con todos los detalles
             logger.error(
+                f"CURRENT TIME: {current_time} | "
                 f"HOST: {client_host} | "
                 f"METHOD: {request.method} | "
                 f"PATH: {request.url.path} | "
                 f"STATUS: {status_text} | "
-                f"{ANSI_RED}ERROR:{ANSI_RESET} {error_message} | "
+                f"{ANSI_RED}ERROR{ANSI_RESET}: {error_message} | "
                 f"TIME: {process_time:.2f}s"
             )
             
@@ -190,6 +193,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         else:
             # Log para respuestas exitosas
             logger.info(
+                f"CURRENT TIME: {current_time} | "
                 f"HOST: {client_host} | "
                 f"METHOD: {request.method} | "
                 f"PATH: {request.url.path} | "
