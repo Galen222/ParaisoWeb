@@ -35,7 +35,8 @@ engine = create_async_engine(
     echo=True,         # Habilita el registro de todas las consultas SQL para depuración
     future=True,       # Activa características futuras de SQLAlchemy
     pool_pre_ping=True,  # Verifica la conexión antes de usarla (manejo de conexiones caídas)
-    pool_recycle=3600    # Recicla conexiones cada hora (3600 segundos)
+    pool_recycle=3600,    # Recicla conexiones cada hora (3600 segundos)
+    pool_reset_on_return='rollback'  # Limpia el estado de la conexión
 )
 """
 Motor de base de datos asíncrono.
