@@ -201,6 +201,9 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
   );
 };
 
+// Asigna un texto de título de página específico (si es necesario para otras funcionalidades)
+BlogDetailsPage.pageTitleText = "blog";
+
 /**
  * Función `getServerSideProps` para obtener los datos del blog o manejar redirecciones según idioma.
  *
