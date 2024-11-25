@@ -18,6 +18,7 @@ Dependencias:
 from fastapi import Header, HTTPException, status, Depends
 from .database import async_session
 from .core.auth_utils import verify_timed_token
+from typing import Optional
 
 async def get_db():
     """
@@ -42,23 +43,30 @@ async def get_db():
             detail="Error al conectar con la base de datos"
         )
 
-async def verify_token(x_timed_token: str = Header(...)):
+async def verify_token(x_timed_token: Optional[str] = Header(None)):
     """
-    Verifica el token temporal proporcionado en el encabezado `x-timed-token`.
+    Verifica la presencia y validez del token temporal en el encabezado `x-timed-token`.
 
     Este método se utiliza como dependencia para endpoints que requieren autenticación,
-    garantizando que solo las solicitudes con tokens válidos tengan acceso.
+    diferenciando entre peticiones sin token y con token inválido.
 
     Args:
-        x_timed_token (str): Token temporal incluido en el encabezado de la solicitud.
+        x_timed_token (Optional[str]): Token temporal incluido en el encabezado de la solicitud.
 
     Raises:
         HTTPException:
-            - 403: Si el token es inválido o ha expirado.
+            - 401: Si no se proporciona token (Unauthorized).
+            - 403: Si el token proporcionado es inválido o ha expirado (Forbidden).
 
     Returns:
         None
     """
+    if x_timed_token is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Token no proporcionado"
+        )
+    
     if not verify_timed_token(x_timed_token):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

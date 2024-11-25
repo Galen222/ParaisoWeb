@@ -30,8 +30,8 @@ router = APIRouter()
 @router.get("/blog", response_model=List[schemas.Blog])
 async def get_blog_posts(
     idioma: str = Query("es"),
-    db: AsyncSession = Depends(get_db),
-    token_verification: None = Depends(verify_token)  # Verifica el token temporal
+    token_verification: None = Depends(verify_token),  # Verifica el token temporal
+    db: AsyncSession = Depends(get_db)
 ):
     """
     Obtiene una lista de publicaciones de blog filtradas por idioma y ordenadas por fecha.
@@ -41,11 +41,14 @@ async def get_blog_posts(
 
     Args:
         idioma (str, optional): Idioma de las publicaciones. Por defecto "es".
-        db (AsyncSession): Sesión de base de datos proporcionada por la dependencia.
         token_verification (None): Verificación del token proporcionado.
+        db (AsyncSession): Sesión de base de datos proporcionada por la dependencia.
 
     Raises:
-        HTTPException: En caso de errores en la consulta.
+        HTTPException:
+            - 401: Si no se proporciona token.
+            - 403: Si el token proporcionado es inválido.
+            - 500: Si ocurre algún error interno.
 
     Returns:
         List[schemas.Blog]: Lista de publicaciones de blog.
@@ -61,8 +64,8 @@ async def get_blog_posts(
 async def get_blog_post_by_slug(
     slug: str = Path(...),
     idioma: Optional[str] = Query(None),
-    db: AsyncSession = Depends(get_db),
-    token_verification: None = Depends(verify_token)  # Verifica el token temporal
+    token_verification: None = Depends(verify_token),  # Verifica el token temporal
+    db: AsyncSession = Depends(get_db)  # Luego obtiene la conexión a BD
 ):
     """
     Obtiene una publicación de blog específica por su slug y opcionalmente por idioma.
@@ -72,12 +75,14 @@ async def get_blog_post_by_slug(
 
     Args:
         slug (str): Slug único de la publicación.
-        idioma (str, optional): Idioma de la publicación. Si no se proporciona, busca en cualquier idioma.
-        db (AsyncSession): Sesión de base de datos proporcionada por la dependencia.
+        idioma (str, optional): Idioma de la publicación.
         token_verification (None): Verificación del token proporcionado.
+        db (AsyncSession): Sesión de base de datos proporcionada por la dependencia.
 
     Raises:
         HTTPException:
+            - 401: Si no se proporciona token.
+            - 403: Si el token proporcionado es inválido.
             - 404: Si la publicación no se encuentra.
             - 500: Si ocurre algún error interno.
 
@@ -88,7 +93,6 @@ async def get_blog_post_by_slug(
         blog_service = BlogService(db)
         post = await blog_service.get_post_by_slug(slug, idioma)
         
-        # Si no se encuentra la publicación, lanza un error 404
         if post is None:
             raise HTTPException(status_code=404, detail="Blog no encontrado")
         return post
@@ -102,8 +106,8 @@ async def get_blog_post_by_slug(
 async def get_blog_post_by_id(
     id_noticia: int = Path(...),
     idioma: str = Query(...),
-    db: AsyncSession = Depends(get_db),
-    token_verification: None = Depends(verify_token)  # Verifica el token temporal
+    token_verification: None = Depends(verify_token),  # Verifica el token temporal
+    db: AsyncSession = Depends(get_db)  # Luego obtiene la conexión a BD
 ):
     """
     Obtiene una publicación de blog específica por su ID y idioma.
@@ -114,11 +118,13 @@ async def get_blog_post_by_id(
     Args:
         id_noticia (int): ID único de la noticia.
         idioma (str): Idioma de la noticia.
-        db (AsyncSession): Sesión de base de datos proporcionada por la dependencia.
         token_verification (None): Verificación del token proporcionado.
+        db (AsyncSession): Sesión de base de datos proporcionada por la dependencia.
 
     Raises:
         HTTPException:
+            - 401: Si no se proporciona token.
+            - 403: Si el token proporcionado es inválido.
             - 404: Si la publicación no se encuentra.
             - 500: Si ocurre algún error interno.
 
@@ -129,7 +135,6 @@ async def get_blog_post_by_id(
         blog_service = BlogService(db)
         post = await blog_service.get_post_by_id(id_noticia, idioma)
         
-        # Si no se encuentra la publicación, lanza un error 404
         if post is None:
             raise HTTPException(status_code=404, detail="Blog not found")
         return post

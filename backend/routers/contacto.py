@@ -24,12 +24,12 @@ router = APIRouter()
 
 @router.post("/contacto")
 async def contacto(
+    token_verification: None = Depends(verify_token),  # Verifica el token temporal
     name: str = Form(...),
     reason: str = Form(...),
     email: EmailStr = Form(...),
     message: str = Form(...),
-    file: UploadFile = File(None),
-    token_verification: None = Depends(verify_token)  # Verifica el token temporal
+    file: UploadFile = File(None)
 ):
     """
     Endpoint para enviar el formulario de contacto.
@@ -38,15 +38,17 @@ async def contacto(
     nombre, la razón del contacto, el mensaje y un archivo adjunto opcional.
 
     Args:
+        token_verification (None): Verificación del token proporcionado.
         name (str): Nombre del remitente.
         reason (str): Razón del contacto (por ejemplo, "Información", "Error").
         email (EmailStr): Correo electrónico válido del remitente.
         message (str): Mensaje enviado por el remitente.
         file (UploadFile, optional): Archivo adjunto enviado con el formulario.
-        token_verification (None): Verificación del token proporcionado en la solicitud.
 
     Raises:
         HTTPException:
+            - 401: Si no se proporciona token.
+            - 403: Si el token proporcionado es inválido.
             - 500: Si ocurre un error interno durante el procesamiento del formulario.
 
     Returns:

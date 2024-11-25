@@ -29,8 +29,8 @@ router = APIRouter()
 @router.get("/charcuteria", response_model=List[schemas.Charcuteria])
 async def get_charcuteria_products(
     idioma: str = Query("es"),  # Parámetro de idioma con valor predeterminado "es"
-    db: AsyncSession = Depends(get_db),
-    token_verification: None = Depends(verify_token)  # Verifica el token temporal
+    token_verification: None = Depends(verify_token),  # Verifica el token temporal
+    db: AsyncSession = Depends(get_db)  # Luego obtiene la conexión a BD
 ):
     """
     Obtiene una lista de productos de charcutería filtrados por idioma.
@@ -39,11 +39,13 @@ async def get_charcuteria_products(
 
     Args:
         idioma (str, optional): Idioma de los productos. Por defecto "es".
-        db (AsyncSession): Sesión de base de datos proporcionada por la dependencia.
         token_verification (None): Verificación del token proporcionado.
+        db (AsyncSession): Sesión de base de datos proporcionada por la dependencia.
 
     Raises:
         HTTPException:
+            - 401: Si no se proporciona token.
+            - 403: Si el token proporcionado es inválido.
             - 500: Si hay un error de conexión con la base de datos.
             - 500: Si ocurre un error interno del servidor.
 
