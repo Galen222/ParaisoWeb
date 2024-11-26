@@ -44,6 +44,7 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <style>
+            /* Estilos base */
             body {{
                 font-family: Arial, sans-serif;
                 line-height: 1.6;
@@ -51,6 +52,8 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                 margin: 0;
                 padding: 0;
             }}
+            
+            /* Contenedor principal */
             .email-container {{
                 max-width: 600px;
                 margin: auto;
@@ -59,25 +62,34 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                 overflow: hidden;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }}
+            
+            /* Encabezado */
             .header {{
                 background-color: #f4f4f4;
                 padding: 20px;
                 text-align: center;
             }}
+            
+            /* Logo */
             .logo-image {{
                 max-width: 150px;
                 height: auto;
                 margin: 0 auto;
             }}
-            /* Ocultar imagen estándar solo en Outlook */
+            
+            /* Soporte específico para Outlook */
             @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {{
                 .logo-image {{
                     display: none !important;
                 }}
             }}
+            
+            /* Contenido principal */
             .content {{
                 padding: 20px;
             }}
+            
+            /* Pie de página */
             .footer {{
                 background-color: #f4f4f4;
                 text-align: center;
@@ -85,8 +97,29 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                 font-size: 0.8em;
                 color: #666;
             }}
+            
+            /* Texto resaltado */
             .highlight {{
                 color: #0056b3;
+            }}
+
+            /* Estilos específicos para Outlook */
+            .outlook-td {{
+                padding: 0;
+                text-align: center;
+            }}
+
+            .outlook-table {{
+                width: 100%;
+                border: 0;
+                cellpadding: 0;
+                cellspacing: 0;
+            }}
+
+            .outlook-rect {{
+                height: 89pt;
+                width: 150pt;
+                stroke-color: none;
             }}
         </style>
     </head>
@@ -94,11 +127,11 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
         <div class="email-container">
             <div class="header">
                 <!--[if mso]>
-                <table role="presentation" width="100%" border="0" cellpadding="0" cellspacing="0">
+                <table class="outlook-table" role="presentation">
                     <tr>
-                        <td align="center" style="padding: 0;">
+                        <td class="outlook-td">
                             <v:rect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" 
-                                style="height:89pt; width:150pt;" strokecolor="none">
+                                class="outlook-rect">
                                 <v:fill type="frame" src="https://galenn.asuscomm.com/images/navbar/imagenLogo.png" />
                                 <w:wrap type="none"/>
                             </v:rect>
