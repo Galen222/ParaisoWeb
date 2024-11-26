@@ -21,7 +21,7 @@
   justify-content: center; /* Centra las tarjetas horizontalmente */
   max-width: 1000px; /* Ancho máximo de 1000 píxeles */
   margin: 0 auto; /* Centra el contenedor horizontalmente */
-  margin-bottom: 130px; /* Margen inferior */
+  margin-bottom: 50px; /* Margen inferior */
 }
 
 /* Estilo para cada tarjeta */
@@ -294,7 +294,6 @@
     margin: 20px auto 0; /* Márgen superior */
     padding: 24px; /* Padding */
     vertical-align: center; /* Alineación vertical centrada */
-    margin-bottom: 90px; /* Márgen inferior */
     justify-content: flex-start; /* Alineación inicial */
     overflow-y: hidden; /* Sin desplazamiento vertical */
   }

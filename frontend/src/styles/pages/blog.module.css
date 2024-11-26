@@ -18,9 +18,10 @@
   display: flex; /* Utiliza flexbox para organizar las tarjetas en una fila */
   flex-wrap: wrap; /* Permite que las tarjetas se envuelvan a la siguiente línea si no caben en una sola fila */
   justify-content: space-around; /* Distribuye el espacio uniformemente alrededor de las tarjetas */
-  margin: 0 auto 130px auto; /* Márgenes superior de 0, laterales automáticos para centrar y margen inferior de 130 píxeles */
   max-width: 1000px; /* Ancho máximo de 1000 píxeles para limitar el ancho del contenido */
   margin-top: 20px; /* Márgen superior de 20 píxeles */
+  margin: 0 auto; /* Centra el contenedor horizontalmente */
+  margin-bottom: 50px; /* Margen inferior */
 }
 
 /* Estilo para cada tarjeta del blog */

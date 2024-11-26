@@ -10,11 +10,13 @@ import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import { useFetchBlog } from "../hooks/useFetchBlog";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/blog.module.css";
-import { useIntl } from "react-intl"; // Hook para internacionalización
-import { NextSeo, OrganizationJsonLd } from "next-seo"; // Importa NextSeo para configuraciones de SEO
-import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
+import { useIntl } from "react-intl";
+import { NextSeo, OrganizationJsonLd } from "next-seo";
+import { redirectByCookie } from "../utils/redirectByCookie";
 import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
+import { usePagination } from "../hooks/usePagination";
+import { Paginator } from "../components/Paginator";
 // Importa los mensajes de traducción
 import esMessages from "../locales/es/common.json";
 import enMessages from "../locales/en/common.json";
@@ -31,18 +33,22 @@ const messages: Record<string, Record<string, string>> = {
  */
 export type BlogPageComponent = NextPage & { pageTitleText?: string };
 
-// Define la ruta base de las imágenes
+/**
+ * Define la ruta base de las imágenes del blog y error
+ */
 const IMAGE_BASE_URL = "/images/blog/";
+const imageError = "/images/web/error.png";
 
 /**
  * Componente funcional para la página del blog.
- * Muestra una lista de publicaciones del blog en formato de tarjetas enlazadas a sus detalles.
+ * Muestra una lista paginada de publicaciones del blog en formato de tarjetas enlazadas a sus detalles.
  *
  * @returns {JSX.Element} Página del Blog.
  */
 const BlogPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+  // Hooks de internacionalización y URL
   const intl = useIntl();
-  const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
+  const currentLocale = intl.locale || "es";
   const currentMessages = messages[currentLocale] || messages["es"];
   const currentUrl = useCurrentUrl();
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
@@ -50,12 +56,30 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
   // Hook para obtener las publicaciones del blog
   const { data: blogs, loading: loadingBlog, error } = useFetchBlog();
 
+  // Aseguro que blogs sea siempre un array
+  const safeBlogs = blogs || [];
+
+  // Hook de paginación para los artículos del blog
+  const {
+    currentPage,
+    totalPages,
+    paginatedItems: paginatedBlogs,
+    goToPage,
+    goToFirstPage,
+    goToLastPage,
+    goToNextPage,
+    goToPreviousPage,
+    hasNextPage,
+    hasPreviousPage,
+  } = usePagination({
+    items: safeBlogs,
+    itemsPerPage: 4,
+    initialPage: 1,
+  });
+
   // Seguimiento de la visita a la página "blog" para análisis interno y Google Analytics
   useVisitedPageTracking("blog");
   useVisitedPageTrackingGA("blog");
-
-  // Ruta de la imagen de error
-  const imageError = "/images/web/error.png";
 
   return (
     <>
@@ -70,6 +94,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
           locale: currentUrl,
         }}
       />
+
       {/* JSON-LD para Organización */}
       <OrganizationJsonLd
         type="Organization"
@@ -85,56 +110,70 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
         ]}
       />
 
-      {error ? (
+      {/* Mensaje de error si ocurre un problema al obtener los productos*/}
+      {error && (
         <div className={errorStyles.errorContainer}>
           <h3 className={errorStyles.errorText}>{intl.formatMessage({ id: "blog_Error" })}</h3>
           <div className={errorStyles.imageContainer}>
             <img src={imageError} alt="Error" />
           </div>
         </div>
-      ) : (
-        <div className={styles.blogContainer}>
-          {!loadingBlog && blogs && (
-            <>
-              {/* Título y descripción del blog */}
-              <div>
-                <h1 className="text-center">{intl.formatMessage({ id: "blog_Titulo" })}</h1>
-              </div>
-              <div className="mt-25p">
-                <p className="ti-20p">{intl.formatMessage({ id: "blog_Texto" })}</p>
-              </div>
-              {/* Contenido de las publicaciones del blog */}
-              <div className={styles.content}>
-                {blogs.map((blog) => (
-                  <Link className={styles.blogLink} href={`/blog/${blog.slug}`} key={blog.id_noticia} passHref>
-                    <div className={styles.blogCard}>
-                      <div className={styles.imageContainer}>
-                        <img src={`${IMAGE_BASE_URL}${blog.imagen_url}`} alt={blog.titulo} className={styles.blogImage} />
-                      </div>
-                      <div className={styles.blogText}>
-                        <h3>{blog.titulo}</h3>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-              {/* Botón para volver al principio */}
-              <ScrollToTopButton />
-            </>
+      )}
+
+      {/* Loader mientrás se accede a los artículos */}
+      {loadingBlog && <Loader className="BD" />}
+
+      {/* Contenido principal */}
+      {!loadingBlog && !error && safeBlogs && (
+        <div className={styles.blogContainer} id="principal">
+          {/* Título y descripción */}
+          <div>
+            <h1 className="text-center">{intl.formatMessage({ id: "blog_Titulo" })}</h1>
+          </div>
+          <div className="mt-25p">
+            <p className="ti-20p">{intl.formatMessage({ id: "blog_Texto" })}</p>
+          </div>
+
+          {/* Contenido  */}
+          <div className={styles.content}>
+            {paginatedBlogs.map((blog) => (
+              <Link className={styles.blogLink} href={`/blog/${blog.slug}`} key={blog.id_noticia} passHref>
+                <div className={styles.blogCard}>
+                  <div className={styles.imageContainer}>
+                    <img src={`${IMAGE_BASE_URL}${blog.imagen_url}`} alt={blog.titulo} className={styles.blogImage} />
+                  </div>
+                  <div className={styles.blogText}>
+                    <h3>{blog.titulo}</h3>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          {/* Paginador de los productos */}
+          {paginatedBlogs.length > 0 && (
+            <Paginator
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={goToPage}
+              onFirstPage={goToFirstPage}
+              onLastPage={goToLastPage}
+              onNextPage={goToNextPage}
+              onPreviousPage={goToPreviousPage}
+              hasNextPage={hasNextPage}
+              hasPreviousPage={hasPreviousPage}
+            />
           )}
-          {/* Muestra el Loader mientras se cargan las publicaciones del blog */}
-          {loadingBlog && (
-            <div className={styles.loaderContainer}>
-              <Loader className="BD" />
-            </div>
-          )}
+
+          {/* Boton de scroll arriba */}
+          <ScrollToTopButton />
         </div>
       )}
     </>
   );
 };
 
-// Asigna un texto de título de página específico (si es necesario para otras funcionalidades)
+// Define `pageTitleText` como una propiedad estática del componente
 BlogPage.pageTitleText = "blog";
 
 /**
