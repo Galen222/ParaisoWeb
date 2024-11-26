@@ -88,7 +88,7 @@ const SanBernardoPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
           {
-            telephone: "+34 532 83 50",
+            telephone: "+34 91 532 83 50",
             email: "info@paraisodeljamon.com",
           },
         ]}
@@ -100,7 +100,7 @@ const SanBernardoPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
         name="Paraíso Del Jamón I"
         description={intl.formatMessage({ id: "san-bernardo_SEO_Descripcion" })}
         url={currentUrl}
-        telephone="+34 532 83 50"
+        telephone="+34 91 532 83 50"
         address={{
           streetAddress: "San Bernardo, 8",
           addressLocality: "Madrid",

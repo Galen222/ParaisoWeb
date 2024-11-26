@@ -111,7 +111,7 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
           {
-            telephone: "+34 532 83 50",
+            telephone: "+34 91 532 83 50",
             email: "info@paraisodeljamon.com",
           },
         ]}

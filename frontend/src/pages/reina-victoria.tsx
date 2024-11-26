@@ -89,7 +89,7 @@ const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
           {
-            telephone: "+34 532 83 50",
+            telephone: "+34 91 532 83 50",
             email: "info@paraisodeljamon.com",
           },
         ]}
@@ -101,7 +101,7 @@ const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element
         name="Paraíso Del Jamón III"
         description={intl.formatMessage({ id: "reina-victoria_SEO_Descripcion" })}
         url={currentUrl}
-        telephone="+34 534 18 20"
+        telephone="+34 91 534 18 20"
         address={{
           streetAddress: "Reina Victoria, 3",
           addressLocality: "Madrid",

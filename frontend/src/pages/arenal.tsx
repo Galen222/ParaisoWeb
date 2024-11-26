@@ -89,7 +89,7 @@ const ArenalPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
           {
-            telephone: "+34 532 83 50",
+            telephone: "+34 91 532 83 50",
             email: "info@paraisodeljamon.com",
           },
         ]}
@@ -101,7 +101,7 @@ const ArenalPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
         name="Paraíso Del Jamón IV"
         description={intl.formatMessage({ id: "arenal_SEO_Descripcion" })}
         url={currentUrl}
-        telephone="+34 541 95 19"
+        telephone="+34 91 541 95 19"
         address={{
           streetAddress: "Arenal, 26",
           addressLocality: "Madrid",

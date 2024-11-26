@@ -88,7 +88,7 @@ const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): JSX.Element 
         logo={`${siteUrl}/images/navbar/imagenLogo.png`}
         contactPoint={[
           {
-            telephone: "+34 532 83 50",
+            telephone: "+34 91 532 83 50",
             email: "info@paraisodeljamon.com",
           },
         ]}
@@ -100,7 +100,7 @@ const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): JSX.Element 
         name="Paraíso Del Jamón II"
         description={intl.formatMessage({ id: "bravo-murillo_SEO_Descripcion" })}
         url={currentUrl}
-        telephone="+34 553 97 83"
+        telephone="+34 91 553 97 83"
         address={{
           streetAddress: "Bravo Murillo, 124",
           addressLocality: "Madrid",
