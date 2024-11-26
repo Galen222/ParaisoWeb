@@ -1,9 +1,15 @@
-/* scrollToTop.css */
+/* 
+ * Estilos para el componente ScrollToTopButton
+ * Este archivo contiene todos los estilos necesarios para el botón de scroll,
+ * incluyendo posicionamiento responsivo y estados de visibilidad
+ */
 
+/* Contenedor principal del botón */
 .scrollToTopContainer {
   margin-top: 40px;
 }
 
+/* Estilos base del botón de scroll */
 .scrollToTop {
   height: 40px;
   width: 40px;
@@ -15,21 +21,69 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: bottom 0.3s ease-in-out; /* Transición suave de la posición */
+  position: fixed;
+  transition: all 0.3s ease-in-out;
+  opacity: 0;
+  pointer-events: none;
 }
 
+/* Efecto hover del botón */
 .scrollToTop:hover {
   background: var(--text_color);
 }
 
+/* Estilos de la imagen dentro del botón */
 .scrollToTop img {
   width: 20px;
   height: auto;
 }
 
-/* Estilos para dispositivos tipo movil */
+/* 
+ * Clases de posicionamiento para diferentes dispositivos
+ * Cada clase define una posición específica para el botón
+ * según el tipo de dispositivo y la situación
+ */
+
+/* Posicionamiento para escritorio */
+.desktop {
+  bottom: 80px;
+  right: calc(25% + 20px);
+}
+
+/* Posicionamiento para tablet */
+.tablet {
+  bottom: 80px;
+  right: 20px;
+}
+
+/* Posicionamiento base para móvil */
+.mobile {
+  bottom: 20px;
+  right: 20px;
+}
+
+/* Posicionamiento especial para móvil cuando está cerca del footer */
+.mobileNearFooter {
+  bottom: 120px; /* footerHeight(100px) + distanceToStickAboveFooter(20px) */
+  right: 20px;
+}
+
+/* 
+ * Estados de visibilidad del botón
+ * Estas clases controlan la opacidad y la interactividad del botón
+ */
+.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Media queries para ajustes responsivos */
 @media (max-width: 768px) {
-  /* Ajustes de posición del botón de desplazamiento en movil */
   .scrollToTopContainer {
     margin-top: 30px;
   }

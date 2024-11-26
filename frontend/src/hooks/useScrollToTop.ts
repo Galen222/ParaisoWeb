@@ -1,24 +1,40 @@
+// hooks/UseScrollToTop.ts
+
 import { useState, useEffect } from "react";
 
+/**
+ * Tipos de posicionamiento del botón según el dispositivo y la situación
+ */
+type ButtonPosition = "desktop" | "tablet" | "mobile" | "mobileNearFooter";
+
+/**
+ * Interface que define la salida del hook useScrollToTop
+ */
 export interface UseScrollToTopOutput {
   isScrollButtonVisible: boolean;
-  scrollButtonStyle: React.CSSProperties;
+  buttonPosition: ButtonPosition;
   scrollToTop: () => void;
 }
 
 /**
- * Hook personalizado que gestiona la visibilidad y el estilo de un botón para desplazarse al inicio de la página.
+ * Hook personalizado que gestiona la visibilidad y el posicionamiento del botón para
+ * desplazarse al inicio de la página.
  *
- * @returns {UseScrollToTopOutput} Un objeto que contiene la visibilidad del botón, el estilo del botón y la función para desplazarse al inicio.
+ * Este hook maneja:
+ * - La visibilidad del botón basada en el scroll
+ * - El posicionamiento responsivo según el tipo de dispositivo
+ * - La lógica de desplazamiento suave hacia arriba
+ *
+ * @returns {UseScrollToTopOutput} Un objeto que contiene la visibilidad del botón,
+ * su posición actual y la función para desplazarse al inicio.
  */
 const useScrollToTop = (): UseScrollToTopOutput => {
   // Estado que indica si el botón de desplazamiento es visible
   const [isScrollButtonVisible, setIsScrollButtonVisible] = useState<boolean>(false);
-  // Estado que contiene el estilo actual del botón de desplazamiento
-  const [scrollButtonStyle, setScrollButtonStyle] = useState<React.CSSProperties>({});
-  // Estado que determina si el dispositivo es un móvil
+  // Estado que contiene la clase de posicionamiento actual del botón
+  const [buttonPosition, setButtonPosition] = useState<ButtonPosition>("desktop");
+  // Estados que determinan el tipo de dispositivo
   const [isMobile, setIsMobile] = useState<boolean>(false);
-  // Estado que determina si el dispositivo es una tablet
   const [isTablet, setIsTablet] = useState<boolean>(false);
 
   /**
@@ -41,58 +57,33 @@ const useScrollToTop = (): UseScrollToTopOutput => {
       checkScreenSize();
 
       /**
-       * Función que maneja el evento de scroll y actualiza la visibilidad y el estilo del botón.
+       * Función que maneja el evento de scroll y actualiza la visibilidad y el posicionamiento del botón.
        */
       const handleScroll = () => {
         const scrollTop = window.scrollY; // Posición de desplazamiento vertical actual
         const viewportHeight = window.innerHeight; // Altura de la ventana de visualización
         const documentHeight = document.documentElement.scrollHeight; // Altura total del documento
-
-        // Determina la altura del footer según el dispositivo
-        const footerHeight = isMobile ? 100 : 60; // 90px en móviles, 60px en tablets y escritorio
-
-        const distanceToStickAboveFooter = 20; // Distancia del botón al footer
+        const footerHeight = isMobile ? 100 : 60; // 100px en móviles, 60px en tablets y escritorio
         const scrollTrigger = 400; // Punto de desplazamiento donde aparece el botón
 
         if (scrollTop > scrollTrigger) {
-          setIsScrollButtonVisible(true); // Muestra el botón de desplazamiento
-          const distanceFromBottom = documentHeight - (scrollTop + viewportHeight); // Distancia desde la parte inferior del documento
+          setIsScrollButtonVisible(true);
+          const distanceFromBottom = documentHeight - (scrollTop + viewportHeight);
 
-          let bottomPosition = "20px"; // Posición por defecto del botón desde abajo
-          let rightPosition = "20px"; // Posición del botón desde la derecha
-
+          // Determina la posición del botón según el tipo de dispositivo y la posición del scroll
           if (isMobile) {
-            // Ajustes para dispositivos móviles
             if (distanceFromBottom <= footerHeight) {
-              bottomPosition = `${footerHeight - distanceFromBottom + distanceToStickAboveFooter}px`;
-            }
-          } else {
-            // Ajustes para tablets y escritorio
-            if (isTablet) {
-              rightPosition = "20px"; // Posición a 20px desde la derecha en tablets
+              setButtonPosition("mobileNearFooter");
             } else {
-              rightPosition = "calc(25% + 20px)"; // Posición en escritorio
+              setButtonPosition("mobile");
             }
-            bottomPosition = "80px"; // Posición fija desde abajo
-            // No ajustamos bottomPosition al acercarnos al footer porque el footer es fijo
+          } else if (isTablet) {
+            setButtonPosition("tablet");
+          } else {
+            setButtonPosition("desktop");
           }
-
-          // Actualiza el estilo del botón
-          setScrollButtonStyle({
-            position: "fixed",
-            bottom: bottomPosition,
-            right: rightPosition,
-            transition: "all 0.3s ease-in-out",
-            opacity: 1,
-            pointerEvents: "auto",
-          });
         } else {
-          // Oculta el botón si no se ha alcanzado el punto de activación
           setIsScrollButtonVisible(false);
-          setScrollButtonStyle({
-            opacity: 0,
-            pointerEvents: "none",
-          });
         }
       };
 
@@ -120,7 +111,7 @@ const useScrollToTop = (): UseScrollToTopOutput => {
     }
   };
 
-  return { isScrollButtonVisible, scrollButtonStyle, scrollToTop };
+  return { isScrollButtonVisible, buttonPosition, scrollToTop };
 };
 
 export default useScrollToTop;
