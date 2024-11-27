@@ -32,12 +32,6 @@
   transform: translateZ(0); /* Optimiza el rendimiento de la animación */
 }
 
-/* Estilos para el botón de borrar cookies cuando está deshabilitado */
-button.deleteButton.disabledButton {
-  cursor: not-allowed !important; /* Cambia el cursor a 'no permitido' */
-  pointer-events: auto !important; /* Permite que el cursor cambie */
-}
-
 /* Separador de filas en una tabla */
 .tableSeparator td {
   padding: 1px 0; /* Espaciado vertical ajustado */

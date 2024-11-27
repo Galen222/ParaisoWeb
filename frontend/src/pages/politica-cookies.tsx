@@ -373,9 +373,7 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): JSX.Eleme
       </div>
       <div className="text-center">
         <button
-          className={`btn btn-primary mx-auto ${styles.deleteButton} ${isPushingDelCookies ? "animate-push" : ""} ${
-            !cookiesState ? styles.disabledButton : ""
-          }`}
+          className={`btn btn-primary mx-auto ${styles.deleteButton} ${isPushingDelCookies ? "animate-push" : ""} `}
           disabled={!cookiesState}
           onClick={() => handleDeleteCookies()}
           onAnimationEnd={() => setIsPushingDelCookies(false)}

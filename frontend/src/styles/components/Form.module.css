@@ -95,12 +95,6 @@
   transform: translateZ(0); /* Optimiza el rendimiento de la animación */
 }
 
-/* Cambia el cursor cuando el botón está deshabilitado */
-button.submitButton.disabledButton {
-  cursor: not-allowed !important; /* Cambia el cursor a 'no permitido' */
-  pointer-events: auto !important; /* Permite que el cursor cambie */
-}
-
 /* Caja para mostrar el nombre del archivo seleccionado */
 .fileNameBox {
   flex-grow: 1; /* Permite que el elemento crezca para ocupar el espacio disponible */
