@@ -1,38 +1,22 @@
-// components/Form.tsx
-
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import { useToastMessage } from "../hooks/useToast";
-import { submitForm, FormData as FormServiceData } from "../services/formService"; // Importa el servicio y la interfaz
+import { submitForm, FormData as FormServiceData } from "../services/formService";
+import validator from "validator";
 import styles from "../styles/components/Form.module.css";
 
-/**
- * Propiedades para el componente Form.
- * @property {function} onSubmit - Función que se ejecuta al enviar el formulario exitosamente.
- */
 export interface FormProps {
   onSubmit: () => void;
 }
 
-/**
- * Componente Form
- *
- * Renderiza un formulario de contacto que permite al usuario ingresar su nombre, correo electrónico,
- * mensaje, seleccionar el motivo de contacto, y cargar un archivo. Incluye validaciones y opciones
- * para personalizar la interacción con las cookies y la política de privacidad.
- *
- * @param {FormProps} props - Propiedades del componente Form.
- * @returns {JSX.Element} Formulario de contacto.
- */
 const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
-  const intl = useIntl(); // Hook para obtener mensajes localizados
-  const [isPushingSend, setIsPushingSend] = useState(false); // Estado para la animación del botón de enviar
-  const [isPushingFile, setIsPushingFile] = useState(false); // Estado para la animación del botón de subir archivo
-  const [isSubmitting, setIsSubmitting] = useState(false); // Estado de envío del formulario
+  const intl = useIntl();
+  const [isPushingSend, setIsPushingSend] = useState(false);
+  const [isPushingFile, setIsPushingFile] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Estado del formulario, incluyendo los datos que se enviarán
   const [formData, setFormData] = useState<FormServiceData>({
     name: "",
     reason: "",
@@ -40,78 +24,105 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
     message: "",
     file: null,
   });
-  const [isValidEmail, setIsValidEmail] = useState(true); // Validación del email
-  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false); // Validación del checkbox de privacidad
+  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
 
-  const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones
-  const trackButtonClick = useButtonClickTrackingGA(); // Seguimiento del botón de envío en Google Analytics
+  const { showToast } = useToastMessage();
+  const trackButtonClick = useButtonClickTrackingGA();
 
   /**
-   * Maneja el cambio del checkbox de privacidad.
-   * @param {ChangeEvent<HTMLInputElement>} e - Evento de cambio en el checkbox de privacidad.
+   * Valida cada parte del email (nombre, dominio, servidor) según reglas específicas
+   * @param part - Parte del email a validar
+   * @returns boolean indicando si la parte es válida
    */
+  const validateEmailPart = (part: string): boolean => {
+    // No permite . o - al inicio o final de cada parte
+    if (part.startsWith(".") || part.startsWith("-") || part.endsWith(".") || part.endsWith("-")) {
+      return false;
+    }
+    // No permite múltiples . o - consecutivos
+    if (/[.-]{2,}/.test(part)) {
+      return false;
+    }
+    return true;
+  };
+
   const handlePrivacyCheck = (e: ChangeEvent<HTMLInputElement>) => {
     setIsPrivacyChecked(e.target.checked);
   };
 
   /**
-   * Valida el nombre ingresado permitiendo letras en cualquier idioma, espacios, guiones y apóstrofes.
-   * @param {ChangeEvent<HTMLInputElement>} e - Evento de cambio en el campo de nombre.
+   * Valida y sanitiza el nombre permitiendo solo caracteres válidos
    */
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-    // Expresión regular que permite letras en cualquier idioma, espacios, guiones y apóstrofes
     const nameRegex = /^[\p{L}\s'-]*$/u;
-
     if (nameRegex.test(value)) {
       setFormData({ ...formData, [name]: value });
     }
   };
 
   /**
-   * Valida el formato del correo electrónico y actualiza el estado.
-   * @param {ChangeEvent<HTMLInputElement>} e - Evento de cambio en el campo de email.
+   * Maneja la validación y sanitización del email en tiempo real
+   * Implementa reglas estrictas para el formato del email
    */
   const handleValidateEmail = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
-    const isValid = emailRegex.test(value);
-    setIsValidEmail(isValid);
-    setFormData({ ...formData, [name]: value });
+    const { value } = e.target;
+    let sanitizedValue = "";
+
+    for (const char of value) {
+      if (!/[a-zA-Z0-9.@-]/.test(char)) continue;
+
+      if (char === "@" && sanitizedValue.includes("@")) continue;
+
+      if (char === "." || char === "-") {
+        // Si el siguiente carácter es @, no añadimos el . o -
+        if (value.indexOf("@") > -1 && value.indexOf("@") === sanitizedValue.length + 1) continue;
+
+        if (sanitizedValue === "" || sanitizedValue.endsWith("@")) continue;
+        if (sanitizedValue.endsWith(".") || sanitizedValue.endsWith("-")) continue;
+      }
+
+      sanitizedValue += char;
+    }
+
+    if (sanitizedValue.includes("@")) {
+      const [localPart, domainPart] = sanitizedValue.split("@");
+
+      if (validateEmailPart(localPart) && domainPart && validateEmailPart(domainPart)) {
+        const isValid = validator.isEmail(sanitizedValue);
+        setIsValidEmail(isValid);
+        setFormData({ ...formData, email: sanitizedValue });
+        return;
+      }
+    }
+
+    setFormData({ ...formData, email: sanitizedValue });
+    setIsValidEmail(false);
   };
 
-  /**
-   * Maneja la selección en el campo de motivo.
-   * @param {ChangeEvent<HTMLSelectElement>} e - Evento de cambio en el campo de selección de motivo.
-   */
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  /**
-   * Maneja el cambio en el campo de mensaje.
-   * @param {ChangeEvent<HTMLTextAreaElement>} e - Evento de cambio en el área de texto del mensaje.
-   */
   const handleValidateMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
   /**
-   * Maneja el cambio de archivo y valida el tipo y tamaño.
-   * @param {ChangeEvent<HTMLInputElement>} e - Evento de cambio en el campo de carga de archivo.
+   * Valida el archivo subido (tipo y tamaño)
    */
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
     if (file) {
       if (file.type !== "image/jpeg" && file.type !== "application/pdf") {
-        showToast("contacto_ArchivoNoJPG-PDF", 4000, "error"); // Muestra el toast utilizando el hook
+        showToast("contacto_ArchivoNoJPG-PDF", 4000, "error");
         return;
       }
       if (file.size > 10485760) {
-        showToast("contacto_ArchivoGrande", 4000, "error"); // Muestra el toast utilizando el hook
+        showToast("contacto_ArchivoGrande", 4000, "error");
         return;
       }
       setFormData({ ...formData, file });
@@ -121,21 +132,16 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
   };
 
   /**
-   * Maneja el envío del formulario, incluyendo validación, envío a la API y notificación.
-   * @param {FormEvent<HTMLFormElement>} e - Evento de envío del formulario.
+   * Maneja el envío del formulario
    */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     trackButtonClick("Enviar Formulario");
-    setIsSubmitting(true); // Comienza el envío
+    setIsSubmitting(true);
 
     try {
-      await submitForm(formData); // Enviar el formulario
-
-      // Notificación de éxito
-      showToast("contacto_Formulario_Ok", 4000, "success"); // Muestra el toast utilizando el hook
-
-      // Restablece el formulario
+      await submitForm(formData);
+      showToast("contacto_Formulario_Ok", 4000, "success");
       setFormData({
         name: "",
         reason: "",
@@ -146,16 +152,14 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
       setIsPrivacyChecked(false);
       onSubmit();
     } catch (error: any) {
-      // Notificación de error
-      showToast("contacto_Formulario_Error", 4000, "error"); // Muestra el toast utilizando el hook
+      showToast("contacto_Formulario_Error", 4000, "error");
     } finally {
-      setIsSubmitting(false); // Finaliza el envío
+      setIsSubmitting(false);
     }
   };
 
   /**
-   * Verifica si el formulario está completo y todos los campos requeridos están llenos y válidos.
-   * @returns {boolean} Verdadero si el formulario está listo para enviar, falso de lo contrario.
+   * Verifica si el formulario está completo y válido
    */
   const CheckFormComplete = (): boolean => {
     return (
@@ -171,7 +175,6 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
-      {/* Campo de nombre */}
       <div>
         <h3 className="text-center">{intl.formatMessage({ id: "contacto_Titulo_Formulario" })}</h3>
         <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
@@ -187,7 +190,6 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
         />
       </div>
 
-      {/* Campo de selección de motivo */}
       <div>
         <label htmlFor="reason">{intl.formatMessage({ id: "contacto_Motivo" })}</label>
         <select id="reason" name="reason" value={formData.reason} onChange={handleSelect} required>
@@ -195,27 +197,14 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
             {intl.formatMessage({ id: "contacto_SeleccioneMotivo" })}
           </option>
           <option value="informacion">{intl.formatMessage({ id: "contacto_MotivoInfo" })}</option>
-          <option value="comercial">
-            {intl.formatMessage({
-              id: "contacto_MotivoComercial",
-            })}
-          </option>
-          <option value="factura">
-            {intl.formatMessage({
-              id: "contacto_MotivoFactura",
-            })}
-          </option>
-          <option value="curriculum">
-            {intl.formatMessage({
-              id: "contacto_MotivoCurriculum",
-            })}
-          </option>
+          <option value="comercial">{intl.formatMessage({ id: "contacto_MotivoComercial" })}</option>
+          <option value="factura">{intl.formatMessage({ id: "contacto_MotivoFactura" })}</option>
+          <option value="curriculum">{intl.formatMessage({ id: "contacto_MotivoCurriculum" })}</option>
           <option value="error">{intl.formatMessage({ id: "contacto_MotivoBug" })}</option>
           <option value="otro">{intl.formatMessage({ id: "contacto_MotivoOtro" })}</option>
         </select>
       </div>
 
-      {/* Campo de correo electrónico */}
       <div>
         <label htmlFor="email">{intl.formatMessage({ id: "contacto_Email" })}</label>
         <input
@@ -230,17 +219,16 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
         />
       </div>
 
-      {/* Campo de mensaje */}
       <div>
         <label htmlFor="message">{intl.formatMessage({ id: "contacto_Mensaje" })}</label>
         <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
       </div>
 
-      {/* Subir archivo */}
       <div className={styles.archiveText}>
         <span>{intl.formatMessage({ id: "contacto_SubirArchivo1" })}</span>
         <span className="fs-14p">{intl.formatMessage({ id: "contacto_SubirArchivo2" })}</span>
       </div>
+
       <div className={styles.fileUploadContainer}>
         <div className="w-600p">
           <input type="file" id="fileUpload" name="fileUpload" accept="image/jpeg,application/pdf" className="d-none" onChange={handleFileChange} />
@@ -259,7 +247,6 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
         <div className={`text-center ${styles.fileNameBox}`}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
       </div>
 
-      {/* Checkbox de política de privacidad */}
       <div className={styles.customCheckbox}>
         <div className={styles.checkboxLabelContainer}>
           <span className={styles.checkboxControl} onClick={() => setIsPrivacyChecked(!isPrivacyChecked)}>
@@ -271,30 +258,21 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
             )}
           </span>
           <label htmlFor="privacyCheck" className={styles.checkText}>
-            <span>
-              {intl.formatMessage({
-                id: "contacto_PoliticaPrivacidad_1",
-              })}
-            </span>
+            <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}</span>
             <Link href="/politica-privacidad" className={styles.link}>
-              <span>
-                {intl.formatMessage({
-                  id: "contacto_PoliticaPrivacidad_2",
-                })}
-              </span>
+              <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
             </Link>
           </label>
         </div>
       </div>
 
-      {/* Botón de envío */}
       <button
         type="submit"
-        className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${isPushingSend ? "animate-push" : ""} `}
-        disabled={!CheckFormComplete() || isSubmitting} // Desactiva el botón si no se completa el formulario o está enviando
+        className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${isPushingSend ? "animate-push" : ""}`}
+        disabled={!CheckFormComplete() || isSubmitting}
         onClick={() => setIsPushingSend(true)}
         onAnimationEnd={() => setIsPushingSend(false)}
-        aria-disabled={!CheckFormComplete() || isSubmitting} // Mejora la accesibilidad
+        aria-disabled={!CheckFormComplete() || isSubmitting}
       >
         {isSubmitting ? intl.formatMessage({ id: "contacto_BotonEnviando" }) : intl.formatMessage({ id: "contacto_BotonEnviar" })}
       </button>
