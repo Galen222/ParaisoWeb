@@ -290,10 +290,13 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
       {/* Botón de envío */}
       <button
         type="submit"
-        className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${isPushingSend ? "animate-push" : ""}`}
+        className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${isPushingSend ? "animate-push" : ""} ${
+          !CheckFormComplete() || isSubmitting ? styles.disabledButton : ""
+        }`}
         disabled={!CheckFormComplete() || isSubmitting} // Desactiva el botón si no se completa el formulario o está enviando
         onClick={() => setIsPushingSend(true)}
         onAnimationEnd={() => setIsPushingSend(false)}
+        aria-disabled={!CheckFormComplete() || isSubmitting} // Mejora la accesibilidad
       >
         {isSubmitting ? intl.formatMessage({ id: "contacto_BotonEnviando" }) : intl.formatMessage({ id: "contacto_BotonEnviar" })}
       </button>
