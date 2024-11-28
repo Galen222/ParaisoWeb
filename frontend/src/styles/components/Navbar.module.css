@@ -26,7 +26,6 @@
   justify-content: space-between; /* Distribuye el espacio entre los elementos */
   align-items: center; /* Centra verticalmente los elementos */
   height: 140px; /* Altura fija para mantener consistencia visual */
-  margin-bottom: 20px; /* Espacio inferior para separar del menú de navegación */
 }
 
 /* Contenedor para el logo de la imagen */
@@ -181,6 +180,7 @@
   position: fixed; /* Posicionamiento fijo */
   top: 0; /* Posición superior */
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra para dar profundidad */
+  background-color: rgba(74, 64, 58, 0.75); /* Fondo semi-transparente */
 }
 
 /* Espaciador para evitar saltos cuando el menú se vuelve sticky */
@@ -231,7 +231,7 @@
   right: 0; /* Alinea la barra al final del enlace */
   bottom: 0; /* Posiciona la barra en la parte inferior del enlace */
   height: 3px; /* Altura de la barra */
-  background-color: white; /* Color de la barra */
+  background-color: rgba(175, 36, 36, 0.904); /* Color de la barra */
   transform: scaleX(0); /* Inicialmente la barra está oculta */
   transition: transform 0.3s ease; /* Transición suave para la transformación */
 }
@@ -244,14 +244,15 @@
   .noLink:hover::after {
     transform: scaleX(1); /* Escala a tamaño completo para hacer visible la barra */
   }
-
-  /* 
+  /*
   .links a:hover,
   .linksDropdown a:hover,
-  .noLink:hover,
-  .dropdown a:hover {
+  .dropdown a:hover,
+  .noLink:hover {
     background-color: #7a726b;
-  } 
+    color: #e3011a;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  }
   */
 }
 
@@ -264,13 +265,27 @@
     content: none; /* Elimina la barra inferior */
   }
 
-  /* 
-  .links a:hover,
-  .linksDropdown a:hover,
-  .noLink:hover,
-  .dropdown a:hover {
-    background-color: inherit;
-  } 
+  /*
+  .navbar .links a,
+  .navbar .linksDropdown a,
+  .navbar .dropdown a,
+  .navbar .noLink,
+  .navbar .links a:hover,
+  .navbar .linksDropdown a:hover,
+  .navbar .dropdown a:hover,
+  .navbar .noLink:hover,
+  .navbar .links a:active,
+  .navbar .linksDropdown a:active,
+  .navbar .dropdown a:active,
+  .navbar .noLink:active,
+  .navbar .links a:focus,
+  .navbar .linksDropdown a:focus,
+  .navbar .dropdown a:focus,
+  .navbar .noLink:focus {
+      background-color: inherit;
+    color: white !important;
+    text-shadow: none !important;
+  }
   */
 }
 
@@ -456,13 +471,13 @@
   .imgLogoContainer {
     width: auto; /* Ancho automático para adaptarse al contenido */
     display: flex; /* Utiliza flexbox para centrar */
-    height: 200px; /* Altura fija de 200 píxeles */
+    height: auto; /* Altura fija de 200 píxeles */
     justify-content: center; /* Centra horizontalmente el logo */
   }
 
   /* Ajustes de la imagen del logo en móviles */
   .imgLogo {
-    height: 190px; /* Reduce la altura del logo a 190 píxeles */
+    height: 220px; /* Reduce la altura del logo a 190 píxeles */
     width: auto; /* Mantiene la proporción de la imagen */
   }
 
