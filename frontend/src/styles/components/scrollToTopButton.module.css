@@ -1,90 +1,95 @@
 /* 
  * Estilos para el componente ScrollToTopButton
  * Este archivo contiene todos los estilos necesarios para el botón de scroll,
- * incluyendo posicionamiento responsivo y estados de visibilidad
+ * incluyendo posicionamiento responsivo y estados de visibilidad.
  */
 
 /* Contenedor principal del botón */
 .scrollToTopContainer {
-  margin-top: 40px;
+  margin-top: 40px; /* Espaciado superior para el contenedor del botón */
 }
 
 /* Estilos base del botón de scroll */
 .scrollToTop {
-  height: 40px;
-  width: 40px;
-  text-align: center;
-  background: rgba(74, 64, 58, 0.5);
-  border-radius: 20px;
-  cursor: pointer;
-  z-index: 5;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  transition: all 0.3s ease-in-out;
-  opacity: 0;
-  pointer-events: none;
+  height: 40px; /* Altura del botón */
+  width: 40px; /* Ancho del botón */
+  text-align: center; /* Centrar el contenido dentro del botón */
+  background: rgba(74, 64, 58, 0.5); /* Color de fondo semi-transparente */
+  border-radius: 20px; /* Bordes redondeados */
+  cursor: pointer; /* Indicador de puntero interactivo */
+  z-index: 5; /* Asegura que el botón esté encima de otros elementos */
+  display: flex; /* Centra el contenido usando flexbox */
+  align-items: center; /* Alineación vertical centrada */
+  justify-content: center; /* Alineación horizontal centrada */
+  position: fixed; /* Posicionamiento fijo en la pantalla */
+  transition: all 0.3s ease-in-out; /* Transición suave para cambios */
+  opacity: 0; /* Oculto inicialmente */
+  pointer-events: none; /* No interactuable inicialmente */
 }
 
 /* Efecto hover del botón */
 .scrollToTop:hover {
-  background: var(--text_color);
+  background: var(--text_color); /* Cambia el color de fondo al pasar el ratón */
 }
 
 /* Estilos de la imagen dentro del botón */
 .scrollToTop img {
-  width: 20px;
-  height: auto;
+  width: 20px; /* Ancho de la imagen */
+  height: auto; /* Altura proporcional */
 }
 
 /* 
- * Clases de posicionamiento para diferentes dispositivos
- * Cada clase define una posición específica para el botón
- * según el tipo de dispositivo y la situación
+ * Clases de posicionamiento para diferentes dispositivos y situaciones.
+ * Cada clase define una posición específica del botón dependiendo del dispositivo.
  */
 
 /* Posicionamiento para escritorio */
 .desktop {
-  bottom: 80px;
-  right: calc(25% + 20px);
+  bottom: 80px; /* Distancia desde el borde inferior */
+  right: calc(25% + 20px); /* Posicionado relativo a la ventana de contenido */
 }
 
 /* Posicionamiento para tablet */
 .tablet {
-  bottom: 80px;
-  right: 20px;
+  bottom: 80px; /* Distancia desde el borde inferior */
+  right: 20px; /* Posicionado desde el borde derecho */
 }
 
 /* Posicionamiento base para móvil */
 .mobile {
-  bottom: 20px;
-  right: 20px;
+  bottom: 20px; /* Más cerca del borde inferior */
+  right: 20px; /* Posicionado desde el borde derecho */
 }
 
 /* Posicionamiento especial para móvil cuando está cerca del footer */
 .mobileNearFooter {
   bottom: 120px; /* footerHeight(100px) + distanceToStickAboveFooter(20px) */
-  right: 20px;
+  right: 20px; /* Posicionado desde el borde derecho */
+}
+
+/* Posicionamiento especial para móvil en modo horizontal */
+.mobileLandscape {
+  bottom: 80px; /* Misma posición que tablet en modo final */
+  right: 20px; /* Posicionado desde el borde derecho */
 }
 
 /* 
  * Estados de visibilidad del botón
- * Estas clases controlan la opacidad y la interactividad del botón
+ * Estas clases controlan la opacidad y la interactividad del botón.
  */
 .visible {
-  opacity: 1;
-  pointer-events: auto;
+  opacity: 1; /* El botón es visible */
+  pointer-events: auto; /* El botón es interactuable */
 }
 
 .hidden {
-  opacity: 0;
-  pointer-events: none;
+  opacity: 0; /* El botón está oculto */
+  pointer-events: none; /* El botón no es interactuable */
 }
 
 /* Media queries para ajustes responsivos */
 @media (max-width: 768px) {
   .scrollToTopContainer {
-    margin-top: 30px;
+    margin-top: 30px; /* Espaciado superior reducido en pantallas más pequeñas */
   }
 }

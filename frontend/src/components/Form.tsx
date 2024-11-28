@@ -31,7 +31,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
   const trackButtonClick = useButtonClickTrackingGA();
 
   /**
-   * Valida cada parte del email (nombre, dominio, servidor) según reglas específicas
+   * Valida cada parte del email según reglas específicas
    * @param part - Parte del email a validar
    * @returns boolean indicando si la parte es válida
    */

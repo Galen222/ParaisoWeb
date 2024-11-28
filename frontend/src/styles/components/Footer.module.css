@@ -50,6 +50,13 @@
   }
 }
 
+/* Cambios específicos para móviles en modo horizontal */
+@media (max-width: 1024px) and (orientation: landscape) {
+  .footer {
+    position: static;
+  }
+}
+
 @media (max-width: 768px) {
   .footer {
     position: static;

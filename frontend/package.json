@@ -1,6 +1,6 @@
 {
   "name": "paraisoweb",
-  "version": "0.999.3",
+  "version": "0.999.4",
   "private": true,
   "scripts": {
     "dev": "next dev",

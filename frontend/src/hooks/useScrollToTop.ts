@@ -3,17 +3,17 @@
 import { useState, useEffect } from "react";
 
 /**
- * Tipos de posicionamiento del botón según el dispositivo y la situación
+ * Tipos de posicionamiento del botón según el dispositivo y la situación.
  */
-type ButtonPosition = "desktop" | "tablet" | "mobile" | "mobileNearFooter";
+type ButtonPosition = "desktop" | "tablet" | "mobile" | "mobileNearFooter" | "mobileLandscape";
 
 /**
  * Interface que define la salida del hook useScrollToTop
  */
 export interface UseScrollToTopOutput {
-  isScrollButtonVisible: boolean;
-  buttonPosition: ButtonPosition;
-  scrollToTop: () => void;
+  isScrollButtonVisible: boolean; // Determina si el botón debe ser visible
+  buttonPosition: ButtonPosition; // Posicionamiento dinámico del botón
+  scrollToTop: () => void; // Función que realiza el scroll hacia arriba
 }
 
 /**
@@ -36,6 +36,7 @@ const useScrollToTop = (): UseScrollToTopOutput => {
   // Estados que determinan el tipo de dispositivo
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [isTablet, setIsTablet] = useState<boolean>(false);
+  const [isMobileLandscape, setIsMobileLandscape] = useState<boolean>(false);
 
   /**
    * Función para verificar el tamaño de la pantalla y actualizar los estados relevantes.
@@ -43,10 +44,19 @@ const useScrollToTop = (): UseScrollToTopOutput => {
   const checkScreenSize = () => {
     if (typeof window !== "undefined") {
       const screenWidth = window.innerWidth;
+      const screenHeight = window.innerHeight;
+
+      // Detectar móviles en cualquier orientación
       const mobileScreen = screenWidth <= 768;
-      const tabletScreen = screenWidth > 768 && screenWidth <= 1024;
+
+      // Detectar móviles específicamente en modo horizontal
+      const mobileLandscape = screenWidth <= 1024 && screenHeight <= 768 && screenWidth > screenHeight;
+
+      // Detectar tablets (excluyendo móviles horizontales)
+      const tabletScreen = screenWidth > 768 && screenWidth <= 1024 && !mobileLandscape;
 
       setIsMobile(mobileScreen);
+      setIsMobileLandscape(mobileLandscape);
       setIsTablet(tabletScreen);
     }
   };
@@ -63,7 +73,9 @@ const useScrollToTop = (): UseScrollToTopOutput => {
         const scrollTop = window.scrollY; // Posición de desplazamiento vertical actual
         const viewportHeight = window.innerHeight; // Altura de la ventana de visualización
         const documentHeight = document.documentElement.scrollHeight; // Altura total del documento
-        const footerHeight = isMobile ? 100 : 60; // 100px en móviles, 60px en tablets y escritorio
+
+        // Altura del footer según el caso
+        const footerHeight = isMobileLandscape ? 80 : isMobile ? 100 : 60; // Móviles horizontales usan altura de tablet
         const scrollTrigger = 400; // Punto de desplazamiento donde aparece el botón
 
         if (scrollTop > scrollTrigger) {
@@ -71,7 +83,13 @@ const useScrollToTop = (): UseScrollToTopOutput => {
           const distanceFromBottom = documentHeight - (scrollTop + viewportHeight);
 
           // Determina la posición del botón según el tipo de dispositivo y la posición del scroll
-          if (isMobile) {
+          if (isMobileLandscape) {
+            if (distanceFromBottom <= footerHeight) {
+              setButtonPosition("tablet");
+            } else {
+              setButtonPosition("mobile");
+            }
+          } else if (isMobile) {
             if (distanceFromBottom <= footerHeight) {
               setButtonPosition("mobileNearFooter");
             } else {
@@ -100,7 +118,7 @@ const useScrollToTop = (): UseScrollToTopOutput => {
         window.removeEventListener("resize", checkScreenSize);
       };
     }
-  }, [isMobile, isTablet]);
+  }, [isMobile, isTablet, isMobileLandscape]);
 
   /**
    * Función que permite desplazarse suavemente al inicio de la página.
