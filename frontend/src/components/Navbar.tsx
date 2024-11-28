@@ -242,7 +242,6 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
           <AnimatedTitle key={pageTitleText} pageTitleText={pageTitleText} cookiesModalClosed={cookiesModalClosed} />
         </div>
       </nav>
-      {isSticky && <div className={styles.navbarSpacer} />}
     </>
   );
 };

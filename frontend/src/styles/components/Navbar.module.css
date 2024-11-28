@@ -183,12 +183,6 @@
   background-color: rgba(74, 64, 58, 0.75); /* Fondo semi-transparente */
 }
 
-/* Espaciador para evitar saltos cuando el menú se vuelve sticky */
-.navbarSpacer {
-  height: 46px; /* Altura del espaciador */
-  width: 100%; /* Ancho completo */
-}
-
 /* Contenedor para los enlaces individuales */
 .links {
   width: 50%; /* Ancho del 50% del contenedor padre */
@@ -439,11 +433,6 @@
     position: static; /* Posicionamiento estático */
     top: auto; /* Elimina la posición superior */
     box-shadow: none; /* Elimina la sombra */
-  }
-
-  /* Ocultar espaciador en móvil */
-  .navbarSpacer {
-    display: none; /* Oculta el espaciador */
   }
 
   /* Pseudo-elemento antes de la barra de navegación */
