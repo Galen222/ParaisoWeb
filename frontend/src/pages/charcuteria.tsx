@@ -1,6 +1,6 @@
 // pages/charcuteria.tsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { useIntl } from "react-intl";
 import Loader from "../components/Loader";
@@ -8,6 +8,7 @@ import { useFetchCharcuteria } from "../hooks/useFetchCharcuteria";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import ScrollToTopButton from "../components/ScrollToTopButton";
+import useScreenSize from "../hooks/useScreenSize";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/charcuteria.module.css";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
@@ -56,6 +57,12 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
   // Hook para obtener los datos de charcutería y estados de carga
   const { data: products, loading: loadingProducts, error } = useFetchCharcuteria();
 
+  // Obtener información de la pantalla
+  const { width } = useScreenSize();
+
+  // Estado para el control de flip en dispositivos móviles
+  const [isClickFlipEnabled, setIsClickFlipEnabled] = useState<boolean>(width <= 800);
+
   // Aseguro que products sea siempre un array
   const safeProducts = products || [];
 
@@ -76,32 +83,6 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
     itemsPerPage: 6,
     initialPage: 1,
   });
-
-  // Estado para el control de flip en dispositivos móviles
-  const [isClickFlipEnabled, setIsClickFlipEnabled] = useState<boolean>(false);
-
-  /**
-   * Efecto que habilita el flip de las tarjetas si el ancho de la ventana es menor o igual a 800px.
-   */
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // Establece el estado inicial
-      setIsClickFlipEnabled(window.innerWidth <= 800);
-
-      /**
-       * Función para manejar el evento de redimensionamiento de la ventana.
-       */
-      const handleResize = () => {
-        setIsClickFlipEnabled(window.innerWidth <= 800);
-      };
-
-      // Añade el event listener para el redimensionamiento
-      window.addEventListener("resize", handleResize);
-
-      // Limpia el event listener al desmontar el componente
-      return () => window.removeEventListener("resize", handleResize);
-    }
-  }, []);
 
   // Seguimiento de la visita a la página "charcuteria" para análisis interno y Google Analytics
   useVisitedPageTracking("charcuteria");

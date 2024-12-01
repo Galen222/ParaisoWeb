@@ -9,7 +9,7 @@ import AnimatedTitle from "../components/AnimatedTitle";
 import styles from "../styles/components/Navbar.module.css";
 import { useLocaleChange } from "../hooks/useLocaleChange";
 import useStickyNav from "../hooks/useStickyNav";
-import useWindowSize from "../hooks/useWindowSize";
+import useScreenSize from "../hooks/useScreenSize";
 
 /**
  * Interfaz que define las propiedades del componente Navbar.
@@ -74,8 +74,7 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
   const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();
   const navbarMenuRef = useRef<HTMLDivElement>(null);
   const { isSticky } = useStickyNav(navbarMenuRef);
-  const windowWidth = useWindowSize();
-  const isMobile = typeof windowWidth !== "undefined" && windowWidth <= 768;
+  const { isMobile } = useScreenSize();
 
   const handleLinkClick = () => {
     closeMobileMenu();

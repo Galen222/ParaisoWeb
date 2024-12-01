@@ -19,10 +19,10 @@ const useStickyNav = (navbarRef: React.RefObject<HTMLElement>) => {
 
         // Calculate new position
         const rect = navbarRef.current.getBoundingClientRect();
-        lastKnownPosition = rect.top + window.pageYOffset;
+        lastKnownPosition = rect.top + window.scrollY;
 
         // Update sticky state
-        setIsSticky(window.pageYOffset >= lastKnownPosition);
+        setIsSticky(window.scrollY >= lastKnownPosition);
       });
     };
 
@@ -38,7 +38,7 @@ const useStickyNav = (navbarRef: React.RefObject<HTMLElement>) => {
 
     const handleScroll = () => {
       if (!lastKnownPosition) return;
-      setIsSticky(window.pageYOffset >= lastKnownPosition);
+      setIsSticky(window.scrollY >= lastKnownPosition);
     };
 
     // Initialize and set up event listeners

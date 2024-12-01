@@ -14,7 +14,7 @@
   align-items: center; /* Centra verticalmente los elementos dentro del contenedor */
   align-content: center; /* Centra el contenido si hay múltiples líneas */
   justify-content: center; /* Centra horizontalmente los elementos dentro del contenedor */
-  z-index: 10; /* Asegura que el cargador esté por encima de otros elementos de la página */
+  z-index: 9; /* Asegura que el cargador esté por encima de otros elementos de la página */
 }
 
 .BD {

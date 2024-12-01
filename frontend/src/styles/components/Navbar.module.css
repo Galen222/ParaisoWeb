@@ -171,7 +171,7 @@
   top: 140px; /* Posición superior */
   left: 0; /* Posición izquierda */
   right: 0; /* Posición derecha */
-  z-index: 1000; /* Índice de apilamiento para superposición */
+  z-index: 7; /* Índice de apilamiento para superposición */
   /* transition: all 0.3s ease; */ /* Transición suave para cambios de propiedades (comentado) */
 }
 

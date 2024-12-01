@@ -1,6 +1,7 @@
 // hooks/UseScrollToTop.ts
 
 import { useState, useEffect } from "react";
+import useScreenSize from "./useScreenSize";
 
 /**
  * Tipos de posicionamiento del botón según el dispositivo y la situación.
@@ -33,39 +34,12 @@ const useScrollToTop = (): UseScrollToTopOutput => {
   const [isScrollButtonVisible, setIsScrollButtonVisible] = useState<boolean>(false);
   // Estado que contiene la clase de posicionamiento actual del botón
   const [buttonPosition, setButtonPosition] = useState<ButtonPosition>("desktop");
-  // Estados que determinan el tipo de dispositivo
-  const [isMobile, setIsMobile] = useState<boolean>(false);
-  const [isTablet, setIsTablet] = useState<boolean>(false);
-  const [isMobileLandscape, setIsMobileLandscape] = useState<boolean>(false);
 
-  /**
-   * Función para verificar el tamaño de la pantalla y actualizar los estados relevantes.
-   */
-  const checkScreenSize = () => {
-    if (typeof window !== "undefined") {
-      const screenWidth = window.innerWidth;
-      const screenHeight = window.innerHeight;
-
-      // Detectar móviles en cualquier orientación
-      const mobileScreen = screenWidth <= 768;
-
-      // Detectar móviles específicamente en modo horizontal
-      const mobileLandscape = screenWidth <= 1024 && screenHeight <= 768 && screenWidth > screenHeight;
-
-      // Detectar tablets (excluyendo móviles horizontales)
-      const tabletScreen = screenWidth > 768 && screenWidth <= 1024 && !mobileLandscape;
-
-      setIsMobile(mobileScreen);
-      setIsMobileLandscape(mobileLandscape);
-      setIsTablet(tabletScreen);
-    }
-  };
+  // Obtener información de la pantalla usando el hook useScreenSize
+  const { isMobile, isTablet, isMobileLandscape } = useScreenSize();
 
   useEffect(() => {
-    // Verifica el tamaño de la pantalla al cargar el componente
     if (typeof window !== "undefined") {
-      checkScreenSize();
-
       /**
        * Función que maneja el evento de scroll y actualiza la visibilidad y el posicionamiento del botón.
        */
@@ -75,7 +49,7 @@ const useScrollToTop = (): UseScrollToTopOutput => {
         const documentHeight = document.documentElement.scrollHeight; // Altura total del documento
 
         // Altura del footer según el caso
-        const footerHeight = isMobileLandscape ? 80 : isMobile ? 100 : 60; // Móviles horizontales usan altura de tablet
+        const footerHeight = isMobileLandscape ? 80 : isMobile ? 100 : 60;
         const scrollTrigger = 400; // Punto de desplazamiento donde aparece el botón
 
         if (scrollTop > scrollTrigger) {
@@ -105,20 +79,15 @@ const useScrollToTop = (): UseScrollToTopOutput => {
         }
       };
 
-      // Agrega los event listeners para los eventos de scroll y resize
+      // Agrega el event listener para el evento de scroll
       window.addEventListener("scroll", handleScroll);
-      window.addEventListener("resize", () => {
-        checkScreenSize();
-        handleScroll();
-      });
 
-      // Limpia los event listeners al desmontar el componente
+      // Limpia el event listener al desmontar el componente
       return () => {
         window.removeEventListener("scroll", handleScroll);
-        window.removeEventListener("resize", checkScreenSize);
       };
     }
-  }, [isMobile, isTablet, isMobileLandscape]);
+  }, [isMobile, isTablet, isMobileLandscape]); // Dependencias actualizadas
 
   /**
    * Función que permite desplazarse suavemente al inicio de la página.

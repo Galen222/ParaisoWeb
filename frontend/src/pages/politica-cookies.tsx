@@ -2,17 +2,17 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"; // Tipos de Next.js
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { useCookieConsent } from "../contexts/CookieContext";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
-import useDeviceType from "../hooks/useDeviceType";
+import useScreenSize from "../hooks/useScreenSize";
 import { useToastMessage } from "../hooks/useToast";
 import { deleteCookies } from "../utils/cookieUtils";
-import { NextSeo, OrganizationJsonLd } from "next-seo"; // Componente para la configuración de SEO
-import { redirectByCookie } from "../utils/redirectByCookie"; // Función de redirección basada en cookies
+import { NextSeo, OrganizationJsonLd } from "next-seo";
+import { redirectByCookie } from "../utils/redirectByCookie";
 import styles from "../styles/pages/politica-cookies.module.css";
 import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
@@ -20,12 +20,14 @@ import useCurrentUrl from "../hooks/useCurrentUrl";
 import esMessages from "../locales/es/common.json";
 import enMessages from "../locales/en/common.json";
 import deMessages from "../locales/de/common.json";
+
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {
   es: esMessages,
   en: enMessages,
   de: deMessages,
 };
+
 /**
  * Interfaz para las propiedades de la página de Política de Cookies.
  */
@@ -54,9 +56,9 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): JSX.Eleme
 
   // Estado para indicar si se está ejecutando la acción de borrar cookies.
   const [isPushingDelCookies, setIsPushingDelCookies] = useState(false);
-  // Hook personalizado para determinar el tipo de dispositivo.
-  const deviceType = useDeviceType();
-  const isMobile = deviceType === "mobile";
+
+  // Hook para determinar el tipo de dispositivo
+  const { isMobile } = useScreenSize();
 
   // Contexto para manejar el consentimiento de cookies.
   const {
