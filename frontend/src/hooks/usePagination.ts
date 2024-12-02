@@ -8,7 +8,7 @@ import { useState, useMemo, useEffect } from "react";
  * @property {number} itemsPerPage - Número de elementos por página
  * @property {number} [initialPage] - Página inicial (opcional)
  */
-interface PaginationOptions {
+export interface PaginationOptions {
   itemsPerPage: number;
   initialPage?: number;
 }
@@ -27,7 +27,7 @@ interface PaginationOptions {
  * @property {boolean} hasNextPage - Indica si hay página siguiente
  * @property {boolean} hasPreviousPage - Indica si hay página anterior
  */
-interface PaginationResult<T> {
+export interface PaginationResult<T> {
   currentPage: number;
   totalPages: number;
   paginatedItems: T[];
@@ -45,8 +45,6 @@ interface PaginationResult<T> {
  * @template T - Tipo de los elementos a paginar
  * @param {Object} params - Parámetros del hook
  * @param {T[]} params.items - Array de elementos a paginar
- * @param {number} params.itemsPerPage - Número de elementos por página
- * @param {number} [params.initialPage=1] - Página inicial (por defecto: 1)
  * @returns {PaginationResult<T>} Objeto con el estado y funciones de paginación
  */
 export function usePagination<T>({

@@ -6,7 +6,7 @@ import useScreenSize from "./useScreenSize";
 /**
  * Tipos de posicionamiento del botón según el dispositivo y la situación.
  */
-type ButtonPosition = "desktop" | "tablet" | "mobile" | "mobileNearFooter" | "mobileLandscape";
+export type ButtonPosition = "desktop" | "tablet" | "mobile" | "mobileNearFooter" | "mobileLandscape";
 
 /**
  * Interface que define la salida del hook useScrollToTop

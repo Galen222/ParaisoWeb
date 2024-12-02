@@ -16,7 +16,7 @@ import styles from "../styles/components/Paginator.module.css";
  * @property {boolean} hasNextPage - Indica si hay una página siguiente disponible
  * @property {boolean} hasPreviousPage - Indica si hay una página anterior disponible
  */
-interface PaginatorProps {
+export interface PaginatorProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
