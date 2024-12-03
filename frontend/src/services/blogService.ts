@@ -84,19 +84,40 @@ export const getBlogPostById = async (id: number, idioma: string, token?: string
  *
  * @param {string} slug - El slug único de la publicación de blog.
  * @param {string} [token] - (Opcional) El token temporal para la autenticación.
- * @param {string} [idioma] - (Opcional) El idioma en el cual se desea obtener la publicación.
+ * @param {string} [idioma] - (Opcional) El idioma en el cual se desea obtener la publicación. Solo se aceptan "es", "en" o "de".
  * @returns {Promise<BlogPost>} - Una promesa que resuelve al objeto BlogPost correspondiente.
- * @throws {Error} - Si falla la solicitud.
+ * @throws {Error} - Si falla la solicitud o las entradas son inválidas.
  */
 export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: string): Promise<BlogPost> => {
   try {
+    // Validar y sanitizar los inputs
+    const validSlug = /^[a-zA-Z0-9-]+$/.test(slug); // Solo permite letras, números y guiones
+    if (!validSlug) {
+      throw new Error("El slug contiene caracteres no permitidos.");
+    }
+
+    const allowedIdiomas = ["es", "en", "de"];
+    if (idioma && !allowedIdiomas.includes(idioma)) {
+      throw new Error(`El idioma "${idioma}" no es válido. Solo se permiten: ${allowedIdiomas.join(", ")}.`);
+    }
+
+    // Si no se proporciona el token, lo obtenemos
     const authToken = token || (await getTimedToken());
-    const url = idioma ? `${API_URL}/${slug}?idioma=${idioma}` : `${API_URL}/${slug}`;
+
+    // Codificar el slug para incluirlo de forma segura en la URL
+    const encodedSlug = encodeURIComponent(slug);
+
+    // Construir la URL incluyendo el slug en la ruta y el idioma como parámetro de consulta
+    const url = `${API_URL}/${encodedSlug}`;
+    const params = idioma ? { idioma } : undefined;
+
     const response = await axios.get<BlogPost>(url, {
       headers: {
         "x-timed-token": authToken,
       },
+      params,
     });
+
     return response.data;
   } catch (error) {
     throw error;
