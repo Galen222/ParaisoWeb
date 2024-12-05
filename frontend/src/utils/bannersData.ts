@@ -1,3 +1,5 @@
+// utils/bannersData.ts
+
 import { IntlShape } from "react-intl";
 
 export const getBannerContent = (intl: IntlShape) => ({

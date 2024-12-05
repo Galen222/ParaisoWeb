@@ -1,3 +1,5 @@
+// pages/blog/[slug].tsx
+
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";

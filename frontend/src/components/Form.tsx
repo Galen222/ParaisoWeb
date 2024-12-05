@@ -1,3 +1,5 @@
+// components/Form.tsx
+
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";

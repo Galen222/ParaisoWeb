@@ -1,3 +1,5 @@
+// components/Map.tsx
+
 import React, { useEffect, useRef, useState } from "react";
 import { getGoogleMapsLoader } from "../utils/GoogleMapsLoader"; // Cambio: Usamos el Singleton
 import { useIntl } from "react-intl";

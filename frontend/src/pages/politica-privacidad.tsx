@@ -1,3 +1,5 @@
+// pages/politica-privacidad.tsx
+
 import React from "react";
 import { useRouter } from "next/router";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"; // Tipos de Next.js

@@ -1,4 +1,4 @@
-/* hooks/useStickynav.ts */
+// hooks/useStickynav.ts
 
 import { useState, useEffect } from "react";
 

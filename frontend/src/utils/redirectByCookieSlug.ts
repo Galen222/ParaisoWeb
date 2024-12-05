@@ -1,3 +1,5 @@
+// utils/redirectByCookieSlug.ts
+
 import { GetServerSidePropsContext } from "next";
 import { getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";

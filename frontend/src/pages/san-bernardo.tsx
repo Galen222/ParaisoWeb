@@ -1,4 +1,5 @@
-// Importación de librerías y componentes necesarios
+// pages/san-bernardo.tsx
+
 import React from "react";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import Map from "../components/Map";

@@ -1,4 +1,4 @@
-// hooks/UseScrollToTop.ts
+// hooks/useScrollToTop.ts
 
 import { useState, useEffect } from "react";
 import useScreenSize from "./useScreenSize";

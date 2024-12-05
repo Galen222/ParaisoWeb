@@ -1,4 +1,4 @@
-// frontend/services/charcuteriaService.ts
+// services/charcuteriaService.ts
 
 /**
  * Servicio para manejar las operaciones relacionadas con los productos de charcutería.

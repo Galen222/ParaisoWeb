@@ -1,4 +1,4 @@
-// frontend/services/formService.ts
+// services/formService.ts
 
 /**
  * Servicio para manejar el envío del formulario de contacto.

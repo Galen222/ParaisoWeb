@@ -1,3 +1,5 @@
+// components/ShareLink.tsx
+
 import React from "react";
 import { useIntl } from "react-intl";
 import Styles from "../styles/components/ShareLink.module.css";

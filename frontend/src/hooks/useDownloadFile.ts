@@ -1,3 +1,5 @@
+// hooks/useDownloadFile.ts
+
 import { useState } from "react";
 import { saveAs } from "file-saver";
 import { useIntl } from "react-intl"; // Hook para internacionalización

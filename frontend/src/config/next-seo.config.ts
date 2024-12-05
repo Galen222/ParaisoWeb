@@ -1,4 +1,4 @@
-// next-seo.config.ts
+// config/next-seo.config.ts
 
 import { DefaultSeoProps } from "next-seo";
 

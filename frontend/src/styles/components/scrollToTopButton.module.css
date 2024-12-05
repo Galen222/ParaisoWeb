@@ -1,8 +1,4 @@
-/* 
- * Estilos para el componente ScrollToTopButton
- * Este archivo contiene todos los estilos necesarios para el botón de scroll,
- * incluyendo posicionamiento responsivo y estados de visibilidad.
- */
+/* components/scrollToTopButton.module.css */
 
 /* Contenedor principal del botón */
 .scrollToTopContainer {

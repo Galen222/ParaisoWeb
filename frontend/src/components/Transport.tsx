@@ -1,3 +1,5 @@
+// components/Transport.tsx
+
 import React from "react";
 import { useIntl } from "react-intl";
 import styles from "../styles/components/Transport.module.css"; // Crea un archivo CSS o reutiliza uno existente

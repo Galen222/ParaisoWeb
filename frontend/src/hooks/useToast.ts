@@ -1,3 +1,5 @@
+// hooks/useToast.ts
+
 import { useIntl } from "react-intl";
 import { toast, Slide, ToastOptions } from "react-toastify";
 

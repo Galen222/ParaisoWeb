@@ -1,4 +1,5 @@
-// Importación de librerías y componentes necesarios
+// pages/reservas.tsx
+
 import React from "react";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from "next"; // Tipos de Next.js
 import Localization from "../components/Localization"; // Componente de localización de sucursales

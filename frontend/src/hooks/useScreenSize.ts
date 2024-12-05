@@ -1,3 +1,5 @@
+// hooks/useScreenSize.ts
+
 import { useState, useEffect } from "react";
 
 /**
