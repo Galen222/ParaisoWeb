@@ -34,14 +34,9 @@ async def get_db():
         HTTPException:
             - 500: Si ocurre un error al conectar con la base de datos.
     """
-    try:
-        async with async_session() as session:
-            yield session
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail="Error al conectar con la base de datos"
-        )
+    async with async_session() as session:
+        yield session
+
 
 async def verify_token(x_timed_token: Optional[str] = Header(None)):
     """

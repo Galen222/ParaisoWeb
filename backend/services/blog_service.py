@@ -82,7 +82,8 @@ class BlogService:
             query = query.where(models.Blog.idioma == idioma)
         
         result = await self.db.execute(query)
-        return result.scalar_one_or_none()
+        post = result.scalar_one_or_none()
+        return post
 
     async def get_post_by_id(self, id_noticia: int, idioma: str) -> Optional[models.Blog]:
         """
@@ -102,4 +103,5 @@ class BlogService:
                 models.Blog.idioma == idioma
             )
         )
-        return result.scalar_one_or_none()
+        post = result.scalar_one_or_none()
+        return post

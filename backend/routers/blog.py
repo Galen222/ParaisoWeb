@@ -136,7 +136,7 @@ async def get_blog_post_by_id(
         post = await blog_service.get_post_by_id(id_noticia, idioma)
         
         if post is None:
-            raise HTTPException(status_code=404, detail="Blog not found")
+            raise HTTPException(status_code=404, detail="Blog no encontrado")
         return post
     except HTTPException:
         raise
