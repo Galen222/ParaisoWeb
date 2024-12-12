@@ -40,7 +40,7 @@ next-env.d.ts
 
 # .bat for quick launch
 frontdev.bat
-frontdev2.bat
+frontprod2.bat
 frontprod.bat
 frontdocs.bat
 
