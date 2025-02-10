@@ -59,7 +59,7 @@ const locations: Locations = {
     address: "Reina Victoria, 3, 28003 Madrid, ",
     address_url: "Paraíso del Jamón Calle de Reina Victoria",
     url: "https://www.google.com/maps?ll=40.446679,-3.704447&z=20&t=m&gl=US&mapclient=apiv3&cid=8431686105412493623",
-    telephone: "+34 91 534 18 20",
+    telephone: "+34 91 534 91 08",
   },
   arenal: {
     name: "Paraíso del Jamón IV",
