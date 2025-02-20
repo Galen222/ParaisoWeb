@@ -132,7 +132,7 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                         <td class="outlook-td">
                             <v:rect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" 
                                 class="outlook-rect">
-                                <v:fill type="frame" src="https://galenn.asuscomm.com/images/navbar/imagenLogo.png" />
+                                <v:fill type="frame" src="https://www.paraisodeljamon.com/images/navbar/imagenLogo.png" />
                                 <w:wrap type="none"/>
                             </v:rect>
                         </td>
@@ -140,7 +140,7 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                 </table>
                 <![endif]-->
                 <!--[if !mso]><!-->
-                <img class="logo-image" src="https://galenn.asuscomm.com/images/navbar/imagenLogo.png" alt="Logo">
+                <img class="logo-image" src="https://www.paraisodeljamon.com/images/navbar/imagenLogo.png" alt="Logo">
                 <!--<![endif]-->
             </div>
             <div class="content">

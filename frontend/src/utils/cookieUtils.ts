@@ -62,7 +62,8 @@ export const deleteCookies = async (
   try {
     const cookies = document.cookie.split("; ");
     // const domains = ["paraisodeljamon.com"]; // Producción
-    const domains = ["localhost", ".asuscomm.com"]; // Desarrollo
+    // const domains = ["localhost", ".asuscomm.com"]; // Desarrollo
+    const domains = ["localhost", ".asuscomm.com", "paraisodeljamon.com"]; // En Servidor
     for (const cookie of cookies) {
       const [cookieName] = cookie.split("=");
 

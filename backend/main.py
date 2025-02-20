@@ -86,7 +86,11 @@ def create_app() -> FastAPI:
     # -----------------------------
     origins = [
         "http://localhost:3000",          # Desarrollo local
-        "https://galenn.asuscomm.com",    # Producción
+        "https://galenn.asuscomm.com",    
+        "http://paraisodeljamon.com",     # Producción
+        "https://paraisodeljamon.com",
+        "http://www.paraisodeljamon.com",
+        "https://www.paraisodeljamon.com",
     ]
 
     app.add_middleware(
