@@ -31,7 +31,11 @@
 }
 
 .empleoContainer {
-  background-image: url("/images/banner/fondoempleo.jpg"); /* Imagen de fondo específica para Nosotros */
+  background-image: url("/images/banner/fondoempleo.jpg"); /* Imagen de fondo específica para Empleo */
+}
+
+.empleoTempContainer {
+  background-image: url("/images/banner/fondoempleotemp.jpg"); /* Imagen de fondo específica para Empleo Urgente */
 }
 
 /* Contenido interno de los contenedores principales */

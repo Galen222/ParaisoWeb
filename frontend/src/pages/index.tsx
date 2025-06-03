@@ -70,6 +70,10 @@ const Home: NextPage & { pageTitleText?: string } = (): JSX.Element => {
           },
         ]}
       />
+      {/* Banner Temporal */}
+      <div className="mb-20p">
+        <Banner bannerType="empleoTemp" />
+      </div>
       {/* Título principal de la página */}
       <div>
         <h1 className="text-center">{intl.formatMessage({ id: "inicio_Titulo1" })}</h1>

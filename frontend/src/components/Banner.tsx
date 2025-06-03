@@ -12,7 +12,7 @@ import { getBannerContent } from "../utils/bannersData";
  * Cada tipo representa una sección diferente con contenido específico.
  */
 export interface BannerProps {
-  bannerType: "restaurantes" | "gastronomia" | "charcuteria" | "nosotros" | "empleo";
+  bannerType: "restaurantes" | "gastronomia" | "charcuteria" | "nosotros" | "empleo" | "empleoTemp";
 }
 
 /**

@@ -53,4 +53,13 @@ export const getBannerContent = (intl: IntlShape) => ({
     size: "Small",
     buttons: "One",
   },
+  empleoTemp: {
+    text: intl.formatMessage({ id: "banner_EmpleoTemp_Texto1" }),
+    highlightText: intl.formatMessage({ id: "banner_EmpleoTemp_Texto2" }),
+    links: [{ href: "/contacto", text: intl.formatMessage({ id: "banner_EmpleoTemp_Texto3" }) }],
+    reverse: false,
+    reverseMobile: false,
+    size: "Small",
+    buttons: "One",
+  },
 });

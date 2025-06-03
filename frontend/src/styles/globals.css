@@ -93,6 +93,10 @@ h1,h2,h3,h4,.btn {
   margin-bottom: 10px; /* Márgen inferior de 10 píxeles */
 }
 
+.mb-20p {
+  margin-bottom: 20px; /* Márgen inferior de 10 píxeles */
+}
+
 .mb-40p {
   margin-bottom: 40px; /* Márgen inferior de 40 píxeles */
 }
