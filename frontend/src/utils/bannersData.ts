@@ -59,7 +59,7 @@ export const getBannerContent = (intl: IntlShape) => ({
     links: [{ href: "/contacto", text: intl.formatMessage({ id: "banner_EmpleoTemp_Texto3" }) }],
     reverse: false,
     reverseMobile: false,
-    size: "Large",
+    size: "Small",
     buttons: "One",
   },
 });
