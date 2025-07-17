@@ -72,7 +72,7 @@ def create_app() -> FastAPI:
             "API para gestionar formularios de contacto, productos de charcutería, "
             "publicaciones de blog y autenticación mediante tokens temporales."
         ),
-        version="1.0.4",
+        version="1.0.5",
         lifespan=lifespan,
     )
 
