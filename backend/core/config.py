@@ -53,7 +53,7 @@ class Settings(BaseSettings):
 # -----------------------------
 # Instancia de configuración
 # -----------------------------
-settings = Settings()
+settings = Settings() # type: ignore
 """
 Instancia global de la clase `Settings`.
 

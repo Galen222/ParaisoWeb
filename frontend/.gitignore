@@ -30,7 +30,7 @@ yarn-error.log*
 
 # production env files
 .env*.production
-.env*.production.2
+.env*.localweb
 
 # vercel
 .vercel
@@ -41,6 +41,8 @@ next-env.d.ts
 
 # .bat for quick launch
 frontdev.bat
+frontlocal.bat
+frontlocalweb.bat
 frontprod2.bat
 frontprod.bat
 frontdocs.bat

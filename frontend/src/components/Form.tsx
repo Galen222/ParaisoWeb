@@ -142,6 +142,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
     setIsSubmitting(true);
 
     try {
+      console.log("📤 Enviando formData:", formData);
       await submitForm(formData);
       showToast("contacto_Formulario_Ok", 4000, "success");
       setFormData({
@@ -200,6 +201,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
           </option>
           <option value="informacion">{intl.formatMessage({ id: "contacto_MotivoInfo" })}</option>
           <option value="comercial">{intl.formatMessage({ id: "contacto_MotivoComercial" })}</option>
+          <option value="reclamacion">{intl.formatMessage({ id: "contacto_MotivoReclamacion" })}</option>
           <option value="factura">{intl.formatMessage({ id: "contacto_MotivoFactura" })}</option>
           <option value="curriculum">{intl.formatMessage({ id: "contacto_MotivoCurriculum" })}</option>
           <option value="error">{intl.formatMessage({ id: "contacto_MotivoBug" })}</option>

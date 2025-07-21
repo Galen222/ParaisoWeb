@@ -15,10 +15,12 @@ Dependencias:
 - Utilidades de autenticación: Para verificar tokens temporales.
 """
 
-from fastapi import Header, HTTPException, status, Depends
+from fastapi import Header, HTTPException, status
 from .database import async_session
 from .core.auth_utils import verify_timed_token
 from typing import Optional
+from typing import cast
+from sqlalchemy.ext.asyncio import AsyncSession
 
 async def get_db():
     """
@@ -34,7 +36,8 @@ async def get_db():
         HTTPException:
             - 500: Si ocurre un error al conectar con la base de datos.
     """
-    async with async_session() as session:
+    session = cast(AsyncSession, async_session())
+    async with session:
         yield session
 
 

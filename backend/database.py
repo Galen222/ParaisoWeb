@@ -49,8 +49,8 @@ perdidas y reciclaje automático.
 # -----------------------------
 # Configuración de la Fábrica de Sesiones
 # -----------------------------
-async_session = sessionmaker(
-    engine,
+async_session = sessionmaker(  # type: ignore
+    engine,  # type: ignore
     expire_on_commit=False,  # Evita que los objetos se marquen como expirados tras un commit
     class_=AsyncSession      # Especifica el uso de sesiones asíncronas
 )

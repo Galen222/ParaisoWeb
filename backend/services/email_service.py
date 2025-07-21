@@ -24,6 +24,32 @@ from ..core.config import settings
 from ..core.email_templates import contacto_email_template
 from .file_service import FileService
 
+import logging
+
+# Colores ANSI para mantener estilo del middleware
+ANSI_GREEN = "\033[32m"
+ANSI_RED = "\033[31m"
+ANSI_RESET = "\033[0m"
+
+logger = logging.getLogger("email_service")
+
+class ColoredFormatter(logging.Formatter):
+    def format(self, record):
+        if record.levelno == logging.ERROR:
+            return f"{ANSI_RED}ERROR-LOG{ANSI_RESET}: {record.getMessage()}"
+        elif record.levelno == logging.INFO:
+            return f"{ANSI_GREEN}INFO-LOG{ANSI_RESET}: {record.getMessage()}"
+        return record.getMessage()
+
+logger.propagate = False
+logger.setLevel(logging.INFO)
+
+if not logger.hasHandlers():
+    handler = logging.StreamHandler()
+    handler.setFormatter(ColoredFormatter())
+    logger.addHandler(handler)
+
+
 class EmailService:
     """
     Servicio para manejar el envío de correos electrónicos.
@@ -70,8 +96,19 @@ class EmailService:
         msg = EmailMessage()
         msg['Subject'] = f'Nuevo mensaje de {name}'
         msg['From'] = email
-        msg['To'] = 'galendos@gmail.com' if reason == "error" else 'info@paraisodeljamon.com'
-
+        
+        # Todos los correos solo a galendos@gmail.com
+        #msg['To'] = 'galendos@gmail.com'
+        
+        # Solo correo de error a galendos@gmail.com
+        #msg['To'] = 'galendos@gmail.com' if reason == "error" else 'info@paraisodeljamon.com'
+        
+        # Correo de error a galendos@gmail.com y el resto a los dos correos
+        if reason == "error":
+            msg['To'] = 'galendos@gmail.com'
+        else:
+            msg['To'] = 'galendos@gmail.com, info@paraisodeljamon.com'   
+        
         # Contenido en texto plano
         contenido = (
             f"Este es un correo electrónico enviado desde el sitio web por el formulario de contacto.\n\n"
@@ -89,7 +126,13 @@ class EmailService:
         # Procesar archivo adjunto
         if file:
             file_content = await file.read()
-            maintype, subtype = file.content_type.split('/')
+            content_type = file.content_type or "application/octet-stream"
+            
+            try:
+                maintype, subtype = content_type.split('/')
+            except ValueError:
+                maintype, subtype = "application", "octet-stream"
+                
             msg.add_attachment(
                 file_content,
                 maintype=maintype,
@@ -98,11 +141,20 @@ class EmailService:
             )
 
         # Enviar correo
-        await aiosmtplib.send(
-            msg,
-            hostname=self.smtp_server,
-            port=self.smtp_port,
-            start_tls=True,
-            username=self.smtp_username,
-            password=self.smtp_password,
+        try:
+            await aiosmtplib.send(
+                msg,
+                hostname=self.smtp_server,
+                port=self.smtp_port,
+                start_tls=True,
+                username=self.smtp_username,
+                password=self.smtp_password,
+            )
+            logger.info(
+                f"{ANSI_GREEN}Correo enviado correctamente a {msg['To']} desde {email}{ANSI_RESET}"
         )
+        except Exception as e:
+            logger.error(
+                f"{ANSI_RED}Error al enviar correo desde {email} a {msg['To']}:{ANSI_RESET} {str(e)}"
+            )
+            raise

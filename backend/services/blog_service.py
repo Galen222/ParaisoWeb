@@ -63,7 +63,7 @@ class BlogService:
                 ).desc()
             )
         )
-        return result.scalars().all()
+        return list(result.scalars().all())
 
     async def get_post_by_slug(self, slug: str, idioma: Optional[str] = None) -> Optional[models.Blog]:
         """

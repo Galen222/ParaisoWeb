@@ -75,7 +75,7 @@ class ContactForm(BaseModel):
         Returns:
             str: Valor validado del campo 'reason'.
         """
-        motivos_validos = {"informacion", "comercial", "factura", "curriculum", "error", "otro"}
+        motivos_validos = {"informacion", "comercial", "factura", "curriculum", "reclamacion", "error", "otro"}
         if v not in motivos_validos:
             raise ValueError(f"El motivo debe ser uno de: {', '.join(motivos_validos)}")
         return v

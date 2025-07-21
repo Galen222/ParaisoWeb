@@ -59,4 +59,4 @@ class CharcuteriaService:
                 models.Charcuteria.nombre.asc()
             )
         )
-        return result.scalars().all()
+        return list(result.scalars().all())
