@@ -72,18 +72,14 @@ def create_app() -> FastAPI:
             "API para gestionar formularios de contacto, productos de charcutería, "
             "publicaciones de blog y autenticación mediante tokens temporales."
         ),
-        version="1.1.0",
+        version="1.1.1",
         lifespan=lifespan,
     )
 
-    # -----------------------------
     # Middleware de logging
-    # -----------------------------
     app.add_middleware(LoggingMiddleware)
 
-    # -----------------------------
     # Configuración de CORS
-    # -----------------------------
     origins = [
         "http://localhost:3000",          # Desarrollo local
         "https://galenn.asuscomm.com",    
@@ -93,6 +89,7 @@ def create_app() -> FastAPI:
         "https://www.paraisodeljamon.com",
     ]
 
+    # Añade el Middleware
     app.add_middleware(
         CORSMiddleware,
         allow_origins=origins,
@@ -101,9 +98,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    # -----------------------------
     # Registro de Routers
-    # -----------------------------
     app.include_router(contacto.router, prefix="/api", tags=["Contacto"])        # Endpoints para formularios de contacto
     app.include_router(charcuteria.router, prefix="/api", tags=["Charcutería"])  # Endpoints para productos de charcutería
     app.include_router(blog.router, prefix="/api", tags=["Blog"])                # Endpoints para publicaciones de blog
@@ -111,8 +106,5 @@ def create_app() -> FastAPI:
 
     return app
 
-
-# -----------------------------
 # Crear instancia de la aplicación
-# -----------------------------
 app = create_app()

@@ -50,10 +50,7 @@ class Settings(BaseSettings):
     }
 
 
-# -----------------------------
 # Instancia de configuración
-# -----------------------------
-settings = Settings() # type: ignore
 """
 Instancia global de la clase `Settings`.
 
@@ -63,3 +60,4 @@ Esta instancia:
 
 Se utiliza en toda la aplicación para acceder a las configuraciones de manera centralizada.
 """
+settings = Settings() # type: ignore

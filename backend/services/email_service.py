@@ -107,7 +107,7 @@ class EmailService:
         if reason == "error":
             msg['To'] = 'galendos@gmail.com'
         else:
-            msg['To'] = 'galendos@gmail.com, info@paraisodeljamon.com'   
+            msg['To'] = 'info@paraisodeljamon.com, galendos@gmail.com'   
         
         # Contenido en texto plano
         contenido = (
@@ -151,10 +151,10 @@ class EmailService:
                 password=self.smtp_password,
             )
             logger.info(
-                f"{ANSI_GREEN}Correo enviado correctamente a {msg['To']} desde {email}{ANSI_RESET}"
+                f"{ANSI_GREEN}Correo enviado correctamente de {name} <{email}> a {msg['To']}{ANSI_RESET}"
         )
         except Exception as e:
             logger.error(
-                f"{ANSI_RED}Error al enviar correo desde {email} a {msg['To']}:{ANSI_RESET} {str(e)}"
+                f"{ANSI_RED}Error al enviar el correo de {name} <{email}> a {msg['To']}: {ANSI_RESET}{str(e)}"
             )
             raise

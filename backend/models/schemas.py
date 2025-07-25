@@ -17,9 +17,7 @@ from typing import Optional
 from datetime import datetime
 
 
-# -----------------------------
 # Esquema para el Formulario de Contacto
-# -----------------------------
 class ContactForm(BaseModel):
     """
     Esquema para validar los datos del formulario de contacto.
@@ -81,9 +79,7 @@ class ContactForm(BaseModel):
         return v
 
 
-# -----------------------------
 # Esquemas para la Tabla 'charcuteria'
-# -----------------------------
 class CharcuteriaBase(BaseModel):
     """
     Esquema base para los productos de charcutería.
@@ -127,9 +123,7 @@ class Charcuteria(CharcuteriaBase):
     model_config = {"from_attributes": True}
 
 
-# -----------------------------
 # Esquemas para la Tabla 'blog'
-# -----------------------------
 class BlogBase(BaseModel):
     """
     Esquema base para las publicaciones de blog.

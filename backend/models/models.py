@@ -20,9 +20,7 @@ Base = declarative_base()
 TABLE_NAME_CHARCUTERIA = "charcuteria"
 TABLE_NAME_BLOG = "blog"
 
-# -----------------------------
 # Definición del modelo para la tabla 'charcuteria'
-# -----------------------------
 class Charcuteria(Base):
     """
     Modelo ORM para la tabla de productos de charcutería.
@@ -56,9 +54,7 @@ class Charcuteria(Base):
     para cada combinación de identificador e idioma.
     """
 
-# -----------------------------
 # Definición del modelo para la tabla 'blog'
-# -----------------------------
 class Blog(Base):
     """
     Modelo ORM para la tabla de publicaciones de blog.

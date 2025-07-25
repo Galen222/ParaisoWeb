@@ -8,8 +8,10 @@ por el backend. Este archivo contiene funciones reutilizables para
 generar plantillas con diferentes diseños.
 
 Dependencias:
-- Ninguna externa.
+- html (módulo estándar de Python para escape de texto HTML).
 """
+
+import html
 
 def contacto_email_template(name: str, email: str, reason: str, message: str) -> str:
     """
@@ -37,6 +39,12 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
         >>> )
         >>> print(html)
     """
+        # Sanitización del contenido para evitar inyecciones HTML
+    name = html.escape(name)
+    email = html.escape(email)
+    reason = html.escape(reason)
+    message = html.escape(message).replace('\n', '<br>')
+
     return f"""
     <!DOCTYPE html>
     <html lang="es">
@@ -51,6 +59,7 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                 color: #333;
                 margin: 0;
                 padding: 0;
+                background-color: #fff;
             }}
             
             /* Contenedor principal */
@@ -61,10 +70,11 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                 border-radius: 8px;
                 overflow: hidden;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                background-color: #fff;
             }}
             
             /* Encabezado */
-            .header {{
+            header {{
                 background-color: #f4f4f4;
                 padding: 20px;
                 text-align: center;
@@ -77,20 +87,20 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                 margin: 0 auto;
             }}
             
-            /* Soporte específico para Outlook */
+            /* Compatibilidad con Outlook */
             @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {{
                 .logo-image {{
                     display: none !important;
                 }}
             }}
-            
+
             /* Contenido principal */
-            .content {{
+            main {{
                 padding: 20px;
             }}
             
             /* Pie de página */
-            .footer {{
+            footer {{
                 background-color: #f4f4f4;
                 text-align: center;
                 padding: 10px;
@@ -121,11 +131,27 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                 width: 150pt;
                 stroke-color: none;
             }}
+
+            /* Modo oscuro (opcional) */
+            @media (prefers-color-scheme: dark) {{
+                body {{
+                    background-color: #1e1e1e;
+                    color: #f0f0f0;
+                }}
+                .email-container {{
+                    background-color: #2b2b2b;
+                    border-color: #444;
+                }}
+                footer {{
+                    background-color: #1e1e1e;
+                    color: #aaa;
+                }}
+            }}
         </style>
     </head>
     <body>
         <div class="email-container">
-            <div class="header">
+            <header>
                 <!--[if mso]>
                 <table class="outlook-table" role="presentation">
                     <tr>
@@ -142,18 +168,18 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                 <!--[if !mso]><!-->
                 <img class="logo-image" src="https://www.paraisodeljamon.com/images/navbar/imagenLogo.png" alt="Logo">
                 <!--<![endif]-->
-            </div>
-            <div class="content">
+            </header>
+            <main>
                 <h2>Nuevo mensaje</h2>
                 <p><strong>Nombre:</strong> <span class="highlight">{name}</span></p>
                 <p><strong>Correo Electrónico:</strong> <span class="highlight">{email}</span></p>
                 <p><strong>Motivo:</strong> <span class="highlight">{reason}</span></p>
                 <p><strong>Mensaje:</strong></p>
                 <p>{message}</p>
-            </div>
-            <div class="footer">
+            </main>
+            <footer>
                 <p>Este correo fue enviado automáticamente desde el formulario de contacto del sitio web Paraíso Del Jamón.</p>
-            </div>
+            </footer>
         </div>
     </body>
     </html>
