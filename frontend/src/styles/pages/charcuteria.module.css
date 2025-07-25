@@ -43,11 +43,6 @@
   transform-style: preserve-3d; /* Preserva la perspectiva 3D */
 }
 
-/* Efecto al pasar el ratón sobre la tarjeta para girarla */
-.card:hover .cardInner {
-  transform: rotateY(180deg); /* Gira la tarjeta */
-}
-
 /* Estilos para las caras frontal y trasera de la tarjeta */
 .front,
 .back {
@@ -271,10 +266,6 @@
   .cardInner {
     cursor: pointer; /* Indica interactividad */
   }
-
-  .card:hover .cardInner {
-    transform: rotateY(180deg); /* Gira la tarjeta */
-  }
 }
 
 /* Media query para dispositivos móviles */
@@ -310,11 +301,19 @@
     cursor: pointer; /* Cursor interactivo */
   }
 
-  .card:hover .cardInner {
-    transform: rotateY(180deg); /* Gira la tarjeta */
-  }
-
   .backProductName {
     font-size: 1.2rem; /* Tamaño de la fuente */
+  }
+}
+
+/* Aplica el giro 3D (flip) a la tarjeta */
+.isFlipped {
+  transform: rotateY(180deg);
+}
+
+/* Gira la tarjeta al pasar el cursor por encima en dispositivos con puntero fino y soporte de hover */
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .cardInner {
+    transform: rotateY(180deg);
   }
 }

@@ -8,7 +8,7 @@ import { useFetchCharcuteria } from "../hooks/useFetchCharcuteria";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import ScrollToTopButton from "../components/ScrollToTopButton";
-import useScreenSize from "../hooks/useScreenSize";
+import useTouchDevice from "../hooks/useTouchDevice";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/charcuteria.module.css";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
@@ -57,11 +57,19 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
   // Hook para obtener los datos de charcutería y estados de carga
   const { data: products, loading: loadingProducts, error } = useFetchCharcuteria();
 
-  // Obtener información de la pantalla
-  const { width } = useScreenSize();
+  // Obtener información sobre la pantalla tactil
+  const isTouchDevice = useTouchDevice();
 
-  // Estado para el control de flip en dispositivos móviles
-  const [isClickFlipEnabled, setIsClickFlipEnabled] = useState<boolean>(width <= 800);
+  // Estado para el control de flip en dispositivos con pantalla tactil
+  const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
+
+  // Función para manejar el click
+  const handleCardClick = (productId: string) => {
+    setFlippedCards((prev) => ({
+      ...prev,
+      [productId]: !prev[productId],
+    }));
+  };
 
   // Aseguro que products sea siempre un array
   const safeProducts = products || [];
@@ -147,13 +155,10 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element =
             {paginatedProducts.map((product) => (
               <div className={styles.card} key={product.id_producto}>
                 <div
-                  className={styles.cardInner}
-                  onClick={(e) => {
-                    // Habilita el flip al hacer clic solo en dispositivos pequeños
-                    if (isClickFlipEnabled) {
-                      const target = e.currentTarget as HTMLElement;
-                      target.style.transform = target.style.transform === "rotateY(180deg)" ? "rotateY(0deg)" : "rotateY(180deg)";
-                    }
+                  className={`${styles.cardInner} ${isTouchDevice && flippedCards[product.id_producto] ? styles.isFlipped : ""}`}
+                  onClick={() => {
+                    // Habilita el flip al hacer clic solo en dispositivos tactiles
+                    if (isTouchDevice) handleCardClick(String(product.id_producto));
                   }}
                 >
                   {/* Lado frontal de la tarjeta con imagen y nombre del producto */}

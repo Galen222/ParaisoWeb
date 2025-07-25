@@ -39,7 +39,7 @@ const useScreenSize = (): ScreenInfo => {
       const width = window.innerWidth;
       const height = window.innerHeight;
 
-      // Detectar dispositivos según la lógica original
+      // Detectar dispositivos según el tamaño de pantalla
       const isMobile = width <= 768;
       const isTablet = width > 768 && width <= 1024;
       const isPC = width > 1024;

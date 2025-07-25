@@ -16,14 +16,23 @@
  * ```
  */
 export const slugify = (text: string): string => {
-  return text
-    .toString() // Asegura que el input sea una cadena de texto.
-    .toLowerCase() // Convierte todo el texto a minúsculas.
-    .normalize("NFD") // Normaliza el texto para separar los caracteres base de los diacríticos.
-    .replace(/[\u0300-\u036f]/g, "") // Elimina los diacríticos.
-    .replace(/\s+/g, "-") // Reemplaza uno o más espacios en blanco por un solo guión.
-    .replace(/[^\w\-]+/g, "") // Elimina todos los caracteres que no sean letras, números o guiones.
-    .replace(/\-\-+/g, "-") // Reemplaza múltiples guiones consecutivos por uno solo.
-    .replace(/^-+/, "") // Elimina guiones al inicio de la cadena.
-    .replace(/-+$/, ""); // Elimina guiones al final de la cadena.
+  return (
+    text
+      .toString() // Asegura que el input sea una cadena de texto.
+      .toLowerCase() // Convierte todo el texto a minúsculas.
+      // Reemplaza letras alemanas y ñ
+      .replace(/ä/g, "ae")
+      .replace(/ö/g, "oe")
+      .replace(/ü/g, "ue")
+      .replace(/ß/g, "ss")
+      .replace(/ñ/g, "n")
+      // Normaliza y quita acentos
+      .normalize("NFD") // Normaliza el texto para separar los caracteres base de los diacríticos.
+      .replace(/[\u0300-\u036f]/g, "") // Elimina los diacríticos.
+      .replace(/\s+/g, "-") // Reemplaza uno o más espacios en blanco por un solo guión.
+      .replace(/[^\w\-]+/g, "") // Elimina todos los caracteres que no sean letras, números o guiones.
+      .replace(/\-\-+/g, "-") // Reemplaza múltiples guiones consecutivos por uno solo.
+      .replace(/^-+/, "") // Elimina guiones al inicio de la cadena.
+      .replace(/-+$/, "") // Elimina guiones al final de la cadena.
+  );
 };
