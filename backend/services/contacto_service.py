@@ -87,8 +87,9 @@ class ContactoService:
         validated_content_type: Optional[str] = None
         if file:
             file_info = await self.file_service.validate_and_process_file(file)
-            if file_info and isinstance(file_info.get('content_type'), str):
-                validated_content_type = file_info['content_type']
+            content_type = file_info.get('content_type') if file_info else None
+            if isinstance(content_type, str):
+                validated_content_type = content_type
 
         # Enviar email
         await self.email_service.send_contact_email(
