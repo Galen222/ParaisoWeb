@@ -72,7 +72,7 @@ class ContactoService:
             raise HTTPException(status_code=400, detail=str(e))
 
         # Validar requerimiento de archivo según el motivo
-        if reason in ['invoice', 'curriculum'] and not file:
+        if reason in ['factura', 'curriculum'] and not file:
             raise HTTPException(
                 status_code=400,
                 detail="Error: Se requiere adjuntar un archivo debido al motivo seleccionado"

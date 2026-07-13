@@ -39,6 +39,17 @@ const messages: Record<string, Record<string, string>> = {
 const IMAGE_BASE_URL = "/images/blog/";
 
 /**
+ * Formatea las fechas del blog de forma determinista entre el servidor y el navegador.
+ */
+const formatBlogDate = (value: string, locale: string): string =>
+  new Intl.DateTimeFormat(locale, {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "UTC",
+  }).format(new Date(value));
+
+/**
  * Props para el componente BlogDetailsPage.
  * @typedef {Object} BlogDetailsPageProps
  * @property {BlogPost | null} blogDetails - Detalles de la publicación del blog.
@@ -62,6 +73,8 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
   const currentMessages = messages[currentLocale] || messages["es"]; // Mensajes en el idioma actual
   const currentUrl = useCurrentUrl(); // URL actual
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const publicationDate = blogDetails ? formatBlogDate(blogDetails.fecha_publicacion, currentLocale) : "";
+  const updateDate = blogDetails?.fecha_actualizacion ? formatBlogDate(blogDetails.fecha_actualizacion, currentLocale) : null;
 
   // Estado para manejar la animación del botón de volver atrás
   const [isPushingBack, setIsPushingBack] = useState(false);
@@ -143,12 +156,12 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
                   {intl.formatMessage({ id: "blog_Details_Autor" })} {blogDetails.autor}
                 </p>
                 <p className={styles.blogDate}>
-                  {intl.formatMessage({ id: "blog_Details_Publicado" })} {new Date(blogDetails.fecha_publicacion).toLocaleDateString()}
-                  {blogDetails.fecha_actualizacion &&
-                    new Date(blogDetails.fecha_actualizacion).toLocaleDateString() !== new Date(blogDetails.fecha_publicacion).toLocaleDateString() && (
+                  {intl.formatMessage({ id: "blog_Details_Publicado" })} {publicationDate}
+                  {updateDate &&
+                    updateDate !== publicationDate && (
                       <>
                         {" "}
-                        | {intl.formatMessage({ id: "blog_Details_Actualizado" })} {new Date(blogDetails.fecha_actualizacion).toLocaleDateString()}
+                        | {intl.formatMessage({ id: "blog_Details_Actualizado" })} {updateDate}
                       </>
                     )}
                 </p>

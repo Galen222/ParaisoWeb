@@ -20,16 +20,18 @@ export interface ScreenInfo {
  *
  * @returns {ScreenInfo} Objeto con información detallada sobre la pantalla
  */
+const INITIAL_SCREEN_INFO: ScreenInfo = {
+  width: 1200,
+  height: 800,
+  isMobile: false,
+  isTablet: false,
+  isPC: true,
+  isMobileLandscape: false,
+};
+
 const useScreenSize = (): ScreenInfo => {
-  // Inicializar con valores por defecto para evitar errores de hidratación
-  const [screenInfo, setScreenInfo] = useState<ScreenInfo>({
-    width: typeof window !== "undefined" ? window.innerWidth : 1200,
-    height: typeof window !== "undefined" ? window.innerHeight : 800,
-    isMobile: false,
-    isTablet: false,
-    isPC: true,
-    isMobileLandscape: false,
-  });
+  // Inicializar con valores deterministas e iguales en servidor y cliente para evitar errores de hidratación
+  const [screenInfo, setScreenInfo] = useState<ScreenInfo>(INITIAL_SCREEN_INFO);
 
   useEffect(() => {
     /**
@@ -61,16 +63,25 @@ const useScreenSize = (): ScreenInfo => {
     if (typeof window !== "undefined") {
       updateScreenInfo();
 
+      let orientationTimeoutId: number | undefined;
+      const handleOrientationChange = () => {
+        // Pequeño retraso para asegurar que window.innerWidth se ha actualizado
+        if (orientationTimeoutId !== undefined) {
+          window.clearTimeout(orientationTimeoutId);
+        }
+        orientationTimeoutId = window.setTimeout(updateScreenInfo, 100);
+      };
+
       // Manejar cambios de tamaño y orientación
       window.addEventListener("resize", updateScreenInfo);
-      window.addEventListener("orientationchange", () => {
-        // Pequeño retraso para asegurar que window.innerWidth se ha actualizado
-        setTimeout(updateScreenInfo, 100);
-      });
+      window.addEventListener("orientationchange", handleOrientationChange);
 
       return () => {
         window.removeEventListener("resize", updateScreenInfo);
-        window.removeEventListener("orientationchange", updateScreenInfo);
+        window.removeEventListener("orientationchange", handleOrientationChange);
+        if (orientationTimeoutId !== undefined) {
+          window.clearTimeout(orientationTimeoutId);
+        }
       };
     }
   }, []);

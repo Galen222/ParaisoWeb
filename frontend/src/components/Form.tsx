@@ -172,7 +172,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
       formData.reason !== "" &&
       isValidEmail &&
       isPrivacyChecked &&
-      ((formData.reason !== "invoice" && formData.reason !== "curriculum") || formData.file !== null)
+      ((formData.reason !== "factura" && formData.reason !== "curriculum") || formData.file !== null)
     );
   };
 
