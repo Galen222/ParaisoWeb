@@ -3,6 +3,22 @@
 import { IntlShape } from "react-intl";
 import { disableGA } from "../utils/gaUtils";
 
+/** Nombre de la cookie necesaria que conserva la elección de consentimiento. */
+export const COOKIE_CONSENT_NAME = "_cookie_consent";
+
+/**
+ * Guarda la elección de consentimiento durante un año.
+ * El valor incluye una versión para poder invalidarlo si cambia la política.
+ */
+export const saveCookieConsentPreference = (preference: string): void => {
+  document.cookie = `${COOKIE_CONSENT_NAME}=${preference}; path=/; max-age=31536000; SameSite=Lax`;
+};
+
+/** Elimina la elección guardada para que el modal pueda volver a solicitarla. */
+export const clearCookieConsentPreference = (): void => {
+  document.cookie = `${COOKIE_CONSENT_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+};
+
 /**
  * Obtiene el valor de una cookie específica por su nombre.
  *
@@ -32,7 +48,7 @@ export const createDeviceCookie = () => {
 };
 
 /**
- * Borra cookies que coincidan con un patrón específico y actualiza el estado del consentimiento de cookies.
+ * Borra cookies que coincidan con un patrón específico, la preferencia guardada y actualiza el estado del consentimiento.
  *
  * @param {IntlShape} intl - Objeto de internacionalización para mostrar mensajes.
  * @param {Function} setAcceptCookiePersonalization - Función para actualizar el estado de consentimiento de personalización.
@@ -92,6 +108,9 @@ export const deleteCookies = async (
         });
       }
     }
+
+    // Borra también la cookie necesaria que conserva la elección del usuario.
+    clearCookieConsentPreference();
 
     return true; // Indica que las cookies se borraron correctamente
   } catch (error) {

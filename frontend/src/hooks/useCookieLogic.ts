@@ -3,8 +3,42 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
-import { createDeviceCookie } from "../utils/cookieUtils";
+import {
+  COOKIE_CONSENT_NAME,
+  createDeviceCookie,
+  getCookieValue,
+  saveCookieConsentPreference,
+} from "../utils/cookieUtils";
 import { initGA } from "../utils/gaUtils"; // Importa la función desde utils
+
+const COOKIE_CONSENT_VERSION = "v1";
+const COOKIE_CONSENT_ACCEPTED = `${COOKIE_CONSENT_VERSION}.accepted`;
+const COOKIE_CONSENT_REJECTED = `${COOKIE_CONSENT_VERSION}.rejected`;
+const COOKIE_CONSENT_CUSTOM_PREFIX = `${COOKIE_CONSENT_VERSION}.custom.`;
+
+interface CustomCookieConsent {
+  analysis: boolean;
+  googleAnalytics: boolean;
+  personalization: boolean;
+}
+
+/** Convierte una preferencia personalizada guardada, por ejemplo `v1.custom.101`, en consentimientos. */
+const parseCustomCookieConsent = (preference: string): CustomCookieConsent | null => {
+  if (!preference.startsWith(COOKIE_CONSENT_CUSTOM_PREFIX)) {
+    return null;
+  }
+
+  const values = preference.slice(COOKIE_CONSENT_CUSTOM_PREFIX.length);
+  if (!/^[01]{3}$/.test(values)) {
+    return null;
+  }
+
+  return {
+    analysis: values[0] === "1",
+    googleAnalytics: values[1] === "1",
+    personalization: values[2] === "1",
+  };
+};
 
 /**
  * Define la interfaz para las propiedades devueltas por el hook.
@@ -64,45 +98,85 @@ export function useCookieLogic(): CookieLogic {
   } = useCookieConsent();
 
   /**
-   * Efecto para verificar las cookies existentes y establecer el estado inicial.
-   * - Verifica la existencia de las cookies `_visited` y `_ga`.
-   * - Gestiona el consentimiento de análisis y Google Analytics.
-   * - Muestra el modal de cookies si no hay consentimiento previo.
+   * Efecto para restaurar la elección guardada y establecer el estado inicial.
+   * - Respeta la aceptación, el rechazo o la selección personalizada persistida.
+   * - Mantiene la detección de cookies existentes para elecciones anteriores.
+   * - Muestra el modal de cookies si no hay una elección previa.
    */
   useEffect(() => {
-    // Comprueba si existe la cookie _Locale
-    const cookieValuePersonalization = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("_locale="))
-      ?.split("=")[1];
-    // Comprueba si existe la cookie _visited
-    const cookieNameAnalysis = document.cookie.split("; ").find((row) => row.startsWith("_visited="));
+    const savedPreference = getCookieValue(COOKIE_CONSENT_NAME);
+    const customPreference = savedPreference ? parseCustomCookieConsent(savedPreference) : null;
 
-    // Comprueba si existe la cookie _ga de GA4
+    // Restaura primero la elección explícita, incluso cuando se rechazaron todas las cookies opcionales.
+    if (savedPreference === COOKIE_CONSENT_REJECTED) {
+      setAcceptCookieAnalysis(false);
+      setCookieConsentAnalysis(false);
+      setAcceptCookieAnalysisGoogle(false);
+      setCookieConsentAnalysisGoogle(false);
+      setAcceptCookiePersonalization(false);
+      setCookieConsentPersonalization(false);
+      setShowCookieModal(false);
+      setCookiesModalClosed(true);
+      return;
+    }
+
+    if (savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference) {
+      const analysis = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.analysis === true;
+      const googleAnalytics = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.googleAnalytics === true;
+      const personalization = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.personalization === true;
+
+      setAcceptCookieAnalysis(analysis);
+      setCookieConsentAnalysis(analysis);
+      setAcceptCookieAnalysisGoogle(googleAnalytics);
+      setCookieConsentAnalysisGoogle(googleAnalytics);
+      setAcceptCookiePersonalization(personalization);
+      setCookieConsentPersonalization(personalization);
+
+      if (analysis) {
+        createDeviceCookie();
+      }
+      if (googleAnalytics) {
+        initGA();
+      }
+
+      setShowCookieModal(false);
+      setCookiesModalClosed(true);
+      return;
+    }
+
+    // Compatibilidad con elecciones anteriores: comprueba las cookies opcionales ya existentes.
+    const cookieValuePersonalization = getCookieValue("_locale");
+    const cookieNameAnalysis = getCookieValue("_visited");
     const cookieNameAnalysisGoogle = document.cookie.split("; ").find((row) => row.startsWith("_ga="));
 
-    // Gestiona el consentimiento de personalización
     if (cookieValuePersonalization && ["es", "en", "de"].includes(cookieValuePersonalization)) {
+      setAcceptCookiePersonalization(true);
       setCookieConsentPersonalization(true);
     }
-    // Gestiona el consentimiento de análisis
     if (cookieNameAnalysis) {
+      setAcceptCookieAnalysis(true);
       setCookieConsentAnalysis(true);
     }
-
-    // Gestiona el consentimiento de Google Analytics
     if (cookieNameAnalysisGoogle) {
+      setAcceptCookieAnalysisGoogle(true);
       setCookieConsentAnalysisGoogle(true);
       initGA();
     }
 
-    // Muestra el modal de cookies si no hay consentimiento previo
+    // Muestra el modal únicamente cuando no existe una elección ni cookies opcionales previas.
     if (!cookieNameAnalysis && !cookieNameAnalysisGoogle && !cookieValuePersonalization) {
       setShowCookieModal(true);
     } else {
       setCookiesModalClosed(true);
     }
-  }, [setCookieConsentPersonalization, setCookieConsentAnalysis, setCookieConsentAnalysisGoogle]);
+  }, [
+    setAcceptCookieAnalysis,
+    setAcceptCookieAnalysisGoogle,
+    setAcceptCookiePersonalization,
+    setCookieConsentAnalysis,
+    setCookieConsentAnalysisGoogle,
+    setCookieConsentPersonalization,
+  ]);
 
   /**
    * Efecto para guardar el idioma en cookies si se ha aceptado la personalización.
@@ -156,7 +230,7 @@ export function useCookieLogic(): CookieLogic {
 
   /**
    * Maneja la aceptación de cookies según los consentimientos seleccionados.
-   * - Actualiza los estados de consentimiento según las preferencias del usuario.
+   * - Actualiza y conserva los estados de consentimiento elegidos por el usuario.
    * - Crea la cookie de dispositivo si se acepta el análisis.
    * - Inicializa Google Analytics si se acepta.
    * - Cierra el modal de cookies.
@@ -182,6 +256,11 @@ export function useCookieLogic(): CookieLogic {
       setCookieConsentPersonalization(false);
     }
 
+    const customPreference = [AcceptCookieAnalysis, AcceptCookieAnalysisGoogle, AcceptCookiePersonalization]
+      .map((value) => (value ? "1" : "0"))
+      .join("");
+    saveCookieConsentPreference(`${COOKIE_CONSENT_CUSTOM_PREFIX}${customPreference}`);
+
     setShowCookieModal(false);
     setCookiesModalClosed(true);
   };
@@ -189,17 +268,19 @@ export function useCookieLogic(): CookieLogic {
   /**
    * Declina todas las cookies, cerrando el modal de consentimiento.
    * - Reinicia el consentimiento de cookies.
+   * - Conserva el rechazo para que el modal no reaparezca al recargar.
    * - Cierra el modal de cookies.
    */
   const handleDeclineAllCookies = () => {
     resetCookieConsent();
+    saveCookieConsentPreference(COOKIE_CONSENT_REJECTED);
     setShowCookieModal(false);
     setCookiesModalClosed(true);
   };
 
   /**
    * Acepta todas las cookies (análisis, personalización y Google), cierra el modal y ejecuta `initGA`.
-   * - Establece todos los consentimientos a `true`.
+   * - Establece y conserva todos los consentimientos a `true`.
    * - Crea la cookie de dispositivo.
    * - Inicializa Google Analytics.
    * - Cierra el modal de cookies.
@@ -216,6 +297,7 @@ export function useCookieLogic(): CookieLogic {
     setAcceptCookiePersonalization(true);
     setCookieConsentPersonalization(true);
 
+    saveCookieConsentPreference(COOKIE_CONSENT_ACCEPTED);
     setShowCookieModal(false);
     setCookiesModalClosed(true);
   };
