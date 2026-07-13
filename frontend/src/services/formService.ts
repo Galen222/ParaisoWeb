@@ -31,9 +31,7 @@ if (!API_URL) {
 // Crea una instancia de axios con configuraciones predeterminadas.
 const axiosInstance = axios.create({
   baseURL: API_URL,
-  headers: {
-    "Content-Type": "multipart/form-data",
-  },
+  // No se fija Content-Type: Axios añadirá el boundary correcto al enviar FormData.
   // Puedes agregar más configuraciones aquí si es necesario.
 });
 

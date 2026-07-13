@@ -14,6 +14,8 @@ Dependencias:
 - Servicios: Implementación de lógica en `ContactoService`.
 """
 
+import logging
+
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
 from pydantic import EmailStr
 from ..dependencies import verify_token
@@ -21,6 +23,7 @@ from ..services.contacto_service import ContactoService
 
 # Inicializa el router para el formulario de contacto
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.post("/contacto")
 async def contacto(
@@ -66,5 +69,9 @@ async def contacto(
         return {"message": "Formulario enviado correctamente"}
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception("Error inesperado al procesar el formulario de contacto")
+        raise HTTPException(
+            status_code=500,
+            detail="Error interno al procesar el formulario"
+        ) from None

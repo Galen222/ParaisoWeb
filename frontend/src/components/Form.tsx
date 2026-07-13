@@ -13,6 +13,31 @@ export interface FormProps {
   onSubmit: () => void;
 }
 
+/**
+ * Oculta el correo para poder depurar envíos sin escribir la dirección completa en consola.
+ */
+const maskEmailForLog = (email: string): string => {
+  const separatorIndex = email.lastIndexOf("@");
+  if (separatorIndex <= 0 || separatorIndex === email.length - 1) {
+    return "***";
+  }
+
+  const maskPart = (value: string): string => {
+    if (value.length <= 2) {
+      return "*".repeat(value.length);
+    }
+
+    return `${value[0]}${"*".repeat(value.length - 2)}${value[value.length - 1]}`;
+  };
+
+  const localPart = email.slice(0, separatorIndex);
+  const domainParts = email.slice(separatorIndex + 1).split(".");
+  const domainName = domainParts.shift() ?? "";
+  const domainSuffix = domainParts.length > 0 ? `.${domainParts.join(".")}` : "";
+
+  return `${maskPart(localPart)}@${maskPart(domainName)}${domainSuffix}`;
+};
+
 const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element => {
   const intl = useIntl();
   const [isPushingSend, setIsPushingSend] = useState(false);
@@ -142,7 +167,14 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     setIsSubmitting(true);
 
     try {
-      console.log("📤 Enviando formData:", formData);
+      console.log("📤 Enviando formulario:", {
+        reason: formData.reason,
+        email: maskEmailForLog(formData.email),
+        messageLength: formData.message.length,
+        hasFile: formData.file !== null,
+        fileType: formData.file?.type ?? null,
+        fileSize: formData.file?.size ?? 0,
+      });
       await submitForm(formData);
       showToast("contacto_Formulario_Ok", 4000, "success");
       setFormData({
