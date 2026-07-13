@@ -67,9 +67,14 @@ class ContactoService:
         """
         # Validar datos del formulario
         try:
-            ContactForm(name=name, reason=reason, email=email, message=message)
+            contact_form = ContactForm(name=name, reason=reason, email=email, message=message)
         except ValueError as e:
             raise HTTPException(status_code=400, detail=str(e))
+
+        name = contact_form.name
+        reason = contact_form.reason
+        email = contact_form.email
+        message = contact_form.message
 
         # Validar requerimiento de archivo según el motivo
         if reason in ['factura', 'curriculum'] and not file:
@@ -79,8 +84,11 @@ class ContactoService:
             )
 
         # Procesar archivo si existe
+        validated_content_type: Optional[str] = None
         if file:
-            await self.file_service.validate_and_process_file(file)
+            file_info = await self.file_service.validate_and_process_file(file)
+            if file_info and isinstance(file_info.get('content_type'), str):
+                validated_content_type = file_info['content_type']
 
         # Enviar email
         await self.email_service.send_contact_email(
@@ -88,5 +96,6 @@ class ContactoService:
             reason=reason,
             email=str(email),
             message=message,
-            file=file
+            file=file,
+            validated_content_type=validated_content_type
         )

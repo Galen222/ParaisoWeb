@@ -74,7 +74,8 @@ class EmailService:
         reason: str,
         email: str,
         message: str,
-        file: Optional[UploadFile] = None
+        file: Optional[UploadFile] = None,
+        validated_content_type: Optional[str] = None
     ) -> None:
         """
         Envía un correo electrónico del formulario de contacto.
@@ -89,13 +90,15 @@ class EmailService:
             email (str): Dirección de correo electrónico del remitente.
             message (str): Mensaje incluido en el correo.
             file (Optional[UploadFile]): Archivo adjunto opcional.
+            validated_content_type (Optional[str]): Tipo MIME validado por contenido.
 
         Raises:
             Exception: Si ocurre un error durante el envío del correo.
         """
         msg = EmailMessage()
         msg['Subject'] = f'Nuevo mensaje de {name}'
-        msg['From'] = email
+        msg['From'] = self.smtp_username
+        msg['Reply-To'] = email
         
         # Todos los correos solo a galendos@gmail.com
         #msg['To'] = 'galendos@gmail.com'
@@ -126,7 +129,7 @@ class EmailService:
         # Procesar archivo adjunto
         if file:
             file_content = await file.read()
-            content_type = file.content_type or "application/octet-stream"
+            content_type = validated_content_type or "application/octet-stream"
             
             try:
                 maintype, subtype = content_type.split('/')

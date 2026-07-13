@@ -220,6 +220,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
           name="name"
           value={formData.name}
           onChange={handleValidateName}
+          maxLength={100}
           required
           className={`${styles.input} ${styles.nameInput}`}
         />
@@ -250,6 +251,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
           name="email"
           value={formData.email}
           onChange={handleValidateEmail}
+          maxLength={254}
           required
           className={`${styles.input} ${isValidEmail ? styles.emailValid : styles.emailInvalid}`}
         />
@@ -257,7 +259,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
       <div>
         <label htmlFor="message">{intl.formatMessage({ id: "contacto_Mensaje" })}</label>
-        <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
+        <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} maxLength={5000} required></textarea>
       </div>
 
       <div className={styles.archiveText}>

@@ -12,7 +12,7 @@ Este archivo incluye:
 - Esquemas para la tabla 'blog'.
 """
 
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing import Optional
 from datetime import datetime
 
@@ -28,10 +28,16 @@ class ContactForm(BaseModel):
         email (EmailStr): Correo electrónico validado del remitente.
         message (str): Mensaje enviado en el formulario.
     """
-    name: str
-    reason: str
-    email: EmailStr
-    message: str
+    name: str = Field(min_length=1, max_length=100)
+    reason: str = Field(min_length=1, max_length=20)
+    email: EmailStr = Field(max_length=254)
+    message: str = Field(min_length=1, max_length=5000)
+
+    @field_validator('name', mode='before')
+    @classmethod
+    def strip_name(cls, v: str) -> str:
+        """Elimina espacios exteriores antes de validar longitud y contenido."""
+        return v.strip() if isinstance(v, str) else v
 
     @field_validator('name')
     def validate_name(cls, v: str) -> str:
@@ -55,7 +61,7 @@ class ContactForm(BaseModel):
             raise ValueError(
                 "El nombre solo puede contener letras, espacios, guiones (-) y apóstrofes (')."
             )
-        return v.strip()
+        return v
 
     @field_validator('reason')
     def validate_reason(cls, v: str) -> str:
