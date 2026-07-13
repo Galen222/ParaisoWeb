@@ -23,9 +23,9 @@ export interface BannerProps {
  * de inversión para el diseño en escritorio y móvil.
  *
  * @param {BannerProps} props - Propiedades para el componente Banner.
- * @returns {JSX.Element} Banner personalizado según el tipo especificado.
+ * @returns {React.JSX.Element} Banner personalizado según el tipo especificado.
  */
-const Banner: React.FC<BannerProps> = ({ bannerType }: BannerProps): JSX.Element => {
+const Banner: React.FC<BannerProps> = ({ bannerType }: BannerProps): React.JSX.Element => {
   // `intl` es una instancia del hook useIntl, utilizado para obtener mensajes localizados.
   const intl = useIntl();
 

@@ -30,9 +30,9 @@ export type HomeComponent = NextPage & { pageTitleText?: string };
 
 /**
  * Componente funcional para la página principal (Home).
- * @returns {JSX.Element} El componente de la página principal.
+ * @returns {React.JSX.Element} El componente de la página principal.
  */
-const Home: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const Home: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";

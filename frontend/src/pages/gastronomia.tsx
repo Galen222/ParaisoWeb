@@ -32,9 +32,9 @@ export type GastronomiaPageComponent = NextPage & { pageTitleText?: string };
 /**
  * Componente funcional para la página de gastronomía.
  *
- * @returns {JSX.Element} El componente de la página de gastronomía.
+ * @returns {React.JSX.Element} El componente de la página de gastronomía.
  */
-const GastronomiaPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";

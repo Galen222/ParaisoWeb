@@ -42,9 +42,9 @@ const CookieConsentContext = createContext<CookieConsentContextType | undefined>
  * incluyendo análisis, personalización y cookies específicas de Google.
  *
  * @param {ReactNode} children - Componentes hijos que estarán dentro del proveedor.
- * @returns {JSX.Element} Proveedor del contexto de consentimiento de cookies.
+ * @returns {React.JSX.Element} Proveedor del contexto de consentimiento de cookies.
  */
-export function CookieConsentProvider({ children }: { children: ReactNode }): JSX.Element {
+export function CookieConsentProvider({ children }: { children: ReactNode }): React.JSX.Element {
   // Estados para el consentimiento y aceptación de diferentes tipos de cookies
   const [cookieConsentAnalysis, setCookieConsentAnalysis] = useState<boolean>(false);
   const [cookieConsentAnalysisGoogle, setCookieConsentAnalysisGoogle] = useState<boolean>(false);

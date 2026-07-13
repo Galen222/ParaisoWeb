@@ -1,3 +1,4 @@
 {
-  "python-envs.workspaceSearchPaths": [".venv", "*/.venv", "backend/.venv"]
+  "python-envs.workspaceSearchPaths": [".venv", "*/.venv", "backend/.venv"],
+  "js/ts.tsdk.path": "./frontend/node_modules/typescript/lib"
 }

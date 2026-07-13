@@ -35,9 +35,9 @@ export type ReinaVictoriaPageComponent = NextPage & { pageTitleText?: string };
  * Componente que representa la página Reina Victoria.
  * Muestra información y elementos específicos de localización, como un mapa, carrusel y detalles de transporte.
  *
- * @returns {JSX.Element} El componente de la página Reina Victoria.
+ * @returns {React.JSX.Element} El componente de la página Reina Victoria.
  */
-const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   /**
    * Nombre del restaurante para su uso en tracking y otros componentes.
    */

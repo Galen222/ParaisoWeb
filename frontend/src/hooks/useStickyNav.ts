@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 
-const useStickyNav = (navbarRef: React.RefObject<HTMLElement>) => {
+const useStickyNav = <T extends HTMLElement>(navbarRef: React.RefObject<T | null>) => {
   const [isSticky, setIsSticky] = useState(false);
 
   useEffect(() => {

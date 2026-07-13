@@ -20,9 +20,9 @@ export interface ErrorPageProps {
  * Incluye seguimiento de visitas y configuraciones de SEO.
  *
  * @param {ErrorPageProps} props - Propiedades del componente ErrorPage.
- * @returns {JSX.Element} Componente de página de error.
+ * @returns {React.JSX.Element} Componente de página de error.
  */
-const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }: ErrorPageProps): JSX.Element => {
+const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }: ErrorPageProps): React.JSX.Element => {
   const intl = useIntl(); // Hook para manejar la internacionalización
 
   // Realiza el seguimiento de visitas a la página de error para análisis interno y Google Analytics

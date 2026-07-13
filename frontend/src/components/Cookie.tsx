@@ -30,7 +30,7 @@ export interface CookieProps {
  * Permite a los usuarios personalizar sus preferencias de cookies y muestra notificaciones (toast) según la acción realizada.
  *
  * @param {CookieProps} props - Propiedades del componente Cookie.
- * @returns {JSX.Element} Modal de preferencias de cookies.
+ * @returns {React.JSX.Element} Modal de preferencias de cookies.
  */
 const Cookie: React.FC<CookieProps> = ({
   onAccept,
@@ -38,7 +38,7 @@ const Cookie: React.FC<CookieProps> = ({
   onDeclineAll,
   onCookiesPolicyLinkClick,
   onPrivacyPolicyLinkClick,
-}: CookieProps): JSX.Element => {
+}: CookieProps): React.JSX.Element => {
   const intl = useIntl();
   const [isCustomizing, setIsCustomizing] = useState(false); // Estado para manejar si se están personalizando las cookies
 

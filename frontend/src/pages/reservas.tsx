@@ -32,9 +32,9 @@ export type ReservasPageComponent = NextPage & { pageTitleText?: string };
  * Este componente muestra textos internacionalizados, secciones de localización y un botón para desplazarse hacia arriba.
  * También realiza seguimiento de la visita a la página para propósitos de analítica.
  *
- * @returns {JSX.Element} - Elemento JSX de la página de reservas.
+ * @returns {React.JSX.Element} - Elemento JSX de la página de reservas.
  */
-const ReservasPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const ReservasPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";

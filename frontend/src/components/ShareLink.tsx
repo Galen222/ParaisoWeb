@@ -21,7 +21,7 @@ export interface ShareLinkProps {
   title: string;
 }
 
-const ShareLink: React.FC<ShareLinkProps> = ({ url, title }: ShareLinkProps): JSX.Element => {
+const ShareLink: React.FC<ShareLinkProps> = ({ url, title }: ShareLinkProps): React.JSX.Element => {
   const intl = useIntl();
 
   // Prefijo para cada título

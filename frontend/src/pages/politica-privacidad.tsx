@@ -39,9 +39,9 @@ export type PoliticaPrivacidadPageComponent = NextPage & { pageTitleText?: strin
 /**
  * Componente que representa la página de Política de Privacidad.
  *
- * @returns {JSX.Element} El componente de la página de Política de Privacidad.
+ * @returns {React.JSX.Element} El componente de la página de Política de Privacidad.
  */
-const PoliticaPrivacidadPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const PoliticaPrivacidadPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";

@@ -44,9 +44,9 @@ const errorImage = "/images/web/error.png";
  * Componente de la página de Charcutería.
  * Muestra una lista paginada de productos de charcutería con imágenes y descripciones.
  *
- * @returns {JSX.Element} Elemento JSX de la página.
+ * @returns {React.JSX.Element} Elemento JSX de la página.
  */
-const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   // Hooks de internacionalización y URL
   const intl = useIntl();
   const currentUrl = useCurrentUrl();

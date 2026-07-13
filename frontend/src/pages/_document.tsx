@@ -33,9 +33,9 @@ class MyDocument extends Document<{ locale: string }> {
 
   /**
    * Renderiza el documento HTML con el atributo `lang` configurado dinámicamente.
-   * @returns {JSX.Element} Estructura HTML con el atributo `lang`.
+   * @returns {React.JSX.Element} Estructura HTML con el atributo `lang`.
    */
-  render(): JSX.Element {
+  render(): React.JSX.Element {
     return (
       // Establece el atributo `lang` del elemento `<html>` basado en el idioma detectado
       <Html lang={this.props.locale}>

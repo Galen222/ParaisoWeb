@@ -44,7 +44,7 @@ export interface CustomAppProps extends AppProps {
   Component: AppProps["Component"] & { pageTitleText?: string };
 }
 
-function MainComponent({ Component, pageProps, router }: CustomAppProps): JSX.Element {
+function MainComponent({ Component, pageProps, router }: CustomAppProps): React.JSX.Element {
   const {
     showCookieModal,
     cookiesModalClosed,
@@ -111,7 +111,7 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): JSX.El
   );
 }
 
-export default function App(props: CustomAppProps): JSX.Element {
+export default function App(props: CustomAppProps): React.JSX.Element {
   return (
     <CookieConsentProvider>
       <MainComponent {...props} />

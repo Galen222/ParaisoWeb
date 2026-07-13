@@ -35,9 +35,9 @@ export type ArenalPageComponent = NextPage & { pageTitleText?: string };
  * Componente que representa la página San Bernardo.
  * Muestra información y elementos específicos de localización, como un mapa, carrusel y detalles de transporte.
  *
- * @returns {JSX.Element} El componente de la página San Bernardo.
+ * @returns {React.JSX.Element} El componente de la página San Bernardo.
  */
-const ArenalPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const ArenalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   /**
    * Nombre del restaurante para su uso en tracking y otros componentes.
    */

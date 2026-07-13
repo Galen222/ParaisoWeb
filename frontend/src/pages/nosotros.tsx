@@ -33,9 +33,9 @@ export type NosotrosPageComponent = NextPage & { pageTitleText?: string };
  * Muestra información sobre la empresa, incluyendo texto internacionalizado, imágenes y carruseles de imágenes.
  * También incluye la funcionalidad para desplazarse hasta la parte superior de la página.
  *
- * @returns {JSX.Element} Componente de la página "Nosotros".
+ * @returns {React.JSX.Element} Componente de la página "Nosotros".
  */
-const NosotrosPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const NosotrosPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";

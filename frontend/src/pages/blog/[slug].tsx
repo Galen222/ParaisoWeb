@@ -53,7 +53,7 @@ export interface BlogDetailsPageProps {
  * Componente para mostrar los detalles de un artículo del blog.
  *
  * @param {BlogDetailsPageProps} props - Props para el componente.
- * @returns {JSX.Element} JSX renderizado.
+ * @returns {React.JSX.Element} JSX renderizado.
  */
 const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string } = ({ blogDetails, error }) => {
   const intl = useIntl(); // Hook de internacionalización

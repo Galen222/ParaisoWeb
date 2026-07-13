@@ -31,7 +31,7 @@ export interface PaginatorProps {
 /**
  * Componente Paginator que muestra una barra de navegación de páginas
  * @param {PaginatorProps} props - Propiedades del componente
- * @returns {JSX.Element} Elemento JSX que representa el paginador
+ * @returns {React.JSX.Element} Elemento JSX que representa el paginador
  */
 export const Paginator: React.FC<PaginatorProps> = ({
   currentPage,
@@ -75,7 +75,7 @@ export const Paginator: React.FC<PaginatorProps> = ({
     const uniqueRange = [...new Set(range)].sort((a, b) => a - b);
 
     // Agregar puntos suspensivos donde sea necesario
-    for (let i of uniqueRange) {
+    for (const i of uniqueRange) {
       if (l) {
         if (i - l === 2) {
           // Si hay un espacio de 2 entre números, agregar el número intermedio

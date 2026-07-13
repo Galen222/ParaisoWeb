@@ -19,9 +19,9 @@ export interface LoaderProps {
  * Se puede pasar una clase opcional para modificar el estilo.
  *
  * @param {LoaderProps} props - Propiedades del componente Loader.
- * @returns {JSX.Element} Indicador de carga animado.
+ * @returns {React.JSX.Element} Indicador de carga animado.
  */
-const Loader: React.FC<LoaderProps> = ({ className }: LoaderProps): JSX.Element => {
+const Loader: React.FC<LoaderProps> = ({ className }: LoaderProps): React.JSX.Element => {
   let loaderClasses = styles.loader;
   if (className) {
     loaderClasses = `${styles.loader} ${styles[className]}`;

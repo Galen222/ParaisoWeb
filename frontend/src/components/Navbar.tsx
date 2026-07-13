@@ -64,9 +64,9 @@ const IMAGE_CONSTANTS = {
  * selección de idioma y un título animado.
  *
  * @param {NavbarProps} props - Propiedades del componente.
- * @returns {JSX.Element} Elemento JSX que representa la barra de navegación.
+ * @returns {React.JSX.Element} Elemento JSX que representa la barra de navegación.
  */
-const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: NavbarProps): JSX.Element => {
+const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: NavbarProps): React.JSX.Element => {
   const intl = useIntl();
   const router = useRouter();
   const { locales } = router;

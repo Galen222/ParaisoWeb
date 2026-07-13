@@ -52,9 +52,9 @@ export interface MenuProviderProps {
  * y del submenú de restaurantes, permitiendo su apertura y cierre en componentes hijos.
  *
  * @param {MenuProviderProps} props - Propiedades del proveedor de contexto.
- * @returns {JSX.Element} Proveedor del contexto del menú para controlar el estado del menú.
+ * @returns {React.JSX.Element} Proveedor del contexto del menú para controlar el estado del menú.
  */
-export const MenuProvider: React.FC<MenuProviderProps> = ({ children }: MenuProviderProps): JSX.Element => {
+export const MenuProvider: React.FC<MenuProviderProps> = ({ children }: MenuProviderProps): React.JSX.Element => {
   // Estado y funciones para el menú móvil
   const [mobileMenu, setMobileMenu] = useState(false);
   const toggleMobileMenu = () => setMobileMenu(!mobileMenu); // Alterna el estado del menú móvil

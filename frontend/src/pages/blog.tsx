@@ -43,9 +43,9 @@ const imageError = "/images/web/error.png";
  * Componente funcional para la página del blog.
  * Muestra una lista paginada de publicaciones del blog en formato de tarjetas enlazadas a sus detalles.
  *
- * @returns {JSX.Element} Página del Blog.
+ * @returns {React.JSX.Element} Página del Blog.
  */
-const BlogPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   // Hooks de internacionalización y URL
   const intl = useIntl();
   const currentLocale = intl.locale || "es";

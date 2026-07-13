@@ -34,9 +34,9 @@ export type ContactoPageComponent = NextPage & { pageTitleText?: string };
  * Componente funcional para la página de Contacto.
  * Incluye información de contacto, un formulario, detalles legales y ubicaciones.
  *
- * @returns {JSX.Element} Página de Contacto.
+ * @returns {React.JSX.Element} Página de Contacto.
  */
-const ContactoPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const ContactoPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";

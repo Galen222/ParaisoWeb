@@ -13,7 +13,7 @@ export interface FormProps {
   onSubmit: () => void;
 }
 
-const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): JSX.Element => {
+const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element => {
   const intl = useIntl();
   const [isPushingSend, setIsPushingSend] = useState(false);
   const [isPushingFile, setIsPushingFile] = useState(false);

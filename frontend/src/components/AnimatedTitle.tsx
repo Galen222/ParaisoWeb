@@ -22,9 +22,9 @@ export interface AnimatedTitleProps {
  * de lo contrario, se muestra el texto estático.
  *
  * @param {AnimatedTitleProps} props - Propiedades para el componente AnimatedTitle.
- * @returns {JSX.Element} Título animado o estático según el estado del modal de cookies.
+ * @returns {React.JSX.Element} Título animado o estático según el estado del modal de cookies.
  */
-const AnimatedTitle: React.FC<AnimatedTitleProps> = ({ pageTitleText, cookiesModalClosed }: AnimatedTitleProps): JSX.Element => {
+const AnimatedTitle: React.FC<AnimatedTitleProps> = ({ pageTitleText, cookiesModalClosed }: AnimatedTitleProps): React.JSX.Element => {
   // `intl` es una instancia del hook useIntl, utilizada para obtener mensajes localizados.
   const intl = useIntl();
 

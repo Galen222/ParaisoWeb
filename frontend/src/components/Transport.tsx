@@ -21,9 +21,9 @@ export interface TransportProps {
  * un título y una descripción, todos los textos están internacionalizados.
  *
  * @param {TransportProps} props - Propiedades del componente Transport.
- * @returns {JSX.Element} Información de transporte para la ubicación especificada.
+ * @returns {React.JSX.Element} Información de transporte para la ubicación especificada.
  */
-const Transport: React.FC<TransportProps> = ({ transportName }: TransportProps): JSX.Element => {
+const Transport: React.FC<TransportProps> = ({ transportName }: TransportProps): React.JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
 
   // Variables para las imágenes y los textos alternativos internacionalizados

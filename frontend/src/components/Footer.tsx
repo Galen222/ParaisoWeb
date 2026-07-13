@@ -4,7 +4,7 @@
  * Componente Footer para mostrar enlaces relacionados con avisos legales y políticas,
  * así como un aviso de derechos de autor. Utiliza internacionalización para el contenido de texto dinámico.
  *
- * @returns {JSX.Element} El elemento de pie de página renderizado.
+ * @returns {React.JSX.Element} El elemento de pie de página renderizado.
  */
 import React from "react";
 import { useIntl } from "react-intl";
@@ -13,7 +13,7 @@ import { useRouter } from "next/router";
 import { useMenu } from "../contexts/MenuContext";
 import styles from "../styles/components/Footer.module.css";
 
-const Footer: React.FC = (): JSX.Element => {
+const Footer: React.FC = (): React.JSX.Element => {
   // Hook para manejar la internacionalización y los mensajes traducidos
   const intl = useIntl();
   // Hook del enrutador para manejar el locale

@@ -34,9 +34,9 @@ export type BravoMurilloPageComponent = NextPage & { pageTitleText?: string };
  * Componente que representa la página Bravo Murillo.
  * Muestra información y elementos específicos de localización, como un mapa, carrusel y detalles de transporte.
  *
- * @returns {JSX.Element} El componente de la página Bravo Murillo.
+ * @returns {React.JSX.Element} El componente de la página Bravo Murillo.
  */
-const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   /**
    * Nombre del restaurante para su uso en tracking y otros componentes.
    */

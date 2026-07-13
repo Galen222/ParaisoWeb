@@ -20,9 +20,9 @@ export interface LocalizationProps {
  * La información se obtiene dinámicamente usando el identificador `localizationName` para adaptarse a múltiples ubicaciones.
  *
  * @param {LocalizationProps} props - Propiedades del componente Localization.
- * @returns {JSX.Element} Información de contacto localizada para la ubicación especificada.
+ * @returns {React.JSX.Element} Información de contacto localizada para la ubicación especificada.
  */
-const Localization: React.FC<LocalizationProps> = ({ localizationName }: LocalizationProps): JSX.Element => {
+const Localization: React.FC<LocalizationProps> = ({ localizationName }: LocalizationProps): React.JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
 
   return (

@@ -90,13 +90,13 @@ export type MapProps = {
  * de la ubicación al hacer clic en el marcador.
  *
  * @param {MapProps} props - Propiedades del componente MapComponent.
- * @returns {JSX.Element} Mapa de Google Maps con marcador e información de la ubicación.
+ * @returns {React.JSX.Element} Mapa de Google Maps con marcador e información de la ubicación.
  */
-const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps): JSX.Element => {
+const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps): React.JSX.Element => {
   const intl = useIntl();
   const mapRef = useRef<HTMLDivElement>(null); // Referencia para el contenedor del mapa
-  const mapInstanceRef = useRef<google.maps.Map>(); // Referencia para la instancia del mapa
-  const infoWindowRef = useRef<google.maps.InfoWindow>(); // Referencia para el InfoWindow
+  const mapInstanceRef = useRef<google.maps.Map | null>(null); // Referencia para la instancia del mapa
+  const infoWindowRef = useRef<google.maps.InfoWindow | null>(null); // Referencia para el InfoWindow
   const location = locations[locationKey]; // Ubicación seleccionada
   const [currentLocale, setCurrentLocale] = useState(intl.locale); // Estado para el idioma actual
   const [isLoaded, setIsLoaded] = useState(false); // Indica si el mapa se ha cargado
@@ -186,11 +186,11 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
        ${location.telephone}
       </a></p>
         <p><a class="text-decoration-none" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-          location.address_url
+          location.address_url,
         )}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({ id: "Map_Marker_Texto1" })}</a></p>
         <p><a class="text-decoration-none" href="${location.url}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({
-        id: "Map_Marker_Texto2",
-      })}</a></p>
+          id: "Map_Marker_Texto2",
+        })}</a></p>
       </div>`;
 
       if (infoWindowRef.current) {
@@ -229,7 +229,10 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
   // Renderiza el contenedor del mapa una vez que se ha cargado
   return (
     <div>
-      <div ref={mapRef} className={styles.mapContainer}></div>
+      <div
+        ref={mapRef}
+        className={styles.mapContainer}
+      ></div>
     </div>
   );
 };

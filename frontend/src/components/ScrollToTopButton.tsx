@@ -10,9 +10,9 @@ import styles from "../styles/components/ScrollToTopButton.module.css";
  * Muestra un botón que permite al usuario desplazarse hacia la parte superior de la página.
  * Utiliza el hook `useScrollToTop` para gestionar la visibilidad y el posicionamiento del botón.
  *
- * @returns {JSX.Element | null} Botón de scroll-to-top o null si no es visible.
+ * @returns {React.JSX.Element | null} Botón de scroll-to-top o null si no es visible.
  */
-const ScrollToTopButton: React.FC = (): JSX.Element | null => {
+const ScrollToTopButton: React.FC = (): React.JSX.Element | null => {
   const intl = useIntl(); // Hook para la internacionalización
   const { isScrollButtonVisible, buttonPosition, scrollToTop } = useScrollToTop(); // Hook para manejar el botón de scroll
 

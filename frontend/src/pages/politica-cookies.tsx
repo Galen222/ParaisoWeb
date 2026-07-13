@@ -43,9 +43,9 @@ export type PoliticaCookiesPageComponent = NextPage & { pageTitleText?: string }
 /**
  * Componente que representa la página de Política de Cookies.
  *
- * @returns {JSX.Element} El componente de la página de Política de Cookies.
+ * @returns {React.JSX.Element} El componente de la página de Política de Cookies.
  */
-const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): JSX.Element => {
+const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
