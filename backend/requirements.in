@@ -1,0 +1,25 @@
+# --- Framework & Server ---
+fastapi
+uvicorn[standard]
+python-multipart    # Necesario para subida de archivos
+python-dotenv       # Para leer .env
+
+# --- Base de Datos ---
+sqlalchemy
+aiomysql            # Driver asíncrono
+pymysql             # Driver síncrono
+
+# --- Modelos y Validación ---
+pydantic[email]     # El [email] instala automáticamente email-validator
+pydantic-settings
+
+# --- Lógica de Negocio ---
+requests            # Peticiones HTTP
+aiosmtplib          # Envío de correos
+filetype            # Detección de tipos de archivo
+jinja2              # Templates
+
+# --- Pruebas y Herramientas ---
+termcolor           # Para tus tests
+pdoc                # Documentación
+pip-review          # Mantenimiento

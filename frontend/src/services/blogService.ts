@@ -91,9 +91,19 @@ export const getBlogPostById = async (id: number, idioma: string, token?: string
 export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: string): Promise<BlogPost> => {
   try {
     // Validar y sanitizar los inputs
-    const validSlug = /^[a-zA-Z0-9-]+$/.test(slug); // Solo permite letras, números y guiones
-    if (!validSlug) {
-      throw new Error("El slug contiene caracteres no permitidos.");
+    const allowedSlugRegex = /^[a-zA-Z0-9-]+$/;
+
+    if (!allowedSlugRegex.test(slug)) {
+      // Caracteres inválidos individuales
+      const invalidChars = slug.match(/[^a-zA-Z0-9-]/g) || [];
+      const invalidList = Array.from(new Set(invalidChars)).join(", ");
+
+      // Vista resaltada del slug, envolviendo los inválidos entre corchetes
+      const highlighted = Array.from(slug)
+        .map((ch) => (/[a-zA-Z0-9-]/.test(ch) ? ch : `[${ch}]`))
+        .join("");
+
+      throw new Error(`El slug "${slug}" contiene caracteres no permitidos: ${invalidList}. Vista resaltada: ${highlighted}`);
     }
 
     const allowedIdiomas = ["es", "en", "de"];

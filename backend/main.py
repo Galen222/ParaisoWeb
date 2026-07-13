@@ -72,7 +72,7 @@ def create_app() -> FastAPI:
             "API para gestionar formularios de contacto, productos de charcutería, "
             "publicaciones de blog y autenticación mediante tokens temporales."
         ),
-        version="1.1.1",
+        version="1.1.2",
         lifespan=lifespan,
     )
 
@@ -81,9 +81,9 @@ def create_app() -> FastAPI:
 
     # Configuración de CORS
     origins = [
-        "http://localhost:3000",          # Desarrollo local
-        "https://galenn.asuscomm.com",    
-        "http://paraisodeljamon.com",     # Producción
+        "http://localhost:3000",  # Desarrollo local
+        "https://galenn.asuscomm.com",
+        "http://paraisodeljamon.com",  # Producción
         "https://paraisodeljamon.com",
         "http://www.paraisodeljamon.com",
         "https://www.paraisodeljamon.com",
@@ -99,12 +99,21 @@ def create_app() -> FastAPI:
     )
 
     # Registro de Routers
-    app.include_router(contacto.router, prefix="/api", tags=["Contacto"])        # Endpoints para formularios de contacto
-    app.include_router(charcuteria.router, prefix="/api", tags=["Charcutería"])  # Endpoints para productos de charcutería
-    app.include_router(blog.router, prefix="/api", tags=["Blog"])                # Endpoints para publicaciones de blog
-    app.include_router(token.router, prefix="/api", tags=["Token"])              # Endpoint para obtener tokens temporales
+    app.include_router(
+        contacto.router, prefix="/api", tags=["Contacto"]
+    )  # Endpoints para formularios de contacto
+    app.include_router(
+        charcuteria.router, prefix="/api", tags=["Charcutería"]
+    )  # Endpoints para productos de charcutería
+    app.include_router(
+        blog.router, prefix="/api", tags=["Blog"]
+    )  # Endpoints para publicaciones de blog
+    app.include_router(
+        token.router, prefix="/api", tags=["Token"]
+    )  # Endpoint para obtener tokens temporales
 
     return app
+
 
 # Crear instancia de la aplicación
 app = create_app()

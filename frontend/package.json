@@ -1,6 +1,6 @@
 {
   "name": "paraisoweb",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -15,7 +15,7 @@
     "bootstrap": "^5.3.3",
     "file-saver": "^2.0.5",
     "mysql2": "^3.11.4",
-    "next": "^15.3.4",
+    "next": "^15.5.12",
     "next-seo": "^6.6.0",
     "next-sitemap": "^4.2.3",
     "react": "^18",
@@ -37,7 +37,10 @@
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18",
     "@types/validator": "^13.12.2",
-    "typedoc": "^0.28.5",
+    "typedoc": "^0.28.17",
     "typescript": "^5.7.3"
+  },
+  "allowScripts": {
+    "sharp@0.34.5": true
   }
 }
