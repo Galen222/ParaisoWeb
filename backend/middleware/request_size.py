@@ -55,8 +55,17 @@ class RequestSizeLimitMiddleware:
             await self.app(scope, receive, send)
             return
 
-        headers = {key.lower(): value for key, value in scope.get("headers", [])}
-        content_length_value = headers.get(b"content-length")
+        raw_headers = scope.get("headers", [])
+        content_length_values = [
+            value for key, value in raw_headers if key.lower() == b"content-length"
+        ]
+        # Varias cabeceras Content-Length hacen ambiguo qué tamaño procesan el proxy,
+        # el servidor ASGI y la aplicación. Se rechazan antes de leer el cuerpo.
+        if len(content_length_values) > 1:
+            await self._send_json_error(send, 400, "Cabecera Content-Length duplicada")
+            return
+
+        content_length_value = content_length_values[0] if content_length_values else None
         if content_length_value is not None:
             try:
                 content_length = int(content_length_value.decode("ascii"))

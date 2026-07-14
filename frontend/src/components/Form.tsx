@@ -98,7 +98,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     const normalizedValue = value.normalize("NFC");
     const nameRegex = /^[\p{L}\p{M}\s'’ʼ-]*$/u;
     if (nameRegex.test(normalizedValue)) {
-      setFormData({ ...formData, [name]: normalizedValue });
+      setFormData((current) => ({ ...current, [name]: normalizedValue }));
     }
   };
 
@@ -136,23 +136,23 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
       if (validateEmailPart(localPart) && domainPart && validateEmailPart(domainPart)) {
         const isValid = validator.isEmail(sanitizedValue);
         setIsValidEmail(isValid);
-        setFormData({ ...formData, email: sanitizedValue });
+        setFormData((current) => ({ ...current, email: sanitizedValue }));
         return;
       }
     }
 
-    setFormData({ ...formData, email: sanitizedValue });
+    setFormData((current) => ({ ...current, email: sanitizedValue }));
     setIsValidEmail(false);
   };
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((current) => ({ ...current, [name]: value }));
   };
 
   const handleValidateMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData((current) => ({ ...current, [name]: value }));
   };
 
   /**

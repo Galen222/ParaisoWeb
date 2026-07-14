@@ -56,6 +56,10 @@ export function usePagination<T>({
 }: {
   items: T[];
 } & PaginationOptions): PaginationResult<T> {
+  if (!Number.isInteger(itemsPerPage) || itemsPerPage <= 0) {
+    throw new Error("itemsPerPage debe ser un número entero mayor que cero");
+  }
+
   // Calcular el número total de páginas (mínimo 1 página)
   const totalPages = Math.max(1, Math.ceil(items.length / itemsPerPage));
 
@@ -65,10 +69,21 @@ export function usePagination<T>({
   const currentPage = clampPage(requestedPage, totalPages);
 
   /*
-   * Si cambia el número de páginas (por ejemplo, al cambiar de idioma o recargar datos),
-   * `currentPage` queda limitada de forma derivada para el conjunto actual. La página
-   * solicitada solo cambia por una acción del usuario, evitando actualizaciones durante render.
+   * Si disminuye el número de páginas, sincroniza el estado después del render. Sin esta
+   * actualización, una página antigua podía reaparecer inesperadamente al crecer de nuevo
+   * la lista después de aplicar y retirar un filtro.
    */
+  useEffect(() => {
+    if (requestedPage <= totalPages) {
+      return;
+    }
+
+    const frameId = window.requestAnimationFrame(() => {
+      setRequestedPage((page) => clampPage(page, totalPages));
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [requestedPage, totalPages]);
 
   /**
    * Memoriza los elementos de la página actual

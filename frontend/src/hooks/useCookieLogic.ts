@@ -52,10 +52,10 @@ export interface CookieLogic {
   cookiesModalClosed: boolean;
 
   /** Maneja el clic en el enlace de la política de cookies */
-  handleCookiesPolicyLinkClick: () => void;
+  handleCookiesPolicyLinkClick: () => Promise<void>;
 
   /** Maneja el clic en el enlace de la política de privacidad */
-  handlePrivacyPolicyLinkClick: () => void;
+  handlePrivacyPolicyLinkClick: () => Promise<void>;
 
   /** Maneja la aceptación de cookies según los consentimientos seleccionados */
   handleAcceptCookies: () => void;
@@ -228,11 +228,25 @@ export function useCookieLogic(): CookieLogic {
    * - Cierra el modal de cookies.
    * - Redirige al usuario a la página de política de cookies.
    */
-  const handleCookiesPolicyLinkClick = () => {
+  const handleCookiesPolicyLinkClick = async () => {
     resetCookieConsent();
     setShowCookieModal(false);
     setCookiesModalClosed(true);
-    router.push("/politica-cookies");
+
+    try {
+      const navigationCompleted = await router.push("/politica-cookies");
+      if (!navigationCompleted) {
+        setShowCookieModal(true);
+        setCookiesModalClosed(false);
+      }
+    } catch (error: unknown) {
+      console.error(
+        "No se pudo abrir la política de cookies:",
+        error instanceof Error ? error.message : "Error de navegación desconocido"
+      );
+      setShowCookieModal(true);
+      setCookiesModalClosed(false);
+    }
   };
 
   /**
@@ -241,11 +255,25 @@ export function useCookieLogic(): CookieLogic {
    * - Cierra el modal de cookies.
    * - Redirige al usuario a la página de política de privacidad.
    */
-  const handlePrivacyPolicyLinkClick = () => {
+  const handlePrivacyPolicyLinkClick = async () => {
     resetCookieConsent();
     setShowCookieModal(false);
     setCookiesModalClosed(true);
-    router.push("/politica-privacidad");
+
+    try {
+      const navigationCompleted = await router.push("/politica-privacidad");
+      if (!navigationCompleted) {
+        setShowCookieModal(true);
+        setCookiesModalClosed(false);
+      }
+    } catch (error: unknown) {
+      console.error(
+        "No se pudo abrir la política de privacidad:",
+        error instanceof Error ? error.message : "Error de navegación desconocido"
+      );
+      setShowCookieModal(true);
+      setCookiesModalClosed(false);
+    }
   };
 
   /**
