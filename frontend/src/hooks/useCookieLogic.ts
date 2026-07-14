@@ -7,6 +7,7 @@ import {
   COOKIE_CONSENT_NAME,
   createDeviceCookie,
   getCookieValue,
+  revokeCookieCategories,
   saveCookieConsentPreference,
 } from "../utils/cookieUtils";
 import { initGA } from "../utils/gaUtils"; // Importa la función desde utils
@@ -110,6 +111,8 @@ export function useCookieLogic(): CookieLogic {
 
       // Restaura primero la elección explícita, incluso cuando se rechazaron todas las cookies opcionales.
       if (savedPreference === COOKIE_CONSENT_REJECTED) {
+        // El rechazo persistido también debe retirar cookies antiguas que pudieran seguir en el navegador.
+        revokeCookieCategories({ analysis: true, googleAnalytics: true, personalization: true });
         setAcceptCookieAnalysis(false);
         setCookieConsentAnalysis(false);
         setAcceptCookieAnalysisGoogle(false);
@@ -125,6 +128,13 @@ export function useCookieLogic(): CookieLogic {
         const analysis = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.analysis === true;
         const googleAnalytics = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.googleAnalytics === true;
         const personalization = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.personalization === true;
+
+        // Una selección personalizada puede revocar categorías que se aceptaron anteriormente.
+        revokeCookieCategories({
+          analysis: !analysis,
+          googleAnalytics: !googleAnalytics,
+          personalization: !personalization,
+        });
 
         setAcceptCookieAnalysis(analysis);
         setCookieConsentAnalysis(analysis);
@@ -246,6 +256,13 @@ export function useCookieLogic(): CookieLogic {
    * - Cierra el modal de cookies.
    */
   const handleAcceptCookies = () => {
+    // Retira de inmediato las cookies de las categorías que el usuario acaba de desactivar.
+    revokeCookieCategories({
+      analysis: !AcceptCookieAnalysis,
+      googleAnalytics: !AcceptCookieAnalysisGoogle,
+      personalization: !AcceptCookiePersonalization,
+    });
+
     if (AcceptCookieAnalysis) {
       setCookieConsentAnalysis(true);
       createDeviceCookie();
@@ -282,6 +299,8 @@ export function useCookieLogic(): CookieLogic {
    * - Cierra el modal de cookies.
    */
   const handleDeclineAllCookies = () => {
+    // Rechazar no solo cambia el estado: también retira las cookies opcionales ya creadas.
+    revokeCookieCategories({ analysis: true, googleAnalytics: true, personalization: true });
     resetCookieConsent();
     saveCookieConsentPreference(COOKIE_CONSENT_REJECTED);
     setShowCookieModal(false);

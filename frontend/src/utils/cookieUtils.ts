@@ -6,6 +6,60 @@ import { disableGA } from "../utils/gaUtils";
 /** Nombre de la cookie necesaria que conserva la elección de consentimiento. */
 export const COOKIE_CONSENT_NAME = "_cookie_consent";
 
+/** Categorías de cookies opcionales que deben revocarse. */
+export interface CookieCategoriesToRevoke {
+  analysis?: boolean;
+  googleAnalytics?: boolean;
+  personalization?: boolean;
+}
+
+// Dominios en los que pueden haberse creado cookies de Google Analytics.
+const GOOGLE_ANALYTICS_COOKIE_DOMAINS = [".asuscomm.com", "paraisodeljamon.com", ".paraisodeljamon.com"];
+
+/** Caduca una cookie para el host actual o para un dominio concreto. */
+const expireCookie = (cookieName: string, domain?: string): void => {
+  const domainAttribute = domain ? ` domain=${domain};` : "";
+  document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;${domainAttribute}`;
+};
+
+/**
+ * Retira las cookies de las categorías cuyo consentimiento se ha revocado.
+ * También desactiva Google Analytics aunque sus cookies ya no sean visibles para JavaScript.
+ */
+export const revokeCookieCategories = ({
+  analysis = false,
+  googleAnalytics = false,
+  personalization = false,
+}: CookieCategoriesToRevoke): void => {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  if (personalization) {
+    expireCookie("_locale");
+  }
+
+  if (analysis) {
+    expireCookie("_device");
+    expireCookie("_visited");
+  }
+
+  if (googleAnalytics) {
+    const googleCookieNames = document.cookie
+      .split("; ")
+      .filter(Boolean)
+      .map((cookie) => cookie.split("=", 1)[0])
+      .filter((cookieName) => /^_ga($|_)/.test(cookieName));
+
+    googleCookieNames.forEach((cookieName) => {
+      expireCookie(cookieName);
+      GOOGLE_ANALYTICS_COOKIE_DOMAINS.forEach((domain) => expireCookie(cookieName, domain));
+    });
+
+    void disableGA();
+  }
+};
+
 /**
  * Guarda la elección de consentimiento durante un año.
  * El valor incluye una versión para poder invalidarlo si cambia la política.
