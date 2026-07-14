@@ -158,7 +158,7 @@ export function useCookieLogic(): CookieLogic {
       // Compatibilidad con elecciones anteriores: comprueba las cookies opcionales ya existentes.
       const cookieValuePersonalization = getCookieValue("_locale");
       const cookieNameAnalysis = getCookieValue("_visited");
-      const cookieNameAnalysisGoogle = document.cookie.split("; ").find((row) => row.startsWith("_ga="));
+      const cookieNameAnalysisGoogle = getCookieValue("_ga");
       const hasValidPersonalizationCookie =
         cookieValuePersonalization !== undefined && ["es", "en", "de"].includes(cookieValuePersonalization);
       const hasAnalysisCookie = Boolean(cookieNameAnalysis);

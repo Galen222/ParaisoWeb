@@ -15,6 +15,7 @@ Dependencias:
 - Pathlib: Para manejar rutas al archivo `.env`.
 """
 
+from pydantic import Field
 from pydantic_settings import BaseSettings
 from pathlib import Path
 
@@ -42,7 +43,7 @@ class Settings(BaseSettings):
     SMTP_PASSWORD: str
     DATABASE_URL: str
     secret_key: str
-    token_interval_seconds: int
+    token_interval_seconds: int = Field(gt=0)
 
     model_config = {
         "from_attributes": True,  # Permite inicializar la configuración desde atributos

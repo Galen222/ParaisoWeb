@@ -46,7 +46,8 @@ export const revokeCookieCategories = ({
 
   if (googleAnalytics) {
     const googleCookieNames = document.cookie
-      .split("; ")
+      .split(";")
+      .map((cookie) => cookie.trim())
       .filter(Boolean)
       .map((cookie) => cookie.split("=", 1)[0])
       .filter((cookieName) => /^_ga($|_)/.test(cookieName));
@@ -80,12 +81,13 @@ export const clearCookieConsentPreference = (): void => {
  * @returns {string | undefined} - El valor de la cookie, o `undefined` si no se encuentra.
  */
 export const getCookieValue = (name: string): string | undefined => {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {
-    return parts.pop()?.split(";")[0];
-  }
-  return undefined;
+  const cookiePrefix = `${name}=`;
+  const matchingCookie = document.cookie
+    .split(";")
+    .map((cookie) => cookie.trim())
+    .find((cookie) => cookie.startsWith(cookiePrefix));
+
+  return matchingCookie?.slice(cookiePrefix.length);
 };
 
 /**
@@ -130,7 +132,10 @@ export const deleteCookies = async (
   setCookieConsentPersonalization: (value: boolean) => void
 ): Promise<boolean> => {
   try {
-    const cookies = document.cookie.split("; ").filter(Boolean);
+    const cookies = document.cookie
+      .split(";")
+      .map((cookie) => cookie.trim())
+      .filter(Boolean);
     // const domains = ["paraisodeljamon.com", ".paraisodeljamon.com"]; // Producción
     // const domains = [".asuscomm.com"]; // Desarrollo
     const domains = [".asuscomm.com", "paraisodeljamon.com", ".paraisodeljamon.com"]; // En Servidor

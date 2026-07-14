@@ -78,20 +78,20 @@ const getSEOConfig = (
   const currentUrl = routePath ? buildLocalizedUrl(siteUrl, locale, routePath) : siteUrl;
 
   /**
-   * Formatea el locale al formato requerido por Open Graph y HTML lang.
+   * Formatea el locale al formato requerido por Open Graph.
    *
    * @param {string} locale - Locale corto (e.g., 'es', 'en', 'de').
-   * @returns {string} Locale formateado (e.g., 'es-ES', 'en-US', 'de-DE').
+   * @returns {string} Locale formateado para Open Graph (e.g., 'es_ES', 'en_US', 'de_DE').
    */
   const formatLocale = (locale: string): string => {
     switch (locale) {
       case "en":
-        return "en-US";
+        return "en_US";
       case "de":
-        return "de-DE";
+        return "de_DE";
       case "es":
       default:
-        return "es-ES";
+        return "es_ES";
     }
   };
 

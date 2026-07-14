@@ -77,16 +77,16 @@ const ArenalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element 
               alt: intl.formatMessage({ id: "arenal_Carousel_Alt1" }),
             },
           ],
-          locale: currentUrl,
+          url: currentUrl,
         }}
       />
       {/* JSON-LD para Organización */}
       <OrganizationJsonLd
         type="Organization"
-        id={currentUrl}
+        id={`${siteUrl.replace(/\/+$/, "")}/#organization`}
         name="Paraíso Del Jamón"
-        url={currentUrl}
-        logo={`${siteUrl}/images/navbar/imagenLogo.png`}
+        url={siteUrl.replace(/\/+$/, "")}
+        logo={`${siteUrl.replace(/\/+$/, "")}/images/navbar/imagenLogo.png`}
         contactPoint={[
           {
             telephone: "+34 91 532 83 50",
