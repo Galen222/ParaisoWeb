@@ -40,6 +40,13 @@ export interface PaginationResult<T> {
   hasPreviousPage: boolean;
 }
 
+interface PaginationState {
+  currentPage: number;
+  totalPages: number;
+}
+
+const clampPage = (page: number, totalPages: number): number => Math.min(Math.max(1, page), totalPages);
+
 /**
  * Hook personalizado para manejar la paginación
  * @template T - Tipo de los elementos a paginar
@@ -54,23 +61,39 @@ export function usePagination<T>({
 }: {
   items: T[];
 } & PaginationOptions): PaginationResult<T> {
-  // Estado para la página actual
-  const [currentPage, setCurrentPage] = useState(initialPage);
-
   // Calcular el número total de páginas (mínimo 1 página)
   const totalPages = Math.max(1, Math.ceil(items.length / itemsPerPage));
 
-  // Asegurarse de que la página actual es válida
-  const validCurrentPage = Math.min(Math.max(1, currentPage), Math.max(1, totalPages));
+  // Estado para la página actual y el total con el que se validó.
+  const [paginationState, setPaginationState] = useState<PaginationState>(() => ({
+    currentPage: clampPage(initialPage, totalPages),
+    totalPages,
+  }));
+
+  /*
+   * Si cambia el número de páginas (por ejemplo, al cambiar de idioma o recargar datos),
+   * conserva la página cuando siga existiendo y la ajusta inmediatamente cuando ya no sea válida.
+   */
+  if (paginationState.totalPages !== totalPages) {
+    setPaginationState({
+      currentPage: clampPage(paginationState.currentPage, totalPages),
+      totalPages,
+    });
+  }
+
+  const currentPage =
+    paginationState.totalPages === totalPages
+      ? paginationState.currentPage
+      : clampPage(paginationState.currentPage, totalPages);
 
   /**
    * Memoriza los elementos de la página actual
    * Se recalcula solo cuando cambian los items, la página actual o items por página
    */
   const paginatedItems = useMemo(() => {
-    const startIndex = (validCurrentPage - 1) * itemsPerPage;
+    const startIndex = (currentPage - 1) * itemsPerPage;
     return items.slice(startIndex, startIndex + itemsPerPage);
-  }, [items, validCurrentPage, itemsPerPage]);
+  }, [items, currentPage, itemsPerPage]);
 
   /**
    * Efecto para hacer scroll suave al principio del contenido principal
@@ -86,7 +109,10 @@ export function usePagination<T>({
    * Funciones de navegación
    */
   const goToPage = (page: number) => {
-    setCurrentPage(Math.min(Math.max(1, page), totalPages));
+    setPaginationState({
+      currentPage: clampPage(page, totalPages),
+      totalPages,
+    });
   };
 
   const goToFirstPage = () => goToPage(1);
@@ -100,7 +126,7 @@ export function usePagination<T>({
 
   // Retornar el objeto con todos los valores y funciones necesarias
   return {
-    currentPage: validCurrentPage,
+    currentPage,
     totalPages,
     paginatedItems,
     goToPage,

@@ -7,15 +7,33 @@ const useStickyNav = <T extends HTMLElement>(navbarRef: React.RefObject<T | null
 
   useEffect(() => {
     let lastKnownPosition: number | null = null;
+    let animationFrameId: number | null = null;
+    let orientationTimeoutId: ReturnType<typeof setTimeout> | null = null;
+    let previousInlinePosition: string | null = null;
+
+    const restoreNavbarPosition = () => {
+      if (navbarRef.current && previousInlinePosition !== null) {
+        navbarRef.current.style.position = previousInlinePosition;
+      }
+      previousInlinePosition = null;
+    };
 
     const calculatePosition = () => {
       if (!navbarRef.current) return;
 
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+        restoreNavbarPosition();
+      }
+
       // Force reflow and restore position
+      previousInlinePosition = navbarRef.current.style.position;
       navbarRef.current.style.position = "static";
-      requestAnimationFrame(() => {
+      animationFrameId = requestAnimationFrame(() => {
+        animationFrameId = null;
         if (!navbarRef.current) return;
-        navbarRef.current.style.position = "";
+
+        restoreNavbarPosition();
 
         // Calculate new position
         const rect = navbarRef.current.getBoundingClientRect();
@@ -33,11 +51,17 @@ const useStickyNav = <T extends HTMLElement>(navbarRef: React.RefObject<T | null
 
     const handleDelayedUpdate = () => {
       setIsSticky(false);
-      setTimeout(calculatePosition, 100);
+      if (orientationTimeoutId !== null) {
+        clearTimeout(orientationTimeoutId);
+      }
+      orientationTimeoutId = setTimeout(() => {
+        orientationTimeoutId = null;
+        calculatePosition();
+      }, 100);
     };
 
     const handleScroll = () => {
-      if (!lastKnownPosition) return;
+      if (lastKnownPosition === null) return;
       setIsSticky(window.scrollY >= lastKnownPosition);
     };
 
@@ -51,6 +75,14 @@ const useStickyNav = <T extends HTMLElement>(navbarRef: React.RefObject<T | null
       window.removeEventListener("scroll", handleScroll);
       window.removeEventListener("resize", updatePosition);
       window.removeEventListener("orientationchange", handleDelayedUpdate);
+
+      if (animationFrameId !== null) {
+        cancelAnimationFrame(animationFrameId);
+      }
+      if (orientationTimeoutId !== null) {
+        clearTimeout(orientationTimeoutId);
+      }
+      restoreNavbarPosition();
     };
   }, [navbarRef]);
 
