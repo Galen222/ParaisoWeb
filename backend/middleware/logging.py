@@ -25,19 +25,24 @@ Example:
     ```
 """
 
-import logging
-from fastapi import Request, Response
-import time
-from starlette.middleware.base import BaseHTTPMiddleware
-from typing import Callable
-import json
-from http import HTTPStatus
 import datetime  # Importar datetime para obtener la hora actual
+import json
+import logging
+import time
+from http import HTTPStatus
+from typing import AsyncIterator, Callable
+
+from fastapi import Request, Response
+from starlette.middleware.base import BaseHTTPMiddleware
 
 # Códigos ANSI para colorear la salida en terminal
 ANSI_GREEN = "\033[32m"  # Color verde para éxitos
 ANSI_RED = "\033[31m"    # Color rojo para errores
 ANSI_RESET = "\033[0m"   # Resetear colores a los por defecto
+
+# Límite del cuerpo usado únicamente para describir errores en logs.
+# La respuesta completa continúa enviándose al cliente sin almacenarla en memoria.
+MAX_ERROR_LOG_BODY_BYTES = 8 * 1024
 
 # Configurar loggers
 # Desactivar solo los logs de acceso de Uvicorn
@@ -69,23 +74,24 @@ def get_status_text(status_code: int) -> str:
         status = HTTPStatus(status_code)
         if status_code < 400:
             return f"{ANSI_GREEN}{status_code} {status.phrase}{ANSI_RESET}"
-        else:
-            return f"{ANSI_RED}{status_code} {status.phrase}{ANSI_RESET}"
+        return f"{ANSI_RED}{status_code} {status.phrase}{ANSI_RESET}"
     except ValueError:
         return str(status_code)
+
 
 class ColoredFormatter(logging.Formatter):
     """
     Formateador personalizado para colorear los mensajes de log.
-    
+
     Este formateador añade prefijos coloreados a los mensajes según su nivel:
     - INFO: Prefijo verde "INFO-LOG:"
     - ERROR: Prefijo rojo "ERROR-LOG:"
 
     """
-    def format(self, record):
+
+    def format(self, record: logging.LogRecord) -> str:
         """
-        Formatea un registro de log añadiendo colores según el nivel.
+        Formatea un registro de log añadiendo colores según su nivel.
 
         Args:
             record: Registro de logging a formatear
@@ -93,21 +99,46 @@ class ColoredFormatter(logging.Formatter):
         Returns:
             str: Mensaje formateado con los colores apropiados
         """
+        message = super().format(record)
         if record.levelno == logging.ERROR:
-            return f"{ANSI_RED}ERROR-LOG{ANSI_RESET}: {record.getMessage()}"
-        elif record.levelno == logging.INFO:
-            return f"{ANSI_GREEN}INFO-LOG{ANSI_RESET}: {record.getMessage()}"
-        return record.getMessage()
+            return f"{ANSI_RED}ERROR-LOG{ANSI_RESET}: {message}"
+        if record.levelno == logging.INFO:
+            return f"{ANSI_GREEN}INFO-LOG{ANSI_RESET}: {message}"
+        return message
 
-# Configurar el logger personalizado
-logger = logging.getLogger("custom_middleware")
-logger.propagate = False  # Evitar que los mensajes se propaguen al logger raíz
-logger.setLevel(logging.INFO)
 
-# Configurar el handler con el formateador personalizado
-handler = logging.StreamHandler()
-handler.setFormatter(ColoredFormatter())
-logger.addHandler(handler)
+# Configurar el handler con el formateador personalizado una sola vez.
+# Evita mensajes duplicados al recargar la aplicación o importar el módulo en tests.
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    handler.setFormatter(ColoredFormatter())
+    logger.addHandler(handler)
+
+
+def get_error_message(response_body: bytes, truncated: bool) -> str:
+    """Obtiene un detalle seguro y acotado para el log sin alterar la respuesta."""
+    decoded_body = response_body.decode("utf-8", errors="replace")
+
+    try:
+        parsed_body = json.loads(decoded_body)
+    except json.JSONDecodeError:
+        error_message = decoded_body.strip() or "No detail provided"
+    else:
+        if isinstance(parsed_body, dict):
+            detail = parsed_body.get("detail", "No detail provided")
+            if isinstance(detail, str):
+                error_message = detail
+            else:
+                error_message = json.dumps(detail, ensure_ascii=False)
+        elif isinstance(parsed_body, str):
+            error_message = parsed_body
+        else:
+            error_message = json.dumps(parsed_body, ensure_ascii=False)
+
+    if truncated:
+        return f"{error_message} [detalle truncado]"
+    return error_message
+
 
 class LoggingMiddleware(BaseHTTPMiddleware):
     """
@@ -120,7 +151,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
     - Ruta de la petición
     - Código de estado de la respuesta
     - Tiempo de proceso
-    - Detalles de error (en caso de respuestas 4xx o 5xx)
+    - Detalles específicos de errores cuando ocurren
 
     Los logs se colorean según el tipo de respuesta:
     - Verde para respuestas exitosas (2xx)
@@ -150,55 +181,78 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         start_time = time.time()
         client_host = request.client.host if request.client else "unknown"
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Hora actual
-        
-        # Procesar la petición
-        response = await call_next(request)
-        process_time = time.time() - start_time
-        
+
+        try:
+            # Procesar la petición
+            response = await call_next(request)
+        except Exception:
+            # Las excepciones sin respuesta HTTP también deben quedar registradas.
+            process_time = time.time() - start_time
+            logger.exception(
+                f"CURRENT TIME: {current_time} | "
+                f"HOST: {client_host} | "
+                f"METHOD: {request.method} | "
+                f"PATH: {request.url.path} | "
+                f"STATUS: {ANSI_RED}500 Internal Server Error{ANSI_RESET} | "
+                f"{ANSI_RED}ERROR{ANSI_RESET}: Excepción no controlada | "
+                f"TIME: {process_time:.2f}s"
+            )
+            raise
+
         # Obtener el estado HTTP formateado con colores
         status_text = get_status_text(response.status_code)
-        
-        # Si es una respuesta de error (4xx o 5xx)
+
+        # Si es una respuesta de error (4xx o 5xx), conserva el streaming original y
+        # recoge solo una vista previa acotada para el log. No reconstruye la respuesta.
         if response.status_code >= 400:
-            # Leer y restaurar el body de la respuesta para obtener detalles del error
-            response_body = b""
-            async for chunk in response.body_iterator:
-                response_body += chunk
-            
-            # Decodificar el contenido JSON para obtener el mensaje de error
-            try:
-                error_detail = json.loads(response_body.decode())
-                error_message = error_detail.get('detail', 'No detail provided')
-            except json.JSONDecodeError:
-                error_message = response_body.decode()
-            
-            # Registrar el error con todos los detalles
-            logger.error(
-                f"CURRENT TIME: {current_time} | "
-                f"HOST: {client_host} | "
-                f"METHOD: {request.method} | "
-                f"PATH: {request.url.path} | "
-                f"STATUS: {status_text} | "
-                f"{ANSI_RED}ERROR{ANSI_RESET}: {error_message} | "
-                f"TIME: {process_time:.2f}s"
-            )
-            
-            # Crear una nueva respuesta con el mismo contenido
-            return Response(
-                content=response_body,
-                status_code=response.status_code,
-                headers=dict(response.headers),
-                media_type=response.media_type
-            )
-        else:
-            # Log para respuestas exitosas
-            logger.info(
-                f"CURRENT TIME: {current_time} | "
-                f"HOST: {client_host} | "
-                f"METHOD: {request.method} | "
-                f"PATH: {request.url.path} | "
-                f"STATUS: {status_text} | "
-                f"TIME: {process_time:.2f}s"
-            )
-            
+            original_body_iterator = response.body_iterator
+
+            async def iter_and_log_error() -> AsyncIterator[bytes]:
+                response_preview = bytearray()
+                truncated = False
+
+                try:
+                    async for chunk in original_body_iterator:
+                        # Starlette puede entregar fragmentos como bytes o str. Normalizarlos
+                        # a bytes mantiene el contrato de body_iterator y evita devolver str.
+                        chunk_bytes: bytes
+                        if isinstance(chunk, bytes):
+                            chunk_bytes = chunk
+                        elif isinstance(chunk, str):
+                            chunk_bytes = chunk.encode("utf-8")
+                        else:
+                            chunk_bytes = bytes(chunk)
+
+                        remaining = MAX_ERROR_LOG_BODY_BYTES - len(response_preview)
+                        if remaining > 0:
+                            response_preview.extend(chunk_bytes[:remaining])
+                        if len(chunk_bytes) > max(remaining, 0):
+                            truncated = True
+                        yield chunk_bytes
+                finally:
+                    process_time = time.time() - start_time
+                    error_message = get_error_message(bytes(response_preview), truncated)
+                    logger.error(
+                        f"CURRENT TIME: {current_time} | "
+                        f"HOST: {client_host} | "
+                        f"METHOD: {request.method} | "
+                        f"PATH: {request.url.path} | "
+                        f"STATUS: {status_text} | "
+                        f"{ANSI_RED}ERROR{ANSI_RESET}: {error_message} | "
+                        f"TIME: {process_time:.2f}s"
+                    )
+
+            response.body_iterator = iter_and_log_error()
+            return response
+
+        process_time = time.time() - start_time
+        logger.info(
+            f"CURRENT TIME: {current_time} | "
+            f"HOST: {client_host} | "
+            f"METHOD: {request.method} | "
+            f"PATH: {request.url.path} | "
+            f"STATUS: {status_text} | "
+            f"TIME: {process_time:.2f}s"
+        )
+
         return response
