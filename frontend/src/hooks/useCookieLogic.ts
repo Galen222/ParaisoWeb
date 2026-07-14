@@ -8,6 +8,7 @@ import {
   createDeviceCookie,
   getCookieValue,
   revokeCookieCategories,
+  saveLocalePreference,
   saveCookieConsentPreference,
 } from "../utils/cookieUtils";
 import { initGA } from "../utils/gaUtils"; // Importa la función desde utils
@@ -205,7 +206,7 @@ export function useCookieLogic(): CookieLogic {
   useEffect(() => {
     const currentLocale = router.locale || "es"; // Obtener el locale actual
     if (cookieConsentPersonalization) {
-      document.cookie = `_locale=${currentLocale}; path=/; max-age=31536000; SameSite=Lax`;
+      saveLocalePreference(currentLocale);
     }
   }, [router.locale, cookieConsentPersonalization]);
 

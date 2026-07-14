@@ -40,7 +40,17 @@ export interface PaginationResult<T> {
   hasPreviousPage: boolean;
 }
 
-const clampPage = (page: number, totalPages: number): number => Math.min(Math.max(1, page), totalPages);
+/** Convierte entradas no finitas o fraccionarias en una página entera utilizable. */
+const normalizePage = (page: number): number => {
+  if (!Number.isFinite(page)) {
+    return 1;
+  }
+
+  return Math.trunc(page);
+};
+
+const clampPage = (page: number, totalPages: number): number =>
+  Math.min(Math.max(1, normalizePage(page)), totalPages);
 
 /**
  * Hook personalizado para manejar la paginación

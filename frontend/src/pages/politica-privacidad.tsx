@@ -1,7 +1,6 @@
 // pages/politica-privacidad.tsx
 
 import React from "react";
-import { useRouter } from "next/router";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"; // Tipos de Next.js
 import Link from "next/link";
 import ScrollToTopButton from "../components/ScrollToTopButton";
@@ -25,10 +24,10 @@ const messages: Record<string, Record<string, string>> = {
 };
 /**
  * Interfaz para las propiedades de la página de Política de Privacidad.
- * @property {Record<string, any>} messages - Mensajes de localización.
+ * @property {Record<string, string>} messages - Mensajes de localización.
  */
 export interface PoliticaPrivacidadPageProps {
-  messages: Record<string, any>;
+  messages: Record<string, string>;
 }
 
 /**
@@ -328,9 +327,11 @@ PoliticaPrivacidadPage.pageTitleText = "default";
  * Aplica redirección basada en cookies.
  *
  * @param {GetServerSidePropsContext} context - Contexto de la página de Next.js.
- * @returns {Promise<GetServerSidePropsResult<{}>>} Propiedades de la página o redirección.
+ * @returns {Promise<GetServerSidePropsResult<Record<string, never>>>} Propiedades de la página o redirección.
  */
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+): Promise<GetServerSidePropsResult<Record<string, never>>> => {
   // Aplicar redirección basada en cookies
   const redirectResponse = redirectByCookie(context, "/politica-privacidad");
   if (redirectResponse.redirect) {

@@ -5,6 +5,11 @@ import { useCallback, useRef } from "react";
 import { useCookieConsent } from "../contexts/CookieContext";
 import { getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
+import {
+  clearLocalePreference,
+  getCookieValue,
+  saveLocalePreference,
+} from "../utils/cookieUtils";
 
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
 const VALID_SLUG_PATTERN = /^[\p{L}\p{N}\p{M}-]+$/u;
@@ -112,18 +117,35 @@ export function useLocaleChange(): LocaleChangeHandler {
 
       // Si el usuario ha consentido la personalización, actualiza la cookie antes de navegar.
       // Así getServerSideProps recibe ya el nuevo idioma y no redirige de vuelta por leer la preferencia anterior.
+      const previousLocalePreference = getCookieValue("_locale");
+      let localePreferenceUpdated = false;
       if (cookieConsentPersonalization) {
-        document.cookie = `_locale=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+        saveLocalePreference(newLocale);
+        localePreferenceUpdated = true;
       }
+
+      const restorePreviousLocalePreference = (): void => {
+        if (!localePreferenceUpdated || localeChangeSequence !== localeChangeSequenceRef.current) {
+          return;
+        }
+
+        if (previousLocalePreference && SUPPORTED_LOCALES.has(previousLocalePreference)) {
+          saveLocalePreference(previousLocalePreference);
+        } else {
+          clearLocalePreference();
+        }
+      };
 
       // Espera a que termine la navegación para que la promesa del manejador represente el cambio real de idioma.
       try {
         const navigationCompleted = await router.push(newPath, newPath, { locale: newLocale });
         if (localeChangeSequence === localeChangeSequenceRef.current && !navigationCompleted) {
+          restorePreviousLocalePreference();
           console.error("El cambio de idioma fue cancelado antes de completar la navegación.");
         }
       } catch (error: unknown) {
         if (localeChangeSequence === localeChangeSequenceRef.current) {
+          restorePreviousLocalePreference();
           console.error("No se pudo completar el cambio de idioma:", getErrorMessageForLog(error));
         }
       }

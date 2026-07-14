@@ -1,7 +1,7 @@
 // pages/reina-victoria.tsx
 
 import React from "react";
-import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
+import type { NextPage, GetServerSideProps } from "next";
 import Map from "../components/Map";
 import Carousel from "../components/Carousel";
 import Localization from "../components/Localization";

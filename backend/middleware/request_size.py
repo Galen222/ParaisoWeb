@@ -59,10 +59,24 @@ class RequestSizeLimitMiddleware:
         content_length_values = [
             value for key, value in raw_headers if key.lower() == b"content-length"
         ]
+        transfer_encoding_values = [
+            value for key, value in raw_headers if key.lower() == b"transfer-encoding"
+        ]
         # Varias cabeceras Content-Length hacen ambiguo qué tamaño procesan el proxy,
         # el servidor ASGI y la aplicación. Se rechazan antes de leer el cuerpo.
         if len(content_length_values) > 1:
             await self._send_json_error(send, 400, "Cabecera Content-Length duplicada")
+            return
+
+        # Content-Length y Transfer-Encoding describen dos encuadres de cuerpo distintos.
+        # Aceptarlos juntos permitiría que el proxy y la aplicación discrepasen sobre dónde
+        # termina la petición, por lo que se rechaza la combinación antes de leer el cuerpo.
+        if content_length_values and transfer_encoding_values:
+            await self._send_json_error(
+                send,
+                400,
+                "Content-Length y Transfer-Encoding no pueden enviarse juntos",
+            )
             return
 
         content_length_value = content_length_values[0] if content_length_values else None

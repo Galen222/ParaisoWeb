@@ -16,6 +16,10 @@ export interface CookieCategoriesToRevoke {
 // Dominios en los que pueden haberse creado cookies de Google Analytics.
 const GOOGLE_ANALYTICS_COOKIE_DOMAINS = [".asuscomm.com", "paraisodeljamon.com", ".paraisodeljamon.com"];
 
+/** Reconoce las cookies habituales creadas por Google Analytics y sus contenedores. */
+const isGoogleAnalyticsCookie = (cookieName: string): boolean =>
+  /^_ga($|_)/.test(cookieName) || /^_gid$/.test(cookieName) || /^_gat($|_)/.test(cookieName);
+
 /** Caduca una cookie para el host actual o para un dominio concreto. */
 const expireCookie = (cookieName: string, domain?: string): void => {
   const domainAttribute = domain ? ` domain=${domain};` : "";
@@ -50,7 +54,7 @@ export const revokeCookieCategories = ({
       .map((cookie) => cookie.trim())
       .filter(Boolean)
       .map((cookie) => cookie.split("=", 1)[0])
-      .filter((cookieName) => /^_ga($|_)/.test(cookieName));
+      .filter(isGoogleAnalyticsCookie);
 
     googleCookieNames.forEach((cookieName) => {
       expireCookie(cookieName);
@@ -72,6 +76,16 @@ export const saveCookieConsentPreference = (preference: string): void => {
 /** Elimina la elección guardada para que el modal pueda volver a solicitarla. */
 export const clearCookieConsentPreference = (): void => {
   document.cookie = `${COOKIE_CONSENT_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+};
+
+/** Guarda el idioma elegido durante un año. */
+export const saveLocalePreference = (locale: string): void => {
+  document.cookie = `_locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+};
+
+/** Elimina el idioma guardado cuando una navegación no llega a completarse. */
+export const clearLocalePreference = (): void => {
+  expireCookie("_locale");
 };
 
 /**
@@ -100,7 +114,10 @@ export const createDeviceCookie = () => {
     screenResolution: `${window.screen.width}x${window.screen.height}`,
     language: navigator.language,
   };
-  document.cookie = `_device=${JSON.stringify(deviceInfo)}; path=/; max-age=31536000; SameSite=Lax`;
+  // JSON contiene comillas y comas que no son cookie-octets válidos. Codificar el valor
+  // evita que algunos navegadores lo trunquen o ignoren sin cambiar la información guardada.
+  const encodedDeviceInfo = encodeURIComponent(JSON.stringify(deviceInfo));
+  document.cookie = `_device=${encodedDeviceInfo}; path=/; max-age=31536000; SameSite=Lax`;
 };
 
 /**
@@ -165,7 +182,7 @@ export const deleteCookies = async (
       }
 
       // Las cookies de Google pueden ser host-only o pertenecer al dominio raíz. Se intentan ambas variantes.
-      if (cookieName.match(/^_ga($|_)/)) {
+      if (isGoogleAnalyticsCookie(cookieName)) {
         hasGoogleAnalyticsCookie = true;
         expireCookie(cookieName);
         domains.forEach((domain) => {
