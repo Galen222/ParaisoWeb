@@ -19,7 +19,7 @@ import hashlib
 import hmac
 import logging
 import math
-from ipaddress import ip_address
+from ipaddress import IPv6Address, ip_address
 import time
 from collections import defaultdict, deque
 from dataclasses import dataclass
@@ -123,7 +123,11 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             for rule in rules
         }
         self._secret_key = secret_key.encode("utf-8")
-        self._trusted_proxy_ips: Set[str] = {value.strip() for value in trusted_proxy_ips if value.strip()}
+        self._trusted_proxy_ips: Set[str] = {
+            self._normalize_host(value)
+            for value in trusted_proxy_ips
+            if value.strip()
+        }
         self._limiter = InMemoryRateLimiter(clock=clock)
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
@@ -163,30 +167,52 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         ).hexdigest()[:16]
 
     def _resolve_client_host(self, request: Request) -> str:
-        """Usa X-Forwarded-For solo cuando la conexión procede de un proxy confiable."""
-        direct_host = request.client.host if request.client else "unknown"
+        """Usa cabeceras de proxy solo cuando la conexión procede de un proxy confiable."""
+        direct_host = self._normalize_host(request.client.host if request.client else "unknown")
         if direct_host not in self._trusted_proxy_ips:
             return direct_host
 
         forwarded_for = request.headers.get("x-forwarded-for", "")
         forwarded_chain = [value.strip() for value in forwarded_for.split(",") if value.strip()]
-        if not forwarded_chain:
-            return direct_host
 
         # Recorre la cadena desde el proxy más cercano hacia el cliente. Elegir el primer
         # valor de la cabecera permitiría que un visitante antepusiera una IP falsa cuando
         # Nginx utiliza ``$proxy_add_x_forwarded_for``.
         for candidate in reversed(forwarded_chain):
-            try:
-                normalized_candidate = str(ip_address(candidate))
-            except ValueError:
+            normalized_candidate = self._normalize_forwarded_ip(candidate)
+            if normalized_candidate is None:
                 logger.warning("Entrada inválida de X-Forwarded-For ignorada desde proxy confiable")
                 continue
 
             if normalized_candidate not in self._trusted_proxy_ips:
                 return normalized_candidate
 
+        # Algunos proxies, incluido Nginx en configuraciones habituales, pueden aportar
+        # únicamente X-Real-IP. Solo se acepta cuando el salto directo ya es confiable.
+        real_ip = request.headers.get("x-real-ip", "").strip()
+        normalized_real_ip = self._normalize_forwarded_ip(real_ip) if real_ip else None
+        if normalized_real_ip and normalized_real_ip not in self._trusted_proxy_ips:
+            return normalized_real_ip
+
         return direct_host
+
+    @staticmethod
+    def _normalize_forwarded_ip(value: str) -> str | None:
+        """Normaliza una IP de cabecera y convierte IPv4 mapeada en IPv6 a IPv4."""
+        try:
+            parsed = ip_address(value)
+        except ValueError:
+            return None
+
+        if isinstance(parsed, IPv6Address) and parsed.ipv4_mapped is not None:
+            return str(parsed.ipv4_mapped)
+        return str(parsed)
+
+    @classmethod
+    def _normalize_host(cls, value: str) -> str:
+        """Normaliza hosts IP sin romper nombres especiales usados por servidores de prueba."""
+        stripped = value.strip()
+        return cls._normalize_forwarded_ip(stripped) or stripped
 
     @staticmethod
     def _normalize_path(path: str) -> str:

@@ -40,11 +40,6 @@ export interface PaginationResult<T> {
   hasPreviousPage: boolean;
 }
 
-interface PaginationState {
-  currentPage: number;
-  totalPages: number;
-}
-
 const clampPage = (page: number, totalPages: number): number => Math.min(Math.max(1, page), totalPages);
 
 /**
@@ -64,27 +59,16 @@ export function usePagination<T>({
   // Calcular el número total de páginas (mínimo 1 página)
   const totalPages = Math.max(1, Math.ceil(items.length / itemsPerPage));
 
-  // Estado para la página actual y el total con el que se validó.
-  const [paginationState, setPaginationState] = useState<PaginationState>(() => ({
-    currentPage: clampPage(initialPage, totalPages),
-    totalPages,
-  }));
+  // Estado para la página solicitada. El valor usado durante el render se limita de forma derivada
+  // para no llamar a setState mientras React está renderizando el componente.
+  const [requestedPage, setRequestedPage] = useState<number>(() => clampPage(initialPage, totalPages));
+  const currentPage = clampPage(requestedPage, totalPages);
 
   /*
    * Si cambia el número de páginas (por ejemplo, al cambiar de idioma o recargar datos),
-   * conserva la página cuando siga existiendo y la ajusta inmediatamente cuando ya no sea válida.
+   * `currentPage` queda limitada de forma derivada para el conjunto actual. La página
+   * solicitada solo cambia por una acción del usuario, evitando actualizaciones durante render.
    */
-  if (paginationState.totalPages !== totalPages) {
-    setPaginationState({
-      currentPage: clampPage(paginationState.currentPage, totalPages),
-      totalPages,
-    });
-  }
-
-  const currentPage =
-    paginationState.totalPages === totalPages
-      ? paginationState.currentPage
-      : clampPage(paginationState.currentPage, totalPages);
 
   /**
    * Memoriza los elementos de la página actual
@@ -118,10 +102,7 @@ export function usePagination<T>({
    * Funciones de navegación
    */
   const goToPage = (page: number) => {
-    setPaginationState({
-      currentPage: clampPage(page, totalPages),
-      totalPages,
-    });
+    setRequestedPage(clampPage(page, totalPages));
   };
 
   const goToFirstPage = () => goToPage(1);

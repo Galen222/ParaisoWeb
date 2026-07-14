@@ -19,7 +19,7 @@ import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import DBAPIError, TimeoutError as SQLAlchemyTimeoutError
 from typing import List, Literal
 from ..models import schemas
 from ..dependencies import verify_token, get_db
@@ -61,7 +61,7 @@ async def get_charcuteria_products(
     try:
         charcuteria_service = CharcuteriaService(db)
         return await charcuteria_service.get_all_products(idioma)
-    except OperationalError:
+    except (DBAPIError, SQLAlchemyTimeoutError):
         logger.exception(
             "Error de conexión con la base de datos al obtener productos de charcutería"
         )

@@ -1,4 +1,6 @@
-"""Pruebas de regresión para las correcciones de la fase 3."""
+"""Pruebas de límites de cuerpo, timeouts y disponibilidad de servicios."""
+
+from backend.tests import _environment as _test_environment  # noqa: F401  # Importación con efecto de configuración.
 
 import asyncio
 import unittest

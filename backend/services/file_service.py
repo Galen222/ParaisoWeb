@@ -155,7 +155,7 @@ class FileService:
 
         Raises:
             HTTPException:
-                - 400: Si el archivo excede el tamaño máximo permitido.
+                - 413: Si el archivo excede el tamaño máximo permitido.
                 - 400: Si se detecta contenido malicioso.
         """
         logger.info(f"{ANSI_GREEN}Escaneando contenido de archivo | {file_log_context(file)}{ANSI_RESET}")
@@ -167,7 +167,7 @@ class FileService:
                     f"{file_log_context(file)}{ANSI_RESET}"
                 )
                 raise HTTPException(
-                    status_code=400,
+                    status_code=413,
                     detail=f"El archivo excede el tamaño máximo permitido de {self.MAX_FILE_SIZE / 1024 / 1024}MB"
                 )
 
@@ -188,7 +188,7 @@ class FileService:
                         f"{file_log_context(file)}{ANSI_RESET}"
                     )
                     raise HTTPException(
-                        status_code=400,
+                        status_code=413,
                         detail=f"El archivo excede el tamaño máximo permitido de {self.MAX_FILE_SIZE / 1024 / 1024}MB"
                     )
 

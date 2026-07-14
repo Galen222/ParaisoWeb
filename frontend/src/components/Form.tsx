@@ -95,9 +95,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
    */
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const nameRegex = /^[\p{L}\s'-]*$/u;
-    if (nameRegex.test(value)) {
-      setFormData({ ...formData, [name]: value });
+    const normalizedValue = value.normalize("NFC");
+    const nameRegex = /^[\p{L}\p{M}\s'’ʼ-]*$/u;
+    if (nameRegex.test(normalizedValue)) {
+      setFormData({ ...formData, [name]: normalizedValue });
     }
   };
 

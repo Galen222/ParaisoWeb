@@ -57,10 +57,10 @@ class ContactForm(BaseModel):
         Returns:
             str: Valor validado del campo 'name'.
         """
-        valid_characters = set(" -'")
+        valid_characters = set(" -'’ʼ")
         if not all(char.isalpha() or char in valid_characters for char in v):
             raise ValueError(
-                "El nombre solo puede contener letras, espacios, guiones (-) y apóstrofes (')."
+                "El nombre solo puede contener letras, espacios, guiones (-) y apóstrofes."
             )
         return v
 

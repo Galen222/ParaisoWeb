@@ -1,4 +1,6 @@
-"""Pruebas de regresión para las correcciones de la fase 4."""
+"""Pruebas de caché HTTP y validación del formulario de contacto."""
+
+from backend.tests import _environment as _test_environment  # noqa: F401  # Importación con efecto de configuración.
 
 import unittest
 from unittest.mock import AsyncMock, patch

@@ -115,6 +115,32 @@ if not logger.handlers:
     logger.addHandler(handler)
 
 
+def _summarize_validation_detail(detail: list[object]) -> str:
+    """Resume errores de validación sin registrar los valores enviados por el cliente."""
+    summaries: list[str] = []
+
+    for item in detail:
+        if not isinstance(item, dict):
+            continue
+
+        raw_location = item.get("loc")
+        if isinstance(raw_location, (list, tuple)):
+            location = ".".join(str(part) for part in raw_location)
+        else:
+            location = "campo desconocido"
+
+        error_type = item.get("type")
+        if isinstance(error_type, str) and error_type:
+            summaries.append(f"{location} ({error_type})")
+        else:
+            summaries.append(location)
+
+    if not summaries:
+        return "Error de validación"
+
+    return f"Errores de validación: {', '.join(summaries[:10])}"
+
+
 def get_error_message(response_body: bytes, truncated: bool) -> str:
     """Obtiene un detalle seguro y acotado para el log sin alterar la respuesta."""
     decoded_body = response_body.decode("utf-8", errors="replace")
@@ -128,12 +154,16 @@ def get_error_message(response_body: bytes, truncated: bool) -> str:
             detail = parsed_body.get("detail", "No detail provided")
             if isinstance(detail, str):
                 error_message = detail
+            elif isinstance(detail, list):
+                # FastAPI incluye el valor recibido en los errores 422. Solo se registran
+                # ubicación y tipo para conservar diagnóstico sin filtrar nombre, correo o mensaje.
+                error_message = _summarize_validation_detail(detail)
             else:
-                error_message = json.dumps(detail, ensure_ascii=False)
+                error_message = "Detalle de error estructurado"
         elif isinstance(parsed_body, str):
             error_message = parsed_body
         else:
-            error_message = json.dumps(parsed_body, ensure_ascii=False)
+            error_message = "Respuesta de error estructurada"
 
     if truncated:
         return f"{error_message} [detalle truncado]"

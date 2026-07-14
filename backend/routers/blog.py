@@ -21,7 +21,7 @@ import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import OperationalError
+from sqlalchemy.exc import DBAPIError, TimeoutError as SQLAlchemyTimeoutError
 from typing import List, Literal
 from ..models import schemas
 from ..dependencies import verify_token, get_db
@@ -64,7 +64,7 @@ async def get_blog_posts(
     try:
         blog_service = BlogService(db)
         return await blog_service.get_all_posts(idioma)
-    except OperationalError:
+    except (DBAPIError, SQLAlchemyTimeoutError):
         logger.exception("Base de datos no disponible al obtener la lista de publicaciones del blog")
         raise HTTPException(
             status_code=503,
@@ -80,7 +80,7 @@ async def get_blog_posts(
 
 @router.get("/blog/{slug}", response_model=schemas.Blog)
 async def get_blog_post_by_slug(
-    slug: str = Path(...),
+    slug: str = Path(..., min_length=1, max_length=150),
     idioma: SupportedLanguage = Query("es"),
     token_verification: None = Depends(verify_token),  # Verifica el token temporal
     db: AsyncSession = Depends(get_db)  # Luego obtiene la conexión a BD
@@ -117,7 +117,7 @@ async def get_blog_post_by_slug(
         return post
     except HTTPException:
         raise
-    except OperationalError:
+    except (DBAPIError, SQLAlchemyTimeoutError):
         logger.exception("Base de datos no disponible al obtener una publicación del blog por slug")
         raise HTTPException(
             status_code=503,
@@ -172,7 +172,7 @@ async def get_blog_post_by_id(
         return post
     except HTTPException:
         raise
-    except OperationalError:
+    except (DBAPIError, SQLAlchemyTimeoutError):
         logger.exception("Base de datos no disponible al obtener una publicación del blog por ID")
         raise HTTPException(
             status_code=503,

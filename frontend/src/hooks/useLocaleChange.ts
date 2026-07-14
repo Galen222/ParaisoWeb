@@ -117,7 +117,16 @@ export function useLocaleChange(): LocaleChangeHandler {
       }
 
       // Espera a que termine la navegación para que la promesa del manejador represente el cambio real de idioma.
-      await router.push(newPath, newPath, { locale: newLocale });
+      try {
+        const navigationCompleted = await router.push(newPath, newPath, { locale: newLocale });
+        if (localeChangeSequence === localeChangeSequenceRef.current && !navigationCompleted) {
+          console.error("El cambio de idioma fue cancelado antes de completar la navegación.");
+        }
+      } catch (error: unknown) {
+        if (localeChangeSequence === localeChangeSequenceRef.current) {
+          console.error("No se pudo completar el cambio de idioma:", getErrorMessageForLog(error));
+        }
+      }
     },
     [router, cookieConsentPersonalization]
   );
