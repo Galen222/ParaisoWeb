@@ -15,6 +15,7 @@ import styles from "../../styles/pages/slug.module.css";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
 import getSEOConfig from "../../config/next-seo.config";
 import useCurrentUrl from "../../hooks/useCurrentUrl";
+import { formatBlogDate } from "../../utils/blogDate";
 
 // Mensajes de traducción
 import esMessages from "../../locales/es/common.json";
@@ -37,17 +38,6 @@ const messages: Record<string, Record<string, string>> = {
 
 // Base URL para las imágenes del blog
 const IMAGE_BASE_URL = "/images/blog/";
-
-/**
- * Formatea las fechas del blog de forma determinista entre el servidor y el navegador.
- */
-const formatBlogDate = (value: string, locale: string): string =>
-  new Intl.DateTimeFormat(locale, {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-    timeZone: "UTC",
-  }).format(new Date(value));
 
 /**
  * Props para el componente BlogDetailsPage.

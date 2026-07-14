@@ -180,9 +180,9 @@ BlogPage.pageTitleText = "blog";
  * Función `getServerSideProps` para manejar la redirección basada en cookies.
  *
  * @param {GetServerSidePropsContext} context - Contexto de Next.js que contiene información de la solicitud.
- * @returns {Promise<GetServerSidePropsResult<{}>>} Redirección o props vacíos.
+ * @returns {Promise<GetServerSidePropsResult<Record<string, never>>>} Redirección o props vacíos.
  */
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
+export const getServerSideProps: GetServerSideProps<Record<string, never>> = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<Record<string, never>>> => {
   // Aplicar redirección basada en cookies si es necesario
   const redirectResponse = redirectByCookie(context, "/blog");
   if (redirectResponse.redirect) {

@@ -161,9 +161,9 @@ SanBernardoPage.pageTitleText = "san-bernardo";
  * Función `getServerSideProps` para la redirección basada en cookies.
  *
  * @param {GetServerSidePropsContext} context - Contexto de Next.js que contiene información de la solicitud.
- * @returns {Promise<GetServerSidePropsResult<{}>>} Redirección si es necesario.
+ * @returns {Promise<GetServerSidePropsResult<Record<string, never>>>} Redirección si es necesario.
  */
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
+export const getServerSideProps: GetServerSideProps<Record<string, never>> = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<Record<string, never>>> => {
   // Aplicar redirección basada en cookies
   const redirectResponse = redirectByCookie(context, "/san-bernardo");
   if (redirectResponse.redirect) {

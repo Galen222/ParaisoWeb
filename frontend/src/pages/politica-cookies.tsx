@@ -546,9 +546,9 @@ PoliticaCookiesPage.pageTitleText = "default";
  * Realiza redirecciones si es necesario.
  *
  * @param {GetServerSidePropsContext} context - Contexto de la página de Next.js.
- * @returns {Promise<GetServerSidePropsResult<{}>>} Propiedades de la página o redirección.
+ * @returns {Promise<GetServerSidePropsResult<Record<string, never>>>} Propiedades de la página o redirección.
  */
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
+export const getServerSideProps: GetServerSideProps<Record<string, never>> = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<Record<string, never>>> => {
   const redirectResponse = redirectByCookie(context, "/politica-cookies");
   if (redirectResponse.redirect) {
     return { redirect: redirectResponse.redirect };

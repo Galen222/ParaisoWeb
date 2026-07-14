@@ -68,6 +68,12 @@ class RequestSizeLimitMiddleware:
             await self._send_json_error(send, 400, "Cabecera Content-Length duplicada")
             return
 
+        # Varias cabeceras Transfer-Encoding también permiten interpretaciones distintas
+        # entre intermediarios HTTP. Este endpoint solo admite una codificación chunked.
+        if len(transfer_encoding_values) > 1:
+            await self._send_json_error(send, 400, "Cabecera Transfer-Encoding duplicada")
+            return
+
         # Content-Length y Transfer-Encoding describen dos encuadres de cuerpo distintos.
         # Aceptarlos juntos permitiría que el proxy y la aplicación discrepasen sobre dónde
         # termina la petición, por lo que se rechaza la combinación antes de leer el cuerpo.
@@ -79,15 +85,31 @@ class RequestSizeLimitMiddleware:
             )
             return
 
+        if transfer_encoding_values:
+            try:
+                transfer_encoding = transfer_encoding_values[0].decode("ascii").strip().lower()
+            except UnicodeDecodeError:
+                await self._send_json_error(send, 400, "Cabecera Transfer-Encoding no válida")
+                return
+
+            # Uvicorn entrega el cuerpo chunked ya decodificado a ASGI. Otras cadenas
+            # o listas de codificaciones no están soportadas y se rechazan de forma explícita.
+            if transfer_encoding != "chunked":
+                await self._send_json_error(send, 400, "Cabecera Transfer-Encoding no válida")
+                return
+
         content_length_value = content_length_values[0] if content_length_values else None
         if content_length_value is not None:
-            try:
-                content_length = int(content_length_value.decode("ascii"))
-            except (UnicodeDecodeError, ValueError):
+            # RFC 9110 define Content-Length como uno o más dígitos decimales. ``int``
+            # también aceptaría espacios o un signo ``+``, que otros parsers HTTP pueden
+            # interpretar de forma distinta.
+            if not content_length_value or any(byte < 48 or byte > 57 for byte in content_length_value):
                 await self._send_json_error(send, 400, "Cabecera Content-Length no válida")
                 return
 
-            if content_length < 0:
+            try:
+                content_length = int(content_length_value)
+            except ValueError:
                 await self._send_json_error(send, 400, "Cabecera Content-Length no válida")
                 return
 

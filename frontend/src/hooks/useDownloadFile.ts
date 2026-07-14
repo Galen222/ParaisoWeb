@@ -1,6 +1,6 @@
 // hooks/useDownloadFile.ts
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { saveAs } from "file-saver";
 import { useToastMessage } from "./useToast";
 
@@ -20,6 +20,7 @@ export interface DownloadFileHook {
  */
 export function useDownloadFile(): DownloadFileHook {
   const [isDownloading, setIsDownloading] = useState(false); // Estado para controlar el proceso de descarga
+  const isDownloadingRef = useRef(false); // Bloquea dobles clics antes de que React actualice el botón
   const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones
 
   /**
@@ -31,6 +32,11 @@ export function useDownloadFile(): DownloadFileHook {
    * @param {string} errorMessageId - ID del mensaje de error para la internacionalización.
    */
   const downloadFile = async (filePath: string, fileName: string, successMessageId: string, errorMessageId: string) => {
+    if (isDownloadingRef.current) {
+      return;
+    }
+
+    isDownloadingRef.current = true;
     setIsDownloading(true);
     try {
       // Realiza la solicitud de descarga
@@ -52,6 +58,7 @@ export function useDownloadFile(): DownloadFileHook {
       // Mostrar notificación de error
       showToast(errorMessageId, 3000, "error"); // Muestra el toast utilizando el hook
     } finally {
+      isDownloadingRef.current = false;
       setIsDownloading(false); // Finaliza el estado de descarga
     }
   };

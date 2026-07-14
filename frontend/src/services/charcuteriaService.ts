@@ -15,8 +15,8 @@ export interface CharcuteriaProduct {
   nombre: string; // Nombre del producto.
   empresa: string | null; // Empresa del producto; puede no estar informada en la base de datos.
   descripcion: string; // Descripción del producto.
-  imagen_url?: string; // URL de la imagen del producto (opcional).
-  categoria?: string; // Categoría del producto (opcional).
+  imagen_url: string; // URL de la imagen del producto.
+  categoria: string; // Categoría del producto.
   fecha: string; // Fecha de disponibilidad o de publicación del producto.
 }
 
@@ -36,6 +36,26 @@ const getApiUrl = (): string => {
   return API_URL;
 };
 
+/** Comprueba el contrato mínimo que necesita la interfaz antes de renderizar una tarjeta. */
+const isCharcuteriaProduct = (value: unknown): value is CharcuteriaProduct => {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const product = value as Record<string, unknown>;
+  return (
+    Number.isInteger(product.id_producto) &&
+    typeof product.id_producto === "number" &&
+    product.id_producto > 0 &&
+    typeof product.nombre === "string" &&
+    (product.empresa === null || typeof product.empresa === "string") &&
+    typeof product.descripcion === "string" &&
+    typeof product.imagen_url === "string" &&
+    typeof product.categoria === "string" &&
+    typeof product.fecha === "string"
+  );
+};
+
 /**
  * Obtiene la lista de productos de charcutería en el idioma especificado.
  *
@@ -48,11 +68,16 @@ export const getCharcuteriaProducts = async (idioma: string): Promise<Charcuteri
     const apiUrl = getApiUrl();
     const token = await getTimedToken(); // Obtiene el token temporal
     // Realiza la solicitud GET a la API incluyendo el idioma como parámetro de consulta.
-    const response = await axios.get<CharcuteriaProduct[]>(`${apiUrl}?idioma=${idioma}`, {
+    const response = await axios.get<unknown>(`${apiUrl}?idioma=${idioma}`, {
       headers: {
         "x-timed-token": token,
       },
     });
+
+    if (!Array.isArray(response.data) || !response.data.every(isCharcuteriaProduct)) {
+      throw new Error("La respuesta del servidor para charcutería no tiene el formato esperado.");
+    }
+
     return response.data;
   } catch (error) {
     /* // console.error("Error recibiendo los productos de charcuteria:", error); */

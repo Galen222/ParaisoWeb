@@ -139,9 +139,9 @@ ContactoPage.pageTitleText = "contacto";
  * Aplica redirección basada en cookies.
  *
  * @param {GetServerSidePropsContext} context - Contexto de la página de Next.js.
- * @returns {Promise<{ props: {} } | { redirect: { destination: string, permanent: boolean } }>} Propiedades o redirección.
+ * @returns {Promise<{ props: Record<string, never> } | { redirect: { destination: string, permanent: boolean } }>} Propiedades o redirección.
  */
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<{}>> => {
+export const getServerSideProps: GetServerSideProps<Record<string, never>> = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<Record<string, never>>> => {
   // Aplicar redirección basada en cookies
   const redirectResponse = redirectByCookie(context, "/contacto");
   if (redirectResponse.redirect) {

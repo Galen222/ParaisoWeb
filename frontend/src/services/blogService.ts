@@ -18,7 +18,7 @@ export interface BlogPost {
   contenido: string; // Contenido completo de la noticia.
   autor: string; // Autor de la noticia.
   imagen_url: string; // URL de la imagen principal de la noticia.
-  imagen_url_2?: string; // URL de una segunda imagen (opcional).
+  imagen_url_2?: string | null; // URL de una segunda imagen (opcional).
   fecha_publicacion: string; // Fecha de publicación de la noticia.
   fecha_actualizacion: string; // Fecha de la última actualización de la noticia.
 }
@@ -39,6 +39,38 @@ const getApiUrl = (): string => {
   return API_URL;
 };
 
+/** Comprueba en tiempo de ejecución que una respuesta conserva el contrato del blog. */
+const isBlogPost = (value: unknown): value is BlogPost => {
+  if (typeof value !== "object" || value === null) {
+    return false;
+  }
+
+  const post = value as Record<string, unknown>;
+  return (
+    Number.isInteger(post.id_noticia) &&
+    typeof post.id_noticia === "number" &&
+    post.id_noticia > 0 &&
+    typeof post.idioma === "string" &&
+    typeof post.slug === "string" &&
+    typeof post.titulo === "string" &&
+    typeof post.contenido === "string" &&
+    typeof post.autor === "string" &&
+    typeof post.imagen_url === "string" &&
+    (post.imagen_url_2 === undefined || post.imagen_url_2 === null || typeof post.imagen_url_2 === "string") &&
+    typeof post.fecha_publicacion === "string" &&
+    typeof post.fecha_actualizacion === "string"
+  );
+};
+
+/** Rechaza respuestas 2xx mal formadas antes de que provoquen un error durante el render. */
+const requireBlogPost = (value: unknown): BlogPost => {
+  if (!isBlogPost(value)) {
+    throw new Error("La respuesta del servidor para el blog no tiene el formato esperado.");
+  }
+
+  return value;
+};
+
 /**
  * Obtiene la lista de publicaciones del blog en el idioma especificado.
  *
@@ -53,11 +85,15 @@ export const getBlogPosts = async (idioma: string, token?: string): Promise<Blog
 
     // Si no se proporciona el token, lo obtenemos
     const authToken = token || (await getTimedToken());
-    const response = await axios.get<BlogPost[]>(`${apiUrl}?idioma=${idioma}`, {
+    const response = await axios.get<unknown>(`${apiUrl}?idioma=${idioma}`, {
       headers: {
         "x-timed-token": authToken,
       },
     });
+    if (!Array.isArray(response.data) || !response.data.every(isBlogPost)) {
+      throw new Error("La respuesta del servidor para el listado del blog no tiene el formato esperado.");
+    }
+
     return response.data;
   } catch (error) {
     throw error;
@@ -77,12 +113,12 @@ export const getBlogPostById = async (id: number, idioma: string, token?: string
   try {
     const apiUrl = getApiUrl();
     const authToken = token || (await getTimedToken());
-    const response = await axios.get<BlogPost>(`${apiUrl}/by-id/${id}?idioma=${idioma}`, {
+    const response = await axios.get<unknown>(`${apiUrl}/by-id/${id}?idioma=${idioma}`, {
       headers: {
         "x-timed-token": authToken,
       },
     });
-    return response.data;
+    return requireBlogPost(response.data);
   } catch (error) {
     throw error;
   }
@@ -132,14 +168,14 @@ export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: s
     const url = `${apiUrl}/${encodedSlug}`;
     const params = idioma ? { idioma } : undefined;
 
-    const response = await axios.get<BlogPost>(url, {
+    const response = await axios.get<unknown>(url, {
       headers: {
         "x-timed-token": authToken,
       },
       params,
     });
 
-    return response.data;
+    return requireBlogPost(response.data);
   } catch (error) {
     throw error;
   }
