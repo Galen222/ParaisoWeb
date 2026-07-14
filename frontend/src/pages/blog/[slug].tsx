@@ -2,7 +2,7 @@
 
 import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
-import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
+import type { NextPage, GetServerSideProps, GetServerSidePropsResult } from "next";
 import ShareLink from "../../components/ShareLink";
 import ScrollToTopButton from "../../components/ScrollToTopButton";
 import ReactMarkdown from "react-markdown";
@@ -248,8 +248,13 @@ BlogDetailsPage.pageTitleText = "blog";
  * @returns {Promise<GetServerSidePropsResult<BlogDetailsPageProps>>} Props o redirección.
  */
 export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = async (context): Promise<GetServerSidePropsResult<BlogDetailsPageProps>> => {
-  const { slug } = context.params!;
+  const slug = context.params?.slug;
   const locale = context.locale || "es";
+
+  // Una ruta dinámica incompleta o con una forma inesperada no debe llegar a los servicios de la API.
+  if (typeof slug !== "string" || !/^[a-zA-Z0-9-]+$/.test(slug)) {
+    return { notFound: true };
+  }
 
   // Intentar redirigir basado en la cookie de idioma
   const cookieRedirect = await redirectByCookieSlug(context);
@@ -260,7 +265,11 @@ export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = asyn
   }
 
   // Cargar los datos del artículo del blog
-  const blogData = await loadBlogData(slug as string, locale);
+  const blogData = await loadBlogData(slug, locale);
+
+  if (blogData.notFound) {
+    return { notFound: true };
+  }
 
   if (blogData.redirect) {
     return {
