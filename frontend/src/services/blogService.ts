@@ -28,10 +28,16 @@ export interface BlogPost {
  */
 const API_URL = process.env.NEXT_PUBLIC_API_BLOG_URL;
 
-// Verifica que la URL de la API esté definida en las variables de entorno.
-if (!API_URL) {
-  throw new Error("La variable de entorno NEXT_PUBLIC_API_BLOG_URL no está definida.");
-}
+/**
+ * Obtiene la URL configurada sin hacer fallar la importación del módulo durante el build.
+ */
+const getApiUrl = (): string => {
+  if (!API_URL) {
+    throw new Error("La variable de entorno NEXT_PUBLIC_API_BLOG_URL no está definida.");
+  }
+
+  return API_URL;
+};
 
 /**
  * Obtiene la lista de publicaciones del blog en el idioma especificado.
@@ -43,9 +49,11 @@ if (!API_URL) {
  */
 export const getBlogPosts = async (idioma: string, token?: string): Promise<BlogPost[]> => {
   try {
+    const apiUrl = getApiUrl();
+
     // Si no se proporciona el token, lo obtenemos
     const authToken = token || (await getTimedToken());
-    const response = await axios.get<BlogPost[]>(`${API_URL}?idioma=${idioma}`, {
+    const response = await axios.get<BlogPost[]>(`${apiUrl}?idioma=${idioma}`, {
       headers: {
         "x-timed-token": authToken,
       },
@@ -67,8 +75,9 @@ export const getBlogPosts = async (idioma: string, token?: string): Promise<Blog
  */
 export const getBlogPostById = async (id: number, idioma: string, token?: string): Promise<BlogPost> => {
   try {
+    const apiUrl = getApiUrl();
     const authToken = token || (await getTimedToken());
-    const response = await axios.get<BlogPost>(`${API_URL}/by-id/${id}?idioma=${idioma}`, {
+    const response = await axios.get<BlogPost>(`${apiUrl}/by-id/${id}?idioma=${idioma}`, {
       headers: {
         "x-timed-token": authToken,
       },
@@ -90,6 +99,8 @@ export const getBlogPostById = async (id: number, idioma: string, token?: string
  */
 export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: string): Promise<BlogPost> => {
   try {
+    const apiUrl = getApiUrl();
+
     // Validar y sanitizar los inputs
     const allowedSlugRegex = /^[a-zA-Z0-9-]+$/;
 
@@ -118,7 +129,7 @@ export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: s
     const encodedSlug = encodeURIComponent(slug);
 
     // Construir la URL incluyendo el slug en la ruta y el idioma como parámetro de consulta
-    const url = `${API_URL}/${encodedSlug}`;
+    const url = `${apiUrl}/${encodedSlug}`;
     const params = idioma ? { idioma } : undefined;
 
     const response = await axios.get<BlogPost>(url, {

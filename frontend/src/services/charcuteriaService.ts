@@ -25,10 +25,16 @@ export interface CharcuteriaProduct {
  */
 const API_URL = process.env.NEXT_PUBLIC_API_CHARCUTERIA_URL;
 
-// Verifica que la URL de la API esté definida en las variables de entorno.
-if (!API_URL) {
-  throw new Error("La variable de entorno NEXT_PUBLIC_API_CHARCUTERIA_URL no está definida.");
-}
+/**
+ * Obtiene la URL configurada sin hacer fallar la importación del módulo durante el build.
+ */
+const getApiUrl = (): string => {
+  if (!API_URL) {
+    throw new Error("La variable de entorno NEXT_PUBLIC_API_CHARCUTERIA_URL no está definida.");
+  }
+
+  return API_URL;
+};
 
 /**
  * Obtiene la lista de productos de charcutería en el idioma especificado.
@@ -39,9 +45,10 @@ if (!API_URL) {
  */
 export const getCharcuteriaProducts = async (idioma: string): Promise<CharcuteriaProduct[]> => {
   try {
+    const apiUrl = getApiUrl();
     const token = await getTimedToken(); // Obtiene el token temporal
     // Realiza la solicitud GET a la API incluyendo el idioma como parámetro de consulta.
-    const response = await axios.get<CharcuteriaProduct[]>(`${API_URL}?idioma=${idioma}`, {
+    const response = await axios.get<CharcuteriaProduct[]>(`${apiUrl}?idioma=${idioma}`, {
       headers: {
         "x-timed-token": token,
       },

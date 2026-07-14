@@ -23,14 +23,19 @@ export interface FormData {
  */
 const API_URL = process.env.NEXT_PUBLIC_API_CONTACTO_URL;
 
-// Verifica que la URL de la API esté definida en las variables de entorno.
-if (!API_URL) {
-  throw new Error("La variable de entorno NEXT_PUBLIC_API_CONTACTO_URL no está definida.");
-}
+/**
+ * Obtiene la URL configurada sin hacer fallar la importación del módulo durante el build.
+ */
+const getApiUrl = (): string => {
+  if (!API_URL) {
+    throw new Error("La variable de entorno NEXT_PUBLIC_API_CONTACTO_URL no está definida.");
+  }
+
+  return API_URL;
+};
 
 // Crea una instancia de axios con configuraciones predeterminadas.
 const axiosInstance = axios.create({
-  baseURL: API_URL,
   // No se fija Content-Type: Axios añadirá el boundary correcto al enviar FormData.
   // Puedes agregar más configuraciones aquí si es necesario.
 });
@@ -55,6 +60,8 @@ const getApiErrorDetail = (data: unknown): string | null => {
  * @throws {Error} - Si falla el envío del formulario.
  */
 export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
+  const apiUrl = getApiUrl();
+
   // Obtén el token temporal antes de enviar el formulario
   const token = await getTimedToken();
 
@@ -70,7 +77,7 @@ export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
 
   try {
     // Realiza la solicitud POST usando axios con los datos del formulario y el token temporal.
-    const response = await axiosInstance.post(API_URL, formData, {
+    const response = await axiosInstance.post(apiUrl, formData, {
       headers: {
         "x-timed-token": token, // Envía el token en el encabezado
       },
