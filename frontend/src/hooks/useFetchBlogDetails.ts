@@ -25,7 +25,7 @@ export interface UseFetchBlogDetailsReturn {
  * @returns {UseFetchBlogDetailsReturn} Objeto con los datos, estado de carga y mensaje de error (si existe).
  */
 export function useFetchBlogDetails(slug: string): UseFetchBlogDetailsReturn {
-  const intl = useIntl(); // Hook para obtener el idioma actual y la función de internacionalización
+  const { locale, formatMessage } = useIntl(); // Hook para obtener el idioma actual y la función de internacionalización
   const [data, setData] = useState<BlogPost | null>(null); // Estado para almacenar los detalles de la publicación
   const [loadingBlogDetails, setLoadingBlogDetails] = useState<boolean>(true); // Estado de carga
   const [error, setError] = useState<string | null>(null); // Estado para almacenar mensajes de error
@@ -39,14 +39,15 @@ export function useFetchBlogDetails(slug: string): UseFetchBlogDetailsReturn {
      */
     const fetchData = async () => {
       setLoadingBlogDetails(true);
+      setError(null); // Limpia un error anterior antes de volver a intentar la carga
       try {
-        const result = await getBlogPostBySlug(slug); // Llama al servicio para obtener los detalles de la publicación
+        const result = await getBlogPostBySlug(slug, undefined, locale); // Solicita explícitamente el idioma actual
         if (isMounted) {
           setData(result); // Actualiza el estado con los datos obtenidos
         }
-      } catch (err) {
+      } catch {
         if (isMounted) {
-          setError(intl.formatMessage({ id: "blog_Details_Error" })); // Establece un mensaje de error en el idioma actual
+          setError(formatMessage({ id: "blog_Details_Error" })); // Establece un mensaje de error en el idioma actual
         }
       } finally {
         if (isMounted) {
@@ -60,7 +61,7 @@ export function useFetchBlogDetails(slug: string): UseFetchBlogDetailsReturn {
     return () => {
       isMounted = false; // Marca el componente como desmontado para evitar actualizaciones de estado
     };
-  }, [intl.locale, slug]); // Ejecuta el efecto cada vez que cambian el idioma o el slug
+  }, [formatMessage, locale, slug]); // Ejecuta el efecto cada vez que cambian el idioma o el slug
 
   return { data, loadingBlogDetails, error }; // Retorna el estado de datos, carga y error
 }

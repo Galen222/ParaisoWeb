@@ -23,7 +23,7 @@ export interface UseFetchBlogReturn {
  * @returns {UseFetchBlogReturn} Objeto con los datos, estado de carga y mensaje de error (si existe).
  */
 export function useFetchBlog(): UseFetchBlogReturn {
-  const intl = useIntl(); // Hook para obtener el idioma actual y la función de internacionalización
+  const { locale, formatMessage } = useIntl(); // Hook para obtener el idioma actual y la función de internacionalización
   const [data, setData] = useState<BlogPost[] | null>(null); // Estado para almacenar las publicaciones del blog
   const [loading, setLoading] = useState<boolean>(true); // Estado de carga
   const [error, setError] = useState<string | null>(null); // Estado para almacenar mensajes de error
@@ -37,15 +37,16 @@ export function useFetchBlog(): UseFetchBlogReturn {
      */
     const fetchData = async () => {
       setLoading(true);
+      setError(null); // Limpia un error anterior antes de volver a intentar la carga
       try {
-        const idioma = intl.locale; // Obtiene el idioma actual desde `intl`
+        const idioma = locale; // Obtiene el idioma actual desde `intl`
         const result = await getBlogPosts(idioma); // Llama al servicio para obtener las publicaciones del blog
         if (isMounted) {
           setData(result); // Actualiza el estado con los datos obtenidos
         }
-      } catch (err) {
+      } catch {
         if (isMounted) {
-          setError(intl.formatMessage({ id: "blog_Error" })); // Establece un mensaje de error en el idioma actual
+          setError(formatMessage({ id: "blog_Error" })); // Establece un mensaje de error en el idioma actual
         }
       } finally {
         if (isMounted) {
@@ -59,7 +60,7 @@ export function useFetchBlog(): UseFetchBlogReturn {
     return () => {
       isMounted = false; // Marca el componente como desmontado para evitar actualizaciones de estado
     };
-  }, [intl.locale]); // Ejecuta el efecto cada vez que cambia el idioma
+  }, [formatMessage, locale]); // Ejecuta el efecto cada vez que cambia el idioma
 
   return { data, loading, error }; // Retorna el estado de datos, carga y error
 }
