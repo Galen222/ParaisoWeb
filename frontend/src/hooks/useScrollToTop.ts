@@ -79,12 +79,17 @@ const useScrollToTop = (): UseScrollToTopOutput => {
         }
       };
 
-      // Agrega el event listener para el evento de scroll
-      window.addEventListener("scroll", handleScroll);
+      // Calcula el estado inicial, incluso si el navegador restaura una posición de scroll previa.
+      handleScroll();
 
-      // Limpia el event listener al desmontar el componente
+      // Actualiza el botón al desplazarse y cuando cambia el tamaño visible de la página.
+      window.addEventListener("scroll", handleScroll, { passive: true });
+      window.addEventListener("resize", handleScroll);
+
+      // Limpia los event listeners al desmontar el componente.
       return () => {
         window.removeEventListener("scroll", handleScroll);
+        window.removeEventListener("resize", handleScroll);
       };
     }
   }, [isMobile, isTablet, isMobileLandscape]); // Dependencias actualizadas

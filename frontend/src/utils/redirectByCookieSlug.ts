@@ -4,6 +4,8 @@ import { GetServerSidePropsContext } from "next";
 import { getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
 
+const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+
 /**
  * Redirige a un slug basado en la cookie de idioma si corresponde.
  *
@@ -21,8 +23,8 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
     .find((row) => row.startsWith("_locale="))
     ?.split("=")[1];
 
-  // Si la cookie de idioma existe y difiere del idioma actual
-  if (localeCookie && locale !== localeCookie) {
+  // Solo aplica la redirección si la cookie contiene un idioma soportado y distinto del actual.
+  if (localeCookie && SUPPORTED_LOCALES.has(localeCookie) && locale !== localeCookie) {
     try {
       const token = await getTimedToken();
       const blogPost = await getBlogPostBySlug(slug as string, token, locale);
@@ -33,7 +35,7 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
         if (translatedBlogPost) {
           return {
             redirect: {
-              destination: `/${localeCookie}/blog/${translatedBlogPost.slug}`,
+              destination: `${localeCookie === "es" ? "" : `/${localeCookie}`}/blog/${translatedBlogPost.slug}`,
               permanent: false,
             },
           };
