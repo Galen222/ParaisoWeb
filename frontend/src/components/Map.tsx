@@ -1,6 +1,6 @@
 // components/Map.tsx
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { getGoogleMapsLoader } from "../utils/GoogleMapsLoader"; // Cambio: Usamos el Singleton
 import { useIntl } from "react-intl";
 import styles from "../styles/components/Map.module.css";
@@ -97,84 +97,33 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
   const mapRef = useRef<HTMLDivElement>(null); // Referencia para el contenedor del mapa
   const mapInstanceRef = useRef<google.maps.Map | null>(null); // Referencia para la instancia del mapa
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null); // Referencia para el InfoWindow
+  const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null); // Referencia para evitar marcadores duplicados
   const location = locations[locationKey]; // Ubicación seleccionada
-  const [currentLocale, setCurrentLocale] = useState(intl.locale); // Estado para el idioma actual
   const [isLoaded, setIsLoaded] = useState(false); // Indica si el mapa se ha cargado
   const [loadError, setLoadError] = useState<string | null>(null); // Estado para errores de carga
 
   /**
-   * Carga el API de Google Maps y configura el idioma usando importLibrary().
+   * Carga o reemplaza el marcador del mapa, mostrando un InfoWindow con detalles al hacer clic.
    */
-  useEffect(() => {
-    const init = async () => {
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
-      if (!apiKey) {
-        setLoadError("La clave de API de Google Maps no está configurada.");
-        return;
-      }
-
-      try {
-        // Cambio: Usamos el Singleton del Loader
-        const loader = getGoogleMapsLoader(apiKey, mapLocale);
-        await Promise.all([loader.importLibrary("maps"), loader.importLibrary("marker")]);
-        setIsLoaded(true); // Marca el estado como cargado
-      } catch (err: any) {
-        setLoadError(err.message || "No se pudo cargar Google Maps.");
-      }
-    };
-
-    init();
-  }, [mapLocale]);
-
-  /**
-   * Actualiza el idioma de localización si cambia en la web,
-   * para asegurar que el contenido del marcador esté internacionalizado.
-   */
-  useEffect(() => {
-    if (currentLocale !== intl.locale) {
-      setCurrentLocale(intl.locale);
-    }
-  }, [intl.locale]);
-
-  /**
-   * Recarga el marcador si cambia el idioma en la web.
-   */
-  useEffect(() => {
-    if (mapInstanceRef.current) {
-      loadMarker();
-    }
-  }, [currentLocale]);
-
-  /**
-   * Inicializa el mapa y el marcador al cargar el mapa.
-   * Se ejecuta una vez que el API de Google Maps ha sido cargado exitosamente.
-   */
-  useEffect(() => {
-    if (isLoaded && mapRef.current && !mapInstanceRef.current) {
-      mapInstanceRef.current = new google.maps.Map(mapRef.current, {
-        center: { lat: location.lat, lng: location.lng },
-        zoom: 20,
-        mapId: "3c9679b7244c46e5",
-      });
-
-      loadMarker();
-    }
-  }, [isLoaded, location]);
-
-  /**
-   * Carga el marcador en el mapa, mostrando un InfoWindow con detalles al hacer clic.
-   */
-  const loadMarker = async () => {
-    if (!google.maps) return;
+  const loadMarker = useCallback(async (): Promise<void> => {
+    if (!google.maps || !mapInstanceRef.current) return;
 
     try {
       // Importa la librería 'marker' si aún no ha sido importada
-      const { AdvancedMarkerElement } = (await google.maps.importLibrary("marker")) as any;
+      const { AdvancedMarkerElement } = (await google.maps.importLibrary("marker")) as google.maps.MarkerLibrary;
+
+      // Retira el marcador anterior antes de crear el nuevo para no duplicar marcadores ni listeners
+      if (markerRef.current) {
+        google.maps.event.clearInstanceListeners(markerRef.current);
+        markerRef.current.map = null;
+      }
+
       const marker = new AdvancedMarkerElement({
-        map: mapInstanceRef.current!,
+        map: mapInstanceRef.current,
         position: { lat: location.lat, lng: location.lng },
         title: location.address_url,
       });
+      markerRef.current = marker;
 
       // Contenido del InfoWindow en formato HTML
       const contentString = `<div class="fw-bold">
@@ -194,6 +143,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
       </div>`;
 
       if (infoWindowRef.current) {
+        infoWindowRef.current.close();
         infoWindowRef.current.setContent(contentString);
       } else {
         infoWindowRef.current = new google.maps.InfoWindow({
@@ -211,10 +161,67 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
           });
         }
       });
-    } catch (error: any) {
+    } catch {
       setLoadError("No se pudo cargar el marcador en el mapa.");
     }
-  };
+  }, [intl, location]);
+
+  /**
+   * Carga el API de Google Maps y configura el idioma usando importLibrary().
+   */
+  useEffect(() => {
+    const init = async () => {
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
+      if (!apiKey) {
+        setLoadError("La clave de API de Google Maps no está configurada.");
+        return;
+      }
+
+      try {
+        // Cambio: Usamos el Singleton del Loader
+        const loader = getGoogleMapsLoader(apiKey, mapLocale);
+        await Promise.all([loader.importLibrary("maps"), loader.importLibrary("marker")]);
+        setIsLoaded(true); // Marca el estado como cargado
+      } catch (err: unknown) {
+        setLoadError(err instanceof Error ? err.message : "No se pudo cargar Google Maps.");
+      }
+    };
+
+    init();
+  }, [mapLocale]);
+
+  /**
+   * Inicializa el mapa y el marcador al cargar el mapa.
+   * También actualiza el centro y el marcador si cambia la ubicación o el idioma.
+   */
+  useEffect(() => {
+    if (!isLoaded || !mapRef.current) return;
+
+    if (!mapInstanceRef.current) {
+      mapInstanceRef.current = new google.maps.Map(mapRef.current, {
+        center: { lat: location.lat, lng: location.lng },
+        zoom: 20,
+        mapId: "3c9679b7244c46e5",
+      });
+    } else {
+      mapInstanceRef.current.setCenter({ lat: location.lat, lng: location.lng });
+    }
+
+    void loadMarker();
+  }, [isLoaded, loadMarker, location]);
+
+  /**
+   * Limpia los elementos creados por Google Maps al desmontar el componente.
+   */
+  useEffect(() => {
+    return () => {
+      if (markerRef.current) {
+        google.maps.event.clearInstanceListeners(markerRef.current);
+        markerRef.current.map = null;
+      }
+      infoWindowRef.current?.close();
+    };
+  }, []);
 
   // Renderiza un mensaje de error si ocurrió algún problema al cargar el mapa
   if (loadError) {

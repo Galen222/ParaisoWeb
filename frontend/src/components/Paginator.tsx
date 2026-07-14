@@ -95,12 +95,12 @@ export const Paginator: React.FC<PaginatorProps> = ({
   return (
     <div className={styles.paginator}>
       {/* Botón para ir a la primera página */}
-      <button className={styles.paginatorButton} onClick={onFirstPage} disabled={currentPage === 1}>
+      <button className={styles.paginatorButton} onClick={onFirstPage} disabled={!hasPreviousPage || currentPage <= 1}>
         &laquo;
       </button>
 
       {/* Botón para ir a la página anterior */}
-      <button className={styles.paginatorButton} onClick={onPreviousPage} disabled={currentPage === 1}>
+      <button className={styles.paginatorButton} onClick={onPreviousPage} disabled={!hasPreviousPage || currentPage <= 1}>
         &lt;
       </button>
 
@@ -117,12 +117,12 @@ export const Paginator: React.FC<PaginatorProps> = ({
       ))}
 
       {/* Botón para ir a la página siguiente */}
-      <button className={styles.paginatorButton} onClick={onNextPage} disabled={currentPage === totalPages}>
+      <button className={styles.paginatorButton} onClick={onNextPage} disabled={!hasNextPage || currentPage >= totalPages}>
         &gt;
       </button>
 
       {/* Botón para ir a la última página */}
-      <button className={styles.paginatorButton} onClick={onLastPage} disabled={currentPage === totalPages}>
+      <button className={styles.paginatorButton} onClick={onLastPage} disabled={!hasNextPage || currentPage >= totalPages}>
         &raquo;
       </button>
     </div>
