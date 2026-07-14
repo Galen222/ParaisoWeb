@@ -7,6 +7,16 @@ import { getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
 
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+const VALID_SLUG_PATTERN = /^[a-zA-Z0-9-]+$/;
+
+/** Devuelve un mensaje breve para depurar sin registrar respuestas, cabeceras ni tokens. */
+const getErrorMessageForLog = (error: unknown): string => {
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+
+  return "Error desconocido";
+};
 
 /**
  * Tipo de la función que cambia el idioma de la aplicación.
@@ -64,22 +74,35 @@ export function useLocaleChange(): LocaleChangeHandler {
           const currentBlogPost = await getBlogPostBySlug(slug, token, router.locale || "es");
           if (localeChangeSequence !== localeChangeSequenceRef.current) return;
 
-          // Obtenemos el artículo en el nuevo idioma utilizando el ID del artículo actual
-          const newBlogPost = await getBlogPostById(currentBlogPost.id_noticia, newLocale, token);
-          if (localeChangeSequence !== localeChangeSequenceRef.current) return;
-
-          if (newBlogPost && newBlogPost.slug) {
-            // Construimos la nueva ruta con el slug en el nuevo idioma
-            newPath = `/blog/${newBlogPost.slug}`;
-          } else {
-            // Si no existe traducción, podríamos mantener el mismo slug o redirigir al blog principal
+          // No consulta la traducción con un identificador vacío, decimal o negativo devuelto por la API.
+          if (!Number.isInteger(currentBlogPost.id_noticia) || currentBlogPost.id_noticia <= 0) {
+            console.error("Cambio de idioma del blog cancelado: identificador de artículo inválido.");
             newPath = `/blog`;
+          } else {
+            // Obtenemos el artículo en el nuevo idioma utilizando el ID del artículo actual
+            const newBlogPost = await getBlogPostById(currentBlogPost.id_noticia, newLocale, token);
+            if (localeChangeSequence !== localeChangeSequenceRef.current) return;
+
+            const isExpectedTranslation =
+              newBlogPost.id_noticia === currentBlogPost.id_noticia &&
+              newBlogPost.idioma === newLocale &&
+              typeof newBlogPost.slug === "string" &&
+              VALID_SLUG_PATTERN.test(newBlogPost.slug);
+
+            if (isExpectedTranslation) {
+              // Construimos la nueva ruta con el slug en el nuevo idioma
+              newPath = `/blog/${newBlogPost.slug}`;
+            } else {
+              // Si la respuesta no corresponde a la traducción solicitada, redirige al blog principal.
+              console.error("Cambio de idioma del blog cancelado: la traducción recibida no es válida.");
+              newPath = `/blog`;
+            }
           }
-        } catch (error) {
+        } catch (error: unknown) {
           // Un cambio posterior tiene prioridad y no debe ser reemplazado por este resultado tardío.
           if (localeChangeSequence !== localeChangeSequenceRef.current) return;
 
-          console.error("Error fetching translated slug:", error);
+          console.error("Error al obtener la traducción del artículo:", getErrorMessageForLog(error));
           // En caso de error, podríamos redirigir al blog principal
           newPath = `/blog`;
         }
