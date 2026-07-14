@@ -1,6 +1,6 @@
 // hooks/usePagination.ts
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 
 /**
  * Interfaz para las opciones de paginación
@@ -95,11 +95,20 @@ export function usePagination<T>({
     return items.slice(startIndex, startIndex + itemsPerPage);
   }, [items, currentPage, itemsPerPage]);
 
+  // Conserva la página anterior para distinguir una navegación real del montaje inicial.
+  const previousPageRef = useRef(currentPage);
+
   /**
    * Efecto para hacer scroll suave al principio del contenido principal
-   * cuando cambia la página pulsando en el paginador
+   * cuando cambia la página pulsando en el paginador. No se ejecuta al montar
+   * la página, evitando que la vista salte automáticamente por debajo de la cabecera.
    */
   useEffect(() => {
+    if (previousPageRef.current === currentPage) {
+      return;
+    }
+
+    previousPageRef.current = currentPage;
     document.getElementById("principal")?.scrollIntoView({
       behavior: "smooth",
     });

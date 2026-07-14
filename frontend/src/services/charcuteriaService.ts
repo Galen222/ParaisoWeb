@@ -13,7 +13,7 @@ import { getTimedToken } from "./tokenService";
 export interface CharcuteriaProduct {
   id_producto: number; // Identificador único del producto.
   nombre: string; // Nombre del producto.
-  empresa: string; // Empresa del producto.
+  empresa: string | null; // Empresa del producto; puede no estar informada en la base de datos.
   descripcion: string; // Descripción del producto.
   imagen_url?: string; // URL de la imagen del producto (opcional).
   categoria?: string; // Categoría del producto (opcional).

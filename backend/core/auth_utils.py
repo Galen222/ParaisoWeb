@@ -18,6 +18,7 @@ import time
 import hmac
 import hashlib
 import base64
+import binascii
 from .config import settings
 
 def generate_timed_token() -> str:
@@ -47,7 +48,8 @@ def verify_timed_token(token: str) -> bool:
     Verifica si el token proporcionado es válido dentro de una ventana de tiempo definida.
 
     Este método verifica el token para el intervalo de tiempo actual y el anterior,
-    permitiendo tolerancia en caso de desincronizaciones menores.
+    permitiendo tolerancia en caso de desincronizaciones menores. También rechaza
+    tokens malformados sin propagar errores de codificación al endpoint.
 
     Args:
         token (str): Token temporal a verificar.
@@ -59,6 +61,21 @@ def verify_timed_token(token: str) -> bool:
         >>> is_valid = verify_timed_token("mi_token")
         >>> print(is_valid)
     """
+    # Un HMAC-SHA256 codificado en Base64 URL-safe ocupa siempre 44 caracteres.
+    # Validar forma y longitud evita que compare_digest lance TypeError con texto no ASCII
+    # y descarta cabeceras arbitrariamente grandes antes de calcular los intervalos.
+    expected_encoded_length = len(base64.urlsafe_b64encode(bytes(hashlib.sha256().digest_size)))
+    if not isinstance(token, str) or len(token) != expected_encoded_length or not token.isascii():
+        return False
+
+    try:
+        token_bytes = base64.b64decode(token.encode("ascii"), altchars=b"-_", validate=True)
+    except (binascii.Error, ValueError, UnicodeEncodeError):
+        return False
+
+    if len(token_bytes) != hashlib.sha256().digest_size:
+        return False
+
     current_interval = int(time.time()) // settings.token_interval_seconds
     key = settings.secret_key.encode()
 
@@ -66,7 +83,6 @@ def verify_timed_token(token: str) -> bool:
     for interval in [current_interval, current_interval - 1]:
         message = f"{interval}".encode()
         expected_token_bytes = hmac.new(key, message, hashlib.sha256).digest()
-        expected_token = base64.urlsafe_b64encode(expected_token_bytes).decode()
-        if hmac.compare_digest(token, expected_token):
+        if hmac.compare_digest(token_bytes, expected_token_bytes):
             return True
     return False

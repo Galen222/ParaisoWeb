@@ -73,12 +73,9 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
     }
   }
 
-  // Obtener cookies y buscar la de idioma
-  const cookies = context.req.headers.cookie || "";
-  const localeCookie = cookies
-    .split("; ")
-    .find((row) => row.startsWith("_locale="))
-    ?.split("=")[1];
+  // Next.js ya expone las cookies parseadas; así no se depende de que la cabecera
+  // utilice un espacio después de cada punto y coma.
+  const localeCookie = context.req.cookies._locale;
 
   // Solo aplica la redirección si la cookie contiene un idioma soportado y distinto del actual.
   if (localeCookie && SUPPORTED_LOCALES.has(localeCookie) && locale !== localeCookie) {

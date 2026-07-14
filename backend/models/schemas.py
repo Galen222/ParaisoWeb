@@ -101,14 +101,14 @@ class CharcuteriaBase(BaseModel):
     Atributos:
         idioma (str): Idioma del producto (ejemplo: 'es').
         nombre (str): Nombre del producto.
-        empresa (str): Empresa del producto.
+        empresa (Optional[str]): Empresa del producto, si está informada.
         descripcion (str): Descripción detallada del producto.
         imagen_url (str): URL de la imagen del producto.
         categoria (str): Categoría del producto (ejemplo: 'Embutidos').
     """
     idioma: str
     nombre: str
-    empresa: str
+    empresa: Optional[str] = None
     descripcion: str
     imagen_url: str
     categoria: str
