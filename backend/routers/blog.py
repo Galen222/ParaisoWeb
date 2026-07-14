@@ -21,7 +21,7 @@ import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import List, Optional
+from typing import List, Literal, Optional
 from ..models import schemas
 from ..dependencies import verify_token, get_db
 from ..services.blog_service import BlogService
@@ -30,9 +30,12 @@ from ..services.blog_service import BlogService
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
+# Idiomas disponibles en el frontend y almacenados en la base de datos.
+SupportedLanguage = Literal["es", "en", "de"]
+
 @router.get("/blog", response_model=List[schemas.Blog])
 async def get_blog_posts(
-    idioma: str = Query("es"),
+    idioma: SupportedLanguage = Query("es"),
     token_verification: None = Depends(verify_token),  # Verifica el token temporal
     db: AsyncSession = Depends(get_db)
 ):
@@ -70,7 +73,7 @@ async def get_blog_posts(
 @router.get("/blog/{slug}", response_model=schemas.Blog)
 async def get_blog_post_by_slug(
     slug: str = Path(...),
-    idioma: Optional[str] = Query(None),
+    idioma: Optional[SupportedLanguage] = Query(None),
     token_verification: None = Depends(verify_token),  # Verifica el token temporal
     db: AsyncSession = Depends(get_db)  # Luego obtiene la conexión a BD
 ):
@@ -117,8 +120,8 @@ async def get_blog_post_by_slug(
 
 @router.get("/blog/by-id/{id_noticia}", response_model=schemas.Blog)
 async def get_blog_post_by_id(
-    id_noticia: int = Path(...),
-    idioma: str = Query(...),
+    id_noticia: int = Path(..., ge=1),
+    idioma: SupportedLanguage = Query(...),
     token_verification: None = Depends(verify_token),  # Verifica el token temporal
     db: AsyncSession = Depends(get_db)  # Luego obtiene la conexión a BD
 ):

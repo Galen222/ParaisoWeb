@@ -20,7 +20,7 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import OperationalError
-from typing import List
+from typing import List, Literal
 from ..models import schemas
 from ..dependencies import verify_token, get_db
 from ..services.charcuteria_service import CharcuteriaService
@@ -29,9 +29,12 @@ from ..services.charcuteria_service import CharcuteriaService
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
+# Idiomas disponibles en el frontend y almacenados en la base de datos.
+SupportedLanguage = Literal["es", "en", "de"]
+
 @router.get("/charcuteria", response_model=List[schemas.Charcuteria])
 async def get_charcuteria_products(
-    idioma: str = Query("es"),  # Parámetro de idioma con valor predeterminado "es"
+    idioma: SupportedLanguage = Query("es"),  # Parámetro de idioma con valor predeterminado "es"
     token_verification: None = Depends(verify_token),  # Verifica el token temporal
     db: AsyncSession = Depends(get_db)  # Luego obtiene la conexión a BD
 ):
