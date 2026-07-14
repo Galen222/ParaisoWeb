@@ -1,6 +1,6 @@
 // components/Form.tsx
 
-import React, { useState, ChangeEvent, FormEvent } from "react";
+import React, { useRef, useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { useButtonClickTrackingGA } from "../hooks/useTrackingGA";
@@ -43,6 +43,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
   const [isPushingSend, setIsPushingSend] = useState(false);
   const [isPushingFile, setIsPushingFile] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = useRef(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [formData, setFormData] = useState<FormServiceData>({
     name: "",
@@ -143,18 +145,26 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
    */
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files ? e.target.files[0] : null;
+
+    const clearSelectedFile = () => {
+      setFormData((current) => ({ ...current, file: null }));
+      e.target.value = "";
+    };
+
     if (file) {
       if (file.type !== "image/jpeg" && file.type !== "application/pdf") {
+        clearSelectedFile();
         showToast("contacto_ArchivoNoJPG-PDF", 4000, "error");
         return;
       }
       if (file.size > 10485760) {
+        clearSelectedFile();
         showToast("contacto_ArchivoGrande", 4000, "error");
         return;
       }
-      setFormData({ ...formData, file });
+      setFormData((current) => ({ ...current, file }));
     } else {
-      setFormData({ ...formData, file: null });
+      clearSelectedFile();
     }
   };
 
@@ -163,6 +173,12 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
    */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (isSubmittingRef.current) {
+      return;
+    }
+
+    isSubmittingRef.current = true;
     trackButtonClick("Enviar Formulario");
     setIsSubmitting(true);
 
@@ -184,11 +200,15 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
         message: "",
         file: null,
       });
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
       setIsPrivacyChecked(false);
       onSubmit();
     } catch (error: any) {
       showToast("contacto_Formulario_Error", 4000, "error");
     } finally {
+      isSubmittingRef.current = false;
       setIsSubmitting(false);
     }
   };
@@ -269,13 +289,21 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
       <div className={styles.fileUploadContainer}>
         <div className="w-600p">
-          <input type="file" id="fileUpload" name="fileUpload" accept="image/jpeg,application/pdf" className="d-none" onChange={handleFileChange} />
+          <input
+            ref={fileInputRef}
+            type="file"
+            id="fileUpload"
+            name="fileUpload"
+            accept="image/jpeg,application/pdf"
+            className="d-none"
+            onChange={handleFileChange}
+          />
           <button
             type="button"
             className={`btn btn-outline-secondary ${styles.fileButton} ${isPushingFile ? "animate-push" : ""}`}
             onClick={() => {
               setIsPushingFile(true);
-              document.getElementById("fileUpload")?.click();
+              fileInputRef.current?.click();
             }}
             onAnimationEnd={() => setIsPushingFile(false)}
           >
