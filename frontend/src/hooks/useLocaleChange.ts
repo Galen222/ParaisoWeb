@@ -6,6 +6,8 @@ import { useCookieConsent } from "../contexts/CookieContext";
 import { getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
 
+const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+
 /**
  * Tipo de la función que cambia el idioma de la aplicación.
  */
@@ -27,6 +29,12 @@ export function useLocaleChange(): LocaleChangeHandler {
    */
   const handleLocaleChange = useCallback(
     async (newLocale: string) => {
+      // Ignora valores ajenos a los idiomas configurados para no generar rutas ni cookies inválidas.
+      if (!SUPPORTED_LOCALES.has(newLocale)) {
+        console.error(`Cambio de idioma ignorado: locale no soportado "${newLocale}".`);
+        return;
+      }
+
       let newPath = router.asPath;
 
       // Verifica si estás en la página `[slug]`
@@ -56,13 +64,14 @@ export function useLocaleChange(): LocaleChangeHandler {
         }
       }
 
-      // Cambia el idioma en la URL utilizando Next.js router
-      router.push(newPath, newPath, { locale: newLocale });
-
-      // Si el usuario ha consentido la personalización, actualiza la cookie de idioma
+      // Si el usuario ha consentido la personalización, actualiza la cookie antes de navegar.
+      // Así getServerSideProps recibe ya el nuevo idioma y no redirige de vuelta por leer la preferencia anterior.
       if (cookieConsentPersonalization) {
         document.cookie = `_locale=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
       }
+
+      // Espera a que termine la navegación para que la promesa del manejador represente el cambio real de idioma.
+      await router.push(newPath, newPath, { locale: newLocale });
     },
     [router, cookieConsentPersonalization]
   );
