@@ -15,6 +15,8 @@ Dependencias:
 - Servicios: Lógica de negocio implementada en `CharcuteriaService`.
 """
 
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import OperationalError
@@ -25,6 +27,7 @@ from ..services.charcuteria_service import CharcuteriaService
 
 # Inicializa el router para los endpoints relacionados con charcutería
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.get("/charcuteria", response_model=List[schemas.Charcuteria])
 async def get_charcuteria_products(
@@ -56,6 +59,18 @@ async def get_charcuteria_products(
         charcuteria_service = CharcuteriaService(db)
         return await charcuteria_service.get_all_products(idioma)
     except OperationalError:
-        raise HTTPException(status_code=500, detail="Error de conexión con la base de datos")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Error interno del servidor")
+        logger.exception(
+            "Error de conexión con la base de datos al obtener productos de charcutería"
+        )
+        raise HTTPException(
+            status_code=500,
+            detail="Error de conexión con la base de datos",
+        ) from None
+    except Exception:
+        logger.exception(
+            "Error inesperado al obtener los productos de charcutería"
+        )
+        raise HTTPException(
+            status_code=500,
+            detail="Error interno del servidor",
+        ) from None

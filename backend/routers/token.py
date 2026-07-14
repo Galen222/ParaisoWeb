@@ -13,11 +13,14 @@ Dependencias:
 - auth_utils: Para la lógica de generación de tokens.
 """
 
+import logging
+
 from fastapi import APIRouter, HTTPException
 from ..core.auth_utils import generate_timed_token
 
 # Inicializa el router para el manejo de tokens
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.get("/get-token")
 async def get_token():
@@ -37,5 +40,9 @@ async def get_token():
     try:
         token = generate_timed_token()
         return {"token": token}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail="Error al generar el token")
+    except Exception:
+        logger.exception("Error inesperado al generar el token temporal")
+        raise HTTPException(
+            status_code=500,
+            detail="Error al generar el token",
+        ) from None

@@ -17,6 +17,8 @@ Dependencias:
 - Servicios: Lógica de negocio implementada en `BlogService`.
 """
 
+import logging
+
 from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
@@ -26,6 +28,7 @@ from ..services.blog_service import BlogService
 
 # Inicializa el router para los endpoints relacionados con el blog
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 @router.get("/blog", response_model=List[schemas.Blog])
 async def get_blog_posts(
@@ -56,8 +59,12 @@ async def get_blog_posts(
     try:
         blog_service = BlogService(db)
         return await blog_service.get_all_posts(idioma)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception("Error inesperado al obtener la lista de publicaciones del blog")
+        raise HTTPException(
+            status_code=500,
+            detail="Error interno al obtener las publicaciones del blog",
+        ) from None
 
 
 @router.get("/blog/{slug}", response_model=schemas.Blog)
@@ -98,8 +105,14 @@ async def get_blog_post_by_slug(
         return post
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception(
+            "Error inesperado al obtener una publicación del blog por slug"
+        )
+        raise HTTPException(
+            status_code=500,
+            detail="Error interno al obtener la publicación del blog",
+        ) from None
 
 
 @router.get("/blog/by-id/{id_noticia}", response_model=schemas.Blog)
@@ -140,5 +153,11 @@ async def get_blog_post_by_id(
         return post
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception:
+        logger.exception(
+            "Error inesperado al obtener una publicación del blog por ID"
+        )
+        raise HTTPException(
+            status_code=500,
+            detail="Error interno al obtener la publicación del blog",
+        ) from None
