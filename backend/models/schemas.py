@@ -15,6 +15,7 @@ Este archivo incluye:
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing import Optional
 from datetime import datetime
+import unicodedata
 
 
 # Esquema para el Formulario de Contacto
@@ -36,8 +37,8 @@ class ContactForm(BaseModel):
     @field_validator('name', mode='before')
     @classmethod
     def strip_name(cls, v: str) -> str:
-        """Elimina espacios exteriores antes de validar longitud y contenido."""
-        return v.strip() if isinstance(v, str) else v
+        """Elimina espacios exteriores y normaliza Unicode antes de validar el nombre."""
+        return unicodedata.normalize("NFC", v.strip()) if isinstance(v, str) else v
 
     @field_validator('name')
     def validate_name(cls, v: str) -> str:

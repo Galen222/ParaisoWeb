@@ -40,6 +40,10 @@ class Settings(BaseSettings):
         CONTACT_RATE_LIMIT_WINDOW_SECONDS (int): Duración de la ventana del formulario.
         TOKEN_RATE_LIMIT_REQUESTS (int): Solicitudes permitidas de token por ventana.
         TOKEN_RATE_LIMIT_WINDOW_SECONDS (int): Duración de la ventana de tokens.
+        CONTACT_MAX_REQUEST_BYTES (int): Tamaño máximo del cuerpo multipart de contacto.
+        DATABASE_STARTUP_TIMEOUT_SECONDS (float): Tiempo máximo para inicializar MySQL.
+        SMTP_TIMEOUT_SECONDS (float): Tiempo máximo de conexión y envío SMTP.
+        TRUSTED_PROXY_IPS (str): Proxies autorizados para aportar X-Forwarded-For.
     """
     SMTP_SERVER: str
     SMTP_PORT: int
@@ -52,6 +56,15 @@ class Settings(BaseSettings):
     CONTACT_RATE_LIMIT_WINDOW_SECONDS: int = Field(default=600, gt=0)
     TOKEN_RATE_LIMIT_REQUESTS: int = Field(default=120, gt=0)
     TOKEN_RATE_LIMIT_WINDOW_SECONDS: int = Field(default=60, gt=0)
+    CONTACT_MAX_REQUEST_BYTES: int = Field(default=11 * 1024 * 1024, gt=0)
+    DATABASE_STARTUP_TIMEOUT_SECONDS: float = Field(default=10.0, gt=0)
+    SMTP_TIMEOUT_SECONDS: float = Field(default=15.0, gt=0)
+    TRUSTED_PROXY_IPS: str = "127.0.0.1,::1"
+
+    @property
+    def trusted_proxy_ips(self) -> set[str]:
+        """Devuelve los proxies configurados sin aceptar entradas vacías."""
+        return {value.strip() for value in self.TRUSTED_PROXY_IPS.split(",") if value.strip()}
 
     model_config = {
         "from_attributes": True,  # Permite inicializar la configuración desde atributos

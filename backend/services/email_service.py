@@ -105,6 +105,7 @@ class EmailService:
         self.smtp_port = settings.SMTP_PORT
         self.smtp_username = settings.SMTP_USERNAME
         self.smtp_password = settings.SMTP_PASSWORD
+        self.smtp_timeout = settings.SMTP_TIMEOUT_SECONDS
         self.file_service = FileService()
 
     async def send_contact_email(
@@ -191,6 +192,7 @@ class EmailService:
                 start_tls=True,
                 username=self.smtp_username,
                 password=self.smtp_password,
+                timeout=self.smtp_timeout,
             )
             logger.info(
                 f"{ANSI_GREEN}Correo enviado correctamente | "

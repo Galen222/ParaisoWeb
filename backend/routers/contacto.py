@@ -51,6 +51,7 @@ async def contacto(
         HTTPException:
             - 401: Si no se proporciona token.
             - 403: Si el token proporcionado es inválido.
+            - 503: Si el servicio de correo no está disponible temporalmente.
             - 500: Si ocurre un error interno durante el procesamiento del formulario.
 
     Returns:

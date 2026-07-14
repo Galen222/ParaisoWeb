@@ -21,6 +21,7 @@ import logging
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.exc import OperationalError
 from typing import List, Literal
 from ..models import schemas
 from ..dependencies import verify_token, get_db
@@ -54,6 +55,7 @@ async def get_blog_posts(
         HTTPException:
             - 401: Si no se proporciona token.
             - 403: Si el token proporcionado es inválido.
+            - 503: Si la base de datos no está disponible temporalmente.
             - 500: Si ocurre algún error interno.
 
     Returns:
@@ -62,6 +64,12 @@ async def get_blog_posts(
     try:
         blog_service = BlogService(db)
         return await blog_service.get_all_posts(idioma)
+    except OperationalError:
+        logger.exception("Base de datos no disponible al obtener la lista de publicaciones del blog")
+        raise HTTPException(
+            status_code=503,
+            detail="Servicio de datos temporalmente no disponible",
+        ) from None
     except Exception:
         logger.exception("Error inesperado al obtener la lista de publicaciones del blog")
         raise HTTPException(
@@ -94,6 +102,7 @@ async def get_blog_post_by_slug(
             - 401: Si no se proporciona token.
             - 403: Si el token proporcionado es inválido.
             - 404: Si la publicación no se encuentra.
+            - 503: Si la base de datos no está disponible temporalmente.
             - 500: Si ocurre algún error interno.
 
     Returns:
@@ -108,6 +117,12 @@ async def get_blog_post_by_slug(
         return post
     except HTTPException:
         raise
+    except OperationalError:
+        logger.exception("Base de datos no disponible al obtener una publicación del blog por slug")
+        raise HTTPException(
+            status_code=503,
+            detail="Servicio de datos temporalmente no disponible",
+        ) from None
     except Exception:
         logger.exception(
             "Error inesperado al obtener una publicación del blog por slug"
@@ -142,6 +157,7 @@ async def get_blog_post_by_id(
             - 401: Si no se proporciona token.
             - 403: Si el token proporcionado es inválido.
             - 404: Si la publicación no se encuentra.
+            - 503: Si la base de datos no está disponible temporalmente.
             - 500: Si ocurre algún error interno.
 
     Returns:
@@ -156,6 +172,12 @@ async def get_blog_post_by_id(
         return post
     except HTTPException:
         raise
+    except OperationalError:
+        logger.exception("Base de datos no disponible al obtener una publicación del blog por ID")
+        raise HTTPException(
+            status_code=503,
+            detail="Servicio de datos temporalmente no disponible",
+        ) from None
     except Exception:
         logger.exception(
             "Error inesperado al obtener una publicación del blog por ID"

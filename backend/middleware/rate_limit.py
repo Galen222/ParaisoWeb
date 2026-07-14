@@ -19,10 +19,11 @@ import hashlib
 import hmac
 import logging
 import math
+from ipaddress import ip_address
 import time
 from collections import defaultdict, deque
 from dataclasses import dataclass
-from typing import Callable, Deque, Dict, Iterable, Tuple
+from typing import Callable, Deque, Dict, Iterable, Set, Tuple
 
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
@@ -113,6 +114,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         app,
         rules: Iterable[RateLimitRule],
         secret_key: str,
+        trusted_proxy_ips: Iterable[str] = (),
         clock: Callable[[], float] = time.monotonic,
     ) -> None:
         super().__init__(app)
@@ -121,6 +123,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             for rule in rules
         }
         self._secret_key = secret_key.encode("utf-8")
+        self._trusted_proxy_ips: Set[str] = {value.strip() for value in trusted_proxy_ips if value.strip()}
         self._limiter = InMemoryRateLimiter(clock=clock)
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
@@ -152,12 +155,38 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         )
 
     def _build_anonymous_client_key(self, request: Request) -> str:
-        client_host = request.client.host if request.client else "unknown"
+        client_host = self._resolve_client_host(request)
         return hmac.new(
             self._secret_key,
             client_host.encode("utf-8", errors="replace"),
             hashlib.sha256,
         ).hexdigest()[:16]
+
+    def _resolve_client_host(self, request: Request) -> str:
+        """Usa X-Forwarded-For solo cuando la conexión procede de un proxy confiable."""
+        direct_host = request.client.host if request.client else "unknown"
+        if direct_host not in self._trusted_proxy_ips:
+            return direct_host
+
+        forwarded_for = request.headers.get("x-forwarded-for", "")
+        forwarded_chain = [value.strip() for value in forwarded_for.split(",") if value.strip()]
+        if not forwarded_chain:
+            return direct_host
+
+        # Recorre la cadena desde el proxy más cercano hacia el cliente. Elegir el primer
+        # valor de la cabecera permitiría que un visitante antepusiera una IP falsa cuando
+        # Nginx utiliza ``$proxy_add_x_forwarded_for``.
+        for candidate in reversed(forwarded_chain):
+            try:
+                normalized_candidate = str(ip_address(candidate))
+            except ValueError:
+                logger.warning("Entrada inválida de X-Forwarded-For ignorada desde proxy confiable")
+                continue
+
+            if normalized_candidate not in self._trusted_proxy_ips:
+                return normalized_candidate
+
+        return direct_host
 
     @staticmethod
     def _normalize_path(path: str) -> str:

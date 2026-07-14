@@ -17,10 +17,11 @@ Dependencias:
 - SQLAlchemy: Para la inicialización de la base de datos.
 """
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from .middleware.logging import LoggingMiddleware
 from .middleware.rate_limit import RateLimitMiddleware, RateLimitRule
+from .middleware.request_size import RequestSizeLimitMiddleware, RequestSizeRule
 from contextlib import asynccontextmanager
 from .routers import contacto, charcuteria, blog, token
 from .database import engine
@@ -49,12 +50,25 @@ async def lifespan(app: FastAPI):
         None: Indica que la aplicación está lista para recibir solicitudes.
     """
     app.state.database_available = False
-    try:
-        # Intentar establecer una conexión con la base de datos y crear las tablas
+    async def initialize_database() -> None:
+        # Intentar establecer una conexión con la base de datos y crear las tablas.
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
+
+    try:
+        # Evita que un servidor MySQL inaccesible bloquee indefinidamente el arranque de la API.
+        await asyncio.wait_for(
+            initialize_database(),
+            timeout=settings.DATABASE_STARTUP_TIMEOUT_SECONDS,
+        )
         app.state.database_available = True
         logger.info("Aplicación iniciada y base de datos configurada.")
+    except TimeoutError:
+        logger.error(
+            "La inicialización de la base de datos superó el tiempo máximo de %.1fs; "
+            "la aplicación continúa en modo degradado.",
+            settings.DATABASE_STARTUP_TIMEOUT_SECONDS,
+        )
     except Exception:
         # La API continúa disponible para endpoints que no dependen de la base de datos.
         logger.exception(
@@ -84,8 +98,12 @@ def create_app() -> FastAPI:
     )
 
     @app.get("/health", tags=["Health"])
-    async def health() -> dict[str, str]:
+    async def health(response: Response) -> dict[str, str]:
         """Informa si la API está operativa y comprueba el estado actual de la base de datos."""
+        # El resultado depende del estado actual de MySQL y no debe reutilizarse desde cachés.
+        response.headers["Cache-Control"] = "no-store, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+
         previous_database_available = getattr(app.state, "database_available", False)
 
         async def check_database_connection() -> None:
@@ -134,6 +152,19 @@ def create_app() -> FastAPI:
             ),
         ],
         secret_key=settings.secret_key,
+        trusted_proxy_ips=settings.trusted_proxy_ips,
+    )
+
+    # Rechaza cuerpos excesivos antes de que el parser multipart procese el adjunto.
+    app.add_middleware(
+        RequestSizeLimitMiddleware,
+        rules=[
+            RequestSizeRule(
+                method="POST",
+                path="/api/contacto",
+                max_bytes=settings.CONTACT_MAX_REQUEST_BYTES,
+            )
+        ],
     )
 
     # Middleware de logging

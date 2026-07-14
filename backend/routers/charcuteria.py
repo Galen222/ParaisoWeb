@@ -52,7 +52,7 @@ async def get_charcuteria_products(
         HTTPException:
             - 401: Si no se proporciona token.
             - 403: Si el token proporcionado es inválido.
-            - 500: Si hay un error de conexión con la base de datos.
+            - 503: Si la base de datos no está disponible temporalmente.
             - 500: Si ocurre un error interno del servidor.
 
     Returns:
@@ -66,8 +66,8 @@ async def get_charcuteria_products(
             "Error de conexión con la base de datos al obtener productos de charcutería"
         )
         raise HTTPException(
-            status_code=500,
-            detail="Error de conexión con la base de datos",
+            status_code=503,
+            detail="Servicio de datos temporalmente no disponible",
         ) from None
     except Exception:
         logger.exception(

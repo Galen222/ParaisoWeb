@@ -15,7 +15,7 @@ Dependencias:
 
 import logging
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Response
 from ..core.auth_utils import generate_timed_token
 
 # Inicializa el router para el manejo de tokens
@@ -23,7 +23,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 @router.get("/get-token")
-async def get_token():
+async def get_token(response: Response):
     """
     Endpoint para obtener un token temporal.
 
@@ -33,10 +33,17 @@ async def get_token():
     Returns:
         dict: Un diccionario que contiene el token generado.
 
+    Args:
+        response (Response): Respuesta en la que se desactiva la caché del token temporal.
+
     Raises:
         HTTPException:
             - 500: Si ocurre un error durante la generación del token.
     """
+    # Un token temporal cacheado puede devolverse después de expirar y provocar falsos 403.
+    response.headers["Cache-Control"] = "no-store, max-age=0"
+    response.headers["Pragma"] = "no-cache"
+
     try:
         token = generate_timed_token()
         return {"token": token}

@@ -18,6 +18,7 @@ Dependencias:
 
 import logging
 
+from aiosmtplib.errors import SMTPException
 from fastapi import UploadFile, HTTPException
 from typing import Optional
 from pydantic import ValidationError
@@ -68,7 +69,8 @@ class ContactoService:
             HTTPException:
                 - 400: Si los datos del formulario son inválidos.
                 - 400: Si el archivo es requerido y no se proporciona.
-                - 500: Si ocurre un error durante el procesamiento del archivo o el envío del correo.
+                - 503: Si el servicio SMTP no está disponible temporalmente.
+                - 500: Si ocurre otro error durante el procesamiento del archivo o del correo.
         """
         # Validar datos del formulario
         try:
@@ -105,11 +107,20 @@ class ContactoService:
                 validated_content_type = content_type
 
         # Enviar email
-        await self.email_service.send_contact_email(
-            name=name,
-            reason=reason,
-            email=str(email),
-            message=message,
-            file=file,
-            validated_content_type=validated_content_type
-        )
+        try:
+            await self.email_service.send_contact_email(
+                name=name,
+                reason=reason,
+                email=str(email),
+                message=message,
+                file=file,
+                validated_content_type=validated_content_type
+            )
+        except (SMTPException, OSError, TimeoutError):
+            # Una indisponibilidad de SMTP es temporal y no debe presentarse como un fallo
+            # interno permanente de la aplicación. El detalle técnico ya queda en los logs
+            # del servicio de correo.
+            raise HTTPException(
+                status_code=503,
+                detail="Servicio de correo temporalmente no disponible",
+            ) from None

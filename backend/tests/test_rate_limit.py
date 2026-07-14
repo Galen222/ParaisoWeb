@@ -78,6 +78,94 @@ class RateLimitMiddlewareTests(unittest.TestCase):
         for _ in range(5):
             self.assertEqual(self.client.get("/libre").status_code, 200)
 
+    def test_proxy_confiable_separa_clientes_por_x_forwarded_for(self) -> None:
+        app = FastAPI()
+        app.add_middleware(
+            RateLimitMiddleware,
+            rules=[
+                RateLimitRule(
+                    name="proxy",
+                    method="GET",
+                    path="/proxy",
+                    max_requests=1,
+                    window_seconds=60,
+                )
+            ],
+            secret_key="clave-pruebas",
+            trusted_proxy_ips={"testclient"},
+            clock=self.clock,
+        )
+
+        @app.get("/proxy")
+        async def proxy() -> dict[str, bool]:
+            return {"ok": True}
+
+        client = TestClient(app)
+        self.assertEqual(client.get("/proxy", headers={"x-forwarded-for": "203.0.113.10"}).status_code, 200)
+        self.assertEqual(client.get("/proxy", headers={"x-forwarded-for": "203.0.113.11"}).status_code, 200)
+        self.assertEqual(client.get("/proxy", headers={"x-forwarded-for": "203.0.113.10"}).status_code, 429)
+
+    def test_proxy_no_confiable_no_puede_falsear_x_forwarded_for(self) -> None:
+        app = FastAPI()
+        app.add_middleware(
+            RateLimitMiddleware,
+            rules=[
+                RateLimitRule(
+                    name="proxy-no-confiable",
+                    method="GET",
+                    path="/proxy",
+                    max_requests=1,
+                    window_seconds=60,
+                )
+            ],
+            secret_key="clave-pruebas",
+            trusted_proxy_ips=set(),
+            clock=self.clock,
+        )
+
+        @app.get("/proxy")
+        async def proxy() -> dict[str, bool]:
+            return {"ok": True}
+
+        client = TestClient(app)
+        self.assertEqual(client.get("/proxy", headers={"x-forwarded-for": "203.0.113.10"}).status_code, 200)
+        self.assertEqual(client.get("/proxy", headers={"x-forwarded-for": "203.0.113.11"}).status_code, 429)
+
+    def test_proxy_confiable_ignora_ips_antepuestas_por_el_cliente(self) -> None:
+        app = FastAPI()
+        app.add_middleware(
+            RateLimitMiddleware,
+            rules=[
+                RateLimitRule(
+                    name="proxy-cadena",
+                    method="GET",
+                    path="/proxy",
+                    max_requests=1,
+                    window_seconds=60,
+                )
+            ],
+            secret_key="clave-pruebas",
+            trusted_proxy_ips={"testclient"},
+            clock=self.clock,
+        )
+
+        @app.get("/proxy")
+        async def proxy() -> dict[str, bool]:
+            return {"ok": True}
+
+        client = TestClient(app)
+        first_response = client.get(
+            "/proxy",
+            headers={"x-forwarded-for": "203.0.113.10, 198.51.100.25"},
+        )
+        second_response = client.get(
+            "/proxy",
+            headers={"x-forwarded-for": "203.0.113.11, 198.51.100.25"},
+        )
+
+        self.assertEqual(first_response.status_code, 200)
+        self.assertEqual(second_response.status_code, 429)
+
 
 if __name__ == "__main__":
     unittest.main()
