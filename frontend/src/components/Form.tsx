@@ -53,7 +53,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     message: "",
     file: null,
   });
-  const [isValidEmail, setIsValidEmail] = useState(true);
+  const [isValidEmail, setIsValidEmail] = useState(false);
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
 
   const { showToast } = useToastMessage();
@@ -100,9 +100,13 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     let sanitizedValue = "";
 
     for (const char of value) {
-      if (!/[a-zA-Z0-9.@-]/.test(char)) continue;
+      const isDomainPart = sanitizedValue.includes("@");
+      const isAllowedCharacter = isDomainPart
+        ? /[a-zA-Z0-9.-]/.test(char)
+        : /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~@-]/.test(char);
 
-      if (char === "@" && sanitizedValue.includes("@")) continue;
+      if (!isAllowedCharacter) continue;
+      if (char === "@" && isDomainPart) continue;
 
       if (char === "." || char === "-") {
         // Si el siguiente carácter es @, no añadimos el . o -
@@ -200,6 +204,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
         message: "",
         file: null,
       });
+      setIsValidEmail(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }

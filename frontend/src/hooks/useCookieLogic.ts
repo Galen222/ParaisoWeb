@@ -148,23 +148,27 @@ export function useCookieLogic(): CookieLogic {
     const cookieValuePersonalization = getCookieValue("_locale");
     const cookieNameAnalysis = getCookieValue("_visited");
     const cookieNameAnalysisGoogle = document.cookie.split("; ").find((row) => row.startsWith("_ga="));
+    const hasValidPersonalizationCookie =
+      cookieValuePersonalization !== undefined && ["es", "en", "de"].includes(cookieValuePersonalization);
+    const hasAnalysisCookie = Boolean(cookieNameAnalysis);
+    const hasGoogleAnalyticsCookie = Boolean(cookieNameAnalysisGoogle);
 
-    if (cookieValuePersonalization && ["es", "en", "de"].includes(cookieValuePersonalization)) {
+    if (hasValidPersonalizationCookie) {
       setAcceptCookiePersonalization(true);
       setCookieConsentPersonalization(true);
     }
-    if (cookieNameAnalysis) {
+    if (hasAnalysisCookie) {
       setAcceptCookieAnalysis(true);
       setCookieConsentAnalysis(true);
     }
-    if (cookieNameAnalysisGoogle) {
+    if (hasGoogleAnalyticsCookie) {
       setAcceptCookieAnalysisGoogle(true);
       setCookieConsentAnalysisGoogle(true);
       initGA();
     }
 
-    // Muestra el modal únicamente cuando no existe una elección ni cookies opcionales previas.
-    if (!cookieNameAnalysis && !cookieNameAnalysisGoogle && !cookieValuePersonalization) {
+    // Muestra el modal únicamente cuando no existe una elección ni cookies opcionales válidas previas.
+    if (!hasAnalysisCookie && !hasGoogleAnalyticsCookie && !hasValidPersonalizationCookie) {
       setShowCookieModal(true);
     } else {
       setCookiesModalClosed(true);
