@@ -38,6 +38,12 @@ const maskEmailForLog = (email: string): string => {
   return `${maskPart(localPart)}@${maskPart(domainName)}${domainSuffix}`;
 };
 
+/**
+ * Obtiene un mensaje de error seguro para diagnóstico sin registrar los datos del formulario.
+ */
+const getErrorMessageForLog = (error: unknown): string =>
+  error instanceof Error ? error.message : "Error desconocido al enviar el formulario";
+
 const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element => {
   const intl = useIntl();
   const [isPushingSend, setIsPushingSend] = useState(false);
@@ -210,7 +216,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
       }
       setIsPrivacyChecked(false);
       onSubmit();
-    } catch (error: any) {
+    } catch (error: unknown) {
+      console.error("Error al enviar el formulario:", getErrorMessageForLog(error));
       showToast("contacto_Formulario_Error", 4000, "error");
     } finally {
       isSubmittingRef.current = false;

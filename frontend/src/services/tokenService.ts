@@ -19,9 +19,20 @@ export const getTimedToken = async (): Promise<string> => {
   }
 
   try {
-    const response = await axios.get(`${API_URL}/get-token`);
-    return response.data.token;
-  } catch (error: any) {
+    const response = await axios.get<unknown>(`${API_URL}/get-token`);
+    const responseData = response.data;
+
+    if (typeof responseData !== "object" || responseData === null || !("token" in responseData)) {
+      throw new Error("La respuesta del servidor no contiene un token temporal.");
+    }
+
+    const token = (responseData as { token?: unknown }).token;
+    if (typeof token !== "string" || token.trim() === "") {
+      throw new Error("El token temporal recibido no es válido.");
+    }
+
+    return token;
+  } catch {
     throw new Error("Error al obtener el token temporal.");
   }
 };

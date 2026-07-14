@@ -36,6 +36,18 @@ const axiosInstance = axios.create({
 });
 
 /**
+ * Extrae un detalle de error textual de una respuesta de la API sin asumir su estructura.
+ */
+const getApiErrorDetail = (data: unknown): string | null => {
+  if (typeof data !== "object" || data === null || !("detail" in data)) {
+    return null;
+  }
+
+  const detail = (data as { detail?: unknown }).detail;
+  return typeof detail === "string" && detail.trim() !== "" ? detail : null;
+};
+
+/**
  * Envía el formulario de contacto a la API.
  *
  * @param {FormData} data - Los datos del formulario a enviar.
@@ -64,20 +76,25 @@ export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
       },
     });
     return response;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // Manejo de errores en la solicitud con axios.
-    if (error.response) {
-      // El servidor respondió con un estado fuera del rango 2xx.
-      if (error.response.status === 403) {
-        throw new Error("Token inválido o expirado. Por favor, intenta de nuevo.");
+    if (axios.isAxiosError(error)) {
+      if (error.response) {
+        // El servidor respondió con un estado fuera del rango 2xx.
+        if (error.response.status === 403) {
+          throw new Error("Token inválido o expirado. Por favor, intenta de nuevo.");
+        }
+
+        throw new Error(getApiErrorDetail(error.response.data) ?? "Error al enviar el formulario");
       }
-      throw new Error(error.response.data.detail || "Error al enviar el formulario");
-    } else if (error.request) {
-      // La solicitud fue hecha pero no se recibió respuesta.
-      throw new Error("No se pudo contactar con el servidor");
-    } else {
-      // Algo pasó al configurar la solicitud.
-      throw new Error("Error al enviar el formulario");
+
+      if (error.request) {
+        // La solicitud fue hecha pero no se recibió respuesta.
+        throw new Error("No se pudo contactar con el servidor");
+      }
     }
+
+    // Algo pasó al configurar la solicitud o se recibió un error no reconocido.
+    throw new Error("Error al enviar el formulario");
   }
 };

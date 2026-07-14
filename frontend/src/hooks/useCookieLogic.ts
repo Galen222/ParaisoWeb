@@ -104,75 +104,81 @@ export function useCookieLogic(): CookieLogic {
    * - Muestra el modal de cookies si no hay una elección previa.
    */
   useEffect(() => {
-    const savedPreference = getCookieValue(COOKIE_CONSENT_NAME);
-    const customPreference = savedPreference ? parseCustomCookieConsent(savedPreference) : null;
+    const restoreSavedConsent = () => {
+      const savedPreference = getCookieValue(COOKIE_CONSENT_NAME);
+      const customPreference = savedPreference ? parseCustomCookieConsent(savedPreference) : null;
 
-    // Restaura primero la elección explícita, incluso cuando se rechazaron todas las cookies opcionales.
-    if (savedPreference === COOKIE_CONSENT_REJECTED) {
-      setAcceptCookieAnalysis(false);
-      setCookieConsentAnalysis(false);
-      setAcceptCookieAnalysisGoogle(false);
-      setCookieConsentAnalysisGoogle(false);
-      setAcceptCookiePersonalization(false);
-      setCookieConsentPersonalization(false);
-      setShowCookieModal(false);
-      setCookiesModalClosed(true);
-      return;
-    }
-
-    if (savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference) {
-      const analysis = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.analysis === true;
-      const googleAnalytics = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.googleAnalytics === true;
-      const personalization = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.personalization === true;
-
-      setAcceptCookieAnalysis(analysis);
-      setCookieConsentAnalysis(analysis);
-      setAcceptCookieAnalysisGoogle(googleAnalytics);
-      setCookieConsentAnalysisGoogle(googleAnalytics);
-      setAcceptCookiePersonalization(personalization);
-      setCookieConsentPersonalization(personalization);
-
-      if (analysis) {
-        createDeviceCookie();
+      // Restaura primero la elección explícita, incluso cuando se rechazaron todas las cookies opcionales.
+      if (savedPreference === COOKIE_CONSENT_REJECTED) {
+        setAcceptCookieAnalysis(false);
+        setCookieConsentAnalysis(false);
+        setAcceptCookieAnalysisGoogle(false);
+        setCookieConsentAnalysisGoogle(false);
+        setAcceptCookiePersonalization(false);
+        setCookieConsentPersonalization(false);
+        setShowCookieModal(false);
+        setCookiesModalClosed(true);
+        return;
       }
-      if (googleAnalytics) {
+
+      if (savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference) {
+        const analysis = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.analysis === true;
+        const googleAnalytics = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.googleAnalytics === true;
+        const personalization = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.personalization === true;
+
+        setAcceptCookieAnalysis(analysis);
+        setCookieConsentAnalysis(analysis);
+        setAcceptCookieAnalysisGoogle(googleAnalytics);
+        setCookieConsentAnalysisGoogle(googleAnalytics);
+        setAcceptCookiePersonalization(personalization);
+        setCookieConsentPersonalization(personalization);
+
+        if (analysis) {
+          createDeviceCookie();
+        }
+        if (googleAnalytics) {
+          initGA();
+        }
+
+        setShowCookieModal(false);
+        setCookiesModalClosed(true);
+        return;
+      }
+
+      // Compatibilidad con elecciones anteriores: comprueba las cookies opcionales ya existentes.
+      const cookieValuePersonalization = getCookieValue("_locale");
+      const cookieNameAnalysis = getCookieValue("_visited");
+      const cookieNameAnalysisGoogle = document.cookie.split("; ").find((row) => row.startsWith("_ga="));
+      const hasValidPersonalizationCookie =
+        cookieValuePersonalization !== undefined && ["es", "en", "de"].includes(cookieValuePersonalization);
+      const hasAnalysisCookie = Boolean(cookieNameAnalysis);
+      const hasGoogleAnalyticsCookie = Boolean(cookieNameAnalysisGoogle);
+
+      if (hasValidPersonalizationCookie) {
+        setAcceptCookiePersonalization(true);
+        setCookieConsentPersonalization(true);
+      }
+      if (hasAnalysisCookie) {
+        setAcceptCookieAnalysis(true);
+        setCookieConsentAnalysis(true);
+      }
+      if (hasGoogleAnalyticsCookie) {
+        setAcceptCookieAnalysisGoogle(true);
+        setCookieConsentAnalysisGoogle(true);
         initGA();
       }
 
-      setShowCookieModal(false);
-      setCookiesModalClosed(true);
-      return;
-    }
+      // Muestra el modal únicamente cuando no existe una elección ni cookies opcionales válidas previas.
+      if (!hasAnalysisCookie && !hasGoogleAnalyticsCookie && !hasValidPersonalizationCookie) {
+        setShowCookieModal(true);
+      } else {
+        setCookiesModalClosed(true);
+      }
+    };
 
-    // Compatibilidad con elecciones anteriores: comprueba las cookies opcionales ya existentes.
-    const cookieValuePersonalization = getCookieValue("_locale");
-    const cookieNameAnalysis = getCookieValue("_visited");
-    const cookieNameAnalysisGoogle = document.cookie.split("; ").find((row) => row.startsWith("_ga="));
-    const hasValidPersonalizationCookie =
-      cookieValuePersonalization !== undefined && ["es", "en", "de"].includes(cookieValuePersonalization);
-    const hasAnalysisCookie = Boolean(cookieNameAnalysis);
-    const hasGoogleAnalyticsCookie = Boolean(cookieNameAnalysisGoogle);
-
-    if (hasValidPersonalizationCookie) {
-      setAcceptCookiePersonalization(true);
-      setCookieConsentPersonalization(true);
-    }
-    if (hasAnalysisCookie) {
-      setAcceptCookieAnalysis(true);
-      setCookieConsentAnalysis(true);
-    }
-    if (hasGoogleAnalyticsCookie) {
-      setAcceptCookieAnalysisGoogle(true);
-      setCookieConsentAnalysisGoogle(true);
-      initGA();
-    }
-
-    // Muestra el modal únicamente cuando no existe una elección ni cookies opcionales válidas previas.
-    if (!hasAnalysisCookie && !hasGoogleAnalyticsCookie && !hasValidPersonalizationCookie) {
-      setShowCookieModal(true);
-    } else {
-      setCookiesModalClosed(true);
-    }
+    // Restaura la preferencia fuera del cuerpo síncrono del efecto y cancela la tarea al desmontar.
+    const restoreConsentTimeout = window.setTimeout(restoreSavedConsent, 0);
+    return () => window.clearTimeout(restoreConsentTimeout);
   }, [
     setAcceptCookieAnalysis,
     setAcceptCookieAnalysisGoogle,
