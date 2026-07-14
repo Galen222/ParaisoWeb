@@ -1,6 +1,6 @@
 // pages/politica-cookies.tsx
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { useCookieConsent } from "../contexts/CookieContext";
@@ -56,6 +56,7 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
 
   // Estado para indicar si se está ejecutando la acción de borrar cookies.
   const [isPushingDelCookies, setIsPushingDelCookies] = useState(false);
+  const isDeletingCookiesRef = useRef(false);
 
   // Hook para determinar el tipo de dispositivo
   const { isMobile } = useScreenSize();
@@ -73,9 +74,6 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
     setCookieConsentPersonalization,
   } = useCookieConsent();
 
-  // Estado que representa si alguna de las cookies está consentida.
-  const cookiesState = cookieConsentAnalysis || cookieConsentPersonalization || cookieConsentAnalysisGoogle;
-
   // Hooks para el seguimiento de la página visitada.
   useVisitedPageTracking("politica-cookies");
   useVisitedPageTrackingGA("politica-cookies");
@@ -85,30 +83,40 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
 
   // Maneja la eliminación de cookies y actualiza el estado correspondiente.
   const handleDeleteCookies = async () => {
-    trackButtonClick("Borrar Cookies");
-    setIsPushingDelCookies(true);
-    const success = await deleteCookies(
-      intl,
-      setAcceptCookiePersonalization,
-      cookieConsentAnalysis,
-      setAcceptCookieAnalysis,
-      setCookieConsentAnalysis,
-      cookieConsentAnalysisGoogle,
-      setAcceptCookieAnalysisGoogle,
-      setCookieConsentAnalysisGoogle,
-      cookieConsentPersonalization,
-      setCookieConsentPersonalization
-    );
-
-    if (success) {
-      // Notificación de éxito al borrar cookies.
-      showToast("cookie_Borrado_Ok", 4000, "success"); // Muestra el toast utilizando el hook
-    } else {
-      // Notificación de error si la eliminación de cookies falla.
-      showToast("cookie_Borrado_Error", 4000, "error"); // Muestra el toast utilizando el hook
+    // Evita que dos clics rápidos ejecuten el borrado en paralelo antes de que React deshabilite el botón.
+    if (isDeletingCookiesRef.current) {
+      return;
     }
 
-    setIsPushingDelCookies(false);
+    isDeletingCookiesRef.current = true;
+    setIsPushingDelCookies(true);
+    trackButtonClick("Borrar Cookies");
+
+    try {
+      const success = await deleteCookies(
+        intl,
+        setAcceptCookiePersonalization,
+        cookieConsentAnalysis,
+        setAcceptCookieAnalysis,
+        setCookieConsentAnalysis,
+        cookieConsentAnalysisGoogle,
+        setAcceptCookieAnalysisGoogle,
+        setCookieConsentAnalysisGoogle,
+        cookieConsentPersonalization,
+        setCookieConsentPersonalization
+      );
+
+      if (success) {
+        // Notificación de éxito al borrar cookies.
+        showToast("cookie_Borrado_Ok", 4000, "success"); // Muestra el toast utilizando el hook
+      } else {
+        // Notificación de error si la eliminación de cookies falla.
+        showToast("cookie_Borrado_Error", 4000, "error"); // Muestra el toast utilizando el hook
+      }
+    } finally {
+      isDeletingCookiesRef.current = false;
+      setIsPushingDelCookies(false);
+    }
   };
 
   /**
@@ -376,9 +384,9 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
       <div className="text-center">
         <button
           className={`btn btn-primary mx-auto ${styles.deleteButton} ${isPushingDelCookies ? "animate-push" : ""} `}
-          disabled={!cookiesState}
-          onClick={() => handleDeleteCookies()}
-          onAnimationEnd={() => setIsPushingDelCookies(false)}
+          disabled={isPushingDelCookies}
+          aria-busy={isPushingDelCookies}
+          onClick={handleDeleteCookies}
         >
           {intl.formatMessage({
             id: "politicaCookies_BotonBorrar",

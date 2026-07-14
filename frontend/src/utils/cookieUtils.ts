@@ -76,44 +76,66 @@ export const deleteCookies = async (
   setCookieConsentPersonalization: (value: boolean) => void
 ): Promise<boolean> => {
   try {
-    const cookies = document.cookie.split("; ");
-    // const domains = ["paraisodeljamon.com"]; // Producción
-    // const domains = ["localhost", ".asuscomm.com"]; // Desarrollo
-    const domains = ["localhost", ".asuscomm.com", "paraisodeljamon.com"]; // En Servidor
+    const cookies = document.cookie.split("; ").filter(Boolean);
+    // const domains = ["paraisodeljamon.com", ".paraisodeljamon.com"]; // Producción
+    // const domains = [".asuscomm.com"]; // Desarrollo
+    const domains = [".asuscomm.com", "paraisodeljamon.com", ".paraisodeljamon.com"]; // En Servidor
+    let hasAnalysisCookie = false;
+    let hasGoogleAnalyticsCookie = false;
+    let hasPersonalizationCookie = false;
+
+    /** Caduca una cookie para el host actual o para un dominio concreto. */
+    const expireCookie = (cookieName: string, domain?: string) => {
+      const domainAttribute = domain ? ` domain=${domain};` : "";
+      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;${domainAttribute}`;
+    };
+
     for (const cookie of cookies) {
       const [cookieName] = cookie.split("=");
 
-      // Borra la cookie de personalización si se ha dado consentimiento para ella.
-      if (cookieName === "_locale" && cookieConsentPersonalization) {
-        setAcceptCookiePersonalization(false);
-        setCookieConsentPersonalization(false);
-        document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      // Borra la cookie de personalización aunque el estado de React se haya quedado desincronizado.
+      if (cookieName === "_locale") {
+        hasPersonalizationCookie = true;
+        expireCookie(cookieName);
       }
 
-      // Borra cookies de análisis si se ha dado consentimiento para ellas.
-      if ((cookieName === "_device" || cookieName === "_visited") && cookieConsentAnalysis) {
-        setAcceptCookieAnalysis(false);
-        setCookieConsentAnalysis(false);
-        document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+      // Borra las cookies de análisis que existan realmente, con independencia del estado en memoria.
+      if (cookieName === "_device" || cookieName === "_visited") {
+        hasAnalysisCookie = true;
+        expireCookie(cookieName);
       }
 
-      // Borra cookies de Google Analytics si se ha dado consentimiento para ellas.
-      if (cookieName.match(/^_ga($|_)/) && cookieConsentAnalysisGoogle) {
-        setAcceptCookieAnalysisGoogle(false);
-        setCookieConsentAnalysisGoogle(false);
-        await disableGA();
+      // Las cookies de Google pueden ser host-only o pertenecer al dominio raíz. Se intentan ambas variantes.
+      if (cookieName.match(/^_ga($|_)/)) {
+        hasGoogleAnalyticsCookie = true;
+        expireCookie(cookieName);
         domains.forEach((domain) => {
-          document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain};`;
+          expireCookie(cookieName, domain);
           /* console.log(`Borrada cookie Google: ${cookieName} del dominio: ${domain}`); */
         });
       }
+    }
+
+    // Sincroniza el contexto aunque las cookies ya hubieran desaparecido por caducidad o por otra pestaña.
+    if (cookieConsentPersonalization || hasPersonalizationCookie) {
+      setAcceptCookiePersonalization(false);
+      setCookieConsentPersonalization(false);
+    }
+    if (cookieConsentAnalysis || hasAnalysisCookie) {
+      setAcceptCookieAnalysis(false);
+      setCookieConsentAnalysis(false);
+    }
+    if (cookieConsentAnalysisGoogle || hasGoogleAnalyticsCookie) {
+      setAcceptCookieAnalysisGoogle(false);
+      setCookieConsentAnalysisGoogle(false);
+      await disableGA();
     }
 
     // Borra también la cookie necesaria que conserva la elección del usuario.
     clearCookieConsentPreference();
 
     return true; // Indica que las cookies se borraron correctamente
-  } catch (error) {
+  } catch {
     return false; // Indica que hubo un error al borrar las cookies
   }
 };
