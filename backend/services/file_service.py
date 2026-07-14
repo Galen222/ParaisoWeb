@@ -73,6 +73,9 @@ class FileService:
     # Tamaño máximo de archivo permitido (10 MB)
     MAX_FILE_SIZE: int = 10 * 1024 * 1024
 
+    # Tamaño de cada bloque leído durante el escaneo para no cargar el adjunto completo en memoria.
+    SCAN_CHUNK_SIZE: int = 64 * 1024
+
     # Firmas de contenido malicioso conocidas
     MALICIOUS_SIGNATURES: Set[bytes] = {
         b'<%eval', b'<%execute', b'<script>',
@@ -157,30 +160,63 @@ class FileService:
         """
         logger.info(f"{ANSI_GREEN}Escaneando contenido de archivo | {file_log_context(file)}{ANSI_RESET}")
         try:
-            content = await file.read()
-            await file.seek(0)  # Regresar el puntero del archivo al inicio
-
-            # Verificar tamaño del archivo
-            if len(content) > self.MAX_FILE_SIZE:
-                logger.error(f"{ANSI_RED}Archivo excede tamaño máximo ({len(content)} bytes) | {file_log_context(file)}{ANSI_RESET}")
+            # Si Starlette conoce el tamaño, rechaza el adjunto antes de leerlo por completo.
+            if file.size is not None and file.size > self.MAX_FILE_SIZE:
+                logger.error(
+                    f"{ANSI_RED}Archivo excede tamaño máximo ({file.size} bytes) | "
+                    f"{file_log_context(file)}{ANSI_RESET}"
+                )
                 raise HTTPException(
                     status_code=400,
                     detail=f"El archivo excede el tamaño máximo permitido de {self.MAX_FILE_SIZE / 1024 / 1024}MB"
                 )
 
-            # Buscar firmas maliciosas en el contenido
-            for signature in self.MALICIOUS_SIGNATURES:
-                if signature in content.lower():
-                    logger.error(f"{ANSI_RED}Firma maliciosa detectada: {signature} | {file_log_context(file)}{ANSI_RESET}")
+            total_size = 0
+            file_hash = hashlib.sha256()
+            max_signature_length = max((len(signature) for signature in self.MALICIOUS_SIGNATURES), default=1)
+            signature_overlap = b""
+
+            while True:
+                chunk = await file.read(self.SCAN_CHUNK_SIZE)
+                if not chunk:
+                    break
+
+                total_size += len(chunk)
+                if total_size > self.MAX_FILE_SIZE:
+                    logger.error(
+                        f"{ANSI_RED}Archivo excede tamaño máximo durante la lectura ({total_size} bytes) | "
+                        f"{file_log_context(file)}{ANSI_RESET}"
+                    )
                     raise HTTPException(
                         status_code=400,
-                        detail="Se detectó contenido potencialmente malicioso en el archivo"
+                        detail=f"El archivo excede el tamaño máximo permitido de {self.MAX_FILE_SIZE / 1024 / 1024}MB"
                     )
 
-            # Calcular y devolver el hash SHA-256 del contenido
-            file_hash = hashlib.sha256(content).hexdigest()
-            logger.info(f"{ANSI_GREEN}Archivo limpio. Hash SHA-256: {file_hash}{ANSI_RESET}")
-            return file_hash
+                file_hash.update(chunk)
+
+                # Conserva un pequeño solapamiento para detectar firmas partidas entre dos bloques.
+                content_to_scan = signature_overlap + chunk.lower()
+                for signature in self.MALICIOUS_SIGNATURES:
+                    if signature in content_to_scan:
+                        logger.error(
+                            f"{ANSI_RED}Firma maliciosa detectada: {signature} | "
+                            f"{file_log_context(file)}{ANSI_RESET}"
+                        )
+                        raise HTTPException(
+                            status_code=400,
+                            detail="Se detectó contenido potencialmente malicioso en el archivo"
+                        )
+
+                overlap_size = max_signature_length - 1
+                signature_overlap = content_to_scan[-overlap_size:] if overlap_size > 0 else b""
+
+            # El servicio de correo necesita volver a leer el adjunto desde el principio.
+            await file.seek(0)
+
+            # Calcular y devolver el hash SHA-256 del contenido sin haberlo cargado completo en memoria.
+            file_hash_value = file_hash.hexdigest()
+            logger.info(f"{ANSI_GREEN}Archivo limpio. Hash SHA-256: {file_hash_value}{ANSI_RESET}")
+            return file_hash_value
         except HTTPException:
             raise
         except Exception:

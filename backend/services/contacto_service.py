@@ -16,12 +16,17 @@ Dependencias:
 - Servicios auxiliares: `FileService` y `EmailService`.
 """
 
+import logging
+
 from fastapi import UploadFile, HTTPException
 from typing import Optional
-from pydantic import EmailStr
+from pydantic import ValidationError
 from .file_service import FileService
 from .email_service import EmailService
 from ..models.schemas import ContactForm
+
+logger = logging.getLogger(__name__)
+
 
 class ContactoService:
     """
@@ -42,7 +47,7 @@ class ContactoService:
         self,
         name: str,
         reason: str,
-        email: EmailStr,
+        email: str,
         message: str,
         file: Optional[UploadFile] = None
     ) -> None:
@@ -55,7 +60,7 @@ class ContactoService:
         Args:
             name (str): Nombre del remitente.
             reason (str): Motivo del contacto.
-            email (EmailStr): Dirección de correo electrónico del remitente.
+            email (str): Dirección de correo electrónico del remitente.
             message (str): Mensaje proporcionado en el formulario.
             file (Optional[UploadFile]): Archivo adjunto opcional.
 
@@ -68,8 +73,16 @@ class ContactoService:
         # Validar datos del formulario
         try:
             contact_form = ContactForm(name=name, reason=reason, email=email, message=message)
-        except ValueError as e:
-            raise HTTPException(status_code=400, detail=str(e))
+        except ValidationError as error:
+            invalid_fields = sorted({str(item["loc"][0]) for item in error.errors() if item.get("loc")})
+            logger.warning(
+                "Formulario de contacto rechazado por validación | campos=%s",
+                ",".join(invalid_fields) or "desconocidos",
+            )
+            raise HTTPException(
+                status_code=400,
+                detail="Datos del formulario no válidos",
+            ) from None
 
         name = contact_form.name
         reason = contact_form.reason

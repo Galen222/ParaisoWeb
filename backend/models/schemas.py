@@ -63,6 +63,14 @@ class ContactForm(BaseModel):
             )
         return v
 
+    @field_validator('message')
+    @classmethod
+    def validate_message(cls, v: str) -> str:
+        """Rechaza mensajes formados únicamente por espacios sin modificar su contenido."""
+        if not v.strip():
+            raise ValueError("El mensaje no puede estar vacío")
+        return v
+
     @field_validator('reason')
     def validate_reason(cls, v: str) -> str:
         """

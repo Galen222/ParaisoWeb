@@ -16,6 +16,8 @@ Dependencias:
 - Servicios auxiliares: `FileService` para procesar archivos adjuntos.
 """
 
+import os
+
 import aiosmtplib
 from email.message import EmailMessage
 from fastapi import UploadFile
@@ -51,6 +53,23 @@ def mask_email_for_log(email: str) -> str:
         masked_domain = f"{masked_domain}.{domain_suffix}"
 
     return f"{mask_part(local_part)}@{masked_domain}"
+
+
+def sanitize_attachment_filename(filename: Optional[str]) -> str:
+    """Conserva solo un nombre de archivo seguro para la cabecera del adjunto."""
+    basename = (filename or "").replace("\\", "/").rsplit("/", 1)[-1]
+    sanitized = "".join(character for character in basename if character >= " " and character != "\x7f").strip(" .")
+    if not sanitized:
+        return "adjunto"
+
+    max_length = 255
+    if len(sanitized) <= max_length:
+        return sanitized
+
+    stem, extension = os.path.splitext(sanitized)
+    safe_extension = extension[:20]
+    available_stem_length = max_length - len(safe_extension)
+    return f"{stem[:available_stem_length]}{safe_extension}" or "adjunto"
 
 class ColoredFormatter(logging.Formatter):
     def format(self, record):
@@ -160,7 +179,7 @@ class EmailService:
                 file_content,
                 maintype=maintype,
                 subtype=subtype,
-                filename=file.filename
+                filename=sanitize_attachment_filename(file.filename)
             )
 
         # Enviar correo

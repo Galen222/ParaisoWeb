@@ -17,7 +17,6 @@ Dependencias:
 import logging
 
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
-from pydantic import EmailStr
 from ..dependencies import verify_token
 from ..services.contacto_service import ContactoService
 
@@ -30,7 +29,7 @@ async def contacto(
     token_verification: None = Depends(verify_token),  # Verifica el token temporal
     name: str = Form(...),
     reason: str = Form(...),
-    email: EmailStr = Form(...),
+    email: str = Form(...),
     message: str = Form(...),
     file: UploadFile = File(None)
 ):
@@ -44,7 +43,7 @@ async def contacto(
         token_verification (None): Verificación del token proporcionado.
         name (str): Nombre del remitente.
         reason (str): Razón del contacto (por ejemplo, "Información", "Error").
-        email (EmailStr): Correo electrónico válido del remitente.
+        email (str): Correo electrónico que será validado por el esquema del formulario.
         message (str): Mensaje enviado por el remitente.
         file (UploadFile, optional): Archivo adjunto enviado con el formulario.
 
