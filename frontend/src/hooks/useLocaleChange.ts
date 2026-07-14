@@ -7,11 +7,16 @@ import { getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
 
 /**
+ * Tipo de la función que cambia el idioma de la aplicación.
+ */
+export type LocaleChangeHandler = (newLocale: string) => Promise<void>;
+
+/**
  * Hook que maneja el cambio de idioma y actualiza la cookie de idioma si se permite la personalización.
  *
- * @returns {Function} Función para cambiar el idioma.
+ * @returns {LocaleChangeHandler} Función para cambiar el idioma.
  */
-export function useLocaleChange(): Function {
+export function useLocaleChange(): LocaleChangeHandler {
   const router = useRouter();
   const { cookieConsentPersonalization } = useCookieConsent();
 
@@ -30,8 +35,9 @@ export function useLocaleChange(): Function {
 
         try {
           const token = await getTimedToken();
-          // Obtenemos el artículo actual utilizando el slug actual
-          const currentBlogPost = await getBlogPostBySlug(slug as string, token);
+          // Obtenemos el artículo actual utilizando el slug y el idioma actuales.
+          // El idioma evita resolver una traducción distinta cuando dos versiones comparten slug.
+          const currentBlogPost = await getBlogPostBySlug(slug as string, token, router.locale || "es");
 
           // Obtenemos el artículo en el nuevo idioma utilizando el ID del artículo actual
           const newBlogPost = await getBlogPostById(currentBlogPost.id_noticia, newLocale, token);

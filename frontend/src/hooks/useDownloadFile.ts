@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { saveAs } from "file-saver";
-import { useIntl } from "react-intl"; // Hook para internacionalización
 import { useToastMessage } from "./useToast";
 
 /**
@@ -20,7 +19,6 @@ export interface DownloadFileHook {
  * @returns {DownloadFileHook} Objeto con la función `downloadFile` para iniciar la descarga y el estado `isDownloading`.
  */
 export function useDownloadFile(): DownloadFileHook {
-  const intl = useIntl(); // Inicializa el hook de internacionalización
   const [isDownloading, setIsDownloading] = useState(false); // Estado para controlar el proceso de descarga
   const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones
 
@@ -36,11 +34,9 @@ export function useDownloadFile(): DownloadFileHook {
     setIsDownloading(true);
     try {
       // Realiza la solicitud de descarga
+      // En una petición GET no se envía Content-Type: el tipo pertenece a la respuesta del servidor.
       const response = await fetch(filePath, {
         method: "GET",
-        headers: {
-          "Content-Type": "application/pdf",
-        },
       });
 
       if (!response.ok) {
@@ -52,7 +48,7 @@ export function useDownloadFile(): DownloadFileHook {
 
       // Mostrar notificación de éxito
       showToast(successMessageId, 3000, "success"); // Muestra el toast utilizando el hook
-    } catch (error) {
+    } catch {
       // Mostrar notificación de error
       showToast(errorMessageId, 3000, "error"); // Muestra el toast utilizando el hook
     } finally {

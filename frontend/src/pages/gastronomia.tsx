@@ -53,10 +53,14 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
    * Maneja el clic en el botón de descarga.
    * Realiza el seguimiento del click y activa la animación del botón.
    */
-  const handleDownloadMenu = () => {
+  const handleDownloadMenu = async () => {
+    if (isDownloading) {
+      return;
+    }
+
     trackButtonClick("Descargar Carta");
     setIsPushingDownloadMenuFile(true); // Activar la animación de push
-    downloadFile(
+    await downloadFile(
       "/files/cartaparaiso.pdf", // Ruta del archivo a descargar
       "cartaparaiso.pdf", // Nombre del archivo descargado
       "gastronomia_Descargar_Carta_Ok", // ID del mensaje de éxito
@@ -127,6 +131,8 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
           <button
             className={`btn btn-primary mx-auto ${styles.downloadMenuButton} ${isPushingDownloadMenuFile ? "animate-push" : ""}`}
             onClick={handleDownloadMenu}
+            disabled={isDownloading}
+            aria-busy={isDownloading}
             onAnimationEnd={() => setIsPushingDownloadMenuFile(false)} // Resetear el estado de animación del botón
           >
             {intl.formatMessage({ id: "gastronomia_Boton" })}
