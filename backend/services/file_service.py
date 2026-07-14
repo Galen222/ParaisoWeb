@@ -34,11 +34,12 @@ logger = logging.getLogger("file_service")
 
 class ColoredFormatter(logging.Formatter):
     def format(self, record):
+        message = super().format(record)
         if record.levelno == logging.ERROR:
-            return f"{ANSI_RED}ERROR-LOG{ANSI_RESET}: {record.getMessage()}"
+            return f"{ANSI_RED}ERROR-LOG{ANSI_RESET}: {message}"
         elif record.levelno == logging.INFO:
-            return f"{ANSI_GREEN}INFO-LOG{ANSI_RESET}: {record.getMessage()}"
-        return record.getMessage()
+            return f"{ANSI_GREEN}INFO-LOG{ANSI_RESET}: {message}"
+        return message
 
 logger.propagate = False
 logger.setLevel(logging.INFO)
@@ -47,6 +48,13 @@ if not logger.hasHandlers():
     handler = logging.StreamHandler()
     handler.setFormatter(ColoredFormatter())
     logger.addHandler(handler)
+
+
+def file_log_context(file: UploadFile) -> str:
+    """Describe el adjunto para logs sin registrar su nombre original."""
+    extension = os.path.splitext(file.filename or "")[1].lower()
+    return f"extensión={extension or 'sin extensión'}"
+
 
 class FileService:
     """
@@ -87,7 +95,7 @@ class FileService:
                 - 400: Si el tipo MIME no está permitido.
                 - 400: Si la extensión del archivo no corresponde al tipo MIME.
         """
-        logger.info(f"{ANSI_GREEN}Validando tipo MIME y extensión de: {file.filename}{ANSI_RESET}")
+        logger.info(f"{ANSI_GREEN}Validando tipo MIME y extensión | {file_log_context(file)}{ANSI_RESET}")
         try:
             # Leer los primeros 8 KB para determinar el tipo
             first_chunk = await file.read(8192)
@@ -96,7 +104,7 @@ class FileService:
             # Detectar tipo MIME usando filetype
             kind = filetype.guess(first_chunk)
             if kind is None:
-                logger.error(f"{ANSI_RED}No se pudo determinar el tipo de archivo: {file.filename}{ANSI_RESET}")
+                logger.error(f"{ANSI_RED}No se pudo determinar el tipo de archivo | {file_log_context(file)}{ANSI_RESET}")
                 raise HTTPException(
                     status_code=400,
                     detail="No se pudo determinar el tipo de archivo"
@@ -105,7 +113,7 @@ class FileService:
             mime_type = kind.mime
 
             if mime_type not in self.ALLOWED_MIME_TYPES:
-                logger.error(f"{ANSI_RED}Tipo de archivo no permitido: {mime_type} ({file.filename}){ANSI_RESET}")
+                logger.error(f"{ANSI_RED}Tipo de archivo no permitido: {mime_type} | {file_log_context(file)}{ANSI_RESET}")
                 raise HTTPException(
                     status_code=400,
                     detail=f"Tipo de archivo no permitido. Se permiten: {', '.join(self.ALLOWED_MIME_TYPES.keys())}"
@@ -114,7 +122,7 @@ class FileService:
             # Verificar la extensión del archivo
             file_ext = os.path.splitext(file.filename or "")[1].lower()
             if file_ext not in self.ALLOWED_MIME_TYPES[mime_type]:
-                logger.error(f"{ANSI_RED}Extensión no válida '{file_ext}' para tipo {mime_type} en {file.filename}{ANSI_RESET}")
+                logger.error(f"{ANSI_RED}Extensión no válida '{file_ext}' para tipo {mime_type}{ANSI_RESET}")
                 raise HTTPException(
                     status_code=400,
                     detail=f"Extensión de archivo no válida para el tipo {mime_type}"
@@ -123,12 +131,14 @@ class FileService:
             return mime_type
         except HTTPException:
             raise
-        except Exception as e:
-            logger.error(f"{ANSI_RED}Error al validar el archivo {file.filename}: {str(e)}{ANSI_RESET}")
-            raise HTTPException(
-                status_code=400,
-                detail=f"Error al validar el archivo: {str(e)}"
+        except Exception:
+            logger.exception(
+                f"Error inesperado al validar el archivo | {file_log_context(file)}"
             )
+            raise HTTPException(
+                status_code=500,
+                detail="Error interno al validar el archivo"
+            ) from None
 
     async def scan_file_content(self, file: UploadFile) -> str:
         """
@@ -145,14 +155,14 @@ class FileService:
                 - 400: Si el archivo excede el tamaño máximo permitido.
                 - 400: Si se detecta contenido malicioso.
         """
-        logger.info(f"{ANSI_GREEN}Escaneando contenido de archivo: {file.filename}{ANSI_RESET}")
+        logger.info(f"{ANSI_GREEN}Escaneando contenido de archivo | {file_log_context(file)}{ANSI_RESET}")
         try:
             content = await file.read()
             await file.seek(0)  # Regresar el puntero del archivo al inicio
 
             # Verificar tamaño del archivo
             if len(content) > self.MAX_FILE_SIZE:
-                logger.error(f"{ANSI_RED}Archivo {file.filename} excede tamaño máximo ({len(content)} bytes){ANSI_RESET}")
+                logger.error(f"{ANSI_RED}Archivo excede tamaño máximo ({len(content)} bytes) | {file_log_context(file)}{ANSI_RESET}")
                 raise HTTPException(
                     status_code=400,
                     detail=f"El archivo excede el tamaño máximo permitido de {self.MAX_FILE_SIZE / 1024 / 1024}MB"
@@ -161,7 +171,7 @@ class FileService:
             # Buscar firmas maliciosas en el contenido
             for signature in self.MALICIOUS_SIGNATURES:
                 if signature in content.lower():
-                    logger.error(f"{ANSI_RED}Firma maliciosa detectada en {file.filename}: {signature}{ANSI_RESET}")
+                    logger.error(f"{ANSI_RED}Firma maliciosa detectada: {signature} | {file_log_context(file)}{ANSI_RESET}")
                     raise HTTPException(
                         status_code=400,
                         detail="Se detectó contenido potencialmente malicioso en el archivo"
@@ -173,12 +183,14 @@ class FileService:
             return file_hash
         except HTTPException:
             raise
-        except Exception as e:
-            logger.error(f"{ANSI_RED}Error al escanear el archivo {file.filename}: {str(e)}{ANSI_RESET}")
-            raise HTTPException(
-                status_code=400,
-                detail=f"Error al escanear el archivo: {str(e)}"
+        except Exception:
+            logger.exception(
+                f"Error inesperado al escanear el archivo | {file_log_context(file)}"
             )
+            raise HTTPException(
+                status_code=500,
+                detail="Error interno al escanear el archivo"
+            ) from None
 
     async def validate_and_process_file(self, file: UploadFile) -> Optional[Dict[str, Union[str, int, None]]]:
         """
@@ -207,7 +219,7 @@ class FileService:
         # Escanear contenido y obtener hash
         file_hash = await self.scan_file_content(file)
 
-        logger.info(f"{ANSI_GREEN}Archivo procesado exitosamente: {file.filename}{ANSI_RESET}")
+        logger.info(f"{ANSI_GREEN}Archivo procesado exitosamente | {file_log_context(file)}{ANSI_RESET}")
 
         return {
             'filename': file.filename,

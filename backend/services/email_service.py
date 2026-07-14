@@ -33,13 +33,33 @@ ANSI_RESET = "\033[0m"
 
 logger = logging.getLogger("email_service")
 
+
+def mask_email_for_log(email: str) -> str:
+    """Oculta el correo en logs sin impedir la depuración de envíos."""
+    local_part, separator, domain = email.rpartition("@")
+    if not separator or not local_part or not domain:
+        return "***"
+
+    def mask_part(value: str) -> str:
+        if len(value) <= 2:
+            return "*" * len(value)
+        return f"{value[0]}{'*' * (len(value) - 2)}{value[-1]}"
+
+    domain_name, dot, domain_suffix = domain.partition(".")
+    masked_domain = mask_part(domain_name)
+    if dot:
+        masked_domain = f"{masked_domain}.{domain_suffix}"
+
+    return f"{mask_part(local_part)}@{masked_domain}"
+
 class ColoredFormatter(logging.Formatter):
     def format(self, record):
+        message = super().format(record)
         if record.levelno == logging.ERROR:
-            return f"{ANSI_RED}ERROR-LOG{ANSI_RESET}: {record.getMessage()}"
+            return f"{ANSI_RED}ERROR-LOG{ANSI_RESET}: {message}"
         elif record.levelno == logging.INFO:
-            return f"{ANSI_GREEN}INFO-LOG{ANSI_RESET}: {record.getMessage()}"
-        return record.getMessage()
+            return f"{ANSI_GREEN}INFO-LOG{ANSI_RESET}: {message}"
+        return message
 
 logger.propagate = False
 logger.setLevel(logging.INFO)
@@ -154,10 +174,13 @@ class EmailService:
                 password=self.smtp_password,
             )
             logger.info(
-                f"{ANSI_GREEN}Correo enviado correctamente de {name} <{email}> a {msg['To']}{ANSI_RESET}"
-        )
-        except Exception as e:
-            logger.error(
-                f"{ANSI_RED}Error al enviar el correo de {name} <{email}> a {msg['To']}: {ANSI_RESET}{str(e)}"
+                f"{ANSI_GREEN}Correo enviado correctamente | "
+                f"motivo={reason} | remitente={mask_email_for_log(email)} | "
+                f"destinatario={msg['To']}{ANSI_RESET}"
+            )
+        except Exception:
+            logger.exception(
+                f"Error al enviar el correo | motivo={reason} | "
+                f"remitente={mask_email_for_log(email)} | destinatario={msg['To']}"
             )
             raise

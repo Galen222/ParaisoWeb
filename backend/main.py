@@ -24,7 +24,9 @@ from contextlib import asynccontextmanager
 from .routers import contacto, charcuteria, blog, token
 from .database import engine
 from .models.models import Base
-import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 @asynccontextmanager
@@ -42,21 +44,22 @@ async def lifespan(app: FastAPI):
     Yields:
         None: Indica que la aplicación está lista para recibir solicitudes.
     """
+    app.state.database_available = False
     try:
         # Intentar establecer una conexión con la base de datos y crear las tablas
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-        print("Aplicación iniciada y base de datos configurada.")
-    except Exception as e:
-        # Captura cualquier error al intentar conectar con la base de datos
-        print("ERROR: No se ha podido conectar a la base de datos.")
-        print(f"Detalle del error: {str(e)}")
-        # Salir silenciosamente si ocurre un error crítico
-        os._exit(1)  # Detiene el proceso de manera forzada y limpia
+        app.state.database_available = True
+        logger.info("Aplicación iniciada y base de datos configurada.")
+    except Exception:
+        # La API continúa disponible para endpoints que no dependen de la base de datos.
+        logger.exception(
+            "No se ha podido conectar a la base de datos; la aplicación continúa en modo degradado."
+        )
     yield
     # Liberar los recursos relacionados con la base de datos
     await engine.dispose()
-    print("Conexión a la base de datos cerrada.")
+    logger.info("Conexiones de base de datos cerradas.")
 
 
 def create_app() -> FastAPI:
@@ -72,9 +75,18 @@ def create_app() -> FastAPI:
             "API para gestionar formularios de contacto, productos de charcutería, "
             "publicaciones de blog y autenticación mediante tokens temporales."
         ),
-        version="1.1.2",
+        version="2.0.0",
         lifespan=lifespan,
     )
+
+    @app.get("/health", tags=["Health"])
+    async def health() -> dict[str, str]:
+        """Informa si la API está operativa y si la base de datos arrancó correctamente."""
+        database_available = getattr(app.state, "database_available", False)
+        return {
+            "status": "ok" if database_available else "degraded",
+            "database": "available" if database_available else "unavailable",
+        }
 
     # Middleware de logging
     app.add_middleware(LoggingMiddleware)
