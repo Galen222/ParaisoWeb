@@ -1,6 +1,6 @@
 // components/Cookie.tsx
 
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { useCookieConsent } from "../contexts/CookieContext";
@@ -57,22 +57,22 @@ const Cookie: React.FC<CookieProps> = ({
   /**
    * Maneja el cambio de estado para la cookie de personalización.
    */
-  const handleAcceptCookiePersonalizationChange = () => {
-    setAcceptCookiePersonalization(!AcceptCookiePersonalization);
+  const handleAcceptCookiePersonalizationChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setAcceptCookiePersonalization(event.target.checked);
   };
 
   /**
    * Maneja el cambio de estado para la cookie de análisis.
    */
-  const handleAcceptCookieAnalysisChange = () => {
-    setAcceptCookieAnalysis(!AcceptCookieAnalysis);
+  const handleAcceptCookieAnalysisChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setAcceptCookieAnalysis(event.target.checked);
   };
 
   /**
    * Maneja el cambio de estado para la cookie de análisis de Google.
    */
-  const handleAcceptCookieAnalysisGoogleChange = () => {
-    setAcceptCookieAnalysisGoogle(!AcceptCookieAnalysisGoogle);
+  const handleAcceptCookieAnalysisGoogleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setAcceptCookieAnalysisGoogle(event.target.checked);
   };
 
   /**
@@ -133,12 +133,13 @@ const Cookie: React.FC<CookieProps> = ({
                 onChange={handleAcceptCookiePersonalizationChange}
                 className={styles.hiddenCheckbox}
               />
-              <span className={styles.slider} onClick={handleAcceptCookiePersonalizationChange}></span>
-              <span>
+              {/* La etiqueta activa el input nativo y evita mantener un segundo manejador de clic desincronizado. */}
+              <label htmlFor="cookiePersonalization" className={styles.slider}></label>
+              <label htmlFor="cookiePersonalization">
                 {intl.formatMessage({
                   id: "cookie_AceptarPersonalizacion",
                 })}
-              </span>
+              </label>
             </div>
             <div className={styles.switch}>
               <input
@@ -150,8 +151,8 @@ const Cookie: React.FC<CookieProps> = ({
                 onChange={handleAcceptCookieAnalysisChange}
                 className={styles.hiddenCheckbox}
               />
-              <span className={styles.slider} onClick={handleAcceptCookieAnalysisChange}></span>
-              <span>{intl.formatMessage({ id: "cookie_AceptarAnalisis" })}</span>
+              <label htmlFor="cookieAnalysis" className={styles.slider}></label>
+              <label htmlFor="cookieAnalysis">{intl.formatMessage({ id: "cookie_AceptarAnalisis" })}</label>
             </div>
             <div className={styles.switch}>
               <input
@@ -163,12 +164,12 @@ const Cookie: React.FC<CookieProps> = ({
                 onChange={handleAcceptCookieAnalysisGoogleChange}
                 className={styles.hiddenCheckbox}
               />
-              <span className={styles.slider} onClick={handleAcceptCookieAnalysisGoogleChange}></span>
-              <span>
+              <label htmlFor="cookieAnalysisGoogle" className={styles.slider}></label>
+              <label htmlFor="cookieAnalysisGoogle">
                 {intl.formatMessage({
                   id: "cookie_AceptarAnalisisGoogle",
                 })}
-              </span>
+              </label>
             </div>
           </div>
         )}

@@ -20,11 +20,15 @@ Dependencias:
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from .middleware.logging import LoggingMiddleware
+from .middleware.rate_limit import RateLimitMiddleware, RateLimitRule
 from contextlib import asynccontextmanager
 from .routers import contacto, charcuteria, blog, token
 from .database import engine
 from .models.models import Base
+from .core.config import settings
+import asyncio
 import logging
+from sqlalchemy import text
 
 logger = logging.getLogger(__name__)
 
@@ -81,12 +85,56 @@ def create_app() -> FastAPI:
 
     @app.get("/health", tags=["Health"])
     async def health() -> dict[str, str]:
-        """Informa si la API está operativa y si la base de datos arrancó correctamente."""
-        database_available = getattr(app.state, "database_available", False)
+        """Informa si la API está operativa y comprueba el estado actual de la base de datos."""
+        previous_database_available = getattr(app.state, "database_available", False)
+
+        async def check_database_connection() -> None:
+            async with engine.connect() as connection:
+                await connection.execute(text("SELECT 1"))
+
+        try:
+            # El estado de arranque puede quedar obsoleto si MySQL cae o se recupera después.
+            # El límite evita que un pool sin conexión bloquee durante demasiado tiempo el health check.
+            await asyncio.wait_for(check_database_connection(), timeout=2.0)
+            database_available = True
+        except Exception:
+            database_available = False
+
+        app.state.database_available = database_available
+
+        # Registra únicamente cambios de estado para no llenar los logs cuando el health check es frecuente.
+        if database_available and not previous_database_available:
+            logger.info("La conexión con la base de datos se ha recuperado.")
+        elif previous_database_available and not database_available:
+            logger.warning("Se ha perdido la conexión con la base de datos; la API continúa en modo degradado.")
+
         return {
             "status": "ok" if database_available else "degraded",
             "database": "available" if database_available else "unavailable",
         }
+
+    # Límites independientes para los dos endpoints públicos más sensibles.
+    # Se añaden antes del middleware de logging para que los bloqueos 429 también queden registrados.
+    app.add_middleware(
+        RateLimitMiddleware,
+        rules=[
+            RateLimitRule(
+                name="contacto",
+                method="POST",
+                path="/api/contacto",
+                max_requests=settings.CONTACT_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.CONTACT_RATE_LIMIT_WINDOW_SECONDS,
+            ),
+            RateLimitRule(
+                name="token",
+                method="GET",
+                path="/api/get-token",
+                max_requests=settings.TOKEN_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.TOKEN_RATE_LIMIT_WINDOW_SECONDS,
+            ),
+        ],
+        secret_key=settings.secret_key,
+    )
 
     # Middleware de logging
     app.add_middleware(LoggingMiddleware)

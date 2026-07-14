@@ -36,6 +36,10 @@ class Settings(BaseSettings):
         DATABASE_URL (str): URL de conexión a la base de datos.
         secret_key (str): Clave secreta para operaciones de autenticación y tokens.
         token_interval_seconds (int): Intervalo de tiempo para la validez de los tokens.
+        CONTACT_RATE_LIMIT_REQUESTS (int): Envíos permitidos al formulario por ventana.
+        CONTACT_RATE_LIMIT_WINDOW_SECONDS (int): Duración de la ventana del formulario.
+        TOKEN_RATE_LIMIT_REQUESTS (int): Solicitudes permitidas de token por ventana.
+        TOKEN_RATE_LIMIT_WINDOW_SECONDS (int): Duración de la ventana de tokens.
     """
     SMTP_SERVER: str
     SMTP_PORT: int
@@ -44,6 +48,10 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     secret_key: str
     token_interval_seconds: int = Field(gt=0)
+    CONTACT_RATE_LIMIT_REQUESTS: int = Field(default=5, gt=0)
+    CONTACT_RATE_LIMIT_WINDOW_SECONDS: int = Field(default=600, gt=0)
+    TOKEN_RATE_LIMIT_REQUESTS: int = Field(default=120, gt=0)
+    TOKEN_RATE_LIMIT_WINDOW_SECONDS: int = Field(default=60, gt=0)
 
     model_config = {
         "from_attributes": True,  # Permite inicializar la configuración desde atributos

@@ -6,13 +6,17 @@
 
 import axios from "axios";
 
+// Comparte la misma petición entre consumidores simultáneos para evitar ráfagas innecesarias
+// contra /get-token cuando varias secciones de la página cargan a la vez.
+let pendingTokenRequest: Promise<string> | null = null;
+
 /**
  * Obtiene un token temporal desde el backend.
  *
  * @returns {Promise<string>} - Una promesa que resuelve al token temporal.
  * @throws {Error} - Si falla la obtención del token.
  */
-export const getTimedToken = async (): Promise<string> => {
+const requestTimedToken = async (): Promise<string> => {
   const API_URL = process.env.NEXT_PUBLIC_API_URL;
   if (!API_URL) {
     throw new Error("La variable de entorno NEXT_PUBLIC_API_URL no está definida.");
@@ -35,4 +39,14 @@ export const getTimedToken = async (): Promise<string> => {
   } catch {
     throw new Error("Error al obtener el token temporal.");
   }
+};
+
+export const getTimedToken = (): Promise<string> => {
+  if (!pendingTokenRequest) {
+    pendingTokenRequest = requestTimedToken().finally(() => {
+      pendingTokenRequest = null;
+    });
+  }
+
+  return pendingTokenRequest;
 };
