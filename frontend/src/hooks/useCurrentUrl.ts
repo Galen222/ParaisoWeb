@@ -1,5 +1,5 @@
 // hooks/useCurrentUrl.ts
-import { useState, useEffect } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import { useRouter } from "next/router";
 
 /**
@@ -10,18 +10,26 @@ import { useRouter } from "next/router";
  * @returns {string} La URL actual del navegador.
  */
 const useCurrentUrl = (): string => {
-  const [currentUrl, setCurrentUrl] = useState<string>("");
-
   const router = useRouter();
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setCurrentUrl(window.location.href);
-    }
-    // Se actualiza cada vez que cambia la ruta (por navegación SPA o cambio de idioma)
-  }, [router.asPath]);
+  const subscribe = useCallback(
+    (onUrlChange: () => void): (() => void) => {
+      // Next.js emite eventos distintos para cambios de ruta y cambios únicamente en el hash.
+      router.events.on("routeChangeComplete", onUrlChange);
+      router.events.on("hashChangeComplete", onUrlChange);
 
-  return currentUrl;
+      return () => {
+        router.events.off("routeChangeComplete", onUrlChange);
+        router.events.off("hashChangeComplete", onUrlChange);
+      };
+    },
+    [router.events]
+  );
+
+  const getCurrentUrl = useCallback((): string => window.location.href, []);
+  const getServerUrl = useCallback((): string => "", []);
+
+  return useSyncExternalStore(subscribe, getCurrentUrl, getServerUrl);
 };
 
 export default useCurrentUrl;

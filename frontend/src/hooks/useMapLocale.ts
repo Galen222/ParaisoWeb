@@ -1,7 +1,9 @@
 // hooks/useMapLocale.ts
 
-import { useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
+
+const allowedLocales = ["es", "en", "de"];
 
 /**
  * Hook personalizado para gestionar el idioma de la API de Google Maps.
@@ -11,14 +13,12 @@ import { useRouter } from "next/router";
  */
 export function useMapLocale(): string {
   const router = useRouter(); // Obtenemos el idioma inicial desde router.locale
-  const mapLocaleRef = useRef<string | null>(null); // Valor persistente e inmutable
 
-  // Asignamos el valor inicial solo si mapLocaleRef.current no tiene valor
-  if (!mapLocaleRef.current) {
-    const allowedLocales = ["es", "en", "de"];
+  // Conservamos el idioma inicial durante toda la vida del componente sin leer ni escribir refs durante el render.
+  const [mapLocale] = useState<string>(() => {
     const initialLocale = router.locale?.slice(0, 2) || "es"; // Fallback al idioma predeterminado
-    mapLocaleRef.current = allowedLocales.includes(initialLocale) ? initialLocale : "es";
-  }
+    return allowedLocales.includes(initialLocale) ? initialLocale : "es";
+  });
 
-  return mapLocaleRef.current; // Devolvemos siempre el mismo valor
+  return mapLocale; // Devolvemos siempre el mismo valor
 }
