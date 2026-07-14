@@ -29,18 +29,27 @@ const setGADisabled = (analyticsId: string, disabled: boolean): void => {
 
 /**
  * Inicializa Google Analytics 4 (GA4) usando el ID proporcionado en las variables de entorno.
- * Lanza un error si el ID no está definido.
+ * Si la configuración no está disponible, registra el problema sin interrumpir la aplicación.
  */
-export const initGA = () => {
+export const initGA = (): boolean => {
   const analyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
   if (!analyticsId) {
-    throw new Error("Google Analytics ID no está definido en las variables de entorno.");
+    console.error("Google Analytics no se ha iniciado: NEXT_PUBLIC_GOOGLE_ANALYTICS_ID no está definida.");
+    return false;
   }
 
-  // Reactiva el seguimiento si el usuario vuelve a conceder el consentimiento.
-  setGADisabled(analyticsId, false);
-  ReactGA.initialize(analyticsId);
-  /* console.log("GA4 iniciado"); */
+  try {
+    // Reactiva el seguimiento si el usuario vuelve a conceder el consentimiento.
+    setGADisabled(analyticsId, false);
+    ReactGA.initialize(analyticsId);
+    /* console.log("GA4 iniciado"); */
+    return true;
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error && error.message.trim() ? error.message : "Error desconocido";
+    setGADisabled(analyticsId, true);
+    console.error("Google Analytics no se ha podido iniciar:", errorMessage);
+    return false;
+  }
 };
 
 /**

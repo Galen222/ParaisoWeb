@@ -2,6 +2,33 @@
 
 import { DefaultSeoProps } from "next-seo";
 
+const DEFAULT_LOCALE = "es";
+const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+
+/** Normaliza la ruta actual eliminando query, hash y un posible prefijo de idioma. */
+const normalizeRoutePath = (currentPath: string): string => {
+  const pathWithoutQueryOrHash = currentPath.split(/[?#]/, 1)[0] || "/";
+  const normalizedPath = `/${pathWithoutQueryOrHash}`.replace(/\/{2,}/g, "/");
+  const segments = normalizedPath.split("/").filter(Boolean);
+
+  if (segments[0] && SUPPORTED_LOCALES.has(segments[0])) {
+    segments.shift();
+  }
+
+  return segments.length > 0 ? `/${segments.join("/")}` : "/";
+};
+
+/** Construye una URL localizada sin añadir `/es` al idioma predeterminado. */
+const buildLocalizedUrl = (siteUrl: string, locale: string, routePath: string): string => {
+  const normalizedSiteUrl = siteUrl.replace(/\/+$/, "");
+
+  if (routePath === "/") {
+    return locale === DEFAULT_LOCALE ? `${normalizedSiteUrl}/` : `${normalizedSiteUrl}/${locale}`;
+  }
+
+  return `${normalizedSiteUrl}${locale === DEFAULT_LOCALE ? "" : `/${locale}`}${routePath}`;
+};
+
 /**
  * Define la estructura de una meta tag HTML5.
  */
@@ -36,10 +63,19 @@ type MetaTag = HTML5MetaTag | RDFaMetaTag | HTTPEquivMetaTag;
  *
  * @param {string} locale - Locale actual (e.g., 'es', 'en', 'de').
  * @param {Record<string, any>} messages - Mensajes localizados.
+ * @param {string} [currentPath] - Ruta actual para generar canonical y hreflang correctos.
+ * @param {boolean} [includeLanguageAlternates=true] - Permite omitir alternates cuando las rutas traducidas usan slugs diferentes.
  * @returns {DefaultSeoProps} Configuración de SEO personalizada.
  */
-const getSEOConfig = (locale: string, messages: Record<string, any>): DefaultSeoProps => {
+const getSEOConfig = (
+  locale: string,
+  messages: Record<string, any>,
+  currentPath?: string,
+  includeLanguageAlternates = true
+): DefaultSeoProps => {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const routePath = currentPath ? normalizeRoutePath(currentPath) : null;
+  const currentUrl = routePath ? buildLocalizedUrl(siteUrl, locale, routePath) : siteUrl;
 
   /**
    * Formatea el locale al formato requerido por Open Graph y HTML lang.
@@ -68,7 +104,7 @@ const getSEOConfig = (locale: string, messages: Record<string, any>): DefaultSeo
     openGraph: {
       type: "website",
       locale: formattedLocale,
-      url: siteUrl,
+      url: currentUrl,
       siteName: "El Paraíso Del Jamón",
       images: [
         {
@@ -83,6 +119,25 @@ const getSEOConfig = (locale: string, messages: Record<string, any>): DefaultSeo
       cardType: "summary_large_image",
       // site: "@TuNombreDeUsuario", // Añadir el nombre de usuario de Twitter
     },
+    canonical: routePath ? currentUrl : undefined,
+    languageAlternates:
+      routePath && includeLanguageAlternates
+        ? [
+            // Etiquetas hreflang con códigos completos para la misma ruta estática.
+            ...[
+              { lng: "es", region: "ES" },
+              { lng: "en", region: "US" },
+              { lng: "de", region: "DE" },
+            ].map(({ lng, region }) => ({
+              href: buildLocalizedUrl(siteUrl, lng, routePath),
+              hrefLang: `${lng}-${region}`,
+            })),
+            {
+              href: buildLocalizedUrl(siteUrl, DEFAULT_LOCALE, routePath),
+              hrefLang: "x-default",
+            },
+          ]
+        : undefined,
     additionalMetaTags: [
       {
         name: "PACAVA S.A",
@@ -114,25 +169,6 @@ const getSEOConfig = (locale: string, messages: Record<string, any>): DefaultSeo
         rel: "apple-touch-icon",
         href: "/images/web/apple-touch-icon.png",
         sizes: "180x180",
-      },
-      {
-        rel: "canonical",
-        href: `${siteUrl}${locale === "es" ? "" : `/${locale}`}`, // Genera el enlace canónico basado en el locale
-      },
-      // Etiquetas hreflang con códigos completos
-      ...[
-        { lng: "es", region: "ES" },
-        { lng: "en", region: "US" },
-        { lng: "de", region: "DE" },
-      ].map(({ lng, region }) => ({
-        rel: "alternate",
-        href: `${siteUrl}/${lng === "es" ? "" : lng}/`,
-        hrefLang: `${lng}-${region}`,
-      })),
-      {
-        rel: "alternate",
-        href: `${siteUrl}/`, // La versión por defecto en español
-        hrefLang: "x-default",
       },
     ],
   };

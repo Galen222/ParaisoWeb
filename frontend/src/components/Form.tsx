@@ -9,6 +9,10 @@ import { submitForm, FormData as FormServiceData } from "../services/formService
 import validator from "validator";
 import styles from "../styles/components/Form.module.css";
 
+const ALLOWED_FILE_MIME_TYPES = new Set(["image/jpeg", "application/pdf"]);
+const GENERIC_FILE_MIME_TYPES = new Set(["", "application/octet-stream"]);
+const ALLOWED_FILE_EXTENSIONS = new Set([".jpg", ".jpeg", ".pdf"]);
+
 export interface FormProps {
   onSubmit: () => void;
 }
@@ -162,7 +166,14 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     };
 
     if (file) {
-      if (file.type !== "image/jpeg" && file.type !== "application/pdf") {
+      const extensionSeparatorIndex = file.name.lastIndexOf(".");
+      const fileExtension = extensionSeparatorIndex >= 0 ? file.name.slice(extensionSeparatorIndex).toLowerCase() : "";
+      const hasAllowedExtension = ALLOWED_FILE_EXTENSIONS.has(fileExtension);
+      const hasAllowedMimeType = ALLOWED_FILE_MIME_TYPES.has(file.type) || GENERIC_FILE_MIME_TYPES.has(file.type);
+
+      // Algunos navegadores no informan el MIME o usan application/octet-stream.
+      // En esos casos se permite continuar por extensión; el backend valida el contenido real.
+      if (!hasAllowedExtension || !hasAllowedMimeType) {
         clearSelectedFile();
         showToast("contacto_ArchivoNoJPG-PDF", 4000, "error");
         return;
@@ -306,7 +317,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
             type="file"
             id="fileUpload"
             name="fileUpload"
-            accept="image/jpeg,application/pdf"
+            accept=".jpg,.jpeg,.pdf,image/jpeg,application/pdf"
             className="d-none"
             onChange={handleFileChange}
           />

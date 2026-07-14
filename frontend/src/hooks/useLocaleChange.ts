@@ -7,7 +7,7 @@ import { getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
 
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
-const VALID_SLUG_PATTERN = /^[a-zA-Z0-9-]+$/;
+const VALID_SLUG_PATTERN = /^[\p{L}\p{N}\p{M}-]+$/u;
 
 /** Devuelve un mensaje breve para depurar sin registrar respuestas, cabeceras ni tokens. */
 const getErrorMessageForLog = (error: unknown): string => {

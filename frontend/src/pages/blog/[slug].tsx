@@ -252,7 +252,7 @@ export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = asyn
   const locale = context.locale || "es";
 
   // Una ruta dinámica incompleta o con una forma inesperada no debe llegar a los servicios de la API.
-  if (typeof slug !== "string" || !/^[a-zA-Z0-9-]+$/.test(slug)) {
+  if (typeof slug !== "string" || !/^[\p{L}\p{N}\p{M}-]+$/u.test(slug)) {
     return { notFound: true };
   }
 

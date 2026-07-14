@@ -60,6 +60,7 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
   const formattedLocale = useLocaleFormatted(appLocale);
 
   const currentMessages = messages[appLocale] || messages["es"];
+  const includeLanguageAlternates = router.pathname !== "/blog/[slug]";
 
   // Actualiza el atributo `lang` del documento HTML
   useEffect(() => {
@@ -88,7 +89,7 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <IntlProvider locale={appLocale} messages={currentMessages}>
-        <DefaultSeo {...getSEOConfig(appLocale, currentMessages)} />
+        <DefaultSeo {...getSEOConfig(appLocale, currentMessages, router.asPath, includeLanguageAlternates)} />
         <MenuProvider>
           <React.StrictMode>
             {showCookieModal && (

@@ -102,16 +102,16 @@ export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: s
     const apiUrl = getApiUrl();
 
     // Validar y sanitizar los inputs
-    const allowedSlugRegex = /^[a-zA-Z0-9-]+$/;
+    const allowedSlugRegex = /^[\p{L}\p{N}\p{M}-]+$/u;
 
     if (!allowedSlugRegex.test(slug)) {
       // Caracteres inválidos individuales
-      const invalidChars = slug.match(/[^a-zA-Z0-9-]/g) || [];
+      const invalidChars = slug.match(/[^\p{L}\p{N}\p{M}-]/gu) || [];
       const invalidList = Array.from(new Set(invalidChars)).join(", ");
 
       // Vista resaltada del slug, envolviendo los inválidos entre corchetes
       const highlighted = Array.from(slug)
-        .map((ch) => (/[a-zA-Z0-9-]/.test(ch) ? ch : `[${ch}]`))
+        .map((ch) => (/[\p{L}\p{N}\p{M}-]/u.test(ch) ? ch : `[${ch}]`))
         .join("");
 
       throw new Error(`El slug "${slug}" contiene caracteres no permitidos: ${invalidList}. Vista resaltada: ${highlighted}`);
