@@ -1,9 +1,19 @@
 // hooks/useHandleLanguageChange.ts
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useIntl } from "react-intl";
 import { useRouter } from "next/router";
 import { getBlogPostById } from "../services/blogService";
+
+const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+
+/** Devuelve un mensaje seguro y breve para depurar sin registrar el objeto de error completo. */
+const getErrorMessageForLog = (error: unknown): string => {
+  if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+  return "Error desconocido";
+};
 
 /**
  * Interfaz para los detalles del blog.
@@ -27,6 +37,10 @@ export interface BlogDetails {
 export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
   const intl = useIntl(); // Hook para obtener el idioma actual
   const router = useRouter(); // Hook para gestionar la navegación
+  const requestSequenceRef = useRef(0);
+
+  const blogId = blogDetails?.id_noticia;
+  const blogLocale = blogDetails?.idioma;
 
   useEffect(() => {
     /**
@@ -34,27 +48,54 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
      * Si el idioma actual de la aplicación no coincide con el de la noticia,
      * intenta obtener la noticia en el nuevo idioma y redirige a su URL.
      */
+    const newIdioma = intl.locale;
+
+    if (!router.isReady || blogId === undefined || !blogLocale || newIdioma === blogLocale) {
+      return;
+    }
+
+    if (!SUPPORTED_LOCALES.has(newIdioma)) {
+      console.error(`Cambio automático de idioma ignorado: locale no soportado "${newIdioma}".`);
+      return;
+    }
+
+    // Cada solicitud invalida las anteriores para impedir que una respuesta lenta revierta el último idioma elegido.
+    const requestSequence = ++requestSequenceRef.current;
+    let cancelled = false;
+
+    const isCurrentRequest = (): boolean => !cancelled && requestSequence === requestSequenceRef.current;
+
     const handleLanguageChange = async () => {
-      if (blogDetails) {
-        const newIdioma = intl.locale; // Nuevo idioma seleccionado
-        if (newIdioma !== blogDetails.idioma) {
-          try {
-            // Obtiene la noticia en el nuevo idioma usando el ID de la noticia
-            const newBlogPost = await getBlogPostById(blogDetails.id_noticia, newIdioma);
-            if (newBlogPost) {
-              // Redirige al usuario a la URL de la noticia traducida
-              router.push(`/blog/${newBlogPost.slug}`);
-            } else {
-              // Opcional: Manejo del caso donde no existe traducción en el idioma seleccionado
-              /* console.warn("No se encontró la traducción de la noticia en el idioma seleccionado."); */
-            }
-          } catch (err) {
-            /* // console.error("Error al cambiar de idioma:", err); */
-          }
+      try {
+        // Obtiene la noticia en el nuevo idioma usando el ID de la noticia.
+        const newBlogPost = await getBlogPostById(blogId, newIdioma);
+        if (!isCurrentRequest()) return;
+
+        // Evita navegar con una respuesta incompleta o perteneciente a otro idioma.
+        if (!newBlogPost?.slug || newBlogPost.idioma !== newIdioma) {
+          console.error("Cambio automático de idioma cancelado: la traducción recibida no es válida.");
+          return;
+        }
+
+        // Redirige al usuario a la URL de la noticia traducida indicando el locale de forma explícita.
+        const navigationCompleted = await router.push(`/blog/${newBlogPost.slug}`, undefined, {
+          locale: newIdioma,
+        });
+
+        if (isCurrentRequest() && !navigationCompleted) {
+          console.error("No se pudo completar la navegación al artículo traducido.");
+        }
+      } catch (error: unknown) {
+        if (isCurrentRequest()) {
+          console.error("Error al cambiar automáticamente el idioma del artículo:", getErrorMessageForLog(error));
         }
       }
     };
 
-    handleLanguageChange();
-  }, [intl.locale, blogDetails, router]); // Ejecuta el efecto cuando cambian el idioma o los detalles del blog
+    void handleLanguageChange();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [blogId, blogLocale, intl.locale, router]); // Ejecuta el efecto cuando cambian el idioma o los detalles del blog
 };

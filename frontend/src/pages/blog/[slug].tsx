@@ -1,6 +1,6 @@
 // pages/blog/[slug].tsx
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useRouter } from "next/router";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import ShareLink from "../../components/ShareLink";
@@ -78,6 +78,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
 
   // Estado para manejar la animación del botón de volver atrás
   const [isPushingBack, setIsPushingBack] = useState(false);
+  const isPushingBackRef = useRef(false);
 
   // Rastreo de visitas a la página
   useVisitedPageTracking("articulo");
@@ -93,9 +94,29 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
    * Función para manejar la navegación de regreso al blog.
    * Inicia una animación antes de redirigir al usuario.
    */
-  const handleBack = () => {
+  const handleBack = async () => {
+    // Evita iniciar varias navegaciones si el usuario pulsa el botón repetidamente.
+    if (isPushingBackRef.current) {
+      return;
+    }
+
+    isPushingBackRef.current = true;
     setIsPushingBack(true);
-    router.push("/blog");
+
+    try {
+      const navigationCompleted = await router.push("/blog", undefined, { locale: router.locale });
+
+      // Si Next.js cancela la navegación, vuelve a habilitar el botón para permitir otro intento.
+      if (!navigationCompleted) {
+        isPushingBackRef.current = false;
+        setIsPushingBack(false);
+      }
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error && error.message.trim() ? error.message : "Error desconocido";
+      console.error("Error al volver al listado del blog:", errorMessage);
+      isPushingBackRef.current = false;
+      setIsPushingBack(false);
+    }
   };
 
   // Título y descripción para SEO
@@ -192,8 +213,9 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
               <div className="text-center mt-25p">
                 <button
                   className={`btn btn-outline-secondary mx-auto ${styles.backButton} ${isPushingBack ? "animate-push" : ""}`}
-                  onAnimationEnd={() => setIsPushingBack(false)}
-                  onClick={handleBack}
+                  onClick={() => void handleBack()}
+                  disabled={isPushingBack}
+                  aria-busy={isPushingBack}
                 >
                   {intl.formatMessage({ id: "blog_Details_Boton" })}
                 </button>
