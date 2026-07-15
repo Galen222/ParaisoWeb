@@ -88,11 +88,19 @@ export function usePagination<T>({
       return;
     }
 
-    const frameId = window.requestAnimationFrame(() => {
-      setRequestedPage((page) => clampPage(page, totalPages));
+    // Una microtarea no depende de que la pestaña pinte un nuevo frame, a diferencia
+    // de requestAnimationFrame. La marca de cancelación impide aplicar un total obsoleto
+    // si los datos vuelven a cambiar antes de ejecutar la sincronización.
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setRequestedPage((page) => clampPage(page, totalPages));
+      }
     });
 
-    return () => window.cancelAnimationFrame(frameId);
+    return () => {
+      cancelled = true;
+    };
   }, [requestedPage, totalPages]);
 
   /**

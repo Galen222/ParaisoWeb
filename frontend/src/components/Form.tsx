@@ -201,7 +201,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
         return false;
       }
 
-      return /\p{C}/u.test(character);
+      return /[\p{C}\p{Zl}\p{Zp}]/u.test(character);
     });
 
     if (!containsUnsupportedControl) {

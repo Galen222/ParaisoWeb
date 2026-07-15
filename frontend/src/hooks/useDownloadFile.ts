@@ -13,6 +13,15 @@ export interface DownloadFileHook {
   isDownloading: boolean;
 }
 
+const PDF_SIGNATURE = "%PDF-";
+
+/** Comprueba la firma real de un PDF sin confiar únicamente en la extensión o el MIME. */
+const hasPdfSignature = async (blob: Blob): Promise<boolean> => {
+  const signatureBytes = new Uint8Array(await blob.slice(0, PDF_SIGNATURE.length).arrayBuffer());
+  const signature = String.fromCharCode(...signatureBytes);
+  return signature === PDF_SIGNATURE;
+};
+
 /**
  * Hook personalizado para gestionar la descarga de archivos.
  * Permite descargar un archivo y muestra notificaciones de éxito o error.
@@ -76,6 +85,13 @@ export function useDownloadFile(): DownloadFileHook {
       const blob = await response.blob();
       if (blob.size === 0) {
         throw new Error("El archivo descargado está vacío");
+      }
+
+      // La carta actual es un PDF. Una página de error con HTTP 200 puede llegar como
+      // text/plain o application/octet-stream; comprobar la firma evita guardarla con
+      // extensión .pdf aunque el tipo declarado por el servidor sea ambiguo.
+      if (fileName.toLowerCase().endsWith(".pdf") && !(await hasPdfSignature(blob))) {
+        throw new Error("El contenido descargado no es un PDF válido");
       }
 
       if (!isMountedRef.current || controller.signal.aborted) {

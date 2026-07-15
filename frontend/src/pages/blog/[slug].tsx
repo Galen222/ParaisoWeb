@@ -40,6 +40,17 @@ const messages: Record<string, Record<string, string>> = {
 // Base URL para las imágenes del blog
 const IMAGE_BASE_URL = "/images/blog/";
 
+/** Genera metadatos compactos sin añadir puntos suspensivos a textos no truncados. */
+const buildSeoPreview = (value: string, maxLength: number): string => {
+  const normalizedValue = value.replace(/\s+/g, " ").trim();
+  const characters = Array.from(normalizedValue);
+  if (characters.length <= maxLength) {
+    return normalizedValue;
+  }
+
+  return `${characters.slice(0, maxLength).join("").trimEnd()}…`;
+};
+
 /**
  * Props para el componente BlogDetailsPage.
  * @typedef {Object} BlogDetailsPageProps
@@ -113,11 +124,11 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
 
   // Título y descripción para SEO
   const previewTitle = blogDetails?.titulo
-    ? `Paraíso Del Jamón - ${blogDetails.titulo.slice(0, 50)}...`
+    ? `Paraíso Del Jamón - ${buildSeoPreview(blogDetails.titulo, 50)}`
     : intl.formatMessage({ id: "blog_Details_SEO_Titulo_Preview" });
 
   const previewContent = blogDetails?.contenido
-    ? `${blogDetails.contenido.slice(0, 150)}...`
+    ? buildSeoPreview(blogDetails.contenido, 150)
     : intl.formatMessage({ id: "blog_Details_SEO_Contenido_Preview" });
 
   return (

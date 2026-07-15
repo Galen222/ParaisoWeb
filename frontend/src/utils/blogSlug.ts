@@ -11,7 +11,8 @@ export const normalizeBlogSlug = (value: unknown): string | null => {
   }
 
   const slug = value.normalize("NFC");
-  if (slug.length === 0 || slug.length > MAX_BLOG_SLUG_LENGTH) {
+  const slugLength = Array.from(slug).length;
+  if (slugLength === 0 || slugLength > MAX_BLOG_SLUG_LENGTH) {
     return null;
   }
 

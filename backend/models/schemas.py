@@ -104,7 +104,10 @@ class ContactForm(BaseModel):
         # difiera del texto validado, por lo que se rechazan antes de construir el correo.
         allowed_controls = {"\t", "\n", "\r"}
         if any(
-            unicodedata.category(character).startswith("C")
+            (
+                unicodedata.category(character).startswith("C")
+                or unicodedata.category(character) in {"Zl", "Zp"}
+            )
             and character not in allowed_controls
             for character in v
         ):

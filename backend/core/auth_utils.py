@@ -19,7 +19,11 @@ import hmac
 import hashlib
 import base64
 import binascii
+import re
 from .config import settings
+
+
+_TIMED_TOKEN_PATTERN = re.compile(r"^[A-Za-z0-9_-]{43}=$")
 
 def generate_timed_token() -> str:
     """
@@ -65,7 +69,12 @@ def verify_timed_token(token: str) -> bool:
     # Validar forma y longitud evita que compare_digest lance TypeError con texto no ASCII
     # y descarta cabeceras arbitrariamente grandes antes de calcular los intervalos.
     expected_encoded_length = len(base64.urlsafe_b64encode(bytes(hashlib.sha256().digest_size)))
-    if not isinstance(token, str) or len(token) != expected_encoded_length or not token.isascii():
+    if (
+        not isinstance(token, str)
+        or len(token) != expected_encoded_length
+        or not token.isascii()
+        or _TIMED_TOKEN_PATTERN.fullmatch(token) is None
+    ):
         return False
 
     try:

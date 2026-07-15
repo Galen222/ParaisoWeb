@@ -23,7 +23,11 @@ from fastapi import Header, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .core.auth_utils import verify_timed_token
-from .core.client_ip import normalize_host, resolve_client_host
+from .core.client_ip import (
+    has_ambiguous_forwarding_headers,
+    normalize_host,
+    resolve_client_host,
+)
 from .core.config import settings
 from .database import async_session
 
@@ -93,10 +97,20 @@ async def verify_local_request(request: Request) -> None:
     """Permite únicamente clientes loopback tras resolver proxies confiables."""
     trusted_proxy_ips = settings.trusted_proxy_ips
     direct_host = normalize_host(request.client.host if request.client else "unknown")
-    has_forwarding_metadata = bool(
-        request.headers.get("x-forwarded-for", "").strip()
-        or request.headers.get("x-real-ip", "").strip()
+    raw_headers = request.scope.get("headers", [])
+    has_forwarding_metadata = any(
+        key.lower() in {b"x-forwarded-for", b"x-real-ip"} and value.strip()
+        for key, value in raw_headers
     )
+
+    # Una cabecera de reenvío repetida puede ser interpretada de forma distinta por
+    # Plesk, Uvicorn y Starlette. En un endpoint exclusivamente local se rechaza la
+    # ambigüedad en vez de escoger una representación potencialmente insegura.
+    if has_ambiguous_forwarding_headers(request, logger):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Endpoint disponible únicamente desde el servidor local",
+        )
 
     # Una petición local real de Next.js no envía cabeceras de proxy. Si aparecen
     # cabeceras de reenvío desde un peer no configurado como proxy, no se puede asumir
