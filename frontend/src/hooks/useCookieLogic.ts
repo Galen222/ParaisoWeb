@@ -7,6 +7,7 @@ import {
   COOKIE_CONSENT_NAME,
   createDeviceCookie,
   getCookieValue,
+  isGoogleAnalyticsCookie,
   revokeCookieCategories,
   saveLocalePreference,
   saveCookieConsentPreference,
@@ -158,12 +159,13 @@ export function useCookieLogic(): CookieLogic {
 
       // Compatibilidad con elecciones anteriores: comprueba las cookies opcionales ya existentes.
       const cookieValuePersonalization = getCookieValue("_locale");
-      const cookieNameAnalysis = getCookieValue("_visited");
-      const cookieNameAnalysisGoogle = getCookieValue("_ga");
       const hasValidPersonalizationCookie =
         cookieValuePersonalization !== undefined && ["es", "en", "de"].includes(cookieValuePersonalization);
-      const hasAnalysisCookie = Boolean(cookieNameAnalysis);
-      const hasGoogleAnalyticsCookie = Boolean(cookieNameAnalysisGoogle);
+      const hasAnalysisCookie = Boolean(getCookieValue("_visited") || getCookieValue("_device"));
+      const hasGoogleAnalyticsCookie = document.cookie
+        .split(";")
+        .map((cookie) => cookie.trim().split("=", 1)[0])
+        .some(isGoogleAnalyticsCookie);
 
       if (hasValidPersonalizationCookie) {
         setAcceptCookiePersonalization(true);

@@ -17,7 +17,7 @@ export interface CookieCategoriesToRevoke {
 const GOOGLE_ANALYTICS_COOKIE_DOMAINS = [".asuscomm.com", "paraisodeljamon.com", ".paraisodeljamon.com"];
 
 /** Reconoce las cookies habituales creadas por Google Analytics y sus contenedores. */
-const isGoogleAnalyticsCookie = (cookieName: string): boolean =>
+export const isGoogleAnalyticsCookie = (cookieName: string): boolean =>
   /^_ga($|_)/.test(cookieName) || /^_gid$/.test(cookieName) || /^_gat($|_)/.test(cookieName);
 
 /** Caduca una cookie para el host actual o para un dominio concreto. */

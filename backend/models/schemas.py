@@ -59,11 +59,36 @@ class ContactForm(BaseModel):
             str: Valor validado del campo 'name'.
         """
         valid_characters = set(" -'’ʼ")
-        if not all(char.isalpha() or char in valid_characters for char in v):
+        has_letter = False
+        previous_was_letter_or_mark = False
+
+        for char in v:
+            # El apóstrofe modificador U+02BC pertenece a la categoría Unicode Lm,
+            # pero en un nombre actúa como separador y no debe contar como letra.
+            if char in valid_characters:
+                previous_was_letter_or_mark = False
+                continue
+
+            category = unicodedata.category(char)
+            is_letter = category.startswith("L")
+            is_mark = category.startswith("M")
+
+            if is_letter:
+                has_letter = True
+                previous_was_letter_or_mark = True
+                continue
+
+            # Algunas escrituras válidas usan marcas combinadas que no siempre se
+            # componen mediante NFC. Solo se admiten después de una letra u otra marca,
+            # evitando nombres que empiecen por una marca huérfana.
+            if is_mark and previous_was_letter_or_mark:
+                continue
+
             raise ValueError(
-                "El nombre solo puede contener letras, espacios, guiones (-) y apóstrofes."
+                "El nombre solo puede contener letras, marcas combinadas, espacios, guiones (-) y apóstrofes."
             )
-        if not any(char.isalpha() and char not in valid_characters for char in v):
+
+        if not has_letter:
             raise ValueError("El nombre debe contener al menos una letra")
         return v
 

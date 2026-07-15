@@ -18,13 +18,14 @@ const buildServerUrl = (
 ): string => {
   const normalizedSiteUrl = siteUrl.replace(/\/+$/, "");
   const normalizedPath = asPath.startsWith("/") ? asPath : `/${asPath}`;
-  const pathWithoutQueryOrHash = normalizedPath.split(/[?#]/, 1)[0];
-  const firstSegment = pathWithoutQueryOrHash.split("/").filter(Boolean)[0];
+  const pathWithoutHash = normalizedPath.split("#", 1)[0];
+  const pathWithoutQuery = pathWithoutHash.split("?", 1)[0];
+  const firstSegment = pathWithoutQuery.split("/").filter(Boolean)[0];
   const pathAlreadyHasLocale = Boolean(firstSegment && locales?.includes(firstSegment));
   const shouldPrefixLocale = Boolean(locale && locale !== defaultLocale && !pathAlreadyHasLocale);
   const localePrefix = shouldPrefixLocale ? `/${locale}` : "";
 
-  return `${normalizedSiteUrl}${localePrefix}${normalizedPath}`;
+  return `${normalizedSiteUrl}${localePrefix}${pathWithoutHash}`;
 };
 
 /**
@@ -52,7 +53,10 @@ const useCurrentUrl = (): string => {
     [router.events]
   );
 
-  const getCurrentUrl = useCallback((): string => window.location.href, []);
+  const getCurrentUrl = useCallback(
+    (): string => `${window.location.origin}${window.location.pathname}${window.location.search}`,
+    []
+  );
   const getServerUrl = useCallback(
     (): string => buildServerUrl(siteUrl, router.asPath, router.locale, router.defaultLocale, router.locales),
     [router.asPath, router.defaultLocale, router.locale, router.locales, siteUrl]

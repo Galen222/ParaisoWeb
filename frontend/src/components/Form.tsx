@@ -90,14 +90,40 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     setIsPrivacyChecked(e.target.checked);
   };
 
+  /** Comprueba marcas Unicode combinadas sin admitirlas aisladas al inicio o tras un separador. */
+  const isValidNameInput = (value: string): boolean => {
+    let previousWasLetterOrMark = false;
+
+    for (const character of value) {
+      // U+02BC es Unicode Lm, pero aquí es un apóstrofe separador y no una letra.
+      if (/^[\s'’ʼ-]$/u.test(character)) {
+        previousWasLetterOrMark = false;
+        continue;
+      }
+      if (/\p{L}/u.test(character)) {
+        previousWasLetterOrMark = true;
+        continue;
+      }
+      if (/\p{M}/u.test(character) && previousWasLetterOrMark) {
+        continue;
+      }
+      return false;
+    }
+
+    return true;
+  };
+
+  /** Exige al menos una letra real, sin contar los apóstrofes Unicode de categoría Lm. */
+  const hasNameLetter = (value: string): boolean =>
+    Array.from(value).some((character) => !/^[\s'’ʼ-]$/u.test(character) && /\p{L}/u.test(character));
+
   /**
    * Valida y sanitiza el nombre permitiendo solo caracteres válidos
    */
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const normalizedValue = value.normalize("NFC");
-    const nameRegex = /^[\p{L}\p{M}\s'’ʼ-]*$/u;
-    if (nameRegex.test(normalizedValue)) {
+    if (isValidNameInput(normalizedValue)) {
       setFormData((current) => ({ ...current, [name]: normalizedValue }));
     }
   };
@@ -242,7 +268,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
    */
   const CheckFormComplete = (): boolean => {
     return (
-      /\p{L}/u.test(formData.name) &&
+      hasNameLetter(formData.name) &&
       formData.email.trim() !== "" &&
       formData.message.trim() !== "" &&
       formData.reason !== "" &&

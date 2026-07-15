@@ -6,6 +6,7 @@
 
 import axios from "axios";
 import { getTimedToken } from "./tokenService";
+import { isValidApiDateString } from "../utils/apiDate";
 
 /**
  * Interfaz para representar los datos de una publicación de blog.
@@ -84,8 +85,8 @@ const isBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): value 
     typeof post.autor === "string" &&
     typeof post.imagen_url === "string" &&
     (post.imagen_url_2 === undefined || post.imagen_url_2 === null || typeof post.imagen_url_2 === "string") &&
-    typeof post.fecha_publicacion === "string" &&
-    (post.fecha_actualizacion === null || typeof post.fecha_actualizacion === "string") &&
+    isValidApiDateString(post.fecha_publicacion) &&
+    (post.fecha_actualizacion === null || isValidApiDateString(post.fecha_actualizacion)) &&
     (expected.id === undefined || post.id_noticia === expected.id) &&
     (expected.idioma === undefined || post.idioma === expected.idioma) &&
     (normalizedExpectedSlug === undefined || normalizedResponseSlug === normalizedExpectedSlug)

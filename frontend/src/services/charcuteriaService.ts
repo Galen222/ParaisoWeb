@@ -6,12 +6,14 @@
 
 import axios from "axios";
 import { getTimedToken } from "./tokenService";
+import { isValidApiDateString } from "../utils/apiDate";
 
 /**
  * Interfaz para representar los datos de un producto de charcutería.
  */
 export interface CharcuteriaProduct {
   id_producto: number; // Identificador único del producto.
+  idioma: string; // Idioma al que pertenece el producto.
   nombre: string; // Nombre del producto.
   empresa: string | null; // Empresa del producto; puede no estar informada en la base de datos.
   descripcion: string; // Descripción del producto.
@@ -38,7 +40,7 @@ const getApiUrl = (): string => {
 };
 
 /** Comprueba el contrato mínimo que necesita la interfaz antes de renderizar una tarjeta. */
-const isCharcuteriaProduct = (value: unknown): value is CharcuteriaProduct => {
+const isCharcuteriaProduct = (value: unknown, expectedLanguage: string): value is CharcuteriaProduct => {
   if (typeof value !== "object" || value === null) {
     return false;
   }
@@ -48,12 +50,13 @@ const isCharcuteriaProduct = (value: unknown): value is CharcuteriaProduct => {
     Number.isInteger(product.id_producto) &&
     typeof product.id_producto === "number" &&
     product.id_producto > 0 &&
+    product.idioma === expectedLanguage &&
     typeof product.nombre === "string" &&
     (product.empresa === null || typeof product.empresa === "string") &&
     typeof product.descripcion === "string" &&
     typeof product.imagen_url === "string" &&
     typeof product.categoria === "string" &&
-    (product.fecha === null || typeof product.fecha === "string")
+    (product.fecha === null || isValidApiDateString(product.fecha))
   );
 };
 
@@ -79,7 +82,10 @@ export const getCharcuteriaProducts = async (idioma: string): Promise<Charcuteri
       params: { idioma },
     });
 
-    if (!Array.isArray(response.data) || !response.data.every(isCharcuteriaProduct)) {
+    if (
+      !Array.isArray(response.data) ||
+      !response.data.every((product) => isCharcuteriaProduct(product, idioma))
+    ) {
       throw new Error("La respuesta del servidor para charcutería no tiene el formato esperado.");
     }
 

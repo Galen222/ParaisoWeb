@@ -18,6 +18,7 @@ Dependencias:
 """
 
 import logging
+import unicodedata
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -33,6 +34,29 @@ logger = logging.getLogger(__name__)
 
 # Idiomas disponibles en el frontend y almacenados en la base de datos.
 SupportedLanguage = Literal["es", "en", "de"]
+
+
+def _is_valid_blog_slug(slug: str) -> bool:
+    """Valida el mismo conjunto Unicode de caracteres admitido por las rutas del frontend."""
+    if not slug:
+        return False
+
+    previous_was_alphanumeric_or_mark = False
+    for character in slug:
+        if character == "-":
+            previous_was_alphanumeric_or_mark = False
+            continue
+        if character.isalnum():
+            previous_was_alphanumeric_or_mark = True
+            continue
+        if (
+            unicodedata.category(character).startswith("M")
+            and previous_was_alphanumeric_or_mark
+        ):
+            continue
+        return False
+
+    return True
 
 @router.get("/blog", response_model=List[schemas.Blog])
 async def get_blog_posts(
@@ -109,6 +133,10 @@ async def get_blog_post_by_slug(
         schemas.Blog: La publicación de blog encontrada.
     """
     try:
+        # Evita consultas a MySQL con slugs que nunca puede generar el frontend.
+        if not _is_valid_blog_slug(slug):
+            raise HTTPException(status_code=422, detail="Slug de blog no válido")
+
         blog_service = BlogService(db)
         post = await blog_service.get_post_by_slug(slug, idioma)
         
