@@ -4,8 +4,8 @@ import axios from "axios";
 import { getBlogPostBySlug, getBlogPostById, BlogPost } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
 import { normalizeBlogSlug } from "../utils/blogSlug";
+import { buildLocalizedBlogPath } from "../utils/blogPath";
 
-const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
 
 interface BlogDataResult {
@@ -15,10 +15,6 @@ interface BlogDataResult {
   notFound?: boolean;
   statusCode?: number;
 }
-
-/** Construye la ruta pública del artículo respetando que español no lleva prefijo. */
-const buildLocalizedBlogPath = (locale: string, slug: string): string =>
-  `${locale === DEFAULT_LOCALE ? "" : `/${locale}`}/blog/${slug}`;
 
 /** Comprueba que la traducción recibida sea utilizable para el idioma solicitado. */
 const isValidTranslatedPost = (

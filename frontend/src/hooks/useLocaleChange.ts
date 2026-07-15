@@ -11,6 +11,7 @@ import {
   saveLocalePreference,
 } from "../utils/cookieUtils";
 import { normalizeBlogSlug } from "../utils/blogSlug";
+import { buildBlogPath } from "../utils/blogPath";
 
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
 
@@ -131,7 +132,7 @@ export function useLocaleChange(): LocaleChangeHandler {
 
             if (isExpectedTranslation && normalizedNewSlug) {
               // Construimos la nueva ruta con la forma Unicode canónica del slug traducido.
-              newPath = `/blog/${normalizedNewSlug}${routeSuffix}`;
+              newPath = buildBlogPath(normalizedNewSlug, routeSuffix);
             } else {
               // Si la respuesta no corresponde a la traducción solicitada, redirige al blog principal.
               console.error("Cambio de idioma del blog cancelado: la traducción recibida no es válida.");

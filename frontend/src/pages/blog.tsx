@@ -17,6 +17,7 @@ import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
 import { usePagination } from "../hooks/usePagination";
 import { Paginator } from "../components/Paginator";
+import { buildBlogPath } from "../utils/blogPath";
 // Importa los mensajes de traducción
 import esMessages from "../locales/es/common.json";
 import enMessages from "../locales/en/common.json";
@@ -137,7 +138,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
           {/* Contenido  */}
           <div className={styles.content}>
             {paginatedBlogs.map((blog) => (
-              <Link className={styles.blogLink} href={`/blog/${blog.slug}`} key={blog.id_noticia} passHref>
+              <Link className={styles.blogLink} href={buildBlogPath(blog.slug)} key={blog.id_noticia} passHref>
                 <div className={styles.blogCard}>
                   <div className={styles.imageContainer}>
                     <img src={`${IMAGE_BASE_URL}${blog.imagen_url}`} alt={blog.titulo} className={styles.blogImage} />

@@ -17,6 +17,7 @@ import getSEOConfig from "../../config/next-seo.config";
 import useCurrentUrl from "../../hooks/useCurrentUrl";
 import { formatBlogDate } from "../../utils/blogDate";
 import { normalizeBlogSlug } from "../../utils/blogSlug";
+import { buildLocalizedBlogPath } from "../../utils/blogPath";
 
 // Mensajes de traducción
 import esMessages from "../../locales/es/common.json";
@@ -40,7 +41,6 @@ const messages: Record<string, Record<string, string>> = {
 // Base URL para las imágenes del blog
 const IMAGE_BASE_URL = "/images/blog/";
 
-const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
 
 /** Conserva los parámetros de consulta al redirigir una variante no canónica del slug. */
@@ -50,10 +50,8 @@ const getQuerySuffix = (resolvedUrl: string): string => {
 };
 
 /** Construye la URL canónica del artículo respetando que español no lleva prefijo. */
-const buildCanonicalBlogPath = (locale: string, slug: string): string => {
-  const localePrefix = locale === DEFAULT_LOCALE ? "" : `/${locale}`;
-  return `${localePrefix}/blog/${encodeURIComponent(slug)}`;
-};
+const buildCanonicalBlogPath = (locale: string, slug: string): string =>
+  buildLocalizedBlogPath(locale, slug);
 
 /** Genera metadatos compactos sin añadir puntos suspensivos a textos no truncados. */
 const buildSeoPreview = (value: string, maxLength: number): string => {

@@ -117,7 +117,7 @@ class EmailService:
         """
         self.smtp_server = settings.SMTP_SERVER
         self.smtp_port = settings.SMTP_PORT
-        self.smtp_username = settings.SMTP_USERNAME
+        self.smtp_username = str(settings.SMTP_USERNAME)
         self.smtp_password = settings.SMTP_PASSWORD
         self.smtp_timeout = settings.SMTP_TIMEOUT_SECONDS
         self.smtp_tls_mode = settings.SMTP_TLS_MODE

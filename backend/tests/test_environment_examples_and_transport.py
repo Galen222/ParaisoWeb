@@ -107,6 +107,44 @@ class EnvironmentExampleTests(unittest.TestCase):
         configured = Settings(**common, secret_key=f"  {expected}  ")
         self.assertEqual(configured.secret_key, expected)
 
+    def test_smtp_rechaza_puertos_fuera_del_rango_tcp(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        for invalid_port in (0, 65536):
+            with self.subTest(port=invalid_port), self.assertRaises(ValidationError):
+                Settings(**common, SMTP_PORT=invalid_port)
+
+    def test_smtp_rechaza_host_o_remitente_no_validos(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_PORT": 587,
+            "SMTP_PASSWORD": "secret",
+            "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        with self.assertRaises(ValidationError):
+            Settings(**common, SMTP_SERVER="smtp.example.com\nmalicioso", SMTP_USERNAME="tests@example.com")
+        with self.assertRaises(ValidationError):
+            Settings(**common, SMTP_SERVER="smtp.example.com", SMTP_USERNAME="no-es-un-correo")
+
+        configured = Settings(
+            **common,
+            SMTP_SERVER="  smtp.example.com  ",
+            SMTP_USERNAME="tests@example.com",
+        )
+        self.assertEqual(configured.SMTP_SERVER, "smtp.example.com")
+        self.assertEqual(str(configured.SMTP_USERNAME), "tests@example.com")
+
     def test_cors_normaliza_barras_finales_y_elimina_duplicados(self) -> None:
         settings = Settings(
             _env_file=None,

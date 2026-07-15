@@ -53,7 +53,14 @@ export const isValidApiDateString = (value: unknown): value is string => {
     if (match[8] && match[8].toUpperCase() !== "Z") {
       const offsetHour = Number(match[9]);
       const offsetMinute = Number(match[10]);
-      if (offsetHour > 23 || offsetMinute > 59) {
+      // Las zonas horarias civiles no exceden UTC±14:00. Date.parse acepta
+      // offsets mayores como +23:59, pero producirían fechas aparentemente válidas
+      // a partir de datos API que no representan una zona horaria real.
+      if (
+        offsetHour > 14 ||
+        offsetMinute > 59 ||
+        (offsetHour === 14 && offsetMinute !== 0)
+      ) {
         return false;
       }
     }

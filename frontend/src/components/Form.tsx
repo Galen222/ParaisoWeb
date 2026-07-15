@@ -12,6 +12,7 @@ import {
 } from "../services/formService";
 import validator from "validator";
 import styles from "../styles/components/Form.module.css";
+import { isContactFormComplete } from "../utils/contactFormValidation";
 
 const ALLOWED_FILE_MIME_TYPES = new Set(["image/jpeg", "application/pdf"]);
 const GENERIC_FILE_MIME_TYPES = new Set(["", "application/octet-stream"]);
@@ -245,12 +246,26 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
   };
 
   /**
-   * Maneja el envío del formulario
+   * Verifica si el formulario está completo y válido.
+   */
+  const isFormComplete = (): boolean =>
+    isContactFormComplete(
+      formData,
+      hasNameLetter(formData.name),
+      isValidEmail,
+      isPrivacyChecked
+    );
+
+  /**
+   * Maneja el envío del formulario.
    */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (isSubmittingRef.current) {
+    // El botón deshabilitado mejora la experiencia, pero no protege frente a envíos
+    // programáticos o disparados por otras vías. Se repite la validación antes de crear
+    // el token, registrar el intento o llamar al backend.
+    if (isSubmittingRef.current || !isFormComplete()) {
       return;
     }
 
@@ -305,20 +320,6 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     }
   };
 
-  /**
-   * Verifica si el formulario está completo y válido
-   */
-  const CheckFormComplete = (): boolean => {
-    return (
-      hasNameLetter(formData.name) &&
-      formData.email.trim() !== "" &&
-      formData.message.trim() !== "" &&
-      formData.reason !== "" &&
-      isValidEmail &&
-      isPrivacyChecked &&
-      ((formData.reason !== "factura" && formData.reason !== "curriculum") || formData.file !== null)
-    );
-  };
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
@@ -389,6 +390,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
             accept=".jpg,.jpeg,.pdf,image/jpeg,application/pdf"
             className="d-none"
             onChange={handleFileChange}
+            required={formData.reason === "factura" || formData.reason === "curriculum"}
           />
           <button
             type="button"
@@ -408,7 +410,14 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
       <div className={styles.customCheckbox}>
         <div className={styles.checkboxLabelContainer}>
           <span className={styles.checkboxControl} onClick={() => setIsPrivacyChecked(!isPrivacyChecked)}>
-            <input type="checkbox" id="privacyCheck" checked={isPrivacyChecked} onChange={handlePrivacyCheck} className={styles.hiddenCheckbox} />
+            <input
+              type="checkbox"
+              id="privacyCheck"
+              checked={isPrivacyChecked}
+              onChange={handlePrivacyCheck}
+              className={styles.hiddenCheckbox}
+              required
+            />
             {isPrivacyChecked && (
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M2 8L6 12L14 4" stroke="green" strokeWidth="3" />
@@ -427,10 +436,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
       <button
         type="submit"
         className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${isPushingSend ? "animate-push" : ""}`}
-        disabled={!CheckFormComplete() || isSubmitting}
+        disabled={!isFormComplete() || isSubmitting}
         onClick={() => setIsPushingSend(true)}
         onAnimationEnd={() => setIsPushingSend(false)}
-        aria-disabled={!CheckFormComplete() || isSubmitting}
+        aria-disabled={!isFormComplete() || isSubmitting}
       >
         {isSubmitting ? intl.formatMessage({ id: "contacto_BotonEnviando" }) : intl.formatMessage({ id: "contacto_BotonEnviar" })}
       </button>

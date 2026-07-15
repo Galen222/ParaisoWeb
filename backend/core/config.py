@@ -15,7 +15,7 @@ Dependencias:
 - Pathlib: Para manejar rutas al archivo `.env`.
 """
 
-from pydantic import Field, field_validator
+from pydantic import EmailStr, Field, field_validator
 from pydantic_settings import BaseSettings
 from ipaddress import IPv6Address, ip_address
 from pathlib import Path
@@ -62,8 +62,8 @@ class Settings(BaseSettings):
         ENABLE_API_DOCS (bool): Habilita OpenAPI, Swagger UI y ReDoc de forma explícita.
     """
     SMTP_SERVER: str
-    SMTP_PORT: int
-    SMTP_USERNAME: str
+    SMTP_PORT: int = Field(ge=1, le=65535)
+    SMTP_USERNAME: EmailStr
     SMTP_PASSWORD: str
     DATABASE_URL: str
     DATABASE_ECHO_SQL: bool = False
@@ -93,6 +93,15 @@ class Settings(BaseSettings):
     )
     TRUSTED_PROXY_IPS: str = "127.0.0.1,::1"
     ENABLE_API_DOCS: bool = False
+
+    @field_validator("SMTP_SERVER")
+    @classmethod
+    def validate_smtp_server(cls, value: str) -> str:
+        """Normaliza el host SMTP y rechaza valores vacíos o con espacios/controles."""
+        normalized = value.strip()
+        if not normalized or any(character.isspace() for character in normalized):
+            raise ValueError("SMTP_SERVER debe contener un host sin espacios")
+        return normalized
 
     @field_validator("secret_key")
     @classmethod

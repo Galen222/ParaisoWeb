@@ -5,6 +5,7 @@ import { BlogPost, getBlogPostBySlug, getBlogPostById } from "../services/blogSe
 import { getTimedToken } from "../services/tokenService";
 import { isSameRequestHost } from "./requestHost";
 import { normalizeBlogSlug } from "./blogSlug";
+import { buildLocalizedBlogPath } from "./blogPath";
 
 const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
@@ -52,10 +53,6 @@ const getQuerySuffix = (resolvedUrl: string): string => {
   const queryIndex = resolvedUrl.indexOf("?");
   return queryIndex >= 0 ? resolvedUrl.slice(queryIndex) : "";
 };
-
-/** Construye la ruta traducida respetando que español es el idioma sin prefijo. */
-const buildLocalizedBlogPath = (locale: string, slug: string): string =>
-  `${locale === DEFAULT_LOCALE ? "" : `/${locale}`}/blog/${slug}`;
 
 /**
  * Redirige a un slug basado en la cookie de idioma si corresponde.
@@ -109,7 +106,11 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
         ) {
           return {
             redirect: {
-              destination: `${buildLocalizedBlogPath(localeCookie, normalizedTranslatedSlug)}${getQuerySuffix(context.resolvedUrl)}`,
+              destination: buildLocalizedBlogPath(
+                localeCookie,
+                normalizedTranslatedSlug,
+                getQuerySuffix(context.resolvedUrl)
+              ),
               permanent: false,
             },
           };

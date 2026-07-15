@@ -13,6 +13,7 @@ import {
   saveCookieConsentPreference,
 } from "../utils/cookieUtils";
 import { initGA } from "../utils/gaUtils"; // Importa la función desde utils
+import { shouldReopenConsentModal } from "../utils/cookieConsentState";
 
 const COOKIE_CONSENT_VERSION = "v1";
 const COOKIE_CONSENT_ACCEPTED = `${COOKIE_CONSENT_VERSION}.accepted`;
@@ -82,6 +83,9 @@ export function useCookieLogic(): CookieLogic {
 
   // Estado para indicar si el modal de cookies ha sido cerrado
   const [cookiesModalClosed, setCookiesModalClosed] = useState<boolean>(false);
+
+  // Recuerda que el modal se cerró solo para consultar una política, no por una decisión.
+  const [isReviewingConsentPolicy, setIsReviewingConsentPolicy] = useState(false);
 
   // Hook de Next.js para acceder al enrutador
   const router = useRouter();
@@ -212,6 +216,29 @@ export function useCookieLogic(): CookieLogic {
     }
   }, [router.locale, cookieConsentPersonalization]);
 
+
+  /**
+   * Si el usuario abrió una política desde el modal sin aceptar ni rechazar, vuelve a
+   * solicitar la elección al abandonar las páginas legales. Mientras navega entre ambas
+   * políticas el contenido permanece visible y no se superpone de nuevo el modal.
+   */
+  useEffect(() => {
+    const savedPreference = getCookieValue(COOKIE_CONSENT_NAME);
+    if (!shouldReopenConsentModal(isReviewingConsentPolicy, router.pathname, savedPreference)) {
+      return;
+    }
+
+    // Se difiere la actualización para que el efecto observe la navegación ya completada
+    // sin encadenar un render síncrono dentro de su propio cuerpo.
+    const reopenModalTimeout = window.setTimeout(() => {
+      setShowCookieModal(true);
+      setCookiesModalClosed(false);
+      setIsReviewingConsentPolicy(false);
+    }, 0);
+
+    return () => window.clearTimeout(reopenModalTimeout);
+  }, [isReviewingConsentPolicy, router.pathname]);
+
   /**
    * Reinicia el consentimiento de cookies a su estado inicial (no consentido).
    * - Establece todas las opciones de consentimiento a `false`.
@@ -240,6 +267,8 @@ export function useCookieLogic(): CookieLogic {
       if (!navigationCompleted) {
         setShowCookieModal(true);
         setCookiesModalClosed(false);
+      } else {
+        setIsReviewingConsentPolicy(true);
       }
     } catch (error: unknown) {
       console.error(
@@ -266,6 +295,8 @@ export function useCookieLogic(): CookieLogic {
       if (!navigationCompleted) {
         setShowCookieModal(true);
         setCookiesModalClosed(false);
+      } else {
+        setIsReviewingConsentPolicy(true);
       }
     } catch (error: unknown) {
       console.error(
@@ -285,6 +316,7 @@ export function useCookieLogic(): CookieLogic {
    * - Cierra el modal de cookies.
    */
   const handleAcceptCookies = () => {
+    setIsReviewingConsentPolicy(false);
     // Retira de inmediato las cookies de las categorías que el usuario acaba de desactivar.
     revokeCookieCategories({
       analysis: !AcceptCookieAnalysis,
@@ -328,6 +360,7 @@ export function useCookieLogic(): CookieLogic {
    * - Cierra el modal de cookies.
    */
   const handleDeclineAllCookies = () => {
+    setIsReviewingConsentPolicy(false);
     // Rechazar no solo cambia el estado: también retira las cookies opcionales ya creadas.
     revokeCookieCategories({ analysis: true, googleAnalytics: true, personalization: true });
     resetCookieConsent();
@@ -344,6 +377,7 @@ export function useCookieLogic(): CookieLogic {
    * - Cierra el modal de cookies.
    */
   const handleAcceptAllCookies = () => {
+    setIsReviewingConsentPolicy(false);
     setAcceptCookieAnalysis(true);
     setCookieConsentAnalysis(true);
     createDeviceCookie();

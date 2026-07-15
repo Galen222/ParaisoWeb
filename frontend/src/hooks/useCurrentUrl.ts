@@ -1,37 +1,15 @@
 // hooks/useCurrentUrl.ts
 import { useCallback, useSyncExternalStore } from "react";
 import { useRouter } from "next/router";
+import { buildCanonicalPageUrl } from "../utils/canonicalUrl";
 
 const DEFAULT_SITE_URL = "https://www.paraisodeljamon.com";
 
 /**
- * Construye una URL absoluta estable para SSR a partir de la ruta y el locale actuales.
- * Next.js no incluye necesariamente el prefijo del locale en `router.asPath`, por lo que
- * se añade solo cuando corresponde y no está ya presente.
- */
-const buildServerUrl = (
-  siteUrl: string,
-  asPath: string,
-  locale?: string,
-  defaultLocale?: string,
-  locales?: readonly string[]
-): string => {
-  const normalizedSiteUrl = siteUrl.replace(/\/+$/, "");
-  const normalizedPath = asPath.startsWith("/") ? asPath : `/${asPath}`;
-  const pathWithoutHash = normalizedPath.split("#", 1)[0];
-  const pathWithoutQuery = pathWithoutHash.split("?", 1)[0];
-  const firstSegment = pathWithoutQuery.split("/").filter(Boolean)[0];
-  const pathAlreadyHasLocale = Boolean(firstSegment && locales?.includes(firstSegment));
-  const shouldPrefixLocale = Boolean(locale && locale !== defaultLocale && !pathAlreadyHasLocale);
-  const localePrefix = shouldPrefixLocale ? `/${locale}` : "";
-
-  return `${normalizedSiteUrl}${localePrefix}${pathWithoutHash}`;
-};
-
-/**
  * Hook personalizado para obtener la URL actual de la página.
  * En SSR devuelve una URL absoluta determinista para que Open Graph y JSON-LD no se rendericen
- * con una URL vacía. En el navegador usa la URL real y se actualiza en cada navegación.
+ * con una URL vacía. Tanto en servidor como en navegador elimina query y fragmento para no
+ * convertir parámetros de campaña o estado temporal en URLs SEO y enlaces compartidos distintos.
  *
  * @returns {string} La URL actual completa.
  */
@@ -54,12 +32,18 @@ const useCurrentUrl = (): string => {
   );
 
   const getCurrentUrl = useCallback(
-    (): string =>
-      `${siteUrl.replace(/\/+$/, "")}${window.location.pathname}${window.location.search}`,
+    (): string => buildCanonicalPageUrl(siteUrl, window.location.pathname),
     [siteUrl]
   );
   const getServerUrl = useCallback(
-    (): string => buildServerUrl(siteUrl, router.asPath, router.locale, router.defaultLocale, router.locales),
+    (): string =>
+      buildCanonicalPageUrl(
+        siteUrl,
+        router.asPath,
+        router.locale,
+        router.defaultLocale,
+        router.locales
+      ),
     [router.asPath, router.defaultLocale, router.locale, router.locales, siteUrl]
   );
 

@@ -5,6 +5,7 @@ import { useIntl } from "react-intl";
 import { useRouter } from "next/router";
 import { getBlogPostById } from "../services/blogService";
 import { normalizeBlogSlug } from "../utils/blogSlug";
+import { buildBlogPath } from "../utils/blogPath";
 
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
 
@@ -107,7 +108,7 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
         // Conserva filtros, parámetros y anclas al sustituir el slug por su traducción canónica.
         const routeSuffix = getRouteSuffix(router.asPath);
         const navigationCompleted = await router.push(
-          `/blog/${normalizedNewSlug}${routeSuffix}`,
+          buildBlogPath(normalizedNewSlug, routeSuffix),
           undefined,
           { locale: newIdioma }
         );
