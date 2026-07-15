@@ -23,7 +23,7 @@ from .middleware.logging import LoggingMiddleware
 from .middleware.rate_limit import RateLimitMiddleware, RateLimitRule
 from .middleware.request_size import RequestSizeLimitMiddleware, RequestSizeRule
 from contextlib import asynccontextmanager
-from .routers import contacto, charcuteria, blog, token
+from .routers import contacto, charcuteria, blog, sitemap, token
 from .database import engine
 from .models.models import Base
 from .core.config import settings
@@ -97,6 +97,13 @@ def create_app() -> FastAPI:
         lifespan=lifespan,
     )
 
+    @app.get("/livez", tags=["Health"])
+    async def livez(response: Response) -> dict[str, str]:
+        """Confirma que el proceso FastAPI responde sin consultar dependencias externas."""
+        response.headers["Cache-Control"] = "no-store, max-age=0"
+        response.headers["Pragma"] = "no-cache"
+        return {"status": "alive"}
+
     @app.get("/health", tags=["Health"])
     async def health(response: Response) -> dict[str, str]:
         """Informa si la API está operativa y comprueba el estado actual de la base de datos."""
@@ -134,11 +141,33 @@ def create_app() -> FastAPI:
             "database": "available" if database_available else "unavailable",
         }
 
-    # Límites independientes para los dos endpoints públicos más sensibles.
-    # Se añaden antes del middleware de logging para que los bloqueos 429 también queden registrados.
+    # Cada petición consume el límite global y, cuando corresponde, el límite específico
+    # de su endpoint. Las rutas dinámicas usan parámetros entre llaves para cubrir todos
+    # los slugs e identificadores sin depender del contenido recibido.
     app.add_middleware(
         RateLimitMiddleware,
         rules=[
+            RateLimitRule(
+                name="global",
+                method="*",
+                path="*",
+                max_requests=settings.GLOBAL_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.GLOBAL_RATE_LIMIT_WINDOW_SECONDS,
+            ),
+            RateLimitRule(
+                name="health",
+                method="GET",
+                path="/health",
+                max_requests=settings.STATUS_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.STATUS_RATE_LIMIT_WINDOW_SECONDS,
+            ),
+            RateLimitRule(
+                name="livez",
+                method="GET",
+                path="/livez",
+                max_requests=settings.STATUS_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.STATUS_RATE_LIMIT_WINDOW_SECONDS,
+            ),
             RateLimitRule(
                 name="contacto",
                 method="POST",
@@ -152,6 +181,41 @@ def create_app() -> FastAPI:
                 path="/api/get-token",
                 max_requests=settings.TOKEN_RATE_LIMIT_REQUESTS,
                 window_seconds=settings.TOKEN_RATE_LIMIT_WINDOW_SECONDS,
+            ),
+            RateLimitRule(
+                name="blog-listado",
+                method="GET",
+                path="/api/blog",
+                max_requests=settings.READ_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.READ_RATE_LIMIT_WINDOW_SECONDS,
+            ),
+            RateLimitRule(
+                name="blog-slug",
+                method="GET",
+                path="/api/blog/{slug}",
+                max_requests=settings.READ_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.READ_RATE_LIMIT_WINDOW_SECONDS,
+            ),
+            RateLimitRule(
+                name="blog-id",
+                method="GET",
+                path="/api/blog/by-id/{id_noticia}",
+                max_requests=settings.READ_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.READ_RATE_LIMIT_WINDOW_SECONDS,
+            ),
+            RateLimitRule(
+                name="charcuteria",
+                method="GET",
+                path="/api/charcuteria",
+                max_requests=settings.READ_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.READ_RATE_LIMIT_WINDOW_SECONDS,
+            ),
+            RateLimitRule(
+                name="sitemap",
+                method="GET",
+                path="/api/sitemap/blog",
+                max_requests=settings.SITEMAP_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.SITEMAP_RATE_LIMIT_WINDOW_SECONDS,
             ),
         ],
         secret_key=settings.secret_key,
@@ -193,6 +257,9 @@ def create_app() -> FastAPI:
     app.include_router(
         blog.router, prefix="/api", tags=["Blog"]
     )  # Endpoints para publicaciones de blog
+    app.include_router(
+        sitemap.router, prefix="/api", tags=["Sitemap"]
+    )  # Datos mínimos del sitemap protegidos mediante token temporal
     app.include_router(
         token.router, prefix="/api", tags=["Token"]
     )  # Endpoint para obtener tokens temporales

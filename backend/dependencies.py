@@ -15,12 +15,17 @@ Dependencias:
 - Utilidades de autenticación: Para verificar tokens temporales.
 """
 
-from fastapi import Header, HTTPException, status
-from .database import async_session
-from .core.auth_utils import verify_timed_token
-from typing import Optional
-from typing import cast
+from ipaddress import ip_address
+import logging
+from typing import Optional, cast
+
+from fastapi import Header, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from .core.auth_utils import verify_timed_token
+from .core.client_ip import resolve_client_host
+from .core.config import settings
+from .database import async_session
 
 async def get_db():
     """
@@ -69,4 +74,22 @@ async def verify_token(x_timed_token: Optional[str] = Header(None)):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Token inválido o expirado"
+        )
+
+
+logger = logging.getLogger(__name__)
+
+
+async def verify_local_request(request: Request) -> None:
+    """Permite únicamente clientes loopback tras resolver proxies confiables."""
+    client_host = resolve_client_host(request, settings.trusted_proxy_ips, logger)
+    try:
+        is_loopback = ip_address(client_host).is_loopback
+    except ValueError:
+        is_loopback = False
+
+    if not is_loopback:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Endpoint disponible únicamente desde el servidor local",
         )

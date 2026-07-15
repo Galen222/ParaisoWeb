@@ -38,6 +38,14 @@ class Settings(BaseSettings):
         DATABASE_URL (str): URL de conexión a la base de datos.
         secret_key (str): Clave secreta para operaciones de autenticación y tokens.
         token_interval_seconds (int): Intervalo de tiempo para la validez de los tokens.
+        GLOBAL_RATE_LIMIT_REQUESTS (int): Solicitudes totales permitidas por cliente y ventana.
+        GLOBAL_RATE_LIMIT_WINDOW_SECONDS (int): Duración de la ventana global.
+        STATUS_RATE_LIMIT_REQUESTS (int): Consultas permitidas a health y livez por ventana.
+        STATUS_RATE_LIMIT_WINDOW_SECONDS (int): Duración de la ventana de estado.
+        READ_RATE_LIMIT_REQUESTS (int): Lecturas permitidas por endpoint y ventana.
+        READ_RATE_LIMIT_WINDOW_SECONDS (int): Duración de la ventana de lecturas.
+        SITEMAP_RATE_LIMIT_REQUESTS (int): Consultas permitidas al origen de datos del sitemap.
+        SITEMAP_RATE_LIMIT_WINDOW_SECONDS (int): Duración de la ventana del sitemap.
         CONTACT_RATE_LIMIT_REQUESTS (int): Envíos permitidos al formulario por ventana.
         CONTACT_RATE_LIMIT_WINDOW_SECONDS (int): Duración de la ventana del formulario.
         TOKEN_RATE_LIMIT_REQUESTS (int): Solicitudes permitidas de token por ventana.
@@ -57,6 +65,14 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     secret_key: str
     token_interval_seconds: int = Field(gt=0)
+    GLOBAL_RATE_LIMIT_REQUESTS: int = Field(default=300, gt=0)
+    GLOBAL_RATE_LIMIT_WINDOW_SECONDS: int = Field(default=60, gt=0)
+    STATUS_RATE_LIMIT_REQUESTS: int = Field(default=120, gt=0)
+    STATUS_RATE_LIMIT_WINDOW_SECONDS: int = Field(default=60, gt=0)
+    READ_RATE_LIMIT_REQUESTS: int = Field(default=120, gt=0)
+    READ_RATE_LIMIT_WINDOW_SECONDS: int = Field(default=60, gt=0)
+    SITEMAP_RATE_LIMIT_REQUESTS: int = Field(default=12, gt=0)
+    SITEMAP_RATE_LIMIT_WINDOW_SECONDS: int = Field(default=60, gt=0)
     CONTACT_RATE_LIMIT_REQUESTS: int = Field(default=5, gt=0)
     CONTACT_RATE_LIMIT_WINDOW_SECONDS: int = Field(default=600, gt=0)
     TOKEN_RATE_LIMIT_REQUESTS: int = Field(default=120, gt=0)

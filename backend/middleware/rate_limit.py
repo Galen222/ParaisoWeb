@@ -6,8 +6,9 @@ middleware/rate_limit.py
 Middleware para limitar solicitudes repetidas a endpoints sensibles.
 
 Este módulo mantiene contadores temporales en memoria por proceso para:
-- Reducir el abuso del formulario de contacto antes de procesar el cuerpo o el archivo.
-- Evitar solicitudes masivas al endpoint público de generación de tokens.
+- Aplicar un límite global que cubra también rutas añadidas en el futuro.
+- Aplicar límites específicos según el coste y riesgo de cada endpoint.
+- Reducir el abuso antes de procesar formularios, archivos o consultas de base de datos.
 - Registrar los bloqueos sin guardar la dirección IP en claro.
 
 La limitación en memoria es una primera barrera de aplicación. En despliegues con varios
@@ -19,13 +20,15 @@ import hashlib
 import hmac
 import logging
 import math
-from ipaddress import IPv6Address, ip_address
+import re
 import time
 from collections import defaultdict, deque
 from dataclasses import dataclass
-from typing import Callable, Deque, Dict, Iterable, Set, Tuple
+from typing import Callable, Deque, Dict, Iterable, Pattern, Set, Tuple
 
 from fastapi import Request
+
+from ..core.client_ip import normalize_host, resolve_client_host
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import JSONResponse, Response
 
@@ -43,6 +46,12 @@ class RateLimitRule:
     window_seconds: int
 
     def __post_init__(self) -> None:
+        if not self.name.strip():
+            raise ValueError("name no puede estar vacío")
+        if not self.method.strip():
+            raise ValueError("method no puede estar vacío")
+        if not self.path.strip():
+            raise ValueError("path no puede estar vacío")
         if self.max_requests <= 0:
             raise ValueError("max_requests debe ser mayor que cero")
         if self.window_seconds <= 0:
@@ -118,13 +127,13 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         clock: Callable[[], float] = time.monotonic,
     ) -> None:
         super().__init__(app)
-        self._rules = {
-            (rule.method.upper(), self._normalize_path(rule.path)): rule
+        self._rules: list[tuple[RateLimitRule, Pattern[str]]] = [
+            (rule, self._compile_path_pattern(rule.path))
             for rule in rules
-        }
+        ]
         self._secret_key = secret_key.encode("utf-8")
         self._trusted_proxy_ips: Set[str] = {
-            self._normalize_host(value)
+            normalize_host(value)
             for value in trusted_proxy_ips
             if value.strip()
         }
@@ -132,31 +141,40 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
         normalized_path = self._normalize_path(request.url.path)
-        rule = self._rules.get((request.method.upper(), normalized_path))
+        request_method = request.method.upper()
+        matching_rules = [
+            rule
+            for rule, path_pattern in self._rules
+            if (rule.method == "*" or rule.method.upper() == request_method)
+            and path_pattern.fullmatch(normalized_path)
+        ]
 
-        if rule is None:
+        if not matching_rules:
             return await call_next(request)
 
         client_key = self._build_anonymous_client_key(request)
-        allowed, retry_after = await self._limiter.check(rule, client_key)
-        if allowed:
-            return await call_next(request)
+        for rule in matching_rules:
+            allowed, retry_after = await self._limiter.check(rule, client_key)
+            if allowed:
+                continue
 
-        # El identificador está derivado mediante HMAC y no permite recuperar la IP original.
-        logger.warning(
-            "Límite de solicitudes excedido | endpoint=%s | cliente=%s | reintento=%ss",
-            rule.name,
-            client_key,
-            retry_after,
-        )
-        return JSONResponse(
-            status_code=429,
-            content={"detail": "Demasiadas solicitudes. Inténtalo de nuevo más tarde."},
-            headers={
-                "Retry-After": str(retry_after),
-                "Cache-Control": "no-store",
-            },
-        )
+            # El identificador está derivado mediante HMAC y no permite recuperar la IP original.
+            logger.warning(
+                "Límite de solicitudes excedido | endpoint=%s | cliente=%s | reintento=%ss",
+                rule.name,
+                client_key,
+                retry_after,
+            )
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "Demasiadas solicitudes. Inténtalo de nuevo más tarde."},
+                headers={
+                    "Retry-After": str(retry_after),
+                    "Cache-Control": "no-store",
+                },
+            )
+
+        return await call_next(request)
 
     def _build_anonymous_client_key(self, request: Request) -> str:
         client_host = self._resolve_client_host(request)
@@ -168,51 +186,24 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
     def _resolve_client_host(self, request: Request) -> str:
         """Usa cabeceras de proxy solo cuando la conexión procede de un proxy confiable."""
-        direct_host = self._normalize_host(request.client.host if request.client else "unknown")
-        if direct_host not in self._trusted_proxy_ips:
-            return direct_host
-
-        forwarded_for = request.headers.get("x-forwarded-for", "")
-        forwarded_chain = [value.strip() for value in forwarded_for.split(",") if value.strip()]
-
-        # Recorre la cadena desde el proxy más cercano hacia el cliente. Elegir el primer
-        # valor de la cabecera permitiría que un visitante antepusiera una IP falsa cuando
-        # Nginx utiliza ``$proxy_add_x_forwarded_for``.
-        for candidate in reversed(forwarded_chain):
-            normalized_candidate = self._normalize_forwarded_ip(candidate)
-            if normalized_candidate is None:
-                logger.warning("Entrada inválida de X-Forwarded-For ignorada desde proxy confiable")
-                continue
-
-            if normalized_candidate not in self._trusted_proxy_ips:
-                return normalized_candidate
-
-        # Algunos proxies, incluido Nginx en configuraciones habituales, pueden aportar
-        # únicamente X-Real-IP. Solo se acepta cuando el salto directo ya es confiable.
-        real_ip = request.headers.get("x-real-ip", "").strip()
-        normalized_real_ip = self._normalize_forwarded_ip(real_ip) if real_ip else None
-        if normalized_real_ip and normalized_real_ip not in self._trusted_proxy_ips:
-            return normalized_real_ip
-
-        return direct_host
-
-    @staticmethod
-    def _normalize_forwarded_ip(value: str) -> str | None:
-        """Normaliza una IP de cabecera y convierte IPv4 mapeada en IPv6 a IPv4."""
-        try:
-            parsed = ip_address(value)
-        except ValueError:
-            return None
-
-        if isinstance(parsed, IPv6Address) and parsed.ipv4_mapped is not None:
-            return str(parsed.ipv4_mapped)
-        return str(parsed)
+        return resolve_client_host(request, self._trusted_proxy_ips, logger)
 
     @classmethod
-    def _normalize_host(cls, value: str) -> str:
-        """Normaliza hosts IP sin romper nombres especiales usados por servidores de prueba."""
-        stripped = value.strip()
-        return cls._normalize_forwarded_ip(stripped) or stripped
+    def _compile_path_pattern(cls, path: str) -> Pattern[str]:
+        """Compila rutas exactas, globales o con parámetros ``{nombre}``."""
+        if path.strip() == "*":
+            return re.compile(r"^.*$")
+
+        normalized = cls._normalize_path(path)
+        segments = normalized.split("/")
+        pattern_segments: list[str] = []
+        for segment in segments:
+            if segment.startswith("{") and segment.endswith("}") and len(segment) > 2:
+                pattern_segments.append(r"[^/]+")
+            else:
+                pattern_segments.append(re.escape(segment))
+
+        return re.compile(r"^" + "/".join(pattern_segments) + r"$")
 
     @staticmethod
     def _normalize_path(path: str) -> str:

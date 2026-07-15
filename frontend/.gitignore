@@ -59,7 +59,6 @@ frontprod2.bat
 # typedoc config
 typedoc.json
 
-# sitemap config
-next-sitemap.config.js
-generate-sitemap.js
+# sitemap dinámico: src/pages/sitemap.xml.tsx
+# frontsite.bat era un lanzador local del generador antiguo.
 frontsite.bat

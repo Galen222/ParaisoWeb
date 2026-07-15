@@ -166,6 +166,64 @@ class RateLimitMiddlewareTests(unittest.TestCase):
         self.assertEqual(first_response.status_code, 200)
         self.assertEqual(second_response.status_code, 429)
 
+    def test_regla_global_y_regla_especifica_se_aplican_a_la_misma_peticion(self) -> None:
+        app = FastAPI()
+        app.add_middleware(
+            RateLimitMiddleware,
+            rules=[
+                RateLimitRule(
+                    name="global",
+                    method="*",
+                    path="*",
+                    max_requests=10,
+                    window_seconds=60,
+                ),
+                RateLimitRule(
+                    name="detalle",
+                    method="GET",
+                    path="/api/blog/{slug}",
+                    max_requests=1,
+                    window_seconds=60,
+                ),
+            ],
+            secret_key="clave-pruebas",
+            clock=self.clock,
+        )
+
+        @app.get("/api/blog/{slug}")
+        async def detalle(slug: str) -> dict[str, str]:
+            return {"slug": slug}
+
+        client = TestClient(app)
+        self.assertEqual(client.get("/api/blog/primero").status_code, 200)
+        self.assertEqual(client.get("/api/blog/segundo").status_code, 429)
+
+    def test_limite_global_cubre_rutas_sin_regla_especifica(self) -> None:
+        app = FastAPI()
+        app.add_middleware(
+            RateLimitMiddleware,
+            rules=[
+                RateLimitRule(
+                    name="global",
+                    method="*",
+                    path="*",
+                    max_requests=2,
+                    window_seconds=60,
+                )
+            ],
+            secret_key="clave-pruebas",
+            clock=self.clock,
+        )
+
+        @app.get("/ruta-nueva")
+        async def ruta_nueva() -> dict[str, bool]:
+            return {"ok": True}
+
+        client = TestClient(app)
+        self.assertEqual(client.get("/ruta-nueva").status_code, 200)
+        self.assertEqual(client.get("/ruta-nueva").status_code, 200)
+        self.assertEqual(client.get("/ruta-nueva").status_code, 429)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -13,7 +13,7 @@ Este archivo incluye:
 """
 
 from pydantic import BaseModel, EmailStr, Field, field_validator
-from typing import Optional
+from typing import Literal, Optional
 from datetime import datetime
 import unicodedata
 
@@ -133,6 +133,15 @@ class ContactForm(BaseModel):
         if v not in motivos_validos:
             raise ValueError(f"El motivo debe ser uno de: {', '.join(motivos_validos)}")
         return v
+
+
+class SitemapBlogEntry(BaseModel):
+    """Datos públicos mínimos de una publicación incluidos en el sitemap."""
+
+    id_noticia: int = Field(gt=0)
+    idioma: Literal["es", "en", "de"]
+    slug: str = Field(min_length=1, max_length=150)
+    lastmod: datetime
 
 
 # Esquemas para la Tabla 'charcuteria'

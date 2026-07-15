@@ -36,7 +36,7 @@ class EnvironmentExampleTests(unittest.TestCase):
     def test_frontend_env_example_documenta_todas_las_variables_publicas_usadas(self) -> None:
         frontend_root = PROJECT_ROOT / "frontend"
         documented = read_env_example_names(frontend_root / ".env.example")
-        pattern = re.compile(r"process\.env\.(NEXT_PUBLIC_[A-Z0-9_]+)")
+        pattern = re.compile(r"process\.env\.((?:NEXT_PUBLIC_|SITEMAP_)[A-Z0-9_]+)")
         referenced: set[str] = set()
 
         for path in (frontend_root / "src").rglob("*"):
