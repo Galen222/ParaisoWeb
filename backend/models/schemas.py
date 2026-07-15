@@ -95,9 +95,21 @@ class ContactForm(BaseModel):
     @field_validator('message')
     @classmethod
     def validate_message(cls, v: str) -> str:
-        """Rechaza mensajes formados únicamente por espacios sin modificar su contenido."""
+        """Rechaza mensajes vacíos o con controles invisibles incompatibles con el correo."""
         if not v.strip():
             raise ValueError("El mensaje no puede estar vacío")
+
+        # Se conservan tabuladores y saltos de línea normales. Otros caracteres Unicode
+        # de control o formato pueden romper el cuerpo MIME o hacer que el texto mostrado
+        # difiera del texto validado, por lo que se rechazan antes de construir el correo.
+        allowed_controls = {"\t", "\n", "\r"}
+        if any(
+            unicodedata.category(character).startswith("C")
+            and character not in allowed_controls
+            for character in v
+        ):
+            raise ValueError("El mensaje contiene caracteres de control no permitidos")
+
         return v
 
     @field_validator('reason')

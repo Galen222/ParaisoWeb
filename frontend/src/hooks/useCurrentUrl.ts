@@ -54,8 +54,9 @@ const useCurrentUrl = (): string => {
   );
 
   const getCurrentUrl = useCallback(
-    (): string => `${window.location.origin}${window.location.pathname}${window.location.search}`,
-    []
+    (): string =>
+      `${siteUrl.replace(/\/+$/, "")}${window.location.pathname}${window.location.search}`,
+    [siteUrl]
   );
   const getServerUrl = useCallback(
     (): string => buildServerUrl(siteUrl, router.asPath, router.locale, router.defaultLocale, router.locales),

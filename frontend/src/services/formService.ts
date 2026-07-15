@@ -6,6 +6,7 @@
 
 import axios, { AxiosResponse } from "axios";
 import { getTimedToken } from "./tokenService";
+import { CONTACT_REQUEST_TIMEOUT_MS } from "../config/api.config";
 
 /**
  * Interfaz para los datos del formulario de contacto.
@@ -80,6 +81,7 @@ export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
       headers: {
         "x-timed-token": timedToken, // Envía el token en el encabezado
       },
+      timeout: CONTACT_REQUEST_TIMEOUT_MS,
     });
 
   try {

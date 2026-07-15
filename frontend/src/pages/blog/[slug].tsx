@@ -63,6 +63,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
   const currentMessages = messages[currentLocale] || messages["es"]; // Mensajes en el idioma actual
   const currentUrl = useCurrentUrl(); // URL actual
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const normalizedSiteUrl = siteUrl.replace(/\/+$/, "");
   const publicationDate = blogDetails ? formatBlogDate(blogDetails.fecha_publicacion, currentLocale) : "";
   const updateDate = blogDetails?.fecha_actualizacion ? formatBlogDate(blogDetails.fecha_actualizacion, currentLocale) : null;
 
@@ -132,7 +133,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
           images: blogDetails?.imagen_url
             ? [
                 {
-                  url: `${IMAGE_BASE_URL}${blogDetails.imagen_url}`,
+                  url: `${normalizedSiteUrl}${IMAGE_BASE_URL}${blogDetails.imagen_url.replace(/^\/+/, "")}`,
                   alt: previewTitle,
                 },
               ]

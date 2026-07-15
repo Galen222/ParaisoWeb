@@ -5,6 +5,7 @@
  */
 
 import axios from "axios";
+import { TOKEN_REQUEST_TIMEOUT_MS } from "../config/api.config";
 
 // Comparte la misma petición entre consumidores simultáneos para evitar ráfagas innecesarias
 // contra /get-token cuando varias secciones de la página cargan a la vez.
@@ -26,7 +27,9 @@ const requestTimedToken = async (): Promise<string> => {
   }
 
   try {
-    const response = await axios.get<unknown>(`${API_URL}/get-token`);
+    const response = await axios.get<unknown>(`${API_URL}/get-token`, {
+      timeout: TOKEN_REQUEST_TIMEOUT_MS,
+    });
     const responseData = response.data;
 
     if (typeof responseData !== "object" || responseData === null || !("token" in responseData)) {

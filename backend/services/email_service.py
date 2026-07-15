@@ -48,10 +48,15 @@ def mask_email_for_log(email: str) -> str:
             return "*" * len(value)
         return f"{value[0]}{'*' * (len(value) - 2)}{value[-1]}"
 
-    domain_name, dot, domain_suffix = domain.partition(".")
-    masked_domain = mask_part(domain_name)
-    if dot:
-        masked_domain = f"{masked_domain}.{domain_suffix}"
+    domain_labels = domain.split(".")
+    if len(domain_labels) == 1:
+        masked_domain = mask_part(domain_labels[0])
+    else:
+        # Mantiene visible únicamente el sufijo final para diagnóstico. En dominios con
+        # subdominios, dejar el resto en claro podía revelar empresa, departamento o sede.
+        masked_domain = ".".join(
+            [*(mask_part(label) for label in domain_labels[:-1]), domain_labels[-1]]
+        )
 
     return f"{mask_part(local_part)}@{masked_domain}"
 

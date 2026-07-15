@@ -49,7 +49,16 @@ export function useDownloadFile(): DownloadFileHook {
         throw new Error("Error descargando el archivo");
       }
 
+      const contentType = response.headers.get("content-type")?.split(";", 1)[0].trim().toLowerCase();
+      if (contentType === "text/html" || contentType === "application/json" || contentType?.endsWith("+json")) {
+        throw new Error("El servidor devolvió una página de error en lugar del archivo");
+      }
+
       const blob = await response.blob();
+      if (blob.size === 0) {
+        throw new Error("El archivo descargado está vacío");
+      }
+
       saveAs(blob, fileName); // Inicia la descarga del archivo usando file-saver
 
       // Mostrar notificación de éxito

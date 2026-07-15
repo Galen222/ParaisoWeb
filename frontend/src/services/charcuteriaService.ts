@@ -5,8 +5,9 @@
  */
 
 import axios from "axios";
-import { getTimedToken } from "./tokenService";
+import { requestWithTimedToken } from "./timedTokenRequest";
 import { isValidApiDateString } from "../utils/apiDate";
+import { READ_REQUEST_TIMEOUT_MS } from "../config/api.config";
 
 /**
  * Interfaz para representar los datos de un producto de charcutería.
@@ -73,14 +74,16 @@ export const getCharcuteriaProducts = async (idioma: string): Promise<Charcuteri
     if (!SUPPORTED_LANGUAGES.has(idioma)) {
       throw new Error(`El idioma "${idioma}" no es válido. Solo se permiten: es, en, de.`);
     }
-    const token = await getTimedToken(); // Obtiene el token temporal
-    // Realiza la solicitud GET a la API incluyendo el idioma como parámetro de consulta.
-    const response = await axios.get<unknown>(apiUrl, {
-      headers: {
-        "x-timed-token": token,
-      },
-      params: { idioma },
-    });
+    // Realiza la solicitud GET y renueva una sola vez el token si caduca durante la petición.
+    const response = await requestWithTimedToken((token) =>
+      axios.get<unknown>(apiUrl, {
+        headers: {
+          "x-timed-token": token,
+        },
+        params: { idioma },
+        timeout: READ_REQUEST_TIMEOUT_MS,
+      })
+    );
 
     if (
       !Array.isArray(response.data) ||

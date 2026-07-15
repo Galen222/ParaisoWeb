@@ -133,12 +133,15 @@ async def get_blog_post_by_slug(
         schemas.Blog: La publicación de blog encontrada.
     """
     try:
-        # Evita consultas a MySQL con slugs que nunca puede generar el frontend.
-        if not _is_valid_blog_slug(slug):
+        # Dos rutas visualmente idénticas pueden llegar en NFC o NFD según el navegador.
+        # La base de datos almacena el slug canónico, así que se normaliza antes de validar
+        # y consultar para no devolver un 404 falso por una representación Unicode distinta.
+        normalized_slug = unicodedata.normalize("NFC", slug)
+        if not _is_valid_blog_slug(normalized_slug):
             raise HTTPException(status_code=422, detail="Slug de blog no válido")
 
         blog_service = BlogService(db)
-        post = await blog_service.get_post_by_slug(slug, idioma)
+        post = await blog_service.get_post_by_slug(normalized_slug, idioma)
         
         if post is None:
             raise HTTPException(status_code=404, detail="Blog no encontrado")

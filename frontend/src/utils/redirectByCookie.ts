@@ -1,6 +1,7 @@
 // utils/redirectByCookie.ts
 
 import type { GetServerSidePropsContext } from "next";
+import { isSameRequestHost } from "./requestHost";
 
 const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
@@ -52,8 +53,7 @@ export function redirectByCookie(context: GetServerSidePropsContext, basePath: s
   if (referer) {
     try {
       const refererUrl = new URL(referer);
-      const requestHost = req.headers.host;
-      const isSameHost = !requestHost || refererUrl.host === requestHost;
+      const isSameHost = isSameRequestHost(refererUrl, req.headers);
       const isSamePage = stripLocalePrefix(refererUrl.pathname) === normalizePath(basePath);
       const refererLocale = getLocaleFromPath(refererUrl.pathname);
       // console.log(`refererLocale: ${refererLocale}`);

@@ -5,8 +5,9 @@
  */
 
 import axios from "axios";
-import { getTimedToken } from "./tokenService";
+import { requestWithTimedToken } from "./timedTokenRequest";
 import { isValidApiDateString } from "../utils/apiDate";
+import { READ_REQUEST_TIMEOUT_MS } from "../config/api.config";
 
 /**
  * Interfaz para representar los datos de una publicación de blog.
@@ -46,6 +47,20 @@ const requireSupportedLanguage = (idioma: string): string => {
   }
 
   return idioma;
+};
+
+/** Normaliza y valida el slug antes de construir la ruta de la API. */
+const requireValidSlug = (slug: string): string => {
+  const normalizedSlug = slug.normalize("NFC");
+  if (
+    normalizedSlug.length === 0 ||
+    normalizedSlug.length > MAX_SLUG_LENGTH ||
+    !VALID_SLUG_PATTERN.test(normalizedSlug)
+  ) {
+    throw new Error("El slug del artículo no es válido.");
+  }
+
+  return normalizedSlug;
 };
 
 
@@ -115,14 +130,17 @@ export const getBlogPosts = async (idioma: string, token?: string): Promise<Blog
     const apiUrl = getApiUrl();
     const validatedLanguage = requireSupportedLanguage(idioma);
 
-    // Si no se proporciona el token, lo obtenemos
-    const authToken = token || (await getTimedToken());
-    const response = await axios.get<unknown>(apiUrl, {
-      headers: {
-        "x-timed-token": authToken,
-      },
-      params: { idioma: validatedLanguage },
-    });
+    const response = await requestWithTimedToken(
+      (authToken) =>
+        axios.get<unknown>(apiUrl, {
+          headers: {
+            "x-timed-token": authToken,
+          },
+          params: { idioma: validatedLanguage },
+          timeout: READ_REQUEST_TIMEOUT_MS,
+        }),
+      token
+    );
     if (
       !Array.isArray(response.data) ||
       !response.data.every((post) => isBlogPost(post, { idioma: validatedLanguage }))
@@ -152,13 +170,17 @@ export const getBlogPostById = async (id: number, idioma: string, token?: string
       throw new Error("El identificador del artículo debe ser un entero mayor que cero.");
     }
     const validatedLanguage = requireSupportedLanguage(idioma);
-    const authToken = token || (await getTimedToken());
-    const response = await axios.get<unknown>(`${apiUrl}/by-id/${id}`, {
-      headers: {
-        "x-timed-token": authToken,
-      },
-      params: { idioma: validatedLanguage },
-    });
+    const response = await requestWithTimedToken(
+      (authToken) =>
+        axios.get<unknown>(`${apiUrl}/by-id/${id}`, {
+          headers: {
+            "x-timed-token": authToken,
+          },
+          params: { idioma: validatedLanguage },
+          timeout: READ_REQUEST_TIMEOUT_MS,
+        }),
+      token
+    );
     return requireBlogPost(response.data, { id, idioma: validatedLanguage });
   } catch (error) {
     throw error;
@@ -178,42 +200,32 @@ export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: s
   try {
     const apiUrl = getApiUrl();
 
-    // Validar y sanitizar los inputs
-    if (slug.length === 0 || slug.length > MAX_SLUG_LENGTH || !VALID_SLUG_PATTERN.test(slug)) {
-      // Caracteres inválidos individuales
-      const invalidChars = slug.match(/[^\p{L}\p{N}\p{M}-]/gu) || [];
-      const invalidList = Array.from(new Set(invalidChars)).join(", ");
-
-      // Vista resaltada del slug, envolviendo los inválidos entre corchetes
-      const highlighted = Array.from(slug)
-        .map((ch) => (/[\p{L}\p{N}\p{M}-]/u.test(ch) ? ch : `[${ch}]`))
-        .join("");
-
-      throw new Error(`El slug "${slug}" contiene caracteres no permitidos: ${invalidList}. Vista resaltada: ${highlighted}`);
-    }
-
+    const normalizedSlug = requireValidSlug(slug);
     const validatedLanguage = idioma ? requireSupportedLanguage(idioma) : undefined;
 
-    // Si no se proporciona el token, lo obtenemos
-    const authToken = token || (await getTimedToken());
-
-    // Codificar el slug para incluirlo de forma segura en la URL
-    const encodedSlug = encodeURIComponent(slug);
+    // Codificar el slug normalizado para que la ruta y la comparación de identidad
+    // utilicen la misma representación Unicode que el backend y la base de datos.
+    const encodedSlug = encodeURIComponent(normalizedSlug);
 
     // Construir la URL incluyendo el slug en la ruta y el idioma como parámetro de consulta
     const url = `${apiUrl}/${encodedSlug}`;
     const params = validatedLanguage ? { idioma: validatedLanguage } : undefined;
 
-    const response = await axios.get<unknown>(url, {
-      headers: {
-        "x-timed-token": authToken,
-      },
-      params,
-    });
+    const response = await requestWithTimedToken(
+      (authToken) =>
+        axios.get<unknown>(url, {
+          headers: {
+            "x-timed-token": authToken,
+          },
+          params,
+          timeout: READ_REQUEST_TIMEOUT_MS,
+        }),
+      token
+    );
 
     return requireBlogPost(response.data, {
       idioma: validatedLanguage,
-      slug,
+      slug: normalizedSlug,
     });
   } catch (error) {
     throw error;

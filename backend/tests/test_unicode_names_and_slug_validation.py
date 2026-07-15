@@ -33,6 +33,29 @@ class ContactNameUnicodeTests(unittest.TestCase):
             )
 
 
+class ContactMessageUnicodeTests(unittest.TestCase):
+    def test_acepta_saltos_de_linea_y_tabuladores_normales(self) -> None:
+        form = ContactForm(
+            name="Ana",
+            reason="informacion",
+            email="persona@example.com",
+            message="Primera línea\n\tSegunda línea",
+        )
+
+        self.assertEqual(form.message, "Primera línea\n\tSegunda línea")
+
+    def test_rechaza_controles_e_invisibles_unicode(self) -> None:
+        for character in ("\x00", "\u200b", "\u202e", "\ue000"):
+            with self.subTest(character=repr(character)):
+                with self.assertRaises(ValidationError):
+                    ContactForm(
+                        name="Ana",
+                        reason="informacion",
+                        email="persona@example.com",
+                        message=f"Consulta{character}oculta",
+                    )
+
+
 class BlogSlugValidationTests(unittest.IsolatedAsyncioTestCase):
     def test_rechaza_caracteres_que_el_frontend_no_genera(self) -> None:
         self.assertFalse(_is_valid_blog_slug("articulo_con_guion_bajo"))
@@ -57,6 +80,22 @@ class BlogSlugValidationTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(raised.exception.status_code, 422)
         service_class.assert_not_called()
+
+    async def test_endpoint_normaliza_slug_nfd_antes_de_consultar_mysql(self) -> None:
+        db = AsyncMock()
+        expected_post = object()
+
+        with patch("backend.routers.blog.BlogService") as service_class:
+            service_class.return_value.get_post_by_slug = AsyncMock(return_value=expected_post)
+            result = await get_blog_post_by_slug(
+                slug="cafe\u0301",
+                idioma="es",
+                token_verification=None,
+                db=db,
+            )
+
+        self.assertIs(result, expected_post)
+        service_class.return_value.get_post_by_slug.assert_awaited_once_with("café", "es")
 
 
 if __name__ == "__main__":

@@ -2,7 +2,7 @@
 
 import unittest
 
-from backend.services.email_service import sanitize_attachment_filename
+from backend.services.email_service import mask_email_for_log, sanitize_attachment_filename
 
 
 class AttachmentFilenameSafetyTests(unittest.TestCase):
@@ -24,6 +24,20 @@ class AttachmentFilenameSafetyTests(unittest.TestCase):
         sanitized = sanitize_attachment_filename(filename)
 
         self.assertEqual(sanitized, "José-curriculum.pdf")
+
+
+class EmailLogMaskingTests(unittest.TestCase):
+    """Evita que los logs revelen subdominios u organizaciones del remitente."""
+
+    def test_enmascara_todas_las_etiquetas_salvo_el_sufijo_final(self) -> None:
+        masked = mask_email_for_log("john@department.example.com")
+
+        self.assertEqual(masked, "j**n@d********t.e*****e.com")
+        self.assertNotIn("department", masked)
+        self.assertNotIn("example", masked)
+
+    def test_mantiene_el_formato_existente_para_un_dominio_simple(self) -> None:
+        self.assertEqual(mask_email_for_log("john@example.com"), "j**n@e*****e.com")
 
 
 if __name__ == "__main__":

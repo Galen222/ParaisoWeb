@@ -3,6 +3,7 @@
 import { GetServerSidePropsContext } from "next";
 import { BlogPost, getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
+import { isSameRequestHost } from "./requestHost";
 
 const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
@@ -77,8 +78,7 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
   if (referer) {
     try {
       const refererUrl = new URL(referer);
-      const requestHost = context.req.headers.host;
-      const isSameHost = !requestHost || refererUrl.host === requestHost;
+      const isSameHost = isSameRequestHost(refererUrl, context.req.headers);
       const refererLocale = getLocaleFromPath(refererUrl.pathname);
 
       if (isSameHost && isBlogDetailsPath(refererUrl.pathname) && refererLocale !== locale) {

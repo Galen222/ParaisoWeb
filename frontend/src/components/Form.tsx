@@ -36,10 +36,11 @@ const maskEmailForLog = (email: string): string => {
 
   const localPart = email.slice(0, separatorIndex);
   const domainParts = email.slice(separatorIndex + 1).split(".");
-  const domainName = domainParts.shift() ?? "";
-  const domainSuffix = domainParts.length > 0 ? `.${domainParts.join(".")}` : "";
+  const maskedDomain = domainParts
+    .map((part, index) => (index === domainParts.length - 1 && domainParts.length > 1 ? part : maskPart(part)))
+    .join(".");
 
-  return `${maskPart(localPart)}@${maskPart(domainName)}${domainSuffix}`;
+  return `${maskPart(localPart)}@${maskedDomain}`;
 };
 
 /**
@@ -178,7 +179,17 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
   const handleValidateMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((current) => ({ ...current, [name]: value }));
+    const containsUnsupportedControl = Array.from(value).some((character) => {
+      if (character === "\t" || character === "\n" || character === "\r") {
+        return false;
+      }
+
+      return /\p{C}/u.test(character);
+    });
+
+    if (!containsUnsupportedControl) {
+      setFormData((current) => ({ ...current, [name]: value }));
+    }
   };
 
   /**

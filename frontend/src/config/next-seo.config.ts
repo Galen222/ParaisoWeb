@@ -74,8 +74,9 @@ const getSEOConfig = (
   includeLanguageAlternates = true
 ): DefaultSeoProps => {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const normalizedSiteUrl = siteUrl.replace(/\/+$/, "");
   const routePath = currentPath ? normalizeRoutePath(currentPath) : null;
-  const currentUrl = routePath ? buildLocalizedUrl(siteUrl, locale, routePath) : siteUrl;
+  const currentUrl = routePath ? buildLocalizedUrl(normalizedSiteUrl, locale, routePath) : normalizedSiteUrl;
 
   /**
    * Formatea el locale al formato requerido por Open Graph.
@@ -108,7 +109,7 @@ const getSEOConfig = (
       siteName: "El Paraíso Del Jamón",
       images: [
         {
-          url: `${siteUrl}/images/navbar/imagenLogo.png`,
+          url: `${normalizedSiteUrl}/images/navbar/imagenLogo.png`,
           width: 1200,
           height: 700,
           alt: messages["seo_og_image_alt"] || "Logo El Paraíso Del Jamón",
@@ -129,11 +130,11 @@ const getSEOConfig = (
               { lng: "en", region: "US" },
               { lng: "de", region: "DE" },
             ].map(({ lng, region }) => ({
-              href: buildLocalizedUrl(siteUrl, lng, routePath),
+              href: buildLocalizedUrl(normalizedSiteUrl, lng, routePath),
               hrefLang: `${lng}-${region}`,
             })),
             {
-              href: buildLocalizedUrl(siteUrl, DEFAULT_LOCALE, routePath),
+              href: buildLocalizedUrl(normalizedSiteUrl, DEFAULT_LOCALE, routePath),
               hrefLang: "x-default",
             },
           ]

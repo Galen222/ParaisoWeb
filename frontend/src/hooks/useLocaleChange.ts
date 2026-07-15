@@ -13,6 +13,7 @@ import {
 
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
 const VALID_SLUG_PATTERN = /^[\p{L}\p{N}\p{M}-]+$/u;
+const MAX_SLUG_LENGTH = 150;
 
 /** Devuelve un mensaje breve para depurar sin registrar respuestas, cabeceras ni tokens. */
 const getErrorMessageForLog = (error: unknown): string => {
@@ -92,6 +93,7 @@ export function useLocaleChange(): LocaleChangeHandler {
               newBlogPost.id_noticia === currentBlogPost.id_noticia &&
               newBlogPost.idioma === newLocale &&
               typeof newBlogPost.slug === "string" &&
+              newBlogPost.slug.length <= MAX_SLUG_LENGTH &&
               VALID_SLUG_PATTERN.test(newBlogPost.slug);
 
             if (isExpectedTranslation) {

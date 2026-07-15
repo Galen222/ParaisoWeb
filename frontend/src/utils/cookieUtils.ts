@@ -20,10 +20,26 @@ const GOOGLE_ANALYTICS_COOKIE_DOMAINS = [".asuscomm.com", "paraisodeljamon.com",
 export const isGoogleAnalyticsCookie = (cookieName: string): boolean =>
   /^_ga($|_)/.test(cookieName) || /^_gid$/.test(cookieName) || /^_gat($|_)/.test(cookieName);
 
+/** Construye atributos comunes y añade Secure únicamente cuando la página usa HTTPS. */
+const buildCookieAttributes = (domain?: string): string => {
+  const attributes = ["path=/", "SameSite=Lax"];
+  if (typeof window !== "undefined" && window.location.protocol === "https:") {
+    attributes.push("Secure");
+  }
+  if (domain) {
+    attributes.push(`domain=${domain}`);
+  }
+  return attributes.join("; ");
+};
+
+/** Escribe una cookie cliente con los atributos de seguridad comunes. */
+export const setClientCookie = (cookieName: string, value: string, maxAgeSeconds: number): void => {
+  document.cookie = `${cookieName}=${value}; max-age=${maxAgeSeconds}; ${buildCookieAttributes()}`;
+};
+
 /** Caduca una cookie para el host actual o para un dominio concreto. */
 const expireCookie = (cookieName: string, domain?: string): void => {
-  const domainAttribute = domain ? ` domain=${domain};` : "";
-  document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;${domainAttribute}`;
+  document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; ${buildCookieAttributes(domain)}`;
 };
 
 /**
@@ -70,17 +86,17 @@ export const revokeCookieCategories = ({
  * El valor incluye una versión para poder invalidarlo si cambia la política.
  */
 export const saveCookieConsentPreference = (preference: string): void => {
-  document.cookie = `${COOKIE_CONSENT_NAME}=${preference}; path=/; max-age=31536000; SameSite=Lax`;
+  setClientCookie(COOKIE_CONSENT_NAME, preference, 31536000);
 };
 
 /** Elimina la elección guardada para que el modal pueda volver a solicitarla. */
 export const clearCookieConsentPreference = (): void => {
-  document.cookie = `${COOKIE_CONSENT_NAME}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+  expireCookie(COOKIE_CONSENT_NAME);
 };
 
 /** Guarda el idioma elegido durante un año. */
 export const saveLocalePreference = (locale: string): void => {
-  document.cookie = `_locale=${locale}; path=/; max-age=31536000; SameSite=Lax`;
+  setClientCookie("_locale", locale, 31536000);
 };
 
 /** Elimina el idioma guardado cuando una navegación no llega a completarse. */
@@ -117,7 +133,7 @@ export const createDeviceCookie = () => {
   // JSON contiene comillas y comas que no son cookie-octets válidos. Codificar el valor
   // evita que algunos navegadores lo trunquen o ignoren sin cambiar la información guardada.
   const encodedDeviceInfo = encodeURIComponent(JSON.stringify(deviceInfo));
-  document.cookie = `_device=${encodedDeviceInfo}; path=/; max-age=31536000; SameSite=Lax`;
+  setClientCookie("_device", encodedDeviceInfo, 31536000);
 };
 
 /**
@@ -159,12 +175,6 @@ export const deleteCookies = async (
     let hasAnalysisCookie = false;
     let hasGoogleAnalyticsCookie = false;
     let hasPersonalizationCookie = false;
-
-    /** Caduca una cookie para el host actual o para un dominio concreto. */
-    const expireCookie = (cookieName: string, domain?: string) => {
-      const domainAttribute = domain ? ` domain=${domain};` : "";
-      document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;${domainAttribute}`;
-    };
 
     for (const cookie of cookies) {
       const [cookieName] = cookie.split("=");
