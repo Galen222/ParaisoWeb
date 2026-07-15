@@ -102,10 +102,14 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
       if (blogPost) {
         const translatedBlogPost = await getBlogPostById(blogPost.id_noticia, localeCookie, token);
 
-        if (isValidTranslatedPost(translatedBlogPost, localeCookie, blogPost.id_noticia)) {
+        const normalizedTranslatedSlug = normalizeBlogSlug(translatedBlogPost?.slug);
+        if (
+          isValidTranslatedPost(translatedBlogPost, localeCookie, blogPost.id_noticia) &&
+          normalizedTranslatedSlug !== null
+        ) {
           return {
             redirect: {
-              destination: `${buildLocalizedBlogPath(localeCookie, translatedBlogPost.slug)}${getQuerySuffix(context.resolvedUrl)}`,
+              destination: `${buildLocalizedBlogPath(localeCookie, normalizedTranslatedSlug)}${getQuerySuffix(context.resolvedUrl)}`,
               permanent: false,
             },
           };

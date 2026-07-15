@@ -9,6 +9,7 @@ from io import BytesIO
 from fastapi import UploadFile
 from pydantic import ValidationError
 
+from backend.models import models
 from backend.models.schemas import Blog, Charcuteria, ContactForm
 from backend.services.file_service import file_log_context
 
@@ -33,6 +34,9 @@ class NullableLegacyDateContractTests(unittest.TestCase):
         )
 
         self.assertIsNone(post.fecha_actualizacion)
+
+    def test_modelo_orm_blog_no_reintroduce_not_null_en_fecha_actualizacion(self) -> None:
+        self.assertTrue(models.Blog.__table__.c.fecha_actualizacion.nullable)
 
     def test_charcuteria_admite_fecha_nula(self) -> None:
         product = Charcuteria.model_validate(

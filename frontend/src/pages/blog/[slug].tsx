@@ -40,6 +40,21 @@ const messages: Record<string, Record<string, string>> = {
 // Base URL para las imágenes del blog
 const IMAGE_BASE_URL = "/images/blog/";
 
+const DEFAULT_LOCALE = "es";
+const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+
+/** Conserva los parámetros de consulta al redirigir una variante no canónica del slug. */
+const getQuerySuffix = (resolvedUrl: string): string => {
+  const queryIndex = resolvedUrl.indexOf("?");
+  return queryIndex >= 0 ? resolvedUrl.slice(queryIndex) : "";
+};
+
+/** Construye la URL canónica del artículo respetando que español no lleva prefijo. */
+const buildCanonicalBlogPath = (locale: string, slug: string): string => {
+  const localePrefix = locale === DEFAULT_LOCALE ? "" : `/${locale}`;
+  return `${localePrefix}/blog/${encodeURIComponent(slug)}`;
+};
+
 /** Genera metadatos compactos sin añadir puntos suspensivos a textos no truncados. */
 const buildSeoPreview = (value: string, maxLength: number): string => {
   const normalizedValue = value.replace(/\s+/g, " ").trim();
@@ -256,8 +271,19 @@ export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = asyn
 
   // Una ruta dinámica incompleta o con una forma inesperada no debe llegar a los servicios de la API.
   const normalizedSlug = normalizeBlogSlug(slug);
-  if (normalizedSlug === null) {
+  if (normalizedSlug === null || !SUPPORTED_LOCALES.has(locale)) {
     return { notFound: true };
+  }
+
+  // Dos representaciones Unicode pueden verse iguales pero generar URLs distintas. La
+  // variante no canónica se redirige antes de consultar la API para evitar duplicados SEO.
+  if (typeof slug === "string" && slug !== normalizedSlug) {
+    return {
+      redirect: {
+        destination: `${buildCanonicalBlogPath(locale, normalizedSlug)}${getQuerySuffix(context.resolvedUrl)}`,
+        permanent: true,
+      },
+    };
   }
 
   // Intentar redirigir basado en la cookie de idioma

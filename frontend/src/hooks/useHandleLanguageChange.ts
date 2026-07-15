@@ -94,19 +94,20 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
         if (!isCurrentRequest()) return;
 
         // Evita navegar con una respuesta incompleta o perteneciente a otro idioma.
+        const normalizedNewSlug = normalizeBlogSlug(newBlogPost.slug);
         if (
           newBlogPost.id_noticia !== blogId ||
           newBlogPost.idioma !== newIdioma ||
-          normalizeBlogSlug(newBlogPost.slug) === null
+          normalizedNewSlug === null
         ) {
           console.error("Cambio automático de idioma cancelado: la traducción recibida no es válida.");
           return;
         }
 
-        // Conserva filtros, parámetros y anclas al sustituir el slug por su traducción.
+        // Conserva filtros, parámetros y anclas al sustituir el slug por su traducción canónica.
         const routeSuffix = getRouteSuffix(router.asPath);
         const navigationCompleted = await router.push(
-          `/blog/${newBlogPost.slug}${routeSuffix}`,
+          `/blog/${normalizedNewSlug}${routeSuffix}`,
           undefined,
           { locale: newIdioma }
         );

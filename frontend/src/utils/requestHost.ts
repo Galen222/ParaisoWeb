@@ -1,20 +1,38 @@
 import type { IncomingHttpHeaders } from "http";
 
-/** Obtiene el hostname canónico configurado para la web, cuando es válido. */
-const getCanonicalHostname = (): string | null => {
+interface CanonicalHostnameResult {
+  configured: boolean;
+  hostname: string | null;
+}
+
+/** Obtiene el hostname canónico y distingue una variable ausente de una configuración inválida. */
+const getCanonicalHostname = (): CanonicalHostnameResult => {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (!siteUrl) {
-    return null;
+    return { configured: false, hostname: null };
   }
 
   try {
-    return new URL(siteUrl).hostname.toLowerCase();
+    const parsedUrl = new URL(siteUrl);
+    const hasUnsupportedParts =
+      !["http:", "https:"].includes(parsedUrl.protocol) ||
+      Boolean(parsedUrl.username) ||
+      Boolean(parsedUrl.password) ||
+      (parsedUrl.pathname !== "/" && parsedUrl.pathname !== "") ||
+      Boolean(parsedUrl.search) ||
+      Boolean(parsedUrl.hash);
+
+    if (hasUnsupportedParts || !parsedUrl.hostname) {
+      return { configured: true, hostname: null };
+    }
+
+    return { configured: true, hostname: parsedUrl.hostname.toLowerCase() };
   } catch {
-    return null;
+    return { configured: true, hostname: null };
   }
 };
 
-/** Obtiene el hostname de Host como alternativa segura para desarrollo local. */
+/** Obtiene el hostname de Host como alternativa segura únicamente para desarrollo local. */
 const getDirectRequestHostname = (headers: IncomingHttpHeaders): string | null => {
   const rawHost = headers.host?.trim();
   if (!rawHost) {
@@ -32,9 +50,14 @@ const getDirectRequestHostname = (headers: IncomingHttpHeaders): string | null =
 export const isSameRequestHost = (refererUrl: URL, headers: IncomingHttpHeaders): boolean => {
   // NEXT_PUBLIC_SITE_URL es la fuente de verdad en producción y evita que un cliente
   // pueda falsificar X-Forwarded-Host para presentar un referer externo como interno.
-  const expectedHostname = getCanonicalHostname() ?? getDirectRequestHostname(headers);
+  const canonicalHostname = getCanonicalHostname();
+  const expectedHostname = canonicalHostname.configured
+    ? canonicalHostname.hostname
+    : getDirectRequestHostname(headers);
+
   if (!expectedHostname) {
-    // Sin un host verificable no se puede demostrar que el referer sea interno.
+    // Una variable canónica presente pero inválida debe fallar de forma segura; no se
+    // reutiliza Host porque ocultaría un error de despliegue y volvería a confiar en la petición.
     return false;
   }
 

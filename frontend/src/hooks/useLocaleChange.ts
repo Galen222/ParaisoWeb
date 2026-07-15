@@ -123,14 +123,15 @@ export function useLocaleChange(): LocaleChangeHandler {
             );
             if (localeChangeSequence !== localeChangeSequenceRef.current) return;
 
+            const normalizedNewSlug = normalizeBlogSlug(newBlogPost.slug);
             const isExpectedTranslation =
               newBlogPost.id_noticia === currentBlogPost.id_noticia &&
               newBlogPost.idioma === newLocale &&
-              normalizeBlogSlug(newBlogPost.slug) !== null;
+              normalizedNewSlug !== null;
 
-            if (isExpectedTranslation) {
-              // Construimos la nueva ruta con el slug en el nuevo idioma
-              newPath = `/blog/${newBlogPost.slug}${routeSuffix}`;
+            if (isExpectedTranslation && normalizedNewSlug) {
+              // Construimos la nueva ruta con la forma Unicode canónica del slug traducido.
+              newPath = `/blog/${normalizedNewSlug}${routeSuffix}`;
             } else {
               // Si la respuesta no corresponde a la traducción solicitada, redirige al blog principal.
               console.error("Cambio de idioma del blog cancelado: la traducción recibida no es válida.");

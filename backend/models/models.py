@@ -82,7 +82,7 @@ class Blog(Base):
     imagen_url = Column(String(255), nullable=False)              # URL de la imagen principal de la noticia
     imagen_url_2 = Column(String(255), nullable=True)             # URL de una segunda imagen (opcional)
     fecha_publicacion = Column(DateTime, default=func.now(), nullable=False)  # Fecha de publicación
-    fecha_actualizacion = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=False)  # Fecha de última actualización
+    fecha_actualizacion = Column(DateTime, default=func.now(), onupdate=func.now(), nullable=True)  # Puede ser nula en registros antiguos
 
     __table_args__ = (
         PrimaryKeyConstraint('id_noticia', 'idioma', name="pk_id_noticia_idioma"),

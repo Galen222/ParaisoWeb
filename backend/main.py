@@ -107,14 +107,14 @@ def create_app() -> FastAPI:
         openapi_url="/openapi.json" if settings.ENABLE_API_DOCS else None,
     )
 
-    @app.get("/livez", tags=["Health"])
+    @app.api_route("/livez", methods=["GET", "HEAD"], tags=["Health"])
     async def livez(response: Response) -> dict[str, str]:
         """Confirma que el proceso FastAPI responde sin consultar dependencias externas."""
         response.headers["Cache-Control"] = "no-store, max-age=0"
         response.headers["Pragma"] = "no-cache"
         return {"status": "alive"}
 
-    @app.get("/health", tags=["Health"])
+    @app.api_route("/health", methods=["GET", "HEAD"], tags=["Health"])
     async def health(response: Response) -> dict[str, str]:
         """Informa si la API está operativa y comprueba el estado actual de la base de datos."""
         # El resultado depende del estado actual de MySQL y no debe reutilizarse desde cachés.
@@ -209,8 +209,22 @@ def create_app() -> FastAPI:
                 window_seconds=settings.STATUS_RATE_LIMIT_WINDOW_SECONDS,
             ),
             RateLimitRule(
+                name="health-head",
+                method="HEAD",
+                path="/health",
+                max_requests=settings.STATUS_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.STATUS_RATE_LIMIT_WINDOW_SECONDS,
+            ),
+            RateLimitRule(
                 name="livez",
                 method="GET",
+                path="/livez",
+                max_requests=settings.STATUS_RATE_LIMIT_REQUESTS,
+                window_seconds=settings.STATUS_RATE_LIMIT_WINDOW_SECONDS,
+            ),
+            RateLimitRule(
+                name="livez-head",
+                method="HEAD",
                 path="/livez",
                 max_requests=settings.STATUS_RATE_LIMIT_REQUESTS,
                 window_seconds=settings.STATUS_RATE_LIMIT_WINDOW_SECONDS,

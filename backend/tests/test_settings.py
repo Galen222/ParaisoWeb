@@ -8,17 +8,17 @@ Define las constantes y configuraciones utilizadas por los tests.
 # Lista de todos los módulos de test
 TEST_MODULES = [
     # Tests para error 401 (sin token)
-    'test_charcuteria-401',
-    'test_blog1-401',
-    'test_blog2-401',
-    'test_blog3-401',
-    'test_contacto-401',
+    "test_charcuteria_unauthorized",
+    "test_blog_list_unauthorized",
+    "test_blog_by_slug_unauthorized",
+    "test_blog_by_id_unauthorized",
+    "test_contacto_unauthorized",
     # Tests para error 403 (token inválido)
-    'test_charcuteria-403',
-    'test_blog1-403',
-    'test_blog2-403',
-    'test_blog3-403',
-    'test_contacto-403'
+    "test_charcuteria_forbidden",
+    "test_blog_list_forbidden",
+    "test_blog_by_slug_forbidden",
+    "test_blog_by_id_forbidden",
+    "test_contacto_forbidden",
 ]
 
 # Categorías de test y sus descripciones

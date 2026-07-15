@@ -66,6 +66,33 @@ class LivenessAndRulesTests(unittest.TestCase):
         self.assertEqual(response.headers["cache-control"], "no-store, max-age=0")
         self.assertEqual(response.headers["pragma"], "no-cache")
 
+    def test_head_status_funciona_sin_cuerpo_y_con_limite_especifico(self) -> None:
+        class FakeConnection:
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, exc_type, exc, traceback):
+                return False
+
+            async def execute(self, statement):
+                return None
+
+        class FakeEngine:
+            def connect(self):
+                return FakeConnection()
+
+        app = main.create_app()
+        with patch.object(main, "engine", FakeEngine()):
+            livez_response = TestClient(app).head("/livez")
+            health_response = TestClient(app).head("/health")
+
+        self.assertEqual(livez_response.status_code, 200)
+        self.assertEqual(health_response.status_code, 200)
+        self.assertEqual(livez_response.content, b"")
+        self.assertEqual(health_response.content, b"")
+        self.assertEqual(livez_response.headers["cache-control"], "no-store, max-age=0")
+        self.assertEqual(health_response.headers["cache-control"], "no-store, max-age=0")
+
     def test_todos_los_endpoints_tienen_regla_especifica_y_existe_limite_global(self) -> None:
         app = main.create_app()
         middleware = next(
@@ -77,7 +104,9 @@ class LivenessAndRulesTests(unittest.TestCase):
         expected = {
             ("*", "*"),
             ("GET", "/health"),
+            ("HEAD", "/health"),
             ("GET", "/livez"),
+            ("HEAD", "/livez"),
             ("GET", "/api/get-token"),
             ("POST", "/api/contacto"),
             ("GET", "/api/blog"),

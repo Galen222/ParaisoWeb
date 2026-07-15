@@ -60,15 +60,29 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
   // Obtener información sobre la pantalla tactil
   const isTouchDevice = useTouchDevice();
 
-  // Estado para el control de flip en dispositivos con pantalla tactil
-  const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
+  // Estado para el control de flip en dispositivos con pantalla tactil. El locale
+  // se guarda junto a las tarjetas para que una traducción nueva empiece siempre de frente.
+  const [flippedCardState, setFlippedCardState] = useState<{
+    locale: string;
+    cards: Record<string, boolean>;
+  }>({ locale: currentLocale, cards: {} });
+  const flippedCards =
+    flippedCardState.locale === currentLocale ? flippedCardState.cards : {};
 
   // Función para manejar el click
   const handleCardClick = (productId: string) => {
-    setFlippedCards((prev) => ({
-      ...prev,
-      [productId]: !prev[productId],
-    }));
+    setFlippedCardState((previousState) => {
+      const currentCards =
+        previousState.locale === currentLocale ? previousState.cards : {};
+
+      return {
+        locale: currentLocale,
+        cards: {
+          ...currentCards,
+          [productId]: !currentCards[productId],
+        },
+      };
+    });
   };
 
   // Aseguro que products sea siempre un array

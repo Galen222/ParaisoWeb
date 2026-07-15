@@ -69,7 +69,11 @@ export async function loadBlogData(slug: string, locale: string): Promise<BlogDa
     if (blogDetails.idioma !== locale) {
       const translatedBlogPost = await getBlogPostById(blogDetails.id_noticia, locale, token);
 
-      if (!isValidTranslatedPost(translatedBlogPost, locale, blogDetails.id_noticia)) {
+      const normalizedTranslatedSlug = normalizeBlogSlug(translatedBlogPost?.slug);
+      if (
+        !isValidTranslatedPost(translatedBlogPost, locale, blogDetails.id_noticia) ||
+        normalizedTranslatedSlug === null
+      ) {
         console.error("La API devolvió una traducción de blog inválida para el idioma solicitado.");
         return {
           blogDetails: null,
@@ -80,7 +84,7 @@ export async function loadBlogData(slug: string, locale: string): Promise<BlogDa
 
       return {
         redirect: {
-          destination: buildLocalizedBlogPath(locale, translatedBlogPost.slug),
+          destination: buildLocalizedBlogPath(locale, normalizedTranslatedSlug),
           permanent: false,
         },
       };
