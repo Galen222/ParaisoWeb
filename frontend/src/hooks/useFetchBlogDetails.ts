@@ -40,6 +40,7 @@ export function useFetchBlogDetails(slug: string): UseFetchBlogDetailsReturn {
      */
     const fetchData = async () => {
       setLoadingBlogDetails(true);
+      setData(null); // Evita exponer el artículo anterior mientras cambia slug o idioma.
       setError(null); // Limpia un error anterior antes de volver a intentar la carga
       try {
         const result = await getBlogPostBySlug(slug, undefined, locale, controller.signal); // Solicita explícitamente el idioma actual

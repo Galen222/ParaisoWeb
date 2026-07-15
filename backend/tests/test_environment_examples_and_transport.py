@@ -66,7 +66,6 @@ class EnvironmentExampleTests(unittest.TestCase):
 
         self.assertEqual(referenced - documented, set())
 
-
     def test_cada_variable_de_entorno_tiene_un_comentario_explicativo(self) -> None:
         for relative_path in ("backend/.env.example", "frontend/.env.example"):
             with self.subTest(path=relative_path):
@@ -74,6 +73,21 @@ class EnvironmentExampleTests(unittest.TestCase):
                     env_variables_without_explanatory_comment(PROJECT_ROOT / relative_path),
                     set(),
                 )
+
+    def test_el_log_sql_esta_desactivado_por_defecto_y_puede_activarse(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
+            "secret_key": "test-secret",
+            "token_interval_seconds": 60,
+        }
+
+        self.assertFalse(Settings(**common).DATABASE_ECHO_SQL)
+        self.assertTrue(Settings(**common, DATABASE_ECHO_SQL=True).DATABASE_ECHO_SQL)
 
     def test_cors_normaliza_barras_finales_y_elimina_duplicados(self) -> None:
         settings = Settings(

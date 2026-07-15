@@ -37,7 +37,7 @@ perdidas y reciclaje automático.
 """
 engine = create_async_engine(
     DATABASE_URL,
-    echo=True,         # Habilita el registro de todas las consultas SQL para depuración
+    echo=settings.DATABASE_ECHO_SQL,  # Solo registra SQL cuando se activa de forma explícita
     future=True,       # Activa características futuras de SQLAlchemy
     pool_pre_ping=True,  # Verifica la conexión antes de usarla (manejo de conexiones caídas)
     pool_recycle=3600,    # Recicla conexiones cada hora (3600 segundos)

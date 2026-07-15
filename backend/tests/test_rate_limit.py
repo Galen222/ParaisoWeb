@@ -5,6 +5,7 @@
 import unittest
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.testclient import TestClient
 
 from backend.middleware.rate_limit import RateLimitMiddleware, RateLimitRule
@@ -197,6 +198,90 @@ class RateLimitMiddlewareTests(unittest.TestCase):
         client = TestClient(app)
         self.assertEqual(client.get("/api/blog/primero").status_code, 200)
         self.assertEqual(client.get("/api/blog/segundo").status_code, 429)
+
+
+    def test_una_peticion_bloqueada_no_consume_parcialmente_otras_reglas(self) -> None:
+        app = FastAPI()
+        app.add_middleware(
+            RateLimitMiddleware,
+            rules=[
+                RateLimitRule(
+                    name="global",
+                    method="*",
+                    path="*",
+                    max_requests=3,
+                    window_seconds=60,
+                ),
+                RateLimitRule(
+                    name="estricto",
+                    method="GET",
+                    path="/estricto",
+                    max_requests=1,
+                    window_seconds=60,
+                ),
+            ],
+            secret_key="clave-pruebas",
+            clock=self.clock,
+        )
+
+        @app.get("/estricto")
+        async def estricto() -> dict[str, bool]:
+            return {"ok": True}
+
+        @app.get("/libre")
+        async def libre() -> dict[str, bool]:
+            return {"ok": True}
+
+        client = TestClient(app)
+        self.assertEqual(client.get("/estricto").status_code, 200)
+        self.assertEqual(client.get("/estricto").status_code, 429)
+        # La petición bloqueada por la regla estricta no debe gastar otro hueco global.
+        self.assertEqual(client.get("/libre").status_code, 200)
+        self.assertEqual(client.get("/libre").status_code, 200)
+        self.assertEqual(client.get("/libre").status_code, 429)
+
+    def test_preflight_cors_tambien_consume_el_limite_global(self) -> None:
+        app = FastAPI()
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["https://frontend.example"],
+            allow_credentials=True,
+            allow_methods=["GET", "OPTIONS"],
+            allow_headers=["x-timed-token"],
+        )
+        app.add_middleware(
+            RateLimitMiddleware,
+            rules=[
+                RateLimitRule(
+                    name="global",
+                    method="*",
+                    path="*",
+                    max_requests=1,
+                    window_seconds=60,
+                )
+            ],
+            secret_key="clave-pruebas",
+            cors_allowed_origins=["https://frontend.example"],
+            cors_allow_credentials=True,
+            clock=self.clock,
+        )
+
+        @app.get("/api/recurso")
+        async def recurso() -> dict[str, bool]:
+            return {"ok": True}
+
+        headers = {
+            "Origin": "https://frontend.example",
+            "Access-Control-Request-Method": "GET",
+            "Access-Control-Request-Headers": "x-timed-token",
+        }
+        client = TestClient(app)
+        self.assertEqual(client.options("/api/recurso", headers=headers).status_code, 200)
+
+        blocked = client.options("/api/recurso", headers=headers)
+        self.assertEqual(blocked.status_code, 429)
+        self.assertEqual(blocked.headers["access-control-allow-origin"], "https://frontend.example")
+        self.assertEqual(blocked.headers["access-control-allow-credentials"], "true")
 
     def test_limite_global_cubre_rutas_sin_regla_especifica(self) -> None:
         app = FastAPI()

@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "check": "npm run lint && npm run typecheck && npm run build"
+    "check": "npm run lint && npm run typecheck && npm run test && npm run build",
+    "test": "cd .. && python -m backend.tests.run_all_tests"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "1.16.10",

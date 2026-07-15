@@ -14,11 +14,15 @@ from backend.middleware.contact_auth import ContactTokenGuardMiddleware
 
 class ContactTokenGuardTests(unittest.IsolatedAsyncioTestCase):
     @staticmethod
-    def _scope(headers: list[tuple[bytes, bytes]]) -> dict[str, object]:
+    def _scope(
+        headers: list[tuple[bytes, bytes]],
+        method: str = "POST",
+        path: str = "/api/contacto",
+    ) -> dict[str, object]:
         return {
             "type": "http",
-            "method": "POST",
-            "path": "/api/contacto",
+            "method": method,
+            "path": path,
             "headers": headers,
             "client": ("203.0.113.10", 50000),
             "server": ("127.0.0.1", 8000),
@@ -78,6 +82,37 @@ class ContactTokenGuardTests(unittest.IsolatedAsyncioTestCase):
         )
 
         self.assertFalse(receive_called)
+        self.assertEqual(sent[0]["status"], 403)
+
+    async def test_blog_con_cabeceras_de_token_duplicadas_se_rechaza_antes_de_la_ruta(self) -> None:
+        inner_called = False
+        sent: list[dict[str, object]] = []
+
+        async def inner_app(scope, receive, send) -> None:
+            nonlocal inner_called
+            inner_called = True
+
+        async def receive() -> dict[str, object]:
+            return {"type": "http.request", "body": b"", "more_body": False}
+
+        async def send(message) -> None:
+            sent.append(message)
+
+        middleware = ContactTokenGuardMiddleware(inner_app)
+        await middleware(
+            self._scope(
+                [
+                    (b"x-timed-token", b"first"),
+                    (b"x-timed-token", b"second"),
+                ],
+                method="GET",
+                path="/api/blog/articulo",
+            ),
+            receive,
+            send,
+        )
+
+        self.assertFalse(inner_called)
         self.assertEqual(sent[0]["status"], 403)
 
 

@@ -1,26 +1,42 @@
-"""Autenticación temprana del formulario antes de parsear el cuerpo multipart."""
+"""Autenticación temprana de endpoints protegidos mediante token temporal."""
 
+import re
 from collections.abc import Iterable
+from typing import Pattern
 
-from starlette.types import ASGIApp, Scope, Receive, Send
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 from ..core.auth_utils import verify_timed_token
 
 
 class ContactTokenGuardMiddleware:
-    """Rechaza contacto sin token válido antes de leer campos o adjuntos."""
+    """Rechaza tokens ausentes, duplicados o inválidos antes de entrar en FastAPI.
+
+    El nombre de la clase se conserva para no romper imports existentes, aunque la
+    protección se aplica también a blog, charcutería y sitemap. En contacto evita
+    además que Starlette lea el cuerpo multipart antes de autenticar la petición.
+    """
+
+    DEFAULT_PROTECTED_ROUTES: tuple[tuple[str, str], ...] = (
+        ("POST", "/api/contacto"),
+        ("GET", "/api/blog"),
+        ("GET", "/api/blog/{slug}"),
+        ("GET", "/api/blog/by-id/{id_noticia}"),
+        ("GET", "/api/charcuteria"),
+        ("GET", "/api/sitemap/blog"),
+    )
 
     def __init__(
         self,
         app: ASGIApp,
-        protected_paths: Iterable[str] = ("/api/contacto",),
+        protected_routes: Iterable[tuple[str, str]] = DEFAULT_PROTECTED_ROUTES,
     ) -> None:
         self.app = app
-        self._protected_paths = {
-            self._normalize_path(path)
-            for path in protected_paths
-            if path.strip()
-        }
+        self._protected_routes: list[tuple[str, Pattern[str]]] = [
+            (method.upper(), self._compile_path_pattern(path))
+            for method, path in protected_routes
+            if method.strip() and path.strip()
+        ]
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] != "http":
@@ -29,7 +45,7 @@ class ContactTokenGuardMiddleware:
 
         method = str(scope.get("method", "")).upper()
         path = self._normalize_path(str(scope.get("path", "/")))
-        if method != "POST" or path not in self._protected_paths:
+        if not self._is_protected(method, path):
             await self.app(scope, receive, send)
             return
 
@@ -43,7 +59,7 @@ class ContactTokenGuardMiddleware:
             return
 
         # Varias cabeceras del mismo token pueden ser combinadas de forma distinta por
-        # el proxy y el servidor ASGI. Se rechazan antes de leer el multipart.
+        # el proxy y el servidor ASGI. Se rechazan en todos los endpoints protegidos.
         if len(token_values) != 1:
             await self._send_json_error(send, 403, "Token inválido o expirado")
             return
@@ -59,6 +75,23 @@ class ContactTokenGuardMiddleware:
             return
 
         await self.app(scope, receive, send)
+
+    def _is_protected(self, method: str, path: str) -> bool:
+        return any(
+            configured_method == method and path_pattern.fullmatch(path)
+            for configured_method, path_pattern in self._protected_routes
+        )
+
+    @classmethod
+    def _compile_path_pattern(cls, path: str) -> Pattern[str]:
+        normalized = cls._normalize_path(path)
+        pattern_segments: list[str] = []
+        for segment in normalized.split("/"):
+            if segment.startswith("{") and segment.endswith("}") and len(segment) > 2:
+                pattern_segments.append(r"[^/]+")
+            else:
+                pattern_segments.append(re.escape(segment))
+        return re.compile(r"^" + "/".join(pattern_segments) + r"$")
 
     @staticmethod
     async def _send_json_error(send: Send, status_code: int, detail: str) -> None:

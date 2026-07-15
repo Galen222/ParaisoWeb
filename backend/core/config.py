@@ -37,6 +37,7 @@ class Settings(BaseSettings):
         SMTP_USERNAME (str): Nombre de usuario para autenticación SMTP.
         SMTP_PASSWORD (str): Contraseña para autenticación SMTP.
         DATABASE_URL (str): URL de conexión a la base de datos.
+        DATABASE_ECHO_SQL (bool): Activa el log detallado de consultas SQL solo para diagnóstico.
         secret_key (str): Clave secreta para operaciones de autenticación y tokens.
         token_interval_seconds (int): Intervalo de tiempo para la validez de los tokens.
         GLOBAL_RATE_LIMIT_REQUESTS (int): Solicitudes totales permitidas por cliente y ventana.
@@ -65,6 +66,7 @@ class Settings(BaseSettings):
     SMTP_USERNAME: str
     SMTP_PASSWORD: str
     DATABASE_URL: str
+    DATABASE_ECHO_SQL: bool = False
     secret_key: str
     token_interval_seconds: int = Field(gt=0)
     GLOBAL_RATE_LIMIT_REQUESTS: int = Field(default=300, gt=0)

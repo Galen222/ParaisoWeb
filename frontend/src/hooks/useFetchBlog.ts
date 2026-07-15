@@ -38,6 +38,7 @@ export function useFetchBlog(): UseFetchBlogReturn {
      */
     const fetchData = async () => {
       setLoading(true);
+      setData(null); // Evita conservar datos del idioma anterior durante la nueva carga.
       setError(null); // Limpia un error anterior antes de volver a intentar la carga
       try {
         const idioma = locale; // Obtiene el idioma actual desde `intl`

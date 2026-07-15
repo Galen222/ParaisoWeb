@@ -24,13 +24,13 @@ import re
 import time
 from collections import defaultdict, deque
 from dataclasses import dataclass
-from typing import Callable, Deque, Dict, Iterable, Pattern, Set, Tuple
+from typing import Callable, Deque, Dict, Iterable, Pattern, Sequence, Set, Tuple
 
 from fastapi import Request
-
-from ..core.client_ip import normalize_host, resolve_client_host
 from starlette.middleware.base import BaseHTTPMiddleware, RequestResponseEndpoint
 from starlette.responses import JSONResponse, Response
+
+from ..core.client_ip import normalize_host, resolve_client_host
 
 logger = logging.getLogger(__name__)
 
@@ -69,30 +69,49 @@ class InMemoryRateLimiter:
         self._last_cleanup = self._clock()
 
     async def check(self, rule: RateLimitRule, client_key: str) -> tuple[bool, int]:
-        """
-        Registra una solicitud permitida o calcula cuánto debe esperar una bloqueada.
+        """Comprueba una única regla conservando la API usada por pruebas y consumidores."""
+        allowed, retry_after, _ = await self.check_many([rule], client_key)
+        return allowed, retry_after
 
-        Returns:
-            tuple[bool, int]: ``(permitida, segundos_para_reintentar)``.
+    async def check_many(
+        self,
+        rules: Sequence[RateLimitRule],
+        client_key: str,
+    ) -> tuple[bool, int, RateLimitRule | None]:
+        """Comprueba todas las reglas de forma atómica y solo contabiliza peticiones permitidas.
+
+        Una petición suele consumir una regla global y otra específica. Antes se añadía
+        al contador global antes de comprobar la específica, por lo que peticiones ya
+        bloqueadas podían agotar también el límite global para rutas no relacionadas.
         """
+        if not rules:
+            return True, 0, None
+
         now = self._clock()
-        cutoff = now - rule.window_seconds
-        bucket_key = (rule.name, client_key)
+        prepared_buckets: list[tuple[RateLimitRule, Deque[float]]] = []
 
         async with self._lock:
             self._cleanup_expired_buckets(now)
-            bucket = self._requests[bucket_key]
-            self._window_seconds[bucket_key] = rule.window_seconds
 
-            while bucket and bucket[0] <= cutoff:
-                bucket.popleft()
+            for rule in rules:
+                bucket_key = (rule.name, client_key)
+                bucket = self._requests[bucket_key]
+                self._window_seconds[bucket_key] = rule.window_seconds
+                cutoff = now - rule.window_seconds
 
-            if len(bucket) >= rule.max_requests:
-                retry_after = max(1, math.ceil(rule.window_seconds - (now - bucket[0])))
-                return False, retry_after
+                while bucket and bucket[0] <= cutoff:
+                    bucket.popleft()
 
-            bucket.append(now)
-            return True, 0
+                if len(bucket) >= rule.max_requests:
+                    retry_after = max(1, math.ceil(rule.window_seconds - (now - bucket[0])))
+                    return False, retry_after, rule
+
+                prepared_buckets.append((rule, bucket))
+
+            for _, bucket in prepared_buckets:
+                bucket.append(now)
+
+        return True, 0, None
 
     def _cleanup_expired_buckets(self, now: float) -> None:
         """Elimina periódicamente clientes inactivos para evitar crecimiento indefinido."""
@@ -124,6 +143,8 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         rules: Iterable[RateLimitRule],
         secret_key: str,
         trusted_proxy_ips: Iterable[str] = (),
+        cors_allowed_origins: Iterable[str] = (),
+        cors_allow_credentials: bool = False,
         clock: Callable[[], float] = time.monotonic,
     ) -> None:
         super().__init__(app)
@@ -137,6 +158,12 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             for value in trusted_proxy_ips
             if value.strip()
         }
+        self._cors_allowed_origins = {
+            origin.strip()
+            for origin in cors_allowed_origins
+            if origin.strip()
+        }
+        self._cors_allow_credentials = cors_allow_credentials
         self._limiter = InMemoryRateLimiter(clock=clock)
 
     async def dispatch(self, request: Request, call_next: RequestResponseEndpoint) -> Response:
@@ -153,28 +180,42 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             return await call_next(request)
 
         client_key = self._build_anonymous_client_key(request)
-        for rule in matching_rules:
-            allowed, retry_after = await self._limiter.check(rule, client_key)
-            if allowed:
-                continue
+        allowed, retry_after, blocked_rule = await self._limiter.check_many(
+            matching_rules,
+            client_key,
+        )
+        if allowed:
+            return await call_next(request)
 
-            # El identificador está derivado mediante HMAC y no permite recuperar la IP original.
-            logger.warning(
-                "Límite de solicitudes excedido | endpoint=%s | cliente=%s | reintento=%ss",
-                rule.name,
-                client_key,
-                retry_after,
-            )
-            return JSONResponse(
-                status_code=429,
-                content={"detail": "Demasiadas solicitudes. Inténtalo de nuevo más tarde."},
-                headers={
-                    "Retry-After": str(retry_after),
-                    "Cache-Control": "no-store",
-                },
-            )
+        # El identificador está derivado mediante HMAC y no permite recuperar la IP original.
+        logger.warning(
+            "Límite de solicitudes excedido | endpoint=%s | cliente=%s | reintento=%ss",
+            blocked_rule.name if blocked_rule is not None else "desconocido",
+            client_key,
+            retry_after,
+        )
+        headers = {
+            "Retry-After": str(retry_after),
+            "Cache-Control": "no-store",
+            "Pragma": "no-cache",
+        }
+        self._add_cors_headers(request, headers)
+        return JSONResponse(
+            status_code=429,
+            content={"detail": "Demasiadas solicitudes. Inténtalo de nuevo más tarde."},
+            headers=headers,
+        )
 
-        return await call_next(request)
+    def _add_cors_headers(self, request: Request, headers: dict[str, str]) -> None:
+        """Permite que el navegador lea un 429 generado antes de CORSMiddleware."""
+        origin = request.headers.get("origin", "").strip()
+        if not origin or origin not in self._cors_allowed_origins:
+            return
+
+        headers["Access-Control-Allow-Origin"] = origin
+        headers["Vary"] = "Origin"
+        if self._cors_allow_credentials:
+            headers["Access-Control-Allow-Credentials"] = "true"
 
     def _build_anonymous_client_key(self, request: Request) -> str:
         client_host = self._resolve_client_host(request)

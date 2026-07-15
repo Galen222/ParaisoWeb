@@ -25,12 +25,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
-
-# production env files
-.env*.production
-.env*.localweb
+# environment files: nunca versionar valores reales; conservar únicamente el ejemplo.
+.env*
+!.env.example
 
 # vercel
 .vercel

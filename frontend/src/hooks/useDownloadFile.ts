@@ -1,6 +1,6 @@
 // hooks/useDownloadFile.ts
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { saveAs } from "file-saver";
 import { useToastMessage } from "./useToast";
 import { DOWNLOAD_REQUEST_TIMEOUT_MS } from "../config/api.config";
@@ -22,7 +22,19 @@ export interface DownloadFileHook {
 export function useDownloadFile(): DownloadFileHook {
   const [isDownloading, setIsDownloading] = useState(false); // Estado para controlar el proceso de descarga
   const isDownloadingRef = useRef(false); // Bloquea dobles clics antes de que React actualice el botón
+  const activeControllerRef = useRef<AbortController | null>(null);
+  const isMountedRef = useRef(true);
   const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+      activeControllerRef.current?.abort();
+      activeControllerRef.current = null;
+      isDownloadingRef.current = false;
+    };
+  }, []);
 
   /**
    * Inicia la descarga de un archivo y maneja las notificaciones de éxito o error.
@@ -40,6 +52,7 @@ export function useDownloadFile(): DownloadFileHook {
     isDownloadingRef.current = true;
     setIsDownloading(true);
     const controller = new AbortController();
+    activeControllerRef.current = controller;
     const timeoutId = window.setTimeout(() => controller.abort(), DOWNLOAD_REQUEST_TIMEOUT_MS);
 
     try {
@@ -65,17 +78,28 @@ export function useDownloadFile(): DownloadFileHook {
         throw new Error("El archivo descargado está vacío");
       }
 
+      if (!isMountedRef.current || controller.signal.aborted) {
+        return;
+      }
+
       saveAs(blob, fileName); // Inicia la descarga del archivo usando file-saver
 
       // Mostrar notificación de éxito
       showToast(successMessageId, 3000, "success"); // Muestra el toast utilizando el hook
     } catch {
-      // Mostrar notificación de error
-      showToast(errorMessageId, 3000, "error"); // Muestra el toast utilizando el hook
+      // No muestra un error al abandonar la página: el cleanup cancela la descarga intencionadamente.
+      if (isMountedRef.current) {
+        showToast(errorMessageId, 3000, "error"); // Muestra el toast utilizando el hook
+      }
     } finally {
       window.clearTimeout(timeoutId);
-      isDownloadingRef.current = false;
-      setIsDownloading(false); // Finaliza el estado de descarga
+      if (activeControllerRef.current === controller) {
+        activeControllerRef.current = null;
+        isDownloadingRef.current = false;
+        if (isMountedRef.current) {
+          setIsDownloading(false); // Finaliza el estado de descarga
+        }
+      }
     }
   };
 

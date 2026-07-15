@@ -157,13 +157,40 @@ def create_app() -> FastAPI:
         }
 
     # FastAPI parsea formularios y archivos antes de ejecutar dependencias de ruta.
-    # Esta barrera conserva la dependencia existente, pero rechaza contacto sin token
-    # antes de que Starlette lea o escriba el cuerpo multipart.
+    # Esta barrera valida todos los endpoints protegidos y, en contacto, rechaza el
+    # token antes de que Starlette lea o escriba el cuerpo multipart.
     app.add_middleware(ContactTokenGuardMiddleware)
 
+    # Rechaza cuerpos excesivos antes de que el parser multipart procese el adjunto.
+    app.add_middleware(
+        RequestSizeLimitMiddleware,
+        rules=[
+            RequestSizeRule(
+                method="POST",
+                path="/api/contacto",
+                max_bytes=settings.CONTACT_MAX_REQUEST_BYTES,
+            )
+        ],
+    )
+
+    # Impide que respuestas autenticadas o con datos de la API queden almacenadas
+    # en navegadores, proxies o CDN. El sitemap público de Next.js mantiene su propia caché.
+    app.add_middleware(ApiNoStoreMiddleware)
+
+    # CORS se coloca dentro del rate limiter para que también las peticiones OPTIONS
+    # consuman el límite global. El limitador añade las cabeceras CORS necesarias a
+    # sus propias respuestas 429 para que el navegador pueda leer el error.
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_allowed_origins,
+        allow_credentials=True,
+        allow_methods=["GET", "POST", "OPTIONS"],
+        allow_headers=["Content-Type", "x-timed-token"],
+    )
+
     # Cada petición consume el límite global y, cuando corresponde, el límite específico
-    # de su endpoint. Las rutas dinámicas usan parámetros entre llaves para cubrir todos
-    # los slugs e identificadores sin depender del contenido recibido.
+    # de su endpoint. Las comprobaciones se realizan de forma atómica para que una
+    # petición bloqueada por la regla específica no agote también rutas no relacionadas.
     app.add_middleware(
         RateLimitMiddleware,
         rules=[
@@ -240,36 +267,12 @@ def create_app() -> FastAPI:
         ],
         secret_key=settings.secret_key,
         trusted_proxy_ips=settings.trusted_proxy_ips,
+        cors_allowed_origins=settings.cors_allowed_origins,
+        cors_allow_credentials=True,
     )
 
-    # Rechaza cuerpos excesivos antes de que el parser multipart procese el adjunto.
-    app.add_middleware(
-        RequestSizeLimitMiddleware,
-        rules=[
-            RequestSizeRule(
-                method="POST",
-                path="/api/contacto",
-                max_bytes=settings.CONTACT_MAX_REQUEST_BYTES,
-            )
-        ],
-    )
-
-    # Impide que respuestas autenticadas o con datos de la API queden almacenadas
-    # en navegadores, proxies o CDN. El sitemap público de Next.js mantiene su propia caché.
-    app.add_middleware(ApiNoStoreMiddleware)
-
-    # Middleware de logging
+    # Logging queda como capa exterior para registrar también respuestas 429 y preflight.
     app.add_middleware(LoggingMiddleware)
-
-    # Configuración de CORS desde entorno. Mantenerla fuera del código evita que un
-    # dominio de Plesk, preproducción o desarrollo quede bloqueado tras un despliegue.
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.cors_allowed_origins,
-        allow_credentials=True,
-        allow_methods=["GET", "POST", "OPTIONS"],
-        allow_headers=["Content-Type", "x-timed-token"],
-    )
 
     # Registro de Routers
     app.include_router(
