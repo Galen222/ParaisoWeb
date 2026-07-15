@@ -17,6 +17,7 @@ Dependencias:
 
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
+from ipaddress import IPv6Address, ip_address
 from pathlib import Path
 from typing import Literal
 from urllib.parse import urlsplit
@@ -116,6 +117,34 @@ class Settings(BaseSettings):
                 raise ValueError(f"Origen CORS no válido: {origin}")
 
         return ",".join(dict.fromkeys(origins))
+
+
+    @field_validator("TRUSTED_PROXY_IPS")
+    @classmethod
+    def validate_trusted_proxy_ips(cls, value: str) -> str:
+        """Acepta únicamente direcciones IP literales y normaliza duplicados."""
+        normalized_values: list[str] = []
+        for raw_value in value.split(","):
+            candidate = raw_value.strip()
+            if not candidate:
+                continue
+
+            try:
+                parsed = ip_address(candidate)
+            except ValueError as error:
+                raise ValueError(
+                    f"TRUSTED_PROXY_IPS contiene una dirección IP no válida: {candidate}"
+                ) from error
+
+            if isinstance(parsed, IPv6Address) and parsed.ipv4_mapped is not None:
+                normalized = str(parsed.ipv4_mapped)
+            else:
+                normalized = str(parsed)
+
+            if normalized not in normalized_values:
+                normalized_values.append(normalized)
+
+        return ",".join(normalized_values)
 
     @property
     def cors_allowed_origins(self) -> list[str]:

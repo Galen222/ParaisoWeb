@@ -270,6 +270,12 @@ export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = asyn
     };
   }
 
+  if (blogData.error) {
+    context.res.statusCode = blogData.statusCode ?? 503;
+    context.res.setHeader("Cache-Control", "no-store, max-age=0");
+    context.res.setHeader("Pragma", "no-cache");
+  }
+
   return {
     props: {
       blogDetails: blogData.blogDetails || null,

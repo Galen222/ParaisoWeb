@@ -27,6 +27,26 @@ def read_env_example_names(path: Path) -> set[str]:
     return names
 
 
+def env_variables_without_explanatory_comment(path: Path) -> set[str]:
+    """Detecta asignaciones que no tienen un comentario inmediatamente anterior."""
+    missing: set[str] = set()
+    previous_non_empty = ""
+    for raw_line in path.read_text(encoding="utf-8").splitlines():
+        line = raw_line.strip()
+        if not line:
+            previous_non_empty = ""
+            continue
+        if line.startswith("#"):
+            previous_non_empty = line
+            continue
+        if "=" in line:
+            name = line.split("=", 1)[0].strip()
+            if not previous_non_empty.startswith("#"):
+                missing.add(name)
+        previous_non_empty = line
+    return missing
+
+
 class EnvironmentExampleTests(unittest.TestCase):
     def test_backend_env_example_documenta_todos_los_settings(self) -> None:
         documented = read_env_example_names(PROJECT_ROOT / "backend" / ".env.example")
@@ -45,6 +65,15 @@ class EnvironmentExampleTests(unittest.TestCase):
             referenced.update(pattern.findall(path.read_text(encoding="utf-8")))
 
         self.assertEqual(referenced - documented, set())
+
+
+    def test_cada_variable_de_entorno_tiene_un_comentario_explicativo(self) -> None:
+        for relative_path in ("backend/.env.example", "frontend/.env.example"):
+            with self.subTest(path=relative_path):
+                self.assertEqual(
+                    env_variables_without_explanatory_comment(PROJECT_ROOT / relative_path),
+                    set(),
+                )
 
     def test_cors_normaliza_barras_finales_y_elimina_duplicados(self) -> None:
         settings = Settings(
@@ -82,6 +111,28 @@ class EnvironmentExampleTests(unittest.TestCase):
             Settings(**common, CORS_ALLOWED_ORIGINS="*")
         with self.assertRaises(ValidationError):
             Settings(**common, CORS_ALLOWED_ORIGINS="https://example.com/api")
+
+
+    def test_trusted_proxy_ips_rechaza_hosts_y_normaliza_ipv4_mapeada(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
+            "secret_key": "test-secret",
+            "token_interval_seconds": 60,
+        }
+
+        with self.assertRaises(ValidationError):
+            Settings(**common, TRUSTED_PROXY_IPS="localhost")
+
+        settings = Settings(
+            **common,
+            TRUSTED_PROXY_IPS="::ffff:127.0.0.1, 127.0.0.1, ::1",
+        )
+        self.assertEqual(settings.TRUSTED_PROXY_IPS, "127.0.0.1,::1")
 
 
 class SmtpTransportTests(unittest.IsolatedAsyncioTestCase):

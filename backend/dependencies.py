@@ -23,7 +23,7 @@ from fastapi import Header, HTTPException, Request, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from .core.auth_utils import verify_timed_token
-from .core.client_ip import resolve_client_host
+from .core.client_ip import normalize_host, resolve_client_host
 from .core.config import settings
 from .database import async_session
 
@@ -82,7 +82,26 @@ logger = logging.getLogger(__name__)
 
 async def verify_local_request(request: Request) -> None:
     """Permite únicamente clientes loopback tras resolver proxies confiables."""
-    client_host = resolve_client_host(request, settings.trusted_proxy_ips, logger)
+    trusted_proxy_ips = settings.trusted_proxy_ips
+    direct_host = normalize_host(request.client.host if request.client else "unknown")
+    has_forwarding_metadata = bool(
+        request.headers.get("x-forwarded-for", "").strip()
+        or request.headers.get("x-real-ip", "").strip()
+    )
+
+    # Una petición local real de Next.js no envía cabeceras de proxy. Si aparecen
+    # cabeceras de reenvío desde un peer no configurado como proxy, no se puede asumir
+    # que 127.0.0.1 sea el cliente final: se rechaza en lugar de fallar en modo abierto.
+    if has_forwarding_metadata and direct_host not in trusted_proxy_ips:
+        logger.warning(
+            "Acceso local rechazado por cabeceras de proxy desde un peer no confiable"
+        )
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Endpoint disponible únicamente desde el servidor local",
+        )
+
+    client_host = resolve_client_host(request, trusted_proxy_ips, logger)
     try:
         is_loopback = ip_address(client_host).is_loopback
     except ValueError:

@@ -115,7 +115,11 @@ const requireBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): B
  * @returns {Promise<BlogPost[]>} - Una promesa que resuelve a un array de objetos BlogPost.
  * @throws {Error} - Si falla la solicitud.
  */
-export const getBlogPosts = async (idioma: string, token?: string): Promise<BlogPost[]> => {
+export const getBlogPosts = async (
+  idioma: string,
+  token?: string,
+  signal?: AbortSignal
+): Promise<BlogPost[]> => {
   try {
     const apiUrl = getApiUrl();
     const validatedLanguage = requireSupportedLanguage(idioma);
@@ -128,6 +132,7 @@ export const getBlogPosts = async (idioma: string, token?: string): Promise<Blog
           },
           params: { idioma: validatedLanguage },
           timeout: READ_REQUEST_TIMEOUT_MS,
+          signal,
         }),
       token
     );
@@ -156,7 +161,12 @@ export const getBlogPosts = async (idioma: string, token?: string): Promise<Blog
  * @returns {Promise<BlogPost>} - Una promesa que resuelve al objeto BlogPost correspondiente.
  * @throws {Error} - Si falla la solicitud.
  */
-export const getBlogPostById = async (id: number, idioma: string, token?: string): Promise<BlogPost> => {
+export const getBlogPostById = async (
+  id: number,
+  idioma: string,
+  token?: string,
+  signal?: AbortSignal
+): Promise<BlogPost> => {
   try {
     const apiUrl = getApiUrl();
     if (!Number.isInteger(id) || id <= 0) {
@@ -171,6 +181,7 @@ export const getBlogPostById = async (id: number, idioma: string, token?: string
           },
           params: { idioma: validatedLanguage },
           timeout: READ_REQUEST_TIMEOUT_MS,
+          signal,
         }),
       token
     );
@@ -189,7 +200,12 @@ export const getBlogPostById = async (id: number, idioma: string, token?: string
  * @returns {Promise<BlogPost>} - Una promesa que resuelve al objeto BlogPost correspondiente.
  * @throws {Error} - Si falla la solicitud o las entradas son inválidas.
  */
-export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: string): Promise<BlogPost> => {
+export const getBlogPostBySlug = async (
+  slug: string,
+  token?: string,
+  idioma?: string,
+  signal?: AbortSignal
+): Promise<BlogPost> => {
   try {
     const apiUrl = getApiUrl();
 
@@ -212,6 +228,7 @@ export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: s
           },
           params,
           timeout: READ_REQUEST_TIMEOUT_MS,
+          signal,
         }),
       token
     );

@@ -20,6 +20,7 @@ Dependencias:
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from .middleware.cache_control import ApiNoStoreMiddleware
+from .middleware.contact_auth import ContactTokenGuardMiddleware
 from .middleware.logging import LoggingMiddleware
 from .middleware.rate_limit import RateLimitMiddleware, RateLimitRule
 from .middleware.request_size import RequestSizeLimitMiddleware, RequestSizeRule
@@ -51,34 +52,39 @@ async def lifespan(app: FastAPI):
         None: Indica que la aplicación está lista para recibir solicitudes.
     """
     app.state.database_available = False
+
     async def initialize_database() -> None:
         # Intentar establecer una conexión con la base de datos y crear las tablas.
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
 
     try:
-        # Evita que un servidor MySQL inaccesible bloquee indefinidamente el arranque de la API.
-        await asyncio.wait_for(
-            initialize_database(),
-            timeout=settings.DATABASE_STARTUP_TIMEOUT_SECONDS,
-        )
-        app.state.database_available = True
-        logger.info("Aplicación iniciada y base de datos configurada.")
-    except TimeoutError:
-        logger.error(
-            "La inicialización de la base de datos superó el tiempo máximo de %.1fs; "
-            "la aplicación continúa en modo degradado.",
-            settings.DATABASE_STARTUP_TIMEOUT_SECONDS,
-        )
-    except Exception:
-        # La API continúa disponible para endpoints que no dependen de la base de datos.
-        logger.exception(
-            "No se ha podido conectar a la base de datos; la aplicación continúa en modo degradado."
-        )
-    yield
-    # Liberar los recursos relacionados con la base de datos
-    await engine.dispose()
-    logger.info("Conexiones de base de datos cerradas.")
+        try:
+            # Evita que un servidor MySQL inaccesible bloquee indefinidamente el arranque de la API.
+            await asyncio.wait_for(
+                initialize_database(),
+                timeout=settings.DATABASE_STARTUP_TIMEOUT_SECONDS,
+            )
+            app.state.database_available = True
+            logger.info("Aplicación iniciada y base de datos configurada.")
+        except TimeoutError:
+            logger.error(
+                "La inicialización de la base de datos superó el tiempo máximo de %.1fs; "
+                "la aplicación continúa en modo degradado.",
+                settings.DATABASE_STARTUP_TIMEOUT_SECONDS,
+            )
+        except Exception:
+            # La API continúa disponible para endpoints que no dependen de la base de datos.
+            logger.exception(
+                "No se ha podido conectar a la base de datos; la aplicación continúa en modo degradado."
+            )
+
+        yield
+    finally:
+        # El cierre también debe ejecutarse si el servidor cancela el lifespan o se produce
+        # una excepción mientras la aplicación está activa.
+        await engine.dispose()
+        logger.info("Conexiones de base de datos cerradas.")
 
 
 def create_app() -> FastAPI:
@@ -149,6 +155,11 @@ def create_app() -> FastAPI:
             "status": "ok" if database_available else "degraded",
             "database": "available" if database_available else "unavailable",
         }
+
+    # FastAPI parsea formularios y archivos antes de ejecutar dependencias de ruta.
+    # Esta barrera conserva la dependencia existente, pero rechaza contacto sin token
+    # antes de que Starlette lea o escriba el cuerpo multipart.
+    app.add_middleware(ContactTokenGuardMiddleware)
 
     # Cada petición consume el límite global y, cuando corresponde, el límite específico
     # de su endpoint. Las rutas dinámicas usan parámetros entre llaves para cubrir todos

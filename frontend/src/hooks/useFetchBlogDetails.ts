@@ -31,7 +31,8 @@ export function useFetchBlogDetails(slug: string): UseFetchBlogDetailsReturn {
   const [error, setError] = useState<string | null>(null); // Estado para almacenar mensajes de error
 
   useEffect(() => {
-    let isMounted = true; // Variable para evitar actualizaciones de estado en componentes desmontados
+    let isMounted = true; // Evita actualizaciones de estado en componentes desmontados
+    const controller = new AbortController(); // Permite cancelar la petición cuando queda obsoleta
 
     /**
      * Función asíncrona para obtener los detalles de una publicación del blog en base al slug.
@@ -41,7 +42,7 @@ export function useFetchBlogDetails(slug: string): UseFetchBlogDetailsReturn {
       setLoadingBlogDetails(true);
       setError(null); // Limpia un error anterior antes de volver a intentar la carga
       try {
-        const result = await getBlogPostBySlug(slug, undefined, locale); // Solicita explícitamente el idioma actual
+        const result = await getBlogPostBySlug(slug, undefined, locale, controller.signal); // Solicita explícitamente el idioma actual
         if (isMounted) {
           setData(result); // Actualiza el estado con los datos obtenidos
         }
@@ -60,6 +61,7 @@ export function useFetchBlogDetails(slug: string): UseFetchBlogDetailsReturn {
 
     return () => {
       isMounted = false; // Marca el componente como desmontado para evitar actualizaciones de estado
+      controller.abort(); // Cancela la lectura obsoleta para no consumir token, red ni rate limit.
     };
   }, [formatMessage, locale, slug]); // Ejecuta el efecto cada vez que cambian el idioma o el slug
 

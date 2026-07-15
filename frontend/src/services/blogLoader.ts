@@ -13,6 +13,7 @@ interface BlogDataResult {
   blogDetails?: BlogPost | null;
   error?: string | null;
   notFound?: boolean;
+  statusCode?: number;
 }
 
 /** Construye la ruta pública del artículo respetando que español no lleva prefijo. */
@@ -104,6 +105,9 @@ export async function loadBlogData(slug: string, locale: string): Promise<BlogDa
     return {
       blogDetails: null,
       error: "Error al cargar el artículo.",
+      // Una dependencia temporalmente no disponible no debe generar una página de error
+      // con HTTP 200, porque navegadores y buscadores podrían almacenarla como contenido válido.
+      statusCode: 503,
     };
   }
 }

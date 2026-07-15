@@ -29,7 +29,8 @@ export function useFetchBlog(): UseFetchBlogReturn {
   const [error, setError] = useState<string | null>(null); // Estado para almacenar mensajes de error
 
   useEffect(() => {
-    let isMounted = true; // Variable para evitar actualizaciones de estado en componentes desmontados
+    let isMounted = true; // Evita actualizaciones de estado en componentes desmontados
+    const controller = new AbortController(); // Permite cancelar la petición cuando queda obsoleta
 
     /**
      * Función asíncrona para obtener las publicaciones del blog en el idioma actual.
@@ -40,7 +41,7 @@ export function useFetchBlog(): UseFetchBlogReturn {
       setError(null); // Limpia un error anterior antes de volver a intentar la carga
       try {
         const idioma = locale; // Obtiene el idioma actual desde `intl`
-        const result = await getBlogPosts(idioma); // Llama al servicio para obtener las publicaciones del blog
+        const result = await getBlogPosts(idioma, undefined, controller.signal); // Llama al servicio para obtener las publicaciones del blog
         if (isMounted) {
           setData(result); // Actualiza el estado con los datos obtenidos
         }
@@ -59,6 +60,7 @@ export function useFetchBlog(): UseFetchBlogReturn {
 
     return () => {
       isMounted = false; // Marca el componente como desmontado para evitar actualizaciones de estado
+      controller.abort(); // Cancela la lectura obsoleta para no consumir token, red ni rate limit.
     };
   }, [formatMessage, locale]); // Ejecuta el efecto cada vez que cambia el idioma
 

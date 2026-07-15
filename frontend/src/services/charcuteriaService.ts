@@ -63,7 +63,10 @@ const isCharcuteriaProduct = (value: unknown, expectedLanguage: string): value i
  * @returns {Promise<CharcuteriaProduct[]>} - Una promesa que resuelve a un array de objetos CharcuteriaProduct.
  * @throws {Error} - Si falla la solicitud.
  */
-export const getCharcuteriaProducts = async (idioma: string): Promise<CharcuteriaProduct[]> => {
+export const getCharcuteriaProducts = async (
+  idioma: string,
+  signal?: AbortSignal
+): Promise<CharcuteriaProduct[]> => {
   try {
     const apiUrl = getApiUrl();
     if (!SUPPORTED_LANGUAGES.has(idioma)) {
@@ -77,6 +80,7 @@ export const getCharcuteriaProducts = async (idioma: string): Promise<Charcuteri
         },
         params: { idioma },
         timeout: READ_REQUEST_TIMEOUT_MS,
+        signal,
       })
     );
 

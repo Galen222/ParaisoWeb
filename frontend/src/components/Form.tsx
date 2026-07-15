@@ -97,7 +97,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
     for (const character of value) {
       // U+02BC es Unicode Lm, pero aquí es un apóstrofe separador y no una letra.
-      if (/^[\s'’ʼ-]$/u.test(character)) {
+      if (/^[ '’ʼ-]$/u.test(character)) {
         previousWasLetterOrMark = false;
         continue;
       }
@@ -116,7 +116,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
   /** Exige al menos una letra real, sin contar los apóstrofes Unicode de categoría Lm. */
   const hasNameLetter = (value: string): boolean =>
-    Array.from(value).some((character) => !/^[\s'’ʼ-]$/u.test(character) && /\p{L}/u.test(character));
+    Array.from(value).some((character) => !/^[ '’ʼ-]$/u.test(character) && /\p{L}/u.test(character));
 
   /**
    * Valida y sanitiza el nombre permitiendo solo caracteres válidos
