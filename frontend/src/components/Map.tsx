@@ -106,7 +106,10 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
    * Carga o reemplaza el marcador del mapa, mostrando un InfoWindow con detalles al hacer clic.
    */
   const loadMarker = useCallback(async (): Promise<void> => {
-    if (!google.maps || !mapInstanceRef.current) return;
+    // El componente también puede desmontarse después de un fallo de carga, antes de que
+    // exista el objeto global de Google Maps. Consultarlo sin comprobarlo provocaría un
+    // ReferenceError adicional que ocultaría el error original.
+    if (typeof google === "undefined" || !google.maps || !mapInstanceRef.current) return;
 
     try {
       // Importa la librería 'marker' si aún no ha sido importada
@@ -170,24 +173,44 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
    * Carga el API de Google Maps y configura el idioma usando importLibrary().
    */
   useEffect(() => {
+    let cancelled = false;
+
     const init = async () => {
       const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
       if (!apiKey) {
-        setLoadError("La clave de API de Google Maps no está configurada.");
+        if (!cancelled) {
+          setIsLoaded(false);
+          setLoadError("La clave de API de Google Maps no está configurada.");
+        }
         return;
       }
 
       try {
+        // Limpia un error transitorio anterior antes de reintentar la carga.
+        if (!cancelled) {
+          setLoadError(null);
+        }
+
         // Cambio: Usamos el Singleton del Loader
         const loader = getGoogleMapsLoader(apiKey, mapLocale);
         await Promise.all([loader.importLibrary("maps"), loader.importLibrary("marker")]);
-        setIsLoaded(true); // Marca el estado como cargado
+        if (!cancelled) {
+          setLoadError(null);
+          setIsLoaded(true); // Marca el estado como cargado
+        }
       } catch (err: unknown) {
-        setLoadError(err instanceof Error ? err.message : "No se pudo cargar Google Maps.");
+        if (!cancelled) {
+          setIsLoaded(false);
+          setLoadError(err instanceof Error ? err.message : "No se pudo cargar Google Maps.");
+        }
       }
     };
 
-    init();
+    void init();
+
+    return () => {
+      cancelled = true;
+    };
   }, [mapLocale]);
 
   /**
@@ -215,7 +238,9 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
    */
   useEffect(() => {
     return () => {
-      if (markerRef.current) {
+      // Si el script no llegó a cargarse, `google` no existe. La limpieza debe ser
+      // segura también en ese estado para no lanzar una excepción al navegar.
+      if (markerRef.current && typeof google !== "undefined" && google.maps) {
         google.maps.event.clearInstanceListeners(markerRef.current);
         markerRef.current.map = null;
       }

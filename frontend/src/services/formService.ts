@@ -75,20 +75,46 @@ export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
     formData.append("file", data.file);
   }
 
-  try {
-    // Realiza la solicitud POST usando axios con los datos del formulario y el token temporal.
-    const response = await axiosInstance.post(apiUrl, formData, {
+  const postForm = (timedToken: string): Promise<AxiosResponse> =>
+    axiosInstance.post(apiUrl, formData, {
       headers: {
-        "x-timed-token": token, // Envía el token en el encabezado
+        "x-timed-token": timedToken, // Envía el token en el encabezado
       },
     });
-    return response;
+
+  try {
+    // Realiza la solicitud POST usando axios con los datos del formulario y el token temporal.
+    return await postForm(token);
   } catch (error: unknown) {
     // Manejo de errores en la solicitud con axios.
     if (axios.isAxiosError(error)) {
       if (error.response) {
         // El servidor respondió con un estado fuera del rango 2xx.
         if (error.response.status === 403) {
+          // El token puede cambiar mientras se sube el formulario. Como el backend verifica
+          // el token antes de ejecutar el servicio de correo, es seguro reintentar una sola
+          // vez con un token recién solicitado sin duplicar un envío ya procesado.
+          const refreshedToken = await getTimedToken();
+          if (refreshedToken !== token) {
+            try {
+              return await postForm(refreshedToken);
+            } catch (retryError: unknown) {
+              if (axios.isAxiosError(retryError)) {
+                if (retryError.response?.status === 403) {
+                  throw new Error("Token inválido o expirado. Por favor, intenta de nuevo.");
+                }
+                if (retryError.response) {
+                  throw new Error(getApiErrorDetail(retryError.response.data) ?? "Error al enviar el formulario");
+                }
+                if (retryError.request) {
+                  throw new Error("No se pudo contactar con el servidor");
+                }
+              }
+
+              throw new Error("Error al enviar el formulario");
+            }
+          }
+
           throw new Error("Token inválido o expirado. Por favor, intenta de nuevo.");
         }
 

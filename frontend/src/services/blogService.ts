@@ -30,6 +30,13 @@ const API_URL = process.env.NEXT_PUBLIC_API_BLOG_URL;
 
 const SUPPORTED_LANGUAGES = new Set(["es", "en", "de"]);
 const MAX_SLUG_LENGTH = 150;
+const VALID_SLUG_PATTERN = /^[\p{L}\p{N}\p{M}-]+$/u;
+
+interface ExpectedBlogIdentity {
+  id?: number;
+  idioma?: string;
+  slug?: string;
+}
 
 /** Valida los idiomas que existen en las rutas y en la base de datos. */
 const requireSupportedLanguage = (idioma: string): string => {
@@ -53,31 +60,41 @@ const getApiUrl = (): string => {
 };
 
 /** Comprueba en tiempo de ejecución que una respuesta conserva el contrato del blog. */
-const isBlogPost = (value: unknown): value is BlogPost => {
+const isBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): value is BlogPost => {
   if (typeof value !== "object" || value === null) {
     return false;
   }
 
   const post = value as Record<string, unknown>;
+  const normalizedExpectedSlug = expected.slug?.normalize("NFC");
+  const normalizedResponseSlug = typeof post.slug === "string" ? post.slug.normalize("NFC") : null;
+
   return (
     Number.isInteger(post.id_noticia) &&
     typeof post.id_noticia === "number" &&
     post.id_noticia > 0 &&
     typeof post.idioma === "string" &&
+    SUPPORTED_LANGUAGES.has(post.idioma) &&
     typeof post.slug === "string" &&
+    post.slug.length > 0 &&
+    post.slug.length <= MAX_SLUG_LENGTH &&
+    VALID_SLUG_PATTERN.test(post.slug) &&
     typeof post.titulo === "string" &&
     typeof post.contenido === "string" &&
     typeof post.autor === "string" &&
     typeof post.imagen_url === "string" &&
     (post.imagen_url_2 === undefined || post.imagen_url_2 === null || typeof post.imagen_url_2 === "string") &&
     typeof post.fecha_publicacion === "string" &&
-    typeof post.fecha_actualizacion === "string"
+    typeof post.fecha_actualizacion === "string" &&
+    (expected.id === undefined || post.id_noticia === expected.id) &&
+    (expected.idioma === undefined || post.idioma === expected.idioma) &&
+    (normalizedExpectedSlug === undefined || normalizedResponseSlug === normalizedExpectedSlug)
   );
 };
 
 /** Rechaza respuestas 2xx mal formadas antes de que provoquen un error durante el render. */
-const requireBlogPost = (value: unknown): BlogPost => {
-  if (!isBlogPost(value)) {
+const requireBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): BlogPost => {
+  if (!isBlogPost(value, expected)) {
     throw new Error("La respuesta del servidor para el blog no tiene el formato esperado.");
   }
 
@@ -105,7 +122,10 @@ export const getBlogPosts = async (idioma: string, token?: string): Promise<Blog
       },
       params: { idioma: validatedLanguage },
     });
-    if (!Array.isArray(response.data) || !response.data.every(isBlogPost)) {
+    if (
+      !Array.isArray(response.data) ||
+      !response.data.every((post) => isBlogPost(post, { idioma: validatedLanguage }))
+    ) {
       throw new Error("La respuesta del servidor para el listado del blog no tiene el formato esperado.");
     }
 
@@ -138,7 +158,7 @@ export const getBlogPostById = async (id: number, idioma: string, token?: string
       },
       params: { idioma: validatedLanguage },
     });
-    return requireBlogPost(response.data);
+    return requireBlogPost(response.data, { id, idioma: validatedLanguage });
   } catch (error) {
     throw error;
   }
@@ -158,9 +178,7 @@ export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: s
     const apiUrl = getApiUrl();
 
     // Validar y sanitizar los inputs
-    const allowedSlugRegex = /^[\p{L}\p{N}\p{M}-]+$/u;
-
-    if (slug.length === 0 || slug.length > MAX_SLUG_LENGTH || !allowedSlugRegex.test(slug)) {
+    if (slug.length === 0 || slug.length > MAX_SLUG_LENGTH || !VALID_SLUG_PATTERN.test(slug)) {
       // Caracteres inválidos individuales
       const invalidChars = slug.match(/[^\p{L}\p{N}\p{M}-]/gu) || [];
       const invalidList = Array.from(new Set(invalidChars)).join(", ");
@@ -192,7 +210,10 @@ export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: s
       params,
     });
 
-    return requireBlogPost(response.data);
+    return requireBlogPost(response.data, {
+      idioma: validatedLanguage,
+      slug,
+    });
   } catch (error) {
     throw error;
   }

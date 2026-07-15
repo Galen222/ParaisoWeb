@@ -17,6 +17,7 @@ Dependencias:
 """
 
 import os
+import unicodedata
 
 import aiosmtplib
 from email.message import EmailMessage
@@ -58,7 +59,15 @@ def mask_email_for_log(email: str) -> str:
 def sanitize_attachment_filename(filename: Optional[str]) -> str:
     """Conserva solo un nombre de archivo seguro para la cabecera del adjunto."""
     basename = (filename or "").replace("\\", "/").rsplit("/", 1)[-1]
-    sanitized = "".join(character for character in basename if character >= " " and character != "\x7f").strip(" .")
+    normalized_basename = unicodedata.normalize("NFC", basename)
+    # Elimina controles, marcas bidireccionales y otros caracteres invisibles de
+    # categoría Unicode C*. Aunque no creen una nueva cabecera, pueden hacer que el
+    # nombre mostrado por el cliente de correo parezca tener otra extensión.
+    sanitized = "".join(
+        character
+        for character in normalized_basename
+        if not unicodedata.category(character).startswith("C")
+    ).strip(" .")
     if not sanitized:
         return "adjunto"
 
