@@ -85,6 +85,19 @@ class AttachmentSizeStatusTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(raised.exception.status_code, 413)
 
+    async def test_hash_del_adjunto_no_se_escribe_en_logs(self) -> None:
+        service = FileService()
+        upload = UploadFile(file=BytesIO(b"contenido privado"), size=17, filename="documento.pdf")
+
+        with patch("backend.services.file_service.logger.info") as log_info:
+            file_hash = await service.scan_file_content(upload)
+
+        messages = " ".join(str(call.args[0]) for call in log_info.call_args_list if call.args)
+        self.assertNotIn(file_hash, messages)
+        self.assertIn("Archivo limpio", messages)
+        self.assertIn("bytes=17", messages)
+        self.assertIn("extensión=.pdf", messages)
+
 
 class BlogSlugBoundaryTests(unittest.TestCase):
     def test_slug_mas_largo_que_la_columna_se_rechaza_antes_de_consultar_mysql(self) -> None:

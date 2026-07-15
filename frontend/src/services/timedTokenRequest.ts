@@ -9,9 +9,10 @@ import { getTimedToken } from "./tokenService";
  */
 export const requestWithTimedToken = async <T>(
   request: (token: string) => Promise<T>,
-  initialToken?: string
+  initialToken?: string,
+  signal?: AbortSignal
 ): Promise<T> => {
-  const token = initialToken || (await getTimedToken());
+  const token = initialToken || (await getTimedToken(signal));
 
   try {
     return await request(token);
@@ -20,7 +21,7 @@ export const requestWithTimedToken = async <T>(
       throw error;
     }
 
-    const refreshedToken = await getTimedToken();
+    const refreshedToken = await getTimedToken(signal);
     if (refreshedToken === token) {
       throw error;
     }

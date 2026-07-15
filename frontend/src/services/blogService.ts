@@ -134,7 +134,8 @@ export const getBlogPosts = async (
           timeout: READ_REQUEST_TIMEOUT_MS,
           signal,
         }),
-      token
+      token,
+      signal
     );
     if (
       !Array.isArray(response.data) ||
@@ -183,7 +184,8 @@ export const getBlogPostById = async (
           timeout: READ_REQUEST_TIMEOUT_MS,
           signal,
         }),
-      token
+      token,
+      signal
     );
     return requireBlogPost(response.data, { id, idioma: validatedLanguage });
   } catch (error) {
@@ -230,7 +232,8 @@ export const getBlogPostBySlug = async (
           timeout: READ_REQUEST_TIMEOUT_MS,
           signal,
         }),
-      token
+      token,
+      signal
     );
 
     return requireBlogPost(response.data, {

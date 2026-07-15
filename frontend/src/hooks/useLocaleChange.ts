@@ -1,7 +1,7 @@
 // hooks/useLocaleChange.ts
 
 import { useRouter } from "next/router";
-import { useCallback, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useCookieConsent } from "../contexts/CookieContext";
 import { getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
@@ -23,6 +23,14 @@ const getErrorMessageForLog = (error: unknown): string => {
   return "Error desconocido";
 };
 
+/** Conserva query y fragmento al cambiar únicamente el slug o el locale. */
+const getRouteSuffix = (asPath: string): string => {
+  const queryIndex = asPath.indexOf("?");
+  const hashIndex = asPath.indexOf("#");
+  const indexes = [queryIndex, hashIndex].filter((index) => index >= 0);
+  return indexes.length > 0 ? asPath.slice(Math.min(...indexes)) : "";
+};
+
 /**
  * Tipo de la función que cambia el idioma de la aplicación.
  */
@@ -37,6 +45,14 @@ export function useLocaleChange(): LocaleChangeHandler {
   const router = useRouter();
   const { cookieConsentPersonalization } = useCookieConsent();
   const localeChangeSequenceRef = useRef(0);
+  const activeRequestControllerRef = useRef<AbortController | null>(null);
+
+  useEffect(() => {
+    return () => {
+      activeRequestControllerRef.current?.abort();
+      activeRequestControllerRef.current = null;
+    };
+  }, []);
 
   /**
    * Cambia el idioma de la aplicación y guarda en cookies si se permite la personalización.
@@ -56,8 +72,13 @@ export function useLocaleChange(): LocaleChangeHandler {
         return;
       }
 
-      // Cada solicitud invalida las anteriores para que una respuesta lenta no sobrescriba el último idioma elegido.
+      // Cada solicitud invalida y cancela las anteriores para que una respuesta lenta no
+      // sobrescriba el último idioma elegido ni siga consumiendo token, red y rate limit.
+      activeRequestControllerRef.current?.abort();
+      const controller = new AbortController();
+      activeRequestControllerRef.current = controller;
       const localeChangeSequence = ++localeChangeSequenceRef.current;
+      const routeSuffix = getRouteSuffix(router.asPath);
       let newPath = router.asPath;
 
       // Verifica si estás en la página `[slug]`
@@ -68,25 +89,38 @@ export function useLocaleChange(): LocaleChangeHandler {
         const normalizedSlug = normalizeBlogSlug(slug);
         if (normalizedSlug === null) {
           console.error("Cambio de idioma del blog ignorado: slug no disponible o inválido.");
+          if (activeRequestControllerRef.current === controller) {
+            activeRequestControllerRef.current = null;
+          }
           return;
         }
 
         try {
-          const token = await getTimedToken();
+          const token = await getTimedToken(controller.signal);
           if (localeChangeSequence !== localeChangeSequenceRef.current) return;
 
           // Obtenemos el artículo actual utilizando el slug y el idioma actuales.
           // El idioma evita resolver una traducción distinta cuando dos versiones comparten slug.
-          const currentBlogPost = await getBlogPostBySlug(normalizedSlug, token, router.locale || "es");
+          const currentBlogPost = await getBlogPostBySlug(
+            normalizedSlug,
+            token,
+            router.locale || "es",
+            controller.signal
+          );
           if (localeChangeSequence !== localeChangeSequenceRef.current) return;
 
           // No consulta la traducción con un identificador vacío, decimal o negativo devuelto por la API.
           if (!Number.isInteger(currentBlogPost.id_noticia) || currentBlogPost.id_noticia <= 0) {
             console.error("Cambio de idioma del blog cancelado: identificador de artículo inválido.");
-            newPath = `/blog`;
+            newPath = `/blog${routeSuffix}`;
           } else {
             // Obtenemos el artículo en el nuevo idioma utilizando el ID del artículo actual
-            const newBlogPost = await getBlogPostById(currentBlogPost.id_noticia, newLocale, token);
+            const newBlogPost = await getBlogPostById(
+              currentBlogPost.id_noticia,
+              newLocale,
+              token,
+              controller.signal
+            );
             if (localeChangeSequence !== localeChangeSequenceRef.current) return;
 
             const isExpectedTranslation =
@@ -96,20 +130,20 @@ export function useLocaleChange(): LocaleChangeHandler {
 
             if (isExpectedTranslation) {
               // Construimos la nueva ruta con el slug en el nuevo idioma
-              newPath = `/blog/${newBlogPost.slug}`;
+              newPath = `/blog/${newBlogPost.slug}${routeSuffix}`;
             } else {
               // Si la respuesta no corresponde a la traducción solicitada, redirige al blog principal.
               console.error("Cambio de idioma del blog cancelado: la traducción recibida no es válida.");
-              newPath = `/blog`;
+              newPath = `/blog${routeSuffix}`;
             }
           }
         } catch (error: unknown) {
-          // Un cambio posterior tiene prioridad y no debe ser reemplazado por este resultado tardío.
-          if (localeChangeSequence !== localeChangeSequenceRef.current) return;
+          // Una navegación posterior o el desmontaje cancelan de forma intencionada esta lectura.
+          if (controller.signal.aborted || localeChangeSequence !== localeChangeSequenceRef.current) return;
 
           console.error("Error al obtener la traducción del artículo:", getErrorMessageForLog(error));
           // En caso de error, podríamos redirigir al blog principal
-          newPath = `/blog`;
+          newPath = `/blog${routeSuffix}`;
         }
       }
 
@@ -144,9 +178,13 @@ export function useLocaleChange(): LocaleChangeHandler {
           console.error("El cambio de idioma fue cancelado antes de completar la navegación.");
         }
       } catch (error: unknown) {
-        if (localeChangeSequence === localeChangeSequenceRef.current) {
+        if (!controller.signal.aborted && localeChangeSequence === localeChangeSequenceRef.current) {
           restorePreviousLocalePreference();
           console.error("No se pudo completar el cambio de idioma:", getErrorMessageForLog(error));
+        }
+      } finally {
+        if (activeRequestControllerRef.current === controller) {
+          activeRequestControllerRef.current = null;
         }
       }
     },

@@ -16,6 +16,14 @@ const getErrorMessageForLog = (error: unknown): string => {
   return "Error desconocido";
 };
 
+/** Conserva query y fragmento al sustituir solamente el slug traducido. */
+const getRouteSuffix = (asPath: string): string => {
+  const queryIndex = asPath.indexOf("?");
+  const hashIndex = asPath.indexOf("#");
+  const indexes = [queryIndex, hashIndex].filter((index) => index >= 0);
+  return indexes.length > 0 ? asPath.slice(Math.min(...indexes)) : "";
+};
+
 /**
  * Interfaz para los detalles del blog.
  * @property {number} id_noticia - ID de la noticia en el idioma actual.
@@ -39,6 +47,7 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
   const intl = useIntl(); // Hook para obtener el idioma actual
   const router = useRouter(); // Hook para gestionar la navegación
   const requestSequenceRef = useRef(0);
+  const activeRequestControllerRef = useRef<AbortController | null>(null);
 
   const blogId = blogDetails?.id_noticia;
   const blogLocale = blogDetails?.idioma;
@@ -60,16 +69,28 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
       return;
     }
 
-    // Cada solicitud invalida las anteriores para impedir que una respuesta lenta revierta el último idioma elegido.
+    // Cancela la lectura anterior para que un cambio rápido de locale no siga consumiendo
+    // token, conexión y rate limit ni pueda navegar después de una solicitud más reciente.
+    activeRequestControllerRef.current?.abort();
+    const controller = new AbortController();
+    activeRequestControllerRef.current = controller;
     const requestSequence = ++requestSequenceRef.current;
     let cancelled = false;
 
-    const isCurrentRequest = (): boolean => !cancelled && requestSequence === requestSequenceRef.current;
+    const isCurrentRequest = (): boolean =>
+      !cancelled &&
+      !controller.signal.aborted &&
+      requestSequence === requestSequenceRef.current;
 
     const handleLanguageChange = async () => {
       try {
         // Obtiene la noticia en el nuevo idioma usando el ID de la noticia.
-        const newBlogPost = await getBlogPostById(blogId, newIdioma);
+        const newBlogPost = await getBlogPostById(
+          blogId,
+          newIdioma,
+          undefined,
+          controller.signal
+        );
         if (!isCurrentRequest()) return;
 
         // Evita navegar con una respuesta incompleta o perteneciente a otro idioma.
@@ -82,17 +103,25 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
           return;
         }
 
-        // Redirige al usuario a la URL de la noticia traducida indicando el locale de forma explícita.
-        const navigationCompleted = await router.push(`/blog/${newBlogPost.slug}`, undefined, {
-          locale: newIdioma,
-        });
+        // Conserva filtros, parámetros y anclas al sustituir el slug por su traducción.
+        const routeSuffix = getRouteSuffix(router.asPath);
+        const navigationCompleted = await router.push(
+          `/blog/${newBlogPost.slug}${routeSuffix}`,
+          undefined,
+          { locale: newIdioma }
+        );
 
         if (isCurrentRequest() && !navigationCompleted) {
           console.error("No se pudo completar la navegación al artículo traducido.");
         }
       } catch (error: unknown) {
+        // Una navegación posterior o el desmontaje cancelan intencionadamente la lectura.
         if (isCurrentRequest()) {
           console.error("Error al cambiar automáticamente el idioma del artículo:", getErrorMessageForLog(error));
+        }
+      } finally {
+        if (activeRequestControllerRef.current === controller) {
+          activeRequestControllerRef.current = null;
         }
       }
     };
@@ -101,6 +130,10 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
 
     return () => {
       cancelled = true;
+      controller.abort();
+      if (activeRequestControllerRef.current === controller) {
+        activeRequestControllerRef.current = null;
+      }
     };
   }, [blogId, blogLocale, intl.locale, router]); // Ejecuta el efecto cuando cambian el idioma o los detalles del blog
 };

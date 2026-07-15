@@ -224,9 +224,14 @@ class FileService:
             # El servicio de correo necesita volver a leer el adjunto desde el principio.
             await file.seek(0)
 
-            # Calcular y devolver el hash SHA-256 del contenido sin haberlo cargado completo en memoria.
+            # Calcular y devolver el hash SHA-256 sin escribirlo en logs. Un hash completo
+            # permite correlacionar adjuntos entre solicitudes y actúa como identificador
+            # persistente del contenido, aunque no revele directamente el archivo.
             file_hash_value = file_hash.hexdigest()
-            logger.info(f"{ANSI_GREEN}Archivo limpio. Hash SHA-256: {file_hash_value}{ANSI_RESET}")
+            logger.info(
+                f"{ANSI_GREEN}Archivo limpio | bytes={total_size} | "
+                f"{file_log_context(file)}{ANSI_RESET}"
+            )
             return file_hash_value
         except HTTPException:
             raise

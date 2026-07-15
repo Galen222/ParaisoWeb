@@ -14,6 +14,49 @@ let pendingTokenRequest: Promise<string> | null = null;
 // HMAC-SHA256 codificado por el backend con Base64 URL-safe: 43 caracteres y un `=` final.
 const TIMED_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}=$/;
 
+/** Crea un error reconocible por Axios/React como cancelación intencionada. */
+const createAbortError = (): Error => {
+  const error = new Error("Solicitud de token cancelada.");
+  error.name = "AbortError";
+  return error;
+};
+
+/**
+ * Permite que cada consumidor deje de esperar la petición compartida sin cancelarla
+ * para los demás. La solicitud HTTP común continúa y libera pendingTokenRequest al terminar.
+ */
+const waitForTokenRequest = (
+  request: Promise<string>,
+  signal?: AbortSignal
+): Promise<string> => {
+  if (!signal) {
+    return request;
+  }
+
+  if (signal.aborted) {
+    return Promise.reject(createAbortError());
+  }
+
+  return new Promise<string>((resolve, reject) => {
+    const handleAbort = (): void => {
+      reject(createAbortError());
+    };
+
+    signal.addEventListener("abort", handleAbort, { once: true });
+
+    request.then(
+      (token) => {
+        signal.removeEventListener("abort", handleAbort);
+        resolve(token);
+      },
+      (error: unknown) => {
+        signal.removeEventListener("abort", handleAbort);
+        reject(error);
+      }
+    );
+  });
+};
+
 /**
  * Obtiene un token temporal desde el backend.
  *
@@ -47,12 +90,12 @@ const requestTimedToken = async (): Promise<string> => {
   }
 };
 
-export const getTimedToken = (): Promise<string> => {
+export const getTimedToken = (signal?: AbortSignal): Promise<string> => {
   if (!pendingTokenRequest) {
     pendingTokenRequest = requestTimedToken().finally(() => {
       pendingTokenRequest = null;
     });
   }
 
-  return pendingTokenRequest;
+  return waitForTokenRequest(pendingTokenRequest, signal);
 };

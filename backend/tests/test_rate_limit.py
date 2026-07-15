@@ -282,6 +282,11 @@ class RateLimitMiddlewareTests(unittest.TestCase):
         self.assertEqual(blocked.status_code, 429)
         self.assertEqual(blocked.headers["access-control-allow-origin"], "https://frontend.example")
         self.assertEqual(blocked.headers["access-control-allow-credentials"], "true")
+        self.assertEqual(blocked.headers["access-control-allow-methods"], "GET, POST, OPTIONS")
+        self.assertEqual(blocked.headers["access-control-allow-headers"], "Content-Type, x-timed-token")
+        self.assertEqual(blocked.headers["access-control-expose-headers"], "Retry-After")
+        self.assertIn("Access-Control-Request-Method", blocked.headers["vary"])
+        self.assertIn("Access-Control-Request-Headers", blocked.headers["vary"])
 
     def test_limite_global_cubre_rutas_sin_regla_especifica(self) -> None:
         app = FastAPI()

@@ -1,11 +1,15 @@
 // components/Form.tsx
 
-import React, { useRef, useState, ChangeEvent, FormEvent } from "react";
+import React, { useEffect, useRef, useState, ChangeEvent, FormEvent } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import { useToastMessage } from "../hooks/useToast";
-import { submitForm, FormData as FormServiceData } from "../services/formService";
+import {
+  submitForm,
+  isFormSubmissionCancelled,
+  FormData as FormServiceData,
+} from "../services/formService";
 import validator from "validator";
 import styles from "../styles/components/Form.module.css";
 
@@ -56,6 +60,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isSubmittingRef = useRef(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const activeSubmitControllerRef = useRef<AbortController | null>(null);
+  const isMountedRef = useRef(true);
 
   const [formData, setFormData] = useState<FormServiceData>({
     name: "",
@@ -69,6 +75,17 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
   const { showToast } = useToastMessage();
   const trackButtonClick = useButtonClickTrackingGA();
+
+  useEffect(() => {
+    isMountedRef.current = true;
+
+    return () => {
+      isMountedRef.current = false;
+      activeSubmitControllerRef.current?.abort();
+      activeSubmitControllerRef.current = null;
+      isSubmittingRef.current = false;
+    };
+  }, []);
 
   /**
    * Valida cada parte del email según reglas específicas
@@ -241,6 +258,9 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     trackButtonClick("Enviar Formulario");
     setIsSubmitting(true);
 
+    const controller = new AbortController();
+    activeSubmitControllerRef.current = controller;
+
     try {
       console.log("📤 Enviando formulario:", {
         reason: formData.reason,
@@ -250,7 +270,11 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
         fileType: formData.file?.type ?? null,
         fileSize: formData.file?.size ?? 0,
       });
-      await submitForm(formData);
+      await submitForm(formData, controller.signal);
+      if (!isMountedRef.current || controller.signal.aborted) {
+        return;
+      }
+
       showToast("contacto_Formulario_Ok", 4000, "success");
       setFormData({
         name: "",
@@ -266,11 +290,18 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
       setIsPrivacyChecked(false);
       onSubmit();
     } catch (error: unknown) {
-      console.error("Error al enviar el formulario:", getErrorMessageForLog(error));
-      showToast("contacto_Formulario_Error", 4000, "error");
+      if (!isFormSubmissionCancelled(error) && isMountedRef.current) {
+        console.error("Error al enviar el formulario:", getErrorMessageForLog(error));
+        showToast("contacto_Formulario_Error", 4000, "error");
+      }
     } finally {
-      isSubmittingRef.current = false;
-      setIsSubmitting(false);
+      if (activeSubmitControllerRef.current === controller) {
+        activeSubmitControllerRef.current = null;
+        isSubmittingRef.current = false;
+        if (isMountedRef.current) {
+          setIsSubmitting(false);
+        }
+      }
     }
   };
 

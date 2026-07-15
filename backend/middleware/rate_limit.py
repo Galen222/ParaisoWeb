@@ -207,15 +207,29 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         )
 
     def _add_cors_headers(self, request: Request, headers: dict[str, str]) -> None:
-        """Permite que el navegador lea un 429 generado antes de CORSMiddleware."""
+        """Permite que el navegador lea un 429 generado antes de CORSMiddleware.
+
+        En solicitudes normales se expone ``Retry-After`` para que el frontend pueda
+        conocer la espera. En preflight se añaden también métodos y cabeceras
+        autorizados; sin ellos el navegador transforma el 429 en un error CORS opaco.
+        """
         origin = request.headers.get("origin", "").strip()
         if not origin or origin not in self._cors_allowed_origins:
             return
 
         headers["Access-Control-Allow-Origin"] = origin
+        headers["Access-Control-Expose-Headers"] = "Retry-After"
         headers["Vary"] = "Origin"
         if self._cors_allow_credentials:
             headers["Access-Control-Allow-Credentials"] = "true"
+
+        if request.method.upper() == "OPTIONS":
+            headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+            headers["Access-Control-Allow-Headers"] = "Content-Type, x-timed-token"
+            headers["Vary"] = (
+                "Origin, Access-Control-Request-Method, "
+                "Access-Control-Request-Headers"
+            )
 
     def _build_anonymous_client_key(self, request: Request) -> str:
         client_host = self._resolve_client_host(request)

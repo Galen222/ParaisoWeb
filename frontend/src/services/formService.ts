@@ -48,6 +48,13 @@ const getApiErrorDetail = (data: unknown): string | null => {
   return typeof detail === "string" && detail.trim() !== "" ? detail : null;
 };
 
+/** Indica si Axios canceló el envío porque la vista dejó de necesitarlo. */
+export const isFormSubmissionCancelled = (error: unknown): boolean =>
+  axios.isCancel(error) ||
+  (error instanceof Error &&
+    (error.name === "AbortError" ||
+      ("code" in error && (error as Error & { code?: string }).code === "ERR_CANCELED")));
+
 /**
  * Envía el formulario de contacto a la API.
  *
@@ -55,11 +62,11 @@ const getApiErrorDetail = (data: unknown): string | null => {
  * @returns {Promise<AxiosResponse>} - Una promesa que resuelve a la respuesta de la API.
  * @throws {Error} - Si falla el envío del formulario.
  */
-export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
+export const submitForm = async (data: FormData, signal?: AbortSignal): Promise<AxiosResponse> => {
   const apiUrl = getApiUrl();
 
   // Obtén el token temporal antes de enviar el formulario
-  const token = await getTimedToken();
+  const token = await getTimedToken(signal);
 
   // Crea una instancia de FormData para enviar los datos incluyendo archivos adjuntos.
   const formData = new FormData();
@@ -77,12 +84,19 @@ export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
         "x-timed-token": timedToken, // Envía el token en el encabezado
       },
       timeout: CONTACT_REQUEST_TIMEOUT_MS,
+      signal,
     });
 
   try {
     // Realiza la solicitud POST usando axios con los datos del formulario y el token temporal.
     return await postForm(token);
   } catch (error: unknown) {
+    // Una cancelación intencionada debe conservarse para que el componente no muestre
+    // un falso error ni intente actualizar estado después de desmontarse.
+    if (isFormSubmissionCancelled(error)) {
+      throw error;
+    }
+
     // Manejo de errores en la solicitud con axios.
     if (axios.isAxiosError(error)) {
       if (error.response) {
@@ -91,11 +105,15 @@ export const submitForm = async (data: FormData): Promise<AxiosResponse> => {
           // El token puede cambiar mientras se sube el formulario. Como el backend verifica
           // el token antes de ejecutar el servicio de correo, es seguro reintentar una sola
           // vez con un token recién solicitado sin duplicar un envío ya procesado.
-          const refreshedToken = await getTimedToken();
+          const refreshedToken = await getTimedToken(signal);
           if (refreshedToken !== token) {
             try {
               return await postForm(refreshedToken);
             } catch (retryError: unknown) {
+              if (isFormSubmissionCancelled(retryError)) {
+                throw retryError;
+              }
+
               if (axios.isAxiosError(retryError)) {
                 if (retryError.response?.status === 403) {
                   throw new Error("Token inválido o expirado. Por favor, intenta de nuevo.");

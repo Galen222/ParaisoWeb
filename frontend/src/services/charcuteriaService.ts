@@ -73,15 +73,18 @@ export const getCharcuteriaProducts = async (
       throw new Error(`El idioma "${idioma}" no es válido. Solo se permiten: es, en, de.`);
     }
     // Realiza la solicitud GET y renueva una sola vez el token si caduca durante la petición.
-    const response = await requestWithTimedToken((token) =>
-      axios.get<unknown>(apiUrl, {
-        headers: {
-          "x-timed-token": token,
-        },
-        params: { idioma },
-        timeout: READ_REQUEST_TIMEOUT_MS,
-        signal,
-      })
+    const response = await requestWithTimedToken(
+      (token) =>
+        axios.get<unknown>(apiUrl, {
+          headers: {
+            "x-timed-token": token,
+          },
+          params: { idioma },
+          timeout: READ_REQUEST_TIMEOUT_MS,
+          signal,
+        }),
+      undefined,
+      signal
     );
 
     if (
