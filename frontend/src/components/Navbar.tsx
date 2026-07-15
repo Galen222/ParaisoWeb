@@ -99,30 +99,44 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
             <span className={styles.textLogo}>PARAISO DEL JAMON</span>
           </div>
           <div className={styles.flagContainer}>
-            <div className={`${styles.mobileMenuIcon} ${mobileMenu ? styles.colapseSpin : ""}`} onClick={toggleMobileMenu}>
+            <button
+              type="button"
+              className={`${styles.mobileMenuIcon} ${mobileMenu ? styles.colapseSpin : ""}`}
+              onClick={toggleMobileMenu}
+              aria-expanded={mobileMenu}
+              aria-controls="navbar-mobile-menu"
+              aria-label={intl.formatMessage({ id: "navbar_menu" })}
+            >
               <div className={styles.inner}>
                 <span></span>
                 <span></span>
                 <span></span>
               </div>
-            </div>
+            </button>
             <div className={styles.flags}>
               {locales?.map((lng) => (
-                <img
+                <button
+                  type="button"
                   key={lng}
-                  src={IMAGE_CONSTANTS.flags[lng as keyof typeof IMAGE_CONSTANTS.flags]}
-                  alt={IMAGE_CONSTANTS.flagsAlt[lng as keyof typeof IMAGE_CONSTANTS.flagsAlt]}
-                  className={`${styles.flag} ${router.locale === lng ? styles.activeFlag : ""}`}
+                  className={styles.flagButton}
+                  aria-label={IMAGE_CONSTANTS.flagsAlt[lng as keyof typeof IMAGE_CONSTANTS.flagsAlt]}
+                  aria-pressed={router.locale === lng}
                   onClick={() => {
-                    handleLocaleChange(lng);
+                    void handleLocaleChange(lng);
                     closeMobileMenu();
                   }}
-                />
+                >
+                  <img
+                    src={IMAGE_CONSTANTS.flags[lng as keyof typeof IMAGE_CONSTANTS.flags]}
+                    alt=""
+                    className={`${styles.flag} ${router.locale === lng ? styles.activeFlag : ""}`}
+                  />
+                </button>
               ))}
             </div>
           </div>
         </div>
-        <div className={`${styles.navbarMenu} ${mobileMenu ? styles.showMenu : ""}`}>
+        <div id="navbar-mobile-menu" className={`${styles.navbarMenu} ${mobileMenu ? styles.showMenu : ""}`}>
           <div className={styles.links}>
             <Link href="/" locale={router.locale} onClick={handleLinkClick}>
               {intl.formatMessage({ id: "navbar_inicio" })}
@@ -225,13 +239,20 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
           <div className={styles.flagContainer}>
             <div className={styles.flags}>
               {locales?.map((lng) => (
-                <img
+                <button
+                  type="button"
                   key={lng}
-                  src={IMAGE_CONSTANTS.flags[lng as keyof typeof IMAGE_CONSTANTS.flags]}
-                  alt={IMAGE_CONSTANTS.flagsAlt[lng as keyof typeof IMAGE_CONSTANTS.flagsAlt]}
-                  className={`${styles.flag} ${router.locale === lng ? styles.activeFlag : ""}`}
-                  onClick={() => handleLocaleChange(lng)}
-                />
+                  className={styles.flagButton}
+                  aria-label={IMAGE_CONSTANTS.flagsAlt[lng as keyof typeof IMAGE_CONSTANTS.flagsAlt]}
+                  aria-pressed={router.locale === lng}
+                  onClick={() => void handleLocaleChange(lng)}
+                >
+                  <img
+                    src={IMAGE_CONSTANTS.flags[lng as keyof typeof IMAGE_CONSTANTS.flags]}
+                    alt=""
+                    className={`${styles.flag} ${router.locale === lng ? styles.activeFlag : ""}`}
+                  />
+                </button>
               ))}
             </div>
           </div>

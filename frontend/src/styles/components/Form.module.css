@@ -150,6 +150,11 @@
   position: relative; /* Posicionamiento relativo para elementos internos */
 }
 
+.checkboxControl:focus-within {
+  outline: 3px solid Highlight; /* Hace visible el foco del input oculto al navegar con teclado */
+  outline-offset: 2px;
+}
+
 /* Texto asociado al checkbox */
 .checkText {
   font-weight: bold; /* Fuente en negrita */

@@ -3,7 +3,6 @@
   "seo_descripcion": "Willkommen im Paraíso Del Jamón. Entdecken Sie unsere iberischen Schinken, köstliche Menüs und eine gemütliche Atmosphäre. Erkunden Sie unsere Restaurants und Dienstleistungen.",
   "seo_og_image_alt": "Logo von Paraíso Del Jamón",
   "seo_keywords": "Bar, Restaurant, Paradies, Feinkost, Schinken, Iberischer Schinken, Menü, Speisekarte, Gastronomie, Kontaktformular, über uns, Blog, San Bernardo, Bravo Murillo, Reina Victoria, Arenal",
-
   "navbar_inicio": "Startseite",
   "navbar_restaurantes": "Restaurants",
   "navbar_reservas": "Reservierungen",
@@ -12,14 +11,12 @@
   "navbar_nosotros": "Über uns",
   "navbar_blog": "Blog",
   "navbar_contacto": "Kontakt",
-
+  "navbar_menu": "Navigationsmenü",
   "app_CookieAcceptAll": "Cookies erfolgreich akzeptiert",
   "app_CookieAccept": "Benutzerdefinierte Cookies erfolgreich akzeptiert",
   "app_CookieDenied": "Cookies erfolgreich abgelehnt",
-
   "default_Titulo_Texto1": "Ein Paradies",
   "default_Titulo_Texto2": "in Ihrer Nähe!",
-
   "inicio_Titulo_Texto1": "Willkommen im ",
   "inicio_Titulo_Texto2": "Paraíso del Jamón",
   "inicio_Titulo1": "Ein Paradies in Ihrer Nähe!",
@@ -33,7 +30,6 @@
   "Inicio_Carousel_Alt7": "Frühstück",
   "inicio_SEO_Titulo": "Paraíso Del Jamón - Ein Paradies in Ihrer Nähe",
   "inicio_SEO_Descripcion": "Entdecken Sie El Paraíso Del Jamón: unsere Restaurants, spanische Gastronomie, Geschichte und iberische Feinkost. Für wahre Feinschmecker.",
-
   "san-bernardo_Titulo": "Willkommen in Paraíso Del Jamón I",
   "san-bernardo_Texto": "Im Herzen Madrids gelegen, nur wenige Schritte von Sol entfernt, bietet es Ihnen authentische und traditionelle spanische Küche. Die Nähe zur Gran Vía und zur Plaza de España ermöglicht es den Besuchern, ein unvergleichliches Kultur- und Freizeitangebot zu genießen.",
   "san-bernardo_Titulo_Texto1": "Paraíso del Jamón I",
@@ -59,7 +55,6 @@
   "san-bernardo_SEO_Titulo": "Paraíso Del Jamón - San Bernardo: Spanische Küche im Herzen von Madrid",
   "san-bernardo_SEO_Descripcion": "Genießen Sie authentische spanische Küche in San Bernardo, Madrid, nahe Sol, Gran Vía und Plaza de España. Perfekt, um Kultur und Freizeit zu verbinden.",
   "san-bernardo_SEO_Cocina": "Spanisch",
-
   "bravo-murillo_Titulo": "Willkommen in Paraíso Del Jamón II",
   "bravo-murillo_Texto": "An einer der belebtesten Hauptstraßen im Norden Madrids gelegen, ist es der perfekte Ort, um ein Bier an unserer Theke oder die spanische Küche in einem gemütlichen Speisesaal zu genießen.",
   "bravo-murillo_Titulo_Texto1": "Paraíso del Jamón II",
@@ -85,7 +80,6 @@
   "bravo-murillo_SEO_Titulo": "Paraíso Del Jamón - Bravo Murillo: Geschmack und Ambiente in Madrid",
   "bravo-murillo_SEO_Descripcion": "Genießen Sie unsere spanische Küche und ein Bier in einer gemütlichen Atmosphäre in Bravo Murillo, einer der lebhaften Hauptstraßen von Madrid.",
   "bravo-murillo_SEO_Cocina": "Spanisch",
-
   "reina-victoria_Titulo": "Willkommen in Paraíso Del Jamón III",
   "reina-victoria_Texto": "Mit einer ausgezeichneten Lage, wo die Straßen voller Leben sind, ist es der ideale Ort, um eine Pause einzulegen und unsere Gerichte, unser Calamari-Sandwich mit einem Bier oder unseren Wursttheke mit hochwertigem iberischen Aufschnitt zu genießen.",
   "reina-victoria_Titulo_Texto1": "Paraíso del Jamón III",
@@ -111,7 +105,6 @@
   "reina-victoria_SEO_Titulo": "Paraíso Del Jamón - Reina Victoria: Geschmack und Qualität in Madrid",
   "reina-victoria_SEO_Descripcion": "Machen Sie eine Pause in Reina Victoria, Madrid, und genießen Sie unsere Gerichte, das berühmte Tintenfisch-Sandwich und hochwertige iberische Wurstwaren mit einem Bier.",
   "reina-victoria_SEO_Cocina": "Spanisch",
-
   "arenal_Titulo": "Willkommen in Paraíso Del Jamón VI",
   "arenal_Texto": "Im Herzen des historischen Madrider Viertels gelegen, verbinden wir Tradition und Qualität. Genießen Sie unsere Auswahl an iberischen Aufschnitten, probieren Sie ein Sandwich mit einem Bier und erkunden Sie unser abwechslungsreiches Menü in einem charmanten und authentischen Ambiente.",
   "arenal_Titulo_Texto1": "Paraíso del Jamón IV",
@@ -137,7 +130,6 @@
   "arenal_SEO_Titulo": "Paraíso Del Jamón - Arenal: Tradition und Qualität in Madrid",
   "arenal_SEO_Descripcion": "Besuchen Sie unser Lokal in Arenal, Madrid, und genießen Sie iberische Wurstwaren, Sandwiches und ein abwechslungsreiches Menü in einem authentischen und charmanten Ambiente.",
   "arenal_SEO_Cocina": "Spanisch",
-
   "reservas_Titulo_Texto1": "Reservieren bei",
   "reservas_Titulo_Texto2": "Paraíso del Jamón",
   "reservas_Titulo": "Informationen über Reservierungen",
@@ -145,7 +137,6 @@
   "reservas_Texto2": "Bitte rufen Sie das Restaurant an, in dem Sie reservieren möchten, und bitten Sie darum, mit dem Verantwortlichen zu sprechen. Die Telefonnummern sind unten aufgeführt, und weitere Informationen zu jedem Restaurant finden Sie im Bereich Restaurants.",
   "reservas_SEO_Titulo": "Paraíso Del Jamón - Reservierungen",
   "reservas_SEO_Descripcion": "Reservieren Sie im El Paraíso del Jamón für große Gruppen oder Feierlichkeiten und genießen Sie unsere köstliche Gastronomie und Wurstwaren. Kontaktieren Sie das Restaurant Ihrer Wahl, um Ihre Reservierung zu koordinieren.",
-
   "gastronomia_Titulo_Texto1": "Gastronomie von",
   "gastronomia_Titulo_Texto2": "Paraíso del Jamón",
   "gastronomia_Titulo1": "Tauchen Sie in den Geschmack ein",
@@ -172,7 +163,6 @@
   "gastronomia_Carousel_Alt9": "Thunfisch-Sandwich",
   "gastronomia_SEO_Titulo": "Paraíso Del Jamón - Gastronomie: Authentische Spanische Aromen",
   "gastronomia_SEO_Descripcion": "Entdecken Sie die authentische spanische Küche bei El Paraíso Del Jamón. Wir bieten traditionelle Gerichte, tägliche Menüs und Portionen zum Teilen, alles mit frischen und hochwertigen Zutaten.",
-
   "charcuteria_Titulo_Texto1": "Feinkost von",
   "charcuteria_Titulo_Texto2": "Paraíso del Jamón",
   "charcuteria_Titulo": "Ausgewählte Feinkostprodukte",
@@ -180,7 +170,6 @@
   "charcuteria_Error": "Die Feinkostprodukte konnten nicht angezeigt werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, können Sie uns über den Abschnitt Kontakt erreichen.",
   "charcuteria_SEO_Titulo": "Paraíso Del Jamón - Feinkost: Iberische Qualität auf Ihrem Tisch",
   "charcuteria_SEO_Descripcion": "Entdecken Sie unsere Auswahl an herausragenden Feinkostprodukten bei El Paraíso del Jamón. Iberische Wurstwaren und hochwertige Produkte, die das Beste der spanischen Gastronomie hervorheben.",
-
   "nosotros_Titulo_Texto1": "Erfahren Sie mehr über",
   "nosotros_Titulo_Texto2": "Paraíso del Jamón",
   "nosotros_Titulo": "Über uns",
@@ -207,7 +196,6 @@
   "nosotros_Carousel_Alt5": "Schild im Lokal",
   "nosotros_SEO_Titulo": "Paraíso Del Jamón - Über uns: Tradition und Leidenschaft in Madrid",
   "nosotros_SEO_Descripcion": "Erfahren Sie mehr über die Geschichte von El Paraíso Del Jamón, einer Bar-Kette in Madrid, gegründet von Leónern, die die spanische Gastronomie und ihre Wurzeln lieben.",
-
   "blog_Titulo_Texto1": "Blog von",
   "blog_Titulo_Texto2": "Paraíso del Jamón",
   "blog_Titulo": "Willkommen in unserem Blog",
@@ -215,7 +203,6 @@
   "blog_Error": "Der Blog konnte nicht angezeigt werden. Bitte versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, können Sie uns über den Abschnitt Kontakt erreichen.",
   "blog_SEO_Titulo": "Paraíso Del Jamón - Blog",
   "blog_SEO_Descripcion": "Willkommen in unserem Blog. Hier finden Sie Artikel über die Welt des iberischen Schinkens, die spanische Gastronomie und unsere Bars und Restaurants.",
-
   "blog_Details_Autor": "Von ",
   "blog_Details_Publicado": "Veröffentlicht: ",
   "blog_Details_Actualizado": "Aktualisiert: ",
@@ -223,7 +210,6 @@
   "blog_Details_Error": "Der Artikel konnte nicht angezeigt werden oder existiert nicht. Bitte überprüfen Sie, ob die Adresse korrekt ist, und versuchen Sie es später erneut. Wenn das Problem weiterhin besteht, können Sie uns über den Kontaktbereich erreichen.",
   "blog_Details_SEO_Titulo_Preview": "Paraíso Del Jamón - Artikel",
   "blog_Details_SEO_Contenido_Preview": "Besuchen Sie den Blog von El Paraíso Del Jamón, um den gesamten Artikel zu lesen.",
-
   "contacto_Titulo_Texto1": "Kontakt",
   "contacto_Titulo_Texto2": "Paraíso del Jamón",
   "contacto_Titulo": "Kontaktieren Sie uns",
@@ -310,7 +296,6 @@
   "contacto_SEO_Titulo": "Paraíso Del Jamón - Kontakt: Wir sind für Sie da",
   "contacto_SEO_Descripcion": "Kontaktieren Sie El Paraíso Del Jamón für Fragen, Kommentare oder Anfragen. Füllen Sie das Formular aus, und wir melden uns schnell.",
   "contacto_SEO_Alt": "Kontaktieren Sie uns",
-
   "error_Error400": "Fehlerhafte Anfrage. Bitte überprüfen Sie die gesendeten Daten und versuchen Sie es erneut.",
   "error_Error401": "Nicht autorisiert. Bitte melden Sie sich an und versuchen Sie es erneut.",
   "error_Error403": "Zugriff verweigert. Sie haben keine Berechtigung, auf diese Ressource zuzugreifen.",
@@ -322,14 +307,11 @@
   "error_Error503": "Dienst nicht verfügbar. Bitte versuchen Sie es später erneut.",
   "error_Error504": "Gateway-Zeitüberschreitung. Bitte versuchen Sie es später erneut.",
   "error_Other": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
-
   "Footer_Rights": "PACAVA S.A Alle Rechte vorbehalten © {year}",
   "Footer_AvisoLegal": "Rechtlicher Hinweis",
   "Footer_PoliticaPrivacidad": "Datenschutzerklärung",
   "Footer_PoliticaCookies": "Cookie-Richtlinie",
-
   "scrollToTop_Alt": "Nach oben",
-
   "cookie_Texto1": "Diese Website verwendet Cookies, um die Benutzererfahrung zu personalisieren und zu verbessern.",
   "cookie_Texto2": "Durch die Annahme von Cookies stimmen Sie der Verwendung zu, um Inhalte zu personalisieren und/oder unsere Dienste und unsere Website bereitzustellen, zu pflegen und zu verbessern.",
   "cookie_Texto3": "Durch das Ablehnen von Cookies können Sie weiterhin auf unserer Website surfen.",
@@ -347,14 +329,12 @@
   "cookie_Texto4_Enlace2": "Datenschutzerklärung",
   "cookie_Borrado_Ok": "Zustimmung widerrufen und Cookies gelöscht",
   "cookie_Borrado_Error": "Fehler beim Löschen der Cookies",
-
   "Map_Loading_Texto": "Wird geladen...",
   "Map_Error_Texto": "Die Karte konnte nicht geladen werden.",
   "Map_Marker_Pais": "Spanien",
   "Map_Marker_Texto1": "Wegbeschreibung",
   "Map_Marker_Texto2": "Auf Google Maps anzeigen",
   "Map_Marker_Telefono": "Telefon: ",
-
   "banner_Restaurantes_Texto1": "Besuchen Sie unsere",
   "banner_Restaurantes_Texto2": "Restaurants",
   "banner_Gastronomia_Texto1": "Genießen Sie unsere",
@@ -372,9 +352,7 @@
   "banner_EmpleoTemp_Texto1": "dringend",
   "banner_EmpleoTemp_Texto2": "Fleischer",
   "banner_EmpleoTemp_Texto3": "Kontaktieren",
-
   "sharedLink_cuerpo": "Sie können den Artikel lesen unter ",
-
   "politicaCookies_Principal_Titulo": "Cookie-Richtlinie",
   "politicaCookies_Principal_Texto": "PACAVA S.A informiert über die Verwendung von Cookies auf ihrer Website www.paraisodeljamon.com",
   "politicaCookies_Informacion_Titulo": "Was sind Cookies?",
@@ -449,7 +427,6 @@
   "politicaCookies_Actualizacion_Texto": "PACAVA S.A behält sich das Recht vor, diese Cookie-Richtlinie zu ändern, um sie an gesetzliche oder rechtsprechende Entwicklungen sowie an Branchenpraktiken anzupassen. Daher empfehlen wir, sie bei jedem Zugriff auf unsere Website zu überprüfen, um ordnungsgemäß informiert zu sein.",
   "politica-cookies_SEO_Titulo": "Paraíso Del Jamón - Cookie-Richtlinie",
   "politica-cookies_SEO_Descripcion": "Lesen Sie die Cookie-Richtlinie von El Paraíso Del Jamón, um die Verwendung von Cookies auf unserer Website zu verstehen und wie Sie diese verwalten können.",
-
   "politicaPrivacidad_Principal_Titulo": "Datenschutzerklärung",
   "politicaPrivacidad_Principal_Texto1": "PACAVA S.A informiert Sie über seine Datenschutzrichtlinie bezüglich der Behandlung und des Schutzes persönlicher Daten von Benutzern, die beim Surfen auf der Website www.paraisodeljamon.com gesammelt werden können.",
   "politicaPrivacidad_Principal_Texto2": "In diesem Sinne garantiert der Inhaber die Einhaltung der geltenden Vorschriften zum Schutz personenbezogener Daten, die in der Organgesetz 3/2018 vom 5. Dezember über den Schutz personenbezogener Daten und die Gewährleistung digitaler Rechte (LOPD GDD) reflektiert sind. Es erfüllt auch die Verordnung (EU) 2016/679 des Europäischen Parlaments und des Rates vom 27. April 2016 zum Schutz natürlicher Personen (RGPD).",
@@ -551,7 +528,6 @@
   "politicaPrivacidad_Actualizacion_Texto": "PACAVA S.A behält sich das Recht vor, diese Datenschutzerklärung zu ändern, um sie an gesetzliche oder rechtsprechende Entwicklungen sowie an Branchenpraktiken anzupassen. Daher empfehlen wir, sie bei jedem Zugriff auf unsere Website zu überprüfen, um ordnungsgemäß informiert zu sein.",
   "politica-privacidad_SEO_Titulo": "Paraíso Del Jamón - Datenschutzrichtlinie",
   "politica-privacidad_SEO_Descripcion": "Lesen Sie die Datenschutzrichtlinie von El Paraíso Del Jamón, um zu verstehen, wie wir Ihre persönlichen Daten auf unserer Website schützen und verwalten.",
-
   "avisoLegal_Principal_Titulo": "Rechtlicher Hinweis",
   "avisoLegal_Principal_Texto1": "PACAVA S.A, verantwortlich für die Website, stellt dieses Dokument den Benutzern zur Verfügung, mit dem Ziel, die in Gesetz 34/2002 vom 11. Juli über Dienste der Informationsgesellschaft und elektronischen Handel (LSSICE) festgelegten Verpflichtungen zu erfüllen sowie alle Benutzer der Website über die allgemeinen Nutzungsbedingungen zu informieren.",
   "avisoLegal_Principal_Texto2": "Jeder, der auf diese Website zugreift, übernimmt die Rolle eines Benutzers und verpflichtet sich zur strikten Einhaltung der hierin festgelegten Bestimmungen sowie jeder anderen anwendbaren gesetzlichen Bestimmung.",

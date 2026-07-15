@@ -22,6 +22,7 @@
 
 /* Estilo para la fuente utilizada en las animaciones */
 .animationFont {
+  display: block; /* Mantiene cada línea separada usando contenido válido dentro del h1 */
   white-space: nowrap; /* Evita que el texto se divida en múltiples líneas */
   font-size: 86px; /* Tamaño de fuente grande para destacar el texto */
   color: white; /* Color del texto blanco */

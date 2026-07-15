@@ -57,8 +57,8 @@ const Banner: React.FC<BannerProps> = ({ bannerType }: BannerProps): React.JSX.E
         {/* Sección de botones que enlaza a las páginas relacionadas */}
         <div className={buttonsClasses}>
           {content.links.map((link, index) => (
-            <Link key={index} href={link.href} passHref>
-              <button className={`btn btn-primary mx-auto ${styles.button}`}>{link.text}</button>
+            <Link key={index} href={link.href} className={`btn btn-primary mx-auto ${styles.button}`}>
+              {link.text}
             </Link>
           ))}
         </div>

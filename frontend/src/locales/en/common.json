@@ -3,7 +3,6 @@
   "seo_descripcion": "Welcome to Paraíso Del Jamón. Discover our Iberian hams, delicious menus, and a cozy atmosphere. Explore our restaurants and services.",
   "seo_og_image_alt": "Paraíso Del Jamón Logo",
   "seo_keywords": "bar, restaurant, paradise, deli, ham, Iberian ham, menu, menu card, gastronomy, contact form, nosotros us, blog, San Bernardo, Bravo Murillo, Reina Victoria, Arenal",
-
   "navbar_inicio": "Home",
   "navbar_restaurantes": "Restaurants",
   "navbar_reservas": "Reservations",
@@ -12,14 +11,12 @@
   "navbar_nosotros": "About Us",
   "navbar_blog": "Blog",
   "navbar_contacto": "Contact",
-
+  "navbar_menu": "Navigation menu",
   "app_CookieAcceptAll": "Cookies successfully accepted",
   "app_CookieAccept": "Custom cookies successfully accepted",
   "app_CookieDenied": "Cookies successfully denied",
-
   "default_Titulo_Texto1": "A Paradise",
   "default_Titulo_Texto2": "near you!",
-
   "inicio_Titulo_Texto1": "Welcome to ",
   "inicio_Titulo_Texto2": "Paraíso del Jamón",
   "inicio_Titulo1": "A paradise near you!",
@@ -33,7 +30,6 @@
   "Inicio_Carousel_Alt7": "Breakfasts",
   "inicio_SEO_Titulo": "Paraíso Del Jamón - A Paradise Close to You",
   "inicio_SEO_Descripcion": "Discover El Paraíso Del Jamón: our restaurants, Spanish gastronomy, story, and Iberian deli. A must-visit for true food lovers.",
-
   "san-bernardo_Titulo": "Welcome to Paraíso Del Jamón I",
   "san-bernardo_Texto": "Located in the heart of Madrid, just steps from Sol, offering you authentic and traditional Spanish cuisine. Its proximity to Gran Vía and Plaza de España allows visitors to enjoy an unmatched cultural and leisure offer.",
   "san-bernardo_Titulo_Texto1": "Paraíso del Jamón I",
@@ -59,7 +55,6 @@
   "san-bernardo_SEO_Titulo": "Paraíso Del Jamón - San Bernardo: Spanish Cuisine in the Heart of Madrid",
   "san-bernardo_SEO_Descripcion": "Enjoy authentic Spanish cuisine at San Bernardo, Madrid, near Sol, Gran Vía, and Plaza de España. Perfect for combining culture and leisure.",
   "san-bernardo_SEO_Cocina": "Spanish",
-
   "bravo-murillo_Titulo": "Welcome to Paraíso Del Jamón II",
   "bravo-murillo_Texto": "Located on one of the main lively arteries in the north of Madrid, it is the perfect place to enjoy a beer at our bar or savor Spanish cuisine in a cozy dining room.",
   "bravo-murillo_Titulo_Texto1": "Paraíso del Jamón II",
@@ -85,7 +80,6 @@
   "bravo-murillo_SEO_Titulo": "Paraíso Del Jamón - Bravo Murillo: Flavor and Atmosphere in Madrid",
   "bravo-murillo_SEO_Descripcion": "Enjoy our Spanish cuisine and a beer in a cozy setting at Bravo Murillo, one of Madrid's lively main avenues.",
   "bravo-murillo_SEO_Cocina": "Spanish",
-
   "reina-victoria_Titulo": "Welcome to Paraíso Del Jamón III",
   "reina-victoria_Texto": "With an excellent location where the streets are full of life, it’s the ideal place to take a break and savor our dishes, our calamari sandwich with a beer, or visit our charcuterie counter with excellent quality Iberian cured meats.",
   "reina-victoria_Titulo_Texto1": "Paraíso del Jamón III",
@@ -111,7 +105,6 @@
   "reina-victoria_SEO_Titulo": "Paraíso Del Jamón - Reina Victoria: Flavor and Quality in Madrid",
   "reina-victoria_SEO_Descripcion": "Take a break at Reina Victoria, Madrid, and enjoy our dishes, the famous calamari sandwich, and quality Iberian cold cuts with a beer.",
   "reina-victoria_SEO_Cocina": "Spanish",
-
   "arenal_Titulo": "Welcome to Paraíso Del Jamón IV",
   "arenal_Texto": "Located in the heart of Madrid’s historic neighborhood, we combine tradition and quality. Enjoy our selection of Iberian cured meats, savor a sandwich accompanied by a beer, and explore our varied menu in a setting full of charm and authenticity.",
   "arenal_Titulo_Texto1": "Paraíso del Jamón IV",
@@ -137,7 +130,6 @@
   "arenal_SEO_Titulo": "Paraíso Del Jamón - Arenal: Tradition and Quality in Madrid",
   "arenal_SEO_Descripcion": "Visit our location in Arenal, Madrid, and enjoy Iberian cold cuts, sandwiches, and a varied menu in an authentic, charming setting.",
   "arenal_SEO_Cocina": "Spanish",
-
   "reservas_Titulo_Texto1": "Reserve at",
   "reservas_Titulo_Texto2": "Paraíso del Jamón",
   "reservas_Titulo": "Information about reservations",
@@ -145,7 +137,6 @@
   "reservas_Texto2": "Please call the restaurant where you wish to make a reservation and ask to speak with the manager. The phone numbers are listed below, and you can find more information about each restaurant in the Restaurants section.",
   "reservas_SEO_Titulo": "Paraíso Del Jamón - Reservations",
   "reservas_SEO_Descripcion": "Book at El Paraíso del Jamón for large groups or celebrations and enjoy our delicious cuisine and cold cuts. Contact the restaurant of your choice to arrange your reservation.",
-
   "gastronomia_Titulo_Texto1": "Gastronomy of",
   "gastronomia_Titulo_Texto2": "Paraíso del Jamón",
   "gastronomia_Titulo1": "Immerse Yourself in Flavor",
@@ -172,7 +163,6 @@
   "gastronomia_Carousel_Alt9": "Tuna Sandwich",
   "gastronomia_SEO_Titulo": "Paraíso Del Jamón - Gastronomy: Authentic Spanish Flavors",
   "gastronomia_SEO_Descripcion": "Discover authentic Spanish cuisine at El Paraíso Del Jamón. We offer traditional dishes, daily menus, and sharing platters, all made with fresh, quality ingredients.",
-
   "charcuteria_Titulo_Texto1": "Charcuterie of",
   "charcuteria_Titulo_Texto2": "Paraíso del Jamón",
   "charcuteria_Titulo": "Featured charcuterie products",
@@ -180,7 +170,6 @@
   "charcuteria_Error": "The charcuterie products could not be displayed. Please try again later. If the problem persists, you can contact us through the Contact section.",
   "charcuteria_SEO_Titulo": "Paraíso Del Jamón - Deli: Iberian Quality on Your Table",
   "charcuteria_SEO_Descripcion": "Explore our selection of featured deli products at El Paraíso del Jamón. Iberian cold cuts and high-quality products showcasing the best of Spanish gastronomy.",
-
   "nosotros_Titulo_Texto1": "Learn About",
   "nosotros_Titulo_Texto2": "Paraíso del Jamón",
   "nosotros_Titulo": "About Us",
@@ -207,7 +196,6 @@
   "nosotros_Carousel_Alt5": "Sign in the store",
   "nosotros_SEO_Titulo": "Paraíso Del Jamón - About Us: Tradition and Passion in Madrid",
   "nosotros_SEO_Descripcion": "Learn about the story of El Paraíso Del Jamón, a chain of bars in Madrid founded by Leonese passionate about Spanish gastronomy and roots.",
-
   "blog_Titulo_Texto1": "Blog of",
   "blog_Titulo_Texto2": "Paraíso del Jamón",
   "blog_Titulo": "Welcome to our blog",
@@ -215,7 +203,6 @@
   "blog_Error": "The blog could not be displayed. Please try again later. If the problem persists, you can contact us through the Contact section.",
   "blog_SEO_Titulo": "Paraíso Del Jamón - Blog",
   "blog_SEO_Descripcion": "Welcome to our blog. Here you can find articles related to the world of Iberian ham, Spanish gastronomy, and our bar-restaurants.",
-
   "blog_Details_Autor": "By ",
   "blog_Details_Publicado": "Published: ",
   "blog_Details_Actualizado": "Updated: ",
@@ -223,7 +210,6 @@
   "blog_Details_Error": "The article could not be displayed or does not exist. Please check that the address is correct and try again later. If the problem persists, you can contact us through the Contact section.",
   "blog_Details_SEO_Titulo_Preview": "Paraíso Del Jamón - Article",
   "blog_Details_SEO_Contenido_Preview": "Visit El Paraíso Del Jamón's blog to read the full article.",
-
   "contacto_Titulo_Texto1": "Contact",
   "contacto_Titulo_Texto2": "Paraíso del Jamón",
   "contacto_Titulo": "Get in touch with us",
@@ -310,7 +296,6 @@
   "contacto_SEO_Titulo": "Paraíso Del Jamón - Contact: We Are Here to Help",
   "contacto_SEO_Descripcion": "Contact El Paraíso Del Jamón for questions, feedback, or requests. Fill out the form and we will respond promptly.",
   "contacto_SEO_Alt": "Contact us",
-
   "error_Error400": "Bad request. Please verify the data sent and try again.",
   "error_Error401": "Unauthorized. Please log in and try again.",
   "error_Error403": "Forbidden. You do not have permission to access this resource.",
@@ -322,14 +307,11 @@
   "error_Error503": "Service unavailable. Please try again later.",
   "error_Error504": "Gateway timeout. Please try again later.",
   "error_Other": "An error occurred. Please try again later.",
-
   "Footer_Rights": "PACAVA S.A All rights reserved © {year}",
   "Footer_AvisoLegal": "Legal Notice",
   "Footer_PoliticaPrivacidad": "Privacy Policy",
   "Footer_PoliticaCookies": "Cookie Policy",
-
   "scrollToTop_Alt": "Scroll Up",
-
   "cookie_Texto1": "This website uses cookies to personalize and improve the user experience.",
   "cookie_Texto2": "By accepting cookies, you agree to our use of them to personalize content and/or provide, maintain, and improve our services and website.",
   "cookie_Texto3": "By rejecting cookies, you can still browse our website.",
@@ -347,14 +329,12 @@
   "cookie_Texto4_Enlace2": "Privacy Policy",
   "cookie_Borrado_Ok": "Consent withdrawn and cookies deleted",
   "cookie_Borrado_Error": "Error deleting cookies",
-
   "Map_Loading_Texto": "Loading...",
   "Map_Error_Texto": "Unable to load the map.",
   "Map_Marker_Pais": "Spain",
   "Map_Marker_Texto1": "Get directions",
   "Map_Marker_Texto2": "View on Google Maps",
   "Map_Marker_Telefono": "Phone: ",
-
   "banner_Restaurantes_Texto1": "Visit our",
   "banner_Restaurantes_Texto2": "restaurants",
   "banner_Gastronomia_Texto1": "Enjoy our",
@@ -372,9 +352,7 @@
   "banner_EmpleoTemp_Texto1": "needed",
   "banner_EmpleoTemp_Texto2": "Butchers",
   "banner_EmpleoTemp_Texto3": "Contact",
-
   "sharedLink_cuerpo": "You can read the article at ",
-
   "politicaCookies_Principal_Titulo": "Cookie Policy",
   "politicaCookies_Principal_Texto": "PACAVA S.A informs about the use of cookies on its website www.paraisodeljamon.com",
   "politicaCookies_Informacion_Titulo": "What are cookies?",
@@ -449,7 +427,6 @@
   "politicaCookies_Actualizacion_Texto": "PACAVA S.A reserves the right to modify this Cookie Policy to adapt it to legislative or jurisprudential developments, as well as to industry practices, so we recommend reviewing it each time you access our website to be properly informed.",
   "politica-cookies_SEO_Titulo": "Paraíso Del Jamón - Cookie Policy",
   "politica-cookies_SEO_Descripcion": "Check El Paraíso Del Jamón's cookie policy to understand the use of cookies on our website and how to manage them.",
-
   "politicaPrivacidad_Principal_Titulo": "Privacy Policy",
   "politicaPrivacidad_Principal_Texto1": "PACAVA S.A informs you about its Privacy Policy regarding the treatment and protection of personal data of users that may be collected by browsing through the website www.paraisodeljamon.com.",
   "politicaPrivacidad_Principal_Texto2": "In this sense, the Holder guarantees compliance with current regulations on personal data protection, reflected in Organic Law 3/2018, of December 5, on Personal Data Protection and Guarantee of Digital Rights (LOPD GDD). It also complies with Regulation (EU) 2016/679 of the European Parliament and of the Council of April 27, 2016, regarding the protection of natural persons (RGPD).",
@@ -551,7 +528,6 @@
   "politicaPrivacidad_Actualizacion_Texto": "PACAVA S.A reserves the right to modify this Privacy Policy to adapt it to legislative or jurisprudential developments, as well as to industry practices, so we recommend reviewing it each time you access our website to be properly informed.",
   "politica-privacidad_SEO_Titulo": "Paraíso Del Jamón - Privacy Policy",
   "politica-privacidad_SEO_Descripcion": "Review El Paraíso Del Jamón's privacy policy to understand how we protect and handle your personal data on our website.",
-
   "avisoLegal_Principal_Titulo": "Legal Notice",
   "avisoLegal_Principal_Texto1": "PACAVA S.A, responsible for the website, makes this document available to users, with which it intends to comply with the obligations set out in Law 34/2002, of July 11, on Services of the Information Society and Electronic Commerce (LSSICE), as well as inform all users of the website about what the General Conditions of Use are.",
   "avisoLegal_Principal_Texto2": "Anyone accessing this website assumes the role of user, committing to the observance and rigorous compliance with the provisions set out here, as well as any other legal provision that may be applicable.",

@@ -6,12 +6,16 @@
  *
  * @returns {React.JSX.Element} El elemento de pie de página renderizado.
  */
-import React from "react";
+import React, { useSyncExternalStore } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useMenu } from "../contexts/MenuContext";
 import styles from "../styles/components/Footer.module.css";
+
+const subscribeToCurrentYear = (): (() => void) => () => undefined;
+const getCurrentYear = (): string => new Date().getFullYear().toString();
+const getServerCurrentYear = (): string => "";
 
 const Footer: React.FC = (): React.JSX.Element => {
   // Hook para manejar la internacionalización y los mensajes traducidos
@@ -20,6 +24,14 @@ const Footer: React.FC = (): React.JSX.Element => {
   const router = useRouter();
   // Función del contexto de menú para cerrar el menú móvil
   const { closeMobileMenu } = useMenu();
+  // El servidor y el primer render del navegador deben producir el mismo texto.
+  // El año local se completa después del montaje para no provocar una diferencia
+  // de hidratación cuando la petición cruza el cambio de año o usa otra zona horaria.
+  const currentYear = useSyncExternalStore(
+    subscribeToCurrentYear,
+    getCurrentYear,
+    getServerCurrentYear
+  );
 
   /**
    * Maneja el evento de clic en los enlaces para cerrar el menú móvil.
@@ -30,7 +42,7 @@ const Footer: React.FC = (): React.JSX.Element => {
 
   // Estructura JSX que contiene los enlaces de navegación a páginas de avisos legales y políticas
   const links = (
-    <div className={styles.linksContainer}>
+    <span className={styles.linksContainer}>
       <Link href="/aviso-legal" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
         {intl.formatMessage({ id: "Footer_AvisoLegal" })}
       </Link>
@@ -42,13 +54,15 @@ const Footer: React.FC = (): React.JSX.Element => {
       <Link href="/politica-cookies" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
         {intl.formatMessage({ id: "Footer_PoliticaCookies" })}
       </Link>
-    </div>
+    </span>
   );
 
   return (
     <footer className={styles.footer}>
       <div>
-        <span className={styles.rightsText}>{intl.formatMessage({ id: "Footer_Rights" }, { year: new Date().getFullYear() })}</span>
+        <span className={styles.rightsText}>
+          {intl.formatMessage({ id: "Footer_Rights" }, { year: currentYear })}
+        </span>
         <span className={styles.mainSeparator}> | </span>
         <span className={styles.links}>{links}</span>
       </div>

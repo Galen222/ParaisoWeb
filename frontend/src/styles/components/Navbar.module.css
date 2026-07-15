@@ -75,6 +75,20 @@
   align-items: center; /* Centra verticalmente las banderas */
 }
 
+.flagButton {
+  padding: 0; /* El botón conserva exactamente el tamaño visual anterior de la bandera */
+  border: 0;
+  background: transparent;
+  line-height: 0;
+  border-radius: 50%;
+}
+
+.flagButton:focus-visible,
+.mobileMenuIcon:focus-visible {
+  outline: 3px solid white; /* Permite localizar los controles al navegar con teclado */
+  outline-offset: 3px;
+}
+
 /* Estilo para cada bandera */
 .flag {
   cursor: pointer; /* Cambia el cursor al pasar sobre la bandera */
@@ -95,6 +109,9 @@
   display: none; /* Oculto por defecto, se muestra en dispositivos móviles */
   cursor: pointer; /* Cambia el cursor al pasar sobre el icono */
   margin-top: 3px; /* Margen superior de 3 píxeles */
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
 
 /* Contenedor interno del icono del menú móvil */

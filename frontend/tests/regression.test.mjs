@@ -100,3 +100,80 @@ test("las fechas API rechazan offsets superiores a UTC±14:00", async () => {
   assert.equal(isValidApiDateString("2026-07-16T10:00:00+14:01"), false);
   assert.equal(isValidApiDateString("2026-07-16T10:00:00+23:59"), false);
 });
+
+test("el referer interno debe coincidir también en protocolo y puerto", async () => {
+  const previousSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  const { isSameRequestHost } = await loadTypeScriptModule(
+    "../src/utils/requestHost.ts"
+  );
+
+  try {
+    process.env.NEXT_PUBLIC_SITE_URL = "https://www.paraisodeljamon.com";
+    assert.equal(
+      isSameRequestHost(new URL("https://www.paraisodeljamon.com/blog"), {
+        host: "backend-interno:3000",
+      }),
+      true
+    );
+    assert.equal(
+      isSameRequestHost(new URL("http://www.paraisodeljamon.com/blog"), {
+        host: "www.paraisodeljamon.com",
+      }),
+      false
+    );
+    assert.equal(
+      isSameRequestHost(new URL("https://www.paraisodeljamon.com:444/blog"), {
+        host: "www.paraisodeljamon.com",
+      }),
+      false
+    );
+
+    delete process.env.NEXT_PUBLIC_SITE_URL;
+    assert.equal(
+      isSameRequestHost(new URL("http://localhost:3000/blog"), {
+        host: "localhost:3000",
+      }),
+      true
+    );
+    assert.equal(
+      isSameRequestHost(new URL("http://localhost:4000/blog"), {
+        host: "localhost:3000",
+      }),
+      false
+    );
+  } finally {
+    if (previousSiteUrl === undefined) {
+      delete process.env.NEXT_PUBLIC_SITE_URL;
+    } else {
+      process.env.NEXT_PUBLIC_SITE_URL = previousSiteUrl;
+    }
+  }
+});
+
+test("los componentes corregidos conservan HTML válido y controles nativos", async () => {
+  const [footer, animatedTitle, banner, form, navbar] = await Promise.all([
+    readFile(new URL("../src/components/Footer.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/AnimatedTitle.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/Banner.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/Form.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/Navbar.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(footer, /<span className=\{styles\.linksContainer\}>/);
+  assert.doesNotMatch(footer, /<div className=\{styles\.linksContainer\}>/);
+  assert.match(footer, /getServerCurrentYear = \(\): string => ""/);
+  assert.doesNotMatch(
+    footer,
+    /Footer_Rights[^\n]*new Date\(\)\.getFullYear\(\)/
+  );
+
+  assert.doesNotMatch(animatedTitle, /<h1>[\s\S]*?<div/);
+  assert.doesNotMatch(banner, /<Link[\s\S]*?<button/);
+
+  assert.match(form, /<label className=\{styles\.checkboxControl\} htmlFor="privacyCheck">/);
+  assert.doesNotMatch(form, /checkboxControl\} onClick=/);
+
+  assert.match(navbar, /<button[\s\S]*?aria-controls="navbar-mobile-menu"/);
+  assert.match(navbar, /className=\{styles\.flagButton\}/);
+  assert.doesNotMatch(navbar, /<img[\s\S]*?onClick=\{\(\) => handleLocaleChange/);
+});

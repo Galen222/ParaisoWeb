@@ -409,7 +409,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
       <div className={styles.customCheckbox}>
         <div className={styles.checkboxLabelContainer}>
-          <span className={styles.checkboxControl} onClick={() => setIsPrivacyChecked(!isPrivacyChecked)}>
+          <label className={styles.checkboxControl} htmlFor="privacyCheck">
             <input
               type="checkbox"
               id="privacyCheck"
@@ -423,13 +423,13 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
                 <path d="M2 8L6 12L14 4" stroke="green" strokeWidth="3" />
               </svg>
             )}
-          </span>
-          <label htmlFor="privacyCheck" className={styles.checkText}>
+          </label>
+          <span className={styles.checkText}>
             <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}</span>
             <Link href="/politica-privacidad" className={styles.link}>
               <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
             </Link>
-          </label>
+          </span>
         </div>
       </div>
 
