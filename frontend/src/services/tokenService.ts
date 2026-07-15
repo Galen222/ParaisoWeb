@@ -10,6 +10,9 @@ import axios from "axios";
 // contra /get-token cuando varias secciones de la página cargan a la vez.
 let pendingTokenRequest: Promise<string> | null = null;
 
+// HMAC-SHA256 codificado por el backend con Base64 URL-safe: 43 caracteres y un `=` final.
+const TIMED_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}=$/;
+
 /**
  * Obtiene un token temporal desde el backend.
  *
@@ -31,7 +34,7 @@ const requestTimedToken = async (): Promise<string> => {
     }
 
     const token = (responseData as { token?: unknown }).token;
-    if (typeof token !== "string" || token.trim() === "") {
+    if (typeof token !== "string" || !TIMED_TOKEN_PATTERN.test(token)) {
       throw new Error("El token temporal recibido no es válido.");
     }
 

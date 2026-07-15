@@ -7,6 +7,7 @@ import { getTimedToken } from "../services/tokenService";
 const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
 const VALID_SLUG_PATTERN = /^[\p{L}\p{N}\p{M}-]+$/u;
+const MAX_SLUG_LENGTH = 150;
 
 /** Obtiene el idioma de una ruta; las rutas sin prefijo corresponden al español por defecto. */
 const getLocaleFromPath = (pathname: string): string => {
@@ -25,8 +26,18 @@ const isBlogDetailsPath = (pathname: string): boolean => {
 };
 
 /** Comprueba que la respuesta corresponde realmente a una traducción navegable. */
-const isValidTranslatedPost = (post: BlogPost | null | undefined, locale: string): post is BlogPost =>
-  Boolean(post && post.idioma === locale && VALID_SLUG_PATTERN.test(post.slug));
+const isValidTranslatedPost = (
+  post: BlogPost | null | undefined,
+  locale: string,
+  expectedId: number
+): post is BlogPost =>
+  Boolean(
+    post &&
+      post.id_noticia === expectedId &&
+      post.idioma === locale &&
+      post.slug.length <= MAX_SLUG_LENGTH &&
+      VALID_SLUG_PATTERN.test(post.slug)
+  );
 
 /** Devuelve un mensaje acotado para depuración sin registrar respuestas, cabeceras ni tokens. */
 const getErrorMessageForLog = (error: unknown): string => {
@@ -52,7 +63,12 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
   const locale = context.locale || DEFAULT_LOCALE;
 
   // No se consulta la API si la ruta dinámica no contiene un slug simple y válido.
-  if (typeof slug !== "string" || !VALID_SLUG_PATTERN.test(slug) || !SUPPORTED_LOCALES.has(locale)) {
+  if (
+    typeof slug !== "string" ||
+    slug.length > MAX_SLUG_LENGTH ||
+    !VALID_SLUG_PATTERN.test(slug) ||
+    !SUPPORTED_LOCALES.has(locale)
+  ) {
     return null;
   }
 
@@ -86,7 +102,7 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
       if (blogPost) {
         const translatedBlogPost = await getBlogPostById(blogPost.id_noticia, localeCookie, token);
 
-        if (isValidTranslatedPost(translatedBlogPost, localeCookie)) {
+        if (isValidTranslatedPost(translatedBlogPost, localeCookie, blogPost.id_noticia)) {
           return {
             redirect: {
               destination: buildLocalizedBlogPath(localeCookie, translatedBlogPost.slug),

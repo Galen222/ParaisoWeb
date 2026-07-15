@@ -1,6 +1,6 @@
 // pages/_document.tsx
 
-import Document, { Html, Head, Main, NextScript, DocumentContext } from "next/document";
+import Document, { Html, Head, Main, NextScript, DocumentContext, DocumentInitialProps } from "next/document";
 
 // Mapeo de prefijos de idioma a códigos completos (por ejemplo, 'en' a 'en-US')
 const localeMap: Record<string, string> = {
@@ -17,9 +17,9 @@ class MyDocument extends Document<{ locale: string }> {
   /**
    * Método estático para obtener las propiedades iniciales del documento.
    * @param {DocumentContext} ctx - Contexto del documento de Next.js.
-   * @returns {Promise<any>} Propiedades iniciales del documento, incluyendo el idioma.
+   * @returns {Promise<DocumentInitialProps & { locale: string }>} Propiedades iniciales del documento, incluyendo el idioma.
    */
-  static async getInitialProps(ctx: DocumentContext): Promise<any> {
+  static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps & { locale: string }> {
     // Obtiene las propiedades iniciales del documento
     const initialProps = await Document.getInitialProps(ctx);
 

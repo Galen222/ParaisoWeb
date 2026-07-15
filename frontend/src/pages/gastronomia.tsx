@@ -191,9 +191,11 @@ GastronomiaPage.pageTitleText = "gastronomia";
  * Función `getServerSideProps` para manejar redirecciones basadas en cookies.
  *
  * @param {GetServerSidePropsContext} context - Contexto de Next.js que contiene información de la solicitud.
- * @returns {Promise<{props: Record<string, any>}>} Propiedades para la página o redirección.
+ * @returns {Promise<{props: Record<string, never>}>} Propiedades para la página o redirección.
  */
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<Record<string, any>>> => {
+export const getServerSideProps: GetServerSideProps<Record<string, never>> = async (
+  context: GetServerSidePropsContext
+): Promise<GetServerSidePropsResult<Record<string, never>>> => {
   // Aplicar redirección basada en cookies
   const redirectResponse = redirectByCookie(context, "/gastronomia");
   if (redirectResponse.redirect) {

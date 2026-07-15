@@ -32,7 +32,7 @@ const messages: Record<string, Record<string, string>> = {
  * Interfaz para las propiedades de la página de Política de Cookies.
  */
 export interface PoliticaCookiesPageProps {
-  messages: Record<string, any>;
+  messages: Record<string, string>;
 }
 
 /**

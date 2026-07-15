@@ -28,6 +28,19 @@ export interface BlogPost {
  */
 const API_URL = process.env.NEXT_PUBLIC_API_BLOG_URL;
 
+const SUPPORTED_LANGUAGES = new Set(["es", "en", "de"]);
+const MAX_SLUG_LENGTH = 150;
+
+/** Valida los idiomas que existen en las rutas y en la base de datos. */
+const requireSupportedLanguage = (idioma: string): string => {
+  if (!SUPPORTED_LANGUAGES.has(idioma)) {
+    throw new Error(`El idioma "${idioma}" no es válido. Solo se permiten: es, en, de.`);
+  }
+
+  return idioma;
+};
+
+
 /**
  * Obtiene la URL configurada sin hacer fallar la importación del módulo durante el build.
  */
@@ -82,13 +95,15 @@ const requireBlogPost = (value: unknown): BlogPost => {
 export const getBlogPosts = async (idioma: string, token?: string): Promise<BlogPost[]> => {
   try {
     const apiUrl = getApiUrl();
+    const validatedLanguage = requireSupportedLanguage(idioma);
 
     // Si no se proporciona el token, lo obtenemos
     const authToken = token || (await getTimedToken());
-    const response = await axios.get<unknown>(`${apiUrl}?idioma=${idioma}`, {
+    const response = await axios.get<unknown>(apiUrl, {
       headers: {
         "x-timed-token": authToken,
       },
+      params: { idioma: validatedLanguage },
     });
     if (!Array.isArray(response.data) || !response.data.every(isBlogPost)) {
       throw new Error("La respuesta del servidor para el listado del blog no tiene el formato esperado.");
@@ -112,11 +127,16 @@ export const getBlogPosts = async (idioma: string, token?: string): Promise<Blog
 export const getBlogPostById = async (id: number, idioma: string, token?: string): Promise<BlogPost> => {
   try {
     const apiUrl = getApiUrl();
+    if (!Number.isInteger(id) || id <= 0) {
+      throw new Error("El identificador del artículo debe ser un entero mayor que cero.");
+    }
+    const validatedLanguage = requireSupportedLanguage(idioma);
     const authToken = token || (await getTimedToken());
-    const response = await axios.get<unknown>(`${apiUrl}/by-id/${id}?idioma=${idioma}`, {
+    const response = await axios.get<unknown>(`${apiUrl}/by-id/${id}`, {
       headers: {
         "x-timed-token": authToken,
       },
+      params: { idioma: validatedLanguage },
     });
     return requireBlogPost(response.data);
   } catch (error) {
@@ -140,7 +160,7 @@ export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: s
     // Validar y sanitizar los inputs
     const allowedSlugRegex = /^[\p{L}\p{N}\p{M}-]+$/u;
 
-    if (!allowedSlugRegex.test(slug)) {
+    if (slug.length === 0 || slug.length > MAX_SLUG_LENGTH || !allowedSlugRegex.test(slug)) {
       // Caracteres inválidos individuales
       const invalidChars = slug.match(/[^\p{L}\p{N}\p{M}-]/gu) || [];
       const invalidList = Array.from(new Set(invalidChars)).join(", ");
@@ -153,10 +173,7 @@ export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: s
       throw new Error(`El slug "${slug}" contiene caracteres no permitidos: ${invalidList}. Vista resaltada: ${highlighted}`);
     }
 
-    const allowedIdiomas = ["es", "en", "de"];
-    if (idioma && !allowedIdiomas.includes(idioma)) {
-      throw new Error(`El idioma "${idioma}" no es válido. Solo se permiten: ${allowedIdiomas.join(", ")}.`);
-    }
+    const validatedLanguage = idioma ? requireSupportedLanguage(idioma) : undefined;
 
     // Si no se proporciona el token, lo obtenemos
     const authToken = token || (await getTimedToken());
@@ -166,7 +183,7 @@ export const getBlogPostBySlug = async (slug: string, token?: string, idioma?: s
 
     // Construir la URL incluyendo el slug en la ruta y el idioma como parámetro de consulta
     const url = `${apiUrl}/${encodedSlug}`;
-    const params = idioma ? { idioma } : undefined;
+    const params = validatedLanguage ? { idioma: validatedLanguage } : undefined;
 
     const response = await axios.get<unknown>(url, {
       headers: {

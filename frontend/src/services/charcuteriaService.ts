@@ -24,6 +24,7 @@ export interface CharcuteriaProduct {
  * URL base de la API de charcutería, obtenida desde una variable de entorno.
  */
 const API_URL = process.env.NEXT_PUBLIC_API_CHARCUTERIA_URL;
+const SUPPORTED_LANGUAGES = new Set(["es", "en", "de"]);
 
 /**
  * Obtiene la URL configurada sin hacer fallar la importación del módulo durante el build.
@@ -66,12 +67,16 @@ const isCharcuteriaProduct = (value: unknown): value is CharcuteriaProduct => {
 export const getCharcuteriaProducts = async (idioma: string): Promise<CharcuteriaProduct[]> => {
   try {
     const apiUrl = getApiUrl();
+    if (!SUPPORTED_LANGUAGES.has(idioma)) {
+      throw new Error(`El idioma "${idioma}" no es válido. Solo se permiten: es, en, de.`);
+    }
     const token = await getTimedToken(); // Obtiene el token temporal
     // Realiza la solicitud GET a la API incluyendo el idioma como parámetro de consulta.
-    const response = await axios.get<unknown>(`${apiUrl}?idioma=${idioma}`, {
+    const response = await axios.get<unknown>(apiUrl, {
       headers: {
         "x-timed-token": token,
       },
+      params: { idioma },
     });
 
     if (!Array.isArray(response.data) || !response.data.every(isCharcuteriaProduct)) {

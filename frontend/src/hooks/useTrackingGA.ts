@@ -2,6 +2,7 @@
 
 import ReactGA from "react-ga4";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
 
 /**
@@ -12,14 +13,17 @@ import { useCookieConsent } from "../contexts/CookieContext";
  */
 export function useVisitedPageTrackingGA(currentPage: string) {
   const { cookieConsentAnalysisGoogle } = useCookieConsent(); // Verifica el consentimiento de cookies
+  const router = useRouter();
 
   useEffect(() => {
     if (cookieConsentAnalysisGoogle) {
-      // Enviar evento de vista de página a GA4
-      ReactGA.send({ hitType: "pageview", page: "/" + currentPage, title: currentPage });
+      // Registra la ruta real. Usar solo el alias de la página agrupaba todos los artículos
+      // del blog bajo `/articulo` y perdía slug, locale y parámetros de consulta.
+      const page = `${window.location.pathname}${window.location.search}`;
+      ReactGA.send({ hitType: "pageview", page, title: currentPage });
       /* console.log("Página " + window.location.pathname + window.location.search + " añadida a log de GA4"); */
     }
-  }, [cookieConsentAnalysisGoogle, currentPage]); // Ejecuta el efecto cuando cambia el consentimiento o la página
+  }, [cookieConsentAnalysisGoogle, currentPage, router.asPath]); // Ejecuta el efecto cuando cambia el consentimiento o la ruta real
 }
 
 /**

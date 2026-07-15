@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import { getBlogPostById } from "../services/blogService";
 
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+const VALID_SLUG_PATTERN = /^[\p{L}\p{N}\p{M}-]+$/u;
+const MAX_SLUG_LENGTH = 150;
 
 /** Devuelve un mensaje seguro y breve para depurar sin registrar el objeto de error completo. */
 const getErrorMessageForLog = (error: unknown): string => {
@@ -72,7 +74,12 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
         if (!isCurrentRequest()) return;
 
         // Evita navegar con una respuesta incompleta o perteneciente a otro idioma.
-        if (!newBlogPost?.slug || newBlogPost.idioma !== newIdioma) {
+        if (
+          newBlogPost.id_noticia !== blogId ||
+          newBlogPost.idioma !== newIdioma ||
+          newBlogPost.slug.length > MAX_SLUG_LENGTH ||
+          !VALID_SLUG_PATTERN.test(newBlogPost.slug)
+        ) {
           console.error("Cambio automático de idioma cancelado: la traducción recibida no es válida.");
           return;
         }

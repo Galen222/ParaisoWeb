@@ -7,6 +7,7 @@ import { getTimedToken } from "../services/tokenService";
 const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
 const VALID_SLUG_PATTERN = /^[\p{L}\p{N}\p{M}-]+$/u;
+const MAX_SLUG_LENGTH = 150;
 
 interface BlogDataResult {
   redirect?: { destination: string; permanent: boolean };
@@ -20,8 +21,18 @@ const buildLocalizedBlogPath = (locale: string, slug: string): string =>
   `${locale === DEFAULT_LOCALE ? "" : `/${locale}`}/blog/${slug}`;
 
 /** Comprueba que la traducción recibida sea utilizable para el idioma solicitado. */
-const isValidTranslatedPost = (post: BlogPost | null | undefined, locale: string): post is BlogPost =>
-  Boolean(post && post.idioma === locale && VALID_SLUG_PATTERN.test(post.slug));
+const isValidTranslatedPost = (
+  post: BlogPost | null | undefined,
+  locale: string,
+  expectedId: number
+): post is BlogPost =>
+  Boolean(
+    post &&
+      post.id_noticia === expectedId &&
+      post.idioma === locale &&
+      post.slug.length <= MAX_SLUG_LENGTH &&
+      VALID_SLUG_PATTERN.test(post.slug)
+  );
 
 /** Devuelve un texto técnico acotado sin volcar cabeceras, respuestas o tokens completos. */
 const getErrorMessageForLog = (error: unknown): string => {
@@ -42,7 +53,7 @@ const getErrorMessageForLog = (error: unknown): string => {
  */
 export async function loadBlogData(slug: string, locale: string): Promise<BlogDataResult> {
   // Evita solicitar la API con parámetros que no pueden corresponder a una ruta válida.
-  if (!VALID_SLUG_PATTERN.test(slug) || !SUPPORTED_LOCALES.has(locale)) {
+  if (slug.length > MAX_SLUG_LENGTH || !VALID_SLUG_PATTERN.test(slug) || !SUPPORTED_LOCALES.has(locale)) {
     return {
       blogDetails: null,
       error: null,
@@ -58,7 +69,7 @@ export async function loadBlogData(slug: string, locale: string): Promise<BlogDa
     if (blogDetails.idioma !== locale) {
       const translatedBlogPost = await getBlogPostById(blogDetails.id_noticia, locale, token);
 
-      if (!isValidTranslatedPost(translatedBlogPost, locale)) {
+      if (!isValidTranslatedPost(translatedBlogPost, locale, blogDetails.id_noticia)) {
         console.error("La API devolvió una traducción de blog inválida para el idioma solicitado.");
         return {
           blogDetails: null,

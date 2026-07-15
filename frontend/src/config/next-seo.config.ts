@@ -62,14 +62,14 @@ type MetaTag = HTML5MetaTag | RDFaMetaTag | HTTPEquivMetaTag;
  * Función para generar la configuración de SEO basada en el locale y los mensajes.
  *
  * @param {string} locale - Locale actual (e.g., 'es', 'en', 'de').
- * @param {Record<string, any>} messages - Mensajes localizados.
+ * @param {Record<string, string>} messages - Mensajes localizados.
  * @param {string} [currentPath] - Ruta actual para generar canonical y hreflang correctos.
  * @param {boolean} [includeLanguageAlternates=true] - Permite omitir alternates cuando las rutas traducidas usan slugs diferentes.
  * @returns {DefaultSeoProps} Configuración de SEO personalizada.
  */
 const getSEOConfig = (
   locale: string,
-  messages: Record<string, any>,
+  messages: Record<string, string>,
   currentPath?: string,
   includeLanguageAlternates = true
 ): DefaultSeoProps => {

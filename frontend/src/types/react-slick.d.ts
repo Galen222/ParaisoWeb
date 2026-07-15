@@ -21,13 +21,13 @@ declare module "react-slick" {
     slidesToScroll?: number; // Número de elementos a desplazar en cada transición.
     autoplay?: boolean; // Habilita la reproducción automática del slider.
     autoplaySpeed?: number; // Velocidad de la reproducción automática en milisegundos.
-    [key: string]: any; // Propiedades adicionales que pueden ser especificadas.
+    [key: string]: unknown; // Propiedades adicionales que pueden ser especificadas.
   }
 
   /**
    * Clase del componente `Slider` de "react-slick", que acepta las propiedades definidas en `Settings`.
    */
-  class Slider extends React.Component<Settings, any> {}
+  class Slider extends React.Component<Settings, Record<string, never>> {}
 
   export default Slider;
 }
