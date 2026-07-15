@@ -51,9 +51,20 @@ if not logger.hasHandlers():
 
 
 def file_log_context(file: UploadFile) -> str:
-    """Describe el adjunto para logs sin registrar su nombre original."""
+    """Describe el adjunto para logs sin registrar su nombre original ni controles."""
     extension = os.path.splitext(file.filename or "")[1].lower()
-    return f"extensión={extension or 'sin extensión'}"
+    if not extension:
+        return "extensión=sin extensión"
+
+    # Solo las extensiones ASCII breves son útiles para diagnóstico. Cualquier salto
+    # de línea, control o texto añadido se resume para impedir inyección de líneas de log.
+    is_safe_extension = (
+        len(extension) <= 16
+        and extension.startswith(".")
+        and extension[1:].isalnum()
+        and extension.isascii()
+    )
+    return f"extensión={extension if is_safe_extension else 'no válida'}"
 
 
 class FileService:
@@ -125,7 +136,7 @@ class FileService:
             # Verificar la extensión del archivo
             file_ext = os.path.splitext(file.filename or "")[1].lower()
             if file_ext not in self.ALLOWED_MIME_TYPES[mime_type]:
-                logger.error(f"{ANSI_RED}Extensión no válida '{file_ext}' para tipo {mime_type}{ANSI_RESET}")
+                logger.error(f"{ANSI_RED}Extensión no válida para tipo {mime_type} | {file_log_context(file)}{ANSI_RESET}")
                 raise HTTPException(
                     status_code=400,
                     detail=f"Extensión de archivo no válida para el tipo {mime_type}"

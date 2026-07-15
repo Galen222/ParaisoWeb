@@ -242,7 +242,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
    */
   const CheckFormComplete = (): boolean => {
     return (
-      formData.name.trim() !== "" &&
+      /\p{L}/u.test(formData.name) &&
       formData.email.trim() !== "" &&
       formData.message.trim() !== "" &&
       formData.reason !== "" &&

@@ -17,7 +17,7 @@ export interface CharcuteriaProduct {
   descripcion: string; // Descripción del producto.
   imagen_url: string; // URL de la imagen del producto.
   categoria: string; // Categoría del producto.
-  fecha: string; // Fecha de disponibilidad o de publicación del producto.
+  fecha: string | null; // Puede ser nula en registros antiguos de la base de datos.
 }
 
 /**
@@ -53,7 +53,7 @@ const isCharcuteriaProduct = (value: unknown): value is CharcuteriaProduct => {
     typeof product.descripcion === "string" &&
     typeof product.imagen_url === "string" &&
     typeof product.categoria === "string" &&
-    typeof product.fecha === "string"
+    (product.fecha === null || typeof product.fecha === "string")
   );
 };
 

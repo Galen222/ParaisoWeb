@@ -41,6 +41,7 @@ class ContactForm(BaseModel):
         return unicodedata.normalize("NFC", v.strip()) if isinstance(v, str) else v
 
     @field_validator('name')
+    @classmethod
     def validate_name(cls, v: str) -> str:
         """
         Validador para el campo 'name'.
@@ -62,6 +63,8 @@ class ContactForm(BaseModel):
             raise ValueError(
                 "El nombre solo puede contener letras, espacios, guiones (-) y apóstrofes."
             )
+        if not any(char.isalpha() and char not in valid_characters for char in v):
+            raise ValueError("El nombre debe contener al menos una letra")
         return v
 
     @field_validator('message')
@@ -73,6 +76,7 @@ class ContactForm(BaseModel):
         return v
 
     @field_validator('reason')
+    @classmethod
     def validate_reason(cls, v: str) -> str:
         """
         Validador para el campo 'reason'.
@@ -133,7 +137,7 @@ class Charcuteria(CharcuteriaBase):
         fecha (datetime): Fecha de creación del registro.
     """
     id_producto: int
-    fecha: datetime
+    fecha: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
 
@@ -181,6 +185,6 @@ class Blog(BlogBase):
     """
     id_noticia: int
     fecha_publicacion: datetime
-    fecha_actualizacion: datetime
+    fecha_actualizacion: Optional[datetime] = None
 
     model_config = {"from_attributes": True}

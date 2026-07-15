@@ -98,9 +98,12 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
   const mapInstanceRef = useRef<google.maps.Map | null>(null); // Referencia para la instancia del mapa
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null); // Referencia para el InfoWindow
   const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null); // Referencia para evitar marcadores duplicados
+  const markerLoadSequenceRef = useRef(0); // Invalida cargas antiguas del marcador
+  const isMountedRef = useRef(true); // Evita actualizar estado después del desmontaje
   const location = locations[locationKey]; // Ubicación seleccionada
   const [isLoaded, setIsLoaded] = useState(false); // Indica si el mapa se ha cargado
-  const [loadError, setLoadError] = useState<string | null>(null); // Estado para errores de carga
+  const [loadError, setLoadError] = useState<string | null>(null); // Estado para errores de carga de la API
+  const [markerLoadError, setMarkerLoadError] = useState(false); // Error del marcador sin desmontar el mapa
 
   /**
    * Carga o reemplaza el marcador del mapa, mostrando un InfoWindow con detalles al hacer clic.
@@ -111,9 +114,19 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
     // ReferenceError adicional que ocultaría el error original.
     if (typeof google === "undefined" || !google.maps || !mapInstanceRef.current) return;
 
+    const markerLoadSequence = ++markerLoadSequenceRef.current;
+    const isCurrentMarkerLoad = (): boolean =>
+      isMountedRef.current && markerLoadSequence === markerLoadSequenceRef.current;
+
     try {
+      // Un reintento debe retirar el error del intento anterior cuando finalmente funciona.
+      if (isCurrentMarkerLoad()) {
+        setMarkerLoadError(false);
+      }
+
       // Importa la librería 'marker' si aún no ha sido importada
       const { AdvancedMarkerElement } = (await google.maps.importLibrary("marker")) as google.maps.MarkerLibrary;
+      if (!isCurrentMarkerLoad() || !mapInstanceRef.current) return;
 
       // Retira el marcador anterior antes de crear el nuevo para no duplicar marcadores ni listeners
       if (markerRef.current) {
@@ -164,8 +177,13 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
           });
         }
       });
+      if (isCurrentMarkerLoad()) {
+        setMarkerLoadError(false);
+      }
     } catch {
-      setLoadError("No se pudo cargar el marcador en el mapa.");
+      if (isCurrentMarkerLoad()) {
+        setMarkerLoadError(true);
+      }
     }
   }, [intl, location]);
 
@@ -237,7 +255,14 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
    * Limpia los elementos creados por Google Maps al desmontar el componente.
    */
   useEffect(() => {
+    // React Strict Mode ejecuta montaje, limpieza y montaje en desarrollo. Se restablece
+    // explícitamente la bandera para que el segundo montaje siga aceptando resultados.
+    isMountedRef.current = true;
+
     return () => {
+      isMountedRef.current = false;
+      markerLoadSequenceRef.current += 1;
+
       // Si el script no llegó a cargarse, `google` no existe. La limpieza debe ser
       // segura también en ese estado para no lanzar una excepción al navegar.
       if (markerRef.current && typeof google !== "undefined" && google.maps) {
@@ -261,6 +286,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
   // Renderiza el contenedor del mapa una vez que se ha cargado
   return (
     <div>
+      {markerLoadError && <div>{intl.formatMessage({ id: "Map_Error_Texto" })}</div>}
       <div
         ref={mapRef}
         className={styles.mapContainer}

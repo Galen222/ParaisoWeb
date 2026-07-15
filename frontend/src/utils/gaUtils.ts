@@ -6,6 +6,7 @@ import ReactGA from "react-ga4";
  * Variable que indica si Google Analytics está desactivado.
  */
 let gaDisabled = false;
+let initializedAnalyticsId: string | null = null;
 
 /** Extiende `window` con la bandera global utilizada por Google Analytics. */
 declare global {
@@ -34,6 +35,8 @@ const setGADisabled = (analyticsId: string, disabled: boolean): void => {
 export const initGA = (): boolean => {
   const analyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
   if (!analyticsId) {
+    initializedAnalyticsId = null;
+    gaDisabled = true;
     console.error("Google Analytics no se ha iniciado: NEXT_PUBLIC_GOOGLE_ANALYTICS_ID no está definida.");
     return false;
   }
@@ -41,14 +44,53 @@ export const initGA = (): boolean => {
   try {
     // Reactiva el seguimiento si el usuario vuelve a conceder el consentimiento.
     setGADisabled(analyticsId, false);
-    ReactGA.initialize(analyticsId);
+
+    // Restaurar el consentimiento puede ejecutar este método más de una vez. No se crea
+    // otro tracker para el mismo identificador, evitando eventos duplicados.
+    if (initializedAnalyticsId !== analyticsId) {
+      ReactGA.initialize(analyticsId);
+      initializedAnalyticsId = analyticsId;
+    }
+
     /* console.log("GA4 iniciado"); */
     return true;
   } catch (error: unknown) {
     const errorMessage = error instanceof Error && error.message.trim() ? error.message : "Error desconocido";
+    initializedAnalyticsId = null;
     setGADisabled(analyticsId, true);
     console.error("Google Analytics no se ha podido iniciar:", errorMessage);
     return false;
+  }
+};
+
+/** Indica si GA puede recibir eventos sin arriesgar errores en la interfaz. */
+export const isGAReady = (): boolean => initializedAnalyticsId !== null && !gaDisabled;
+
+/** Registra una vista de página únicamente después de inicializar correctamente GA. */
+export const sendGAPageView = (page: string, title: string): void => {
+  if (!isGAReady()) return;
+
+  try {
+    ReactGA.send({ hitType: "pageview", page, title });
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error && error.message.trim() ? error.message : "Error desconocido";
+    console.error("Google Analytics no pudo registrar la vista de página:", errorMessage);
+  }
+};
+
+/** Registra un clic de botón únicamente después de inicializar correctamente GA. */
+export const sendGAButtonClick = (usedButton: string): void => {
+  if (!isGAReady()) return;
+
+  try {
+    ReactGA.event({
+      category: "Botón",
+      action: `Pulsado ${usedButton}`,
+      label: usedButton,
+    });
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error && error.message.trim() ? error.message : "Error desconocido";
+    console.error("Google Analytics no pudo registrar el clic:", errorMessage);
   }
 };
 

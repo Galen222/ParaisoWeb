@@ -1,9 +1,9 @@
 // hooks/useTrackingGA.ts
 
-import ReactGA from "react-ga4";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
+import { sendGAButtonClick, sendGAPageView } from "../utils/gaUtils";
 
 /**
  * Hook para registrar una vista de página en Google Analytics.
@@ -20,7 +20,7 @@ export function useVisitedPageTrackingGA(currentPage: string) {
       // Registra la ruta real. Usar solo el alias de la página agrupaba todos los artículos
       // del blog bajo `/articulo` y perdía slug, locale y parámetros de consulta.
       const page = `${window.location.pathname}${window.location.search}`;
-      ReactGA.send({ hitType: "pageview", page, title: currentPage });
+      sendGAPageView(page, currentPage);
       /* console.log("Página " + window.location.pathname + window.location.search + " añadida a log de GA4"); */
     }
   }, [cookieConsentAnalysisGoogle, currentPage, router.asPath]); // Ejecuta el efecto cuando cambia el consentimiento o la ruta real
@@ -38,12 +38,8 @@ export function useButtonClickTrackingGA(): (usedButton: string) => void {
   return (usedButton: string): void => {
     /* console.log("Pulsación del botón " + usedButton + " registrada en GA4"); */
     if (cookieConsentAnalysisGoogle) {
-      // Enviar evento de clic en botón a GA4
-      ReactGA.event({
-        category: "Botón",
-        action: "Pulsado " + usedButton,
-        label: usedButton,
-      });
+      // Enviar evento de clic en botón a GA4 únicamente si la inicialización terminó correctamente.
+      sendGAButtonClick(usedButton);
     }
   };
 }

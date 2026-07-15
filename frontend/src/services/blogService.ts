@@ -20,7 +20,7 @@ export interface BlogPost {
   imagen_url: string; // URL de la imagen principal de la noticia.
   imagen_url_2?: string | null; // URL de una segunda imagen (opcional).
   fecha_publicacion: string; // Fecha de publicación de la noticia.
-  fecha_actualizacion: string; // Fecha de la última actualización de la noticia.
+  fecha_actualizacion: string | null; // Puede ser nula en publicaciones antiguas sin actualización.
 }
 
 /**
@@ -85,7 +85,7 @@ const isBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): value 
     typeof post.imagen_url === "string" &&
     (post.imagen_url_2 === undefined || post.imagen_url_2 === null || typeof post.imagen_url_2 === "string") &&
     typeof post.fecha_publicacion === "string" &&
-    typeof post.fecha_actualizacion === "string" &&
+    (post.fecha_actualizacion === null || typeof post.fecha_actualizacion === "string") &&
     (expected.id === undefined || post.id_noticia === expected.id) &&
     (expected.idioma === undefined || post.idioma === expected.idioma) &&
     (normalizedExpectedSlug === undefined || normalizedResponseSlug === normalizedExpectedSlug)
