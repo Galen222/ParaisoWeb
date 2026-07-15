@@ -1,38 +1,13 @@
 import { requirePublicApiUrl } from "../config/api.config";
 import { isValidApiDateString, normalizeApiDateValue } from "../utils/apiDate";
+import { normalizeBlogSlug } from "../utils/blogSlug";
 
 const SITEMAP_REQUEST_TIMEOUT_MS = 10000;
 const SUPPORTED_LANGUAGES = new Set(["es", "en", "de"]);
-const MAX_SLUG_LENGTH = 150;
 const TIMED_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}=$/;
 
 export type SitemapLocale = "es" | "en" | "de";
 
-
-const isValidSitemapSlug = (value: string): boolean => {
-  const normalizedSlug = value.normalize("NFC");
-  if (normalizedSlug.length === 0 || normalizedSlug.length > MAX_SLUG_LENGTH) {
-    return false;
-  }
-
-  let previousWasAlphanumericOrMark = false;
-  for (const character of normalizedSlug) {
-    if (character === "-") {
-      previousWasAlphanumericOrMark = false;
-      continue;
-    }
-    if (/^[\p{L}\p{N}]$/u.test(character)) {
-      previousWasAlphanumericOrMark = true;
-      continue;
-    }
-    if (/^\p{M}$/u.test(character) && previousWasAlphanumericOrMark) {
-      continue;
-    }
-    return false;
-  }
-
-  return true;
-};
 
 export interface SitemapBlogEntry {
   id_noticia: number;
@@ -86,8 +61,7 @@ const isSitemapBlogEntry = (value: unknown): value is SitemapBlogEntry => {
     entry.id_noticia > 0 &&
     typeof entry.idioma === "string" &&
     SUPPORTED_LANGUAGES.has(entry.idioma) &&
-    typeof entry.slug === "string" &&
-    isValidSitemapSlug(entry.slug) &&
+    normalizeBlogSlug(entry.slug) !== null &&
     isValidApiDateString(entry.lastmod)
   );
 };
@@ -121,7 +95,7 @@ export const getSitemapBlogEntries = async (): Promise<SitemapBlogEntry[]> => {
 
     return data.map((entry) => ({
       ...entry,
-      slug: entry.slug.normalize("NFC"),
+      slug: normalizeBlogSlug(entry.slug) as string,
       lastmod: new Date(normalizeApiDateValue(entry.lastmod)).toISOString(),
     }));
   } finally {

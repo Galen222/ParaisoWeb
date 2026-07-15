@@ -4,11 +4,10 @@ import { GetServerSidePropsContext } from "next";
 import { BlogPost, getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
 import { isSameRequestHost } from "./requestHost";
+import { normalizeBlogSlug } from "./blogSlug";
 
 const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
-const VALID_SLUG_PATTERN = /^[\p{L}\p{N}\p{M}-]+$/u;
-const MAX_SLUG_LENGTH = 150;
 
 /** Obtiene el idioma de una ruta; las rutas sin prefijo corresponden al español por defecto. */
 const getLocaleFromPath = (pathname: string): string => {
@@ -36,8 +35,7 @@ const isValidTranslatedPost = (
     post &&
       post.id_noticia === expectedId &&
       post.idioma === locale &&
-      post.slug.length <= MAX_SLUG_LENGTH &&
-      VALID_SLUG_PATTERN.test(post.slug)
+      normalizeBlogSlug(post.slug) !== null
   );
 
 /** Devuelve un mensaje acotado para depuración sin registrar respuestas, cabeceras ni tokens. */
@@ -70,12 +68,8 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
   const locale = context.locale || DEFAULT_LOCALE;
 
   // No se consulta la API si la ruta dinámica no contiene un slug simple y válido.
-  if (
-    typeof slug !== "string" ||
-    slug.length > MAX_SLUG_LENGTH ||
-    !VALID_SLUG_PATTERN.test(slug) ||
-    !SUPPORTED_LOCALES.has(locale)
-  ) {
+  const normalizedSlug = normalizeBlogSlug(slug);
+  if (normalizedSlug === null || !SUPPORTED_LOCALES.has(locale)) {
     return null;
   }
 
@@ -103,7 +97,7 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
   if (localeCookie && SUPPORTED_LOCALES.has(localeCookie) && locale !== localeCookie) {
     try {
       const token = await getTimedToken();
-      const blogPost = await getBlogPostBySlug(slug, token, locale);
+      const blogPost = await getBlogPostBySlug(normalizedSlug, token, locale);
 
       if (blogPost) {
         const translatedBlogPost = await getBlogPostById(blogPost.id_noticia, localeCookie, token);

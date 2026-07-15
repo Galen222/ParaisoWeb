@@ -10,7 +10,7 @@ from unittest.mock import AsyncMock, patch
 from fastapi import FastAPI, HTTPException, UploadFile
 from fastapi.testclient import TestClient
 
-from backend.middleware.logging import get_error_message
+from backend.middleware.logging import get_error_message, sanitize_log_value
 from backend.models.schemas import ContactForm
 from backend.routers import blog
 from backend.services.file_service import FileService
@@ -105,6 +105,24 @@ class BlogSlugBoundaryTests(unittest.TestCase):
 
         self.assertEqual(response.status_code, 422)
         get_post.assert_not_awaited()
+
+
+class LogValueSanitizationTests(unittest.TestCase):
+    def test_neutraliza_saltos_de_linea_y_controles(self) -> None:
+        value = sanitize_log_value("/ruta\nERROR-LOG:\tforjado\u202e")
+
+        self.assertNotIn("\n", value)
+        self.assertNotIn("\r", value)
+        self.assertNotIn("\t", value)
+        self.assertNotIn("\u202e", value)
+        self.assertIn("ERROR-LOG:", value)
+
+    def test_detalle_de_error_texto_no_inyecta_otra_linea(self) -> None:
+        detail = get_error_message(b"fallo\r\nERROR-LOG: falso", truncated=False)
+
+        self.assertNotIn("\r", detail)
+        self.assertNotIn("\n", detail)
+        self.assertEqual(detail, "fallo ERROR-LOG: falso")
 
 
 if __name__ == "__main__":

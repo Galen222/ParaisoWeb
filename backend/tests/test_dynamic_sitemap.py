@@ -64,6 +64,24 @@ class SitemapServiceTests(unittest.IsolatedAsyncioTestCase):
                     slug="valid-slug",
                     lastmod=None,
                 ),
+                SimpleNamespace(
+                    id_noticia=0,
+                    idioma="de",
+                    slug="invalid-id",
+                    lastmod=datetime(2026, 1, 1),
+                ),
+                SimpleNamespace(
+                    id_noticia="3",
+                    idioma="es",
+                    slug=None,
+                    lastmod=datetime(2026, 1, 1),
+                ),
+                SimpleNamespace(
+                    id_noticia=4,
+                    idioma="fr",
+                    slug="unsupported-language",
+                    lastmod=datetime(2026, 1, 1),
+                ),
             ]
         )
 
@@ -71,7 +89,7 @@ class SitemapServiceTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(entries, [])
 
-    async def test_endpoint_protegido_permite_cache_corto_con_token_valido(self) -> None:
+    async def test_endpoint_protegido_no_permite_cache_con_token_valido(self) -> None:
         response = Response()
         with patch(
             "backend.routers.sitemap.SitemapService.get_blog_entries",
@@ -87,8 +105,9 @@ class SitemapServiceTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(entries, [])
         self.assertEqual(
             response.headers["cache-control"],
-            "public, max-age=300, stale-while-revalidate=600",
+            "no-store, max-age=0",
         )
+        self.assertEqual(response.headers["pragma"], "no-cache")
 
     def test_endpoint_rechaza_peticion_sin_token(self) -> None:
         app = FastAPI()

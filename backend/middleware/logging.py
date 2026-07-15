@@ -29,6 +29,7 @@ import datetime  # Importar datetime para obtener la hora actual
 import json
 import logging
 import time
+import unicodedata
 from http import HTTPStatus
 from typing import AsyncIterator, Callable
 
@@ -115,6 +116,22 @@ if not logger.handlers:
     logger.addHandler(handler)
 
 
+
+def sanitize_log_value(value: object, max_length: int = 1000) -> str:
+    """Neutraliza controles y saltos de línea sin eliminar la información diagnóstica."""
+    sanitized: list[str] = []
+    for character in str(value):
+        category = unicodedata.category(character)
+        if character in {"\r", "\n", "\t"} or category.startswith("C") or category in {"Zl", "Zp"}:
+            sanitized.append(" ")
+        else:
+            sanitized.append(character)
+
+    compact = " ".join("".join(sanitized).split())
+    if len(compact) > max_length:
+        return f"{compact[:max_length]}…"
+    return compact
+
 def _summarize_validation_detail(detail: list[object]) -> str:
     """Resume errores de validación sin registrar los valores enviados por el cliente."""
     summaries: list[str] = []
@@ -166,8 +183,8 @@ def get_error_message(response_body: bytes, truncated: bool) -> str:
             error_message = "Respuesta de error estructurada"
 
     if truncated:
-        return f"{error_message} [detalle truncado]"
-    return error_message
+        error_message = f"{error_message} [detalle truncado]"
+    return sanitize_log_value(error_message)
 
 
 class LoggingMiddleware(BaseHTTPMiddleware):
@@ -209,7 +226,9 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         """
         # Capturar tiempo de inicio y datos básicos de la petición
         start_time = time.time()
-        client_host = request.client.host if request.client else "unknown"
+        client_host = sanitize_log_value(request.client.host if request.client else "unknown")
+        request_method = sanitize_log_value(request.method, max_length=32)
+        request_path = sanitize_log_value(request.url.path)
         current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Hora actual
 
         try:
@@ -221,8 +240,8 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             logger.exception(
                 f"CURRENT TIME: {current_time} | "
                 f"HOST: {client_host} | "
-                f"METHOD: {request.method} | "
-                f"PATH: {request.url.path} | "
+                f"METHOD: {request_method} | "
+                f"PATH: {request_path} | "
                 f"STATUS: {ANSI_RED}500 Internal Server Error{ANSI_RESET} | "
                 f"{ANSI_RED}ERROR{ANSI_RESET}: Excepción no controlada | "
                 f"TIME: {process_time:.2f}s"
@@ -265,8 +284,8 @@ class LoggingMiddleware(BaseHTTPMiddleware):
                     logger.error(
                         f"CURRENT TIME: {current_time} | "
                         f"HOST: {client_host} | "
-                        f"METHOD: {request.method} | "
-                        f"PATH: {request.url.path} | "
+                        f"METHOD: {request_method} | "
+                        f"PATH: {request_path} | "
                         f"STATUS: {status_text} | "
                         f"{ANSI_RED}ERROR{ANSI_RESET}: {error_message} | "
                         f"TIME: {process_time:.2f}s"
@@ -279,8 +298,8 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         logger.info(
             f"CURRENT TIME: {current_time} | "
             f"HOST: {client_host} | "
-            f"METHOD: {request.method} | "
-            f"PATH: {request.url.path} | "
+            f"METHOD: {request_method} | "
+            f"PATH: {request_path} | "
             f"STATUS: {status_text} | "
             f"TIME: {process_time:.2f}s"
         )

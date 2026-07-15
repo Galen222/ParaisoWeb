@@ -20,6 +20,7 @@ filetype            # Detección de tipos de archivo
 jinja2              # Templates
 
 # --- Pruebas y Herramientas ---
+httpx2             # Transporte requerido por TestClient de Starlette/FastAPI
 termcolor           # Para tus tests
 pdoc                # Documentación
 pip-review          # Mantenimiento

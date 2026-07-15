@@ -10,10 +10,9 @@ import {
   getCookieValue,
   saveLocalePreference,
 } from "../utils/cookieUtils";
+import { normalizeBlogSlug } from "../utils/blogSlug";
 
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
-const VALID_SLUG_PATTERN = /^[\p{L}\p{N}\p{M}-]+$/u;
-const MAX_SLUG_LENGTH = 150;
 
 /** Devuelve un mensaje breve para depurar sin registrar respuestas, cabeceras ni tokens. */
 const getErrorMessageForLog = (error: unknown): string => {
@@ -66,7 +65,8 @@ export function useLocaleChange(): LocaleChangeHandler {
         const slug = typeof router.query.slug === "string" ? router.query.slug : null;
 
         // No solicita tokens ni artículos cuando Next.js todavía no dispone de un slug válido.
-        if (!slug) {
+        const normalizedSlug = normalizeBlogSlug(slug);
+        if (normalizedSlug === null) {
           console.error("Cambio de idioma del blog ignorado: slug no disponible o inválido.");
           return;
         }
@@ -77,7 +77,7 @@ export function useLocaleChange(): LocaleChangeHandler {
 
           // Obtenemos el artículo actual utilizando el slug y el idioma actuales.
           // El idioma evita resolver una traducción distinta cuando dos versiones comparten slug.
-          const currentBlogPost = await getBlogPostBySlug(slug, token, router.locale || "es");
+          const currentBlogPost = await getBlogPostBySlug(normalizedSlug, token, router.locale || "es");
           if (localeChangeSequence !== localeChangeSequenceRef.current) return;
 
           // No consulta la traducción con un identificador vacío, decimal o negativo devuelto por la API.
@@ -92,9 +92,7 @@ export function useLocaleChange(): LocaleChangeHandler {
             const isExpectedTranslation =
               newBlogPost.id_noticia === currentBlogPost.id_noticia &&
               newBlogPost.idioma === newLocale &&
-              typeof newBlogPost.slug === "string" &&
-              newBlogPost.slug.length <= MAX_SLUG_LENGTH &&
-              VALID_SLUG_PATTERN.test(newBlogPost.slug);
+              normalizeBlogSlug(newBlogPost.slug) !== null;
 
             if (isExpectedTranslation) {
               // Construimos la nueva ruta con el slug en el nuevo idioma

@@ -16,6 +16,7 @@ import { NextSeo, OrganizationJsonLd } from "next-seo";
 import getSEOConfig from "../../config/next-seo.config";
 import useCurrentUrl from "../../hooks/useCurrentUrl";
 import { formatBlogDate } from "../../utils/blogDate";
+import { normalizeBlogSlug } from "../../utils/blogSlug";
 
 // Mensajes de traducción
 import esMessages from "../../locales/es/common.json";
@@ -243,7 +244,8 @@ export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = asyn
   const locale = context.locale || "es";
 
   // Una ruta dinámica incompleta o con una forma inesperada no debe llegar a los servicios de la API.
-  if (typeof slug !== "string" || !/^[\p{L}\p{N}\p{M}-]+$/u.test(slug)) {
+  const normalizedSlug = normalizeBlogSlug(slug);
+  if (normalizedSlug === null) {
     return { notFound: true };
   }
 
@@ -256,7 +258,7 @@ export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = asyn
   }
 
   // Cargar los datos del artículo del blog
-  const blogData = await loadBlogData(slug, locale);
+  const blogData = await loadBlogData(normalizedSlug, locale);
 
   if (blogData.notFound) {
     return { notFound: true };

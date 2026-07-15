@@ -8,6 +8,7 @@ import axios from "axios";
 import { requestWithTimedToken } from "./timedTokenRequest";
 import { isValidApiDateString } from "../utils/apiDate";
 import { READ_REQUEST_TIMEOUT_MS, requirePublicApiUrl } from "../config/api.config";
+import { normalizeBlogSlug } from "../utils/blogSlug";
 
 /**
  * Interfaz para representar los datos de una publicación de blog.
@@ -31,8 +32,6 @@ export interface BlogPost {
 const API_URL = process.env.NEXT_PUBLIC_API_BLOG_URL;
 
 const SUPPORTED_LANGUAGES = new Set(["es", "en", "de"]);
-const MAX_SLUG_LENGTH = 150;
-const VALID_SLUG_PATTERN = /^[\p{L}\p{N}\p{M}-]+$/u;
 
 interface ExpectedBlogIdentity {
   id?: number;
@@ -51,12 +50,8 @@ const requireSupportedLanguage = (idioma: string): string => {
 
 /** Normaliza y valida el slug antes de construir la ruta de la API. */
 const requireValidSlug = (slug: string): string => {
-  const normalizedSlug = slug.normalize("NFC");
-  if (
-    normalizedSlug.length === 0 ||
-    normalizedSlug.length > MAX_SLUG_LENGTH ||
-    !VALID_SLUG_PATTERN.test(normalizedSlug)
-  ) {
+  const normalizedSlug = normalizeBlogSlug(slug);
+  if (normalizedSlug === null) {
     throw new Error("El slug del artículo no es válido.");
   }
 
@@ -77,8 +72,8 @@ const isBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): value 
   }
 
   const post = value as Record<string, unknown>;
-  const normalizedExpectedSlug = expected.slug?.normalize("NFC");
-  const normalizedResponseSlug = typeof post.slug === "string" ? post.slug.normalize("NFC") : null;
+  const normalizedExpectedSlug = expected.slug === undefined ? undefined : normalizeBlogSlug(expected.slug);
+  const normalizedResponseSlug = normalizeBlogSlug(post.slug);
 
   return (
     Number.isInteger(post.id_noticia) &&
@@ -86,10 +81,7 @@ const isBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): value 
     post.id_noticia > 0 &&
     typeof post.idioma === "string" &&
     SUPPORTED_LANGUAGES.has(post.idioma) &&
-    typeof post.slug === "string" &&
-    post.slug.length > 0 &&
-    post.slug.length <= MAX_SLUG_LENGTH &&
-    VALID_SLUG_PATTERN.test(post.slug) &&
+    normalizedResponseSlug !== null &&
     typeof post.titulo === "string" &&
     typeof post.contenido === "string" &&
     typeof post.autor === "string" &&
@@ -109,7 +101,10 @@ const requireBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): B
     throw new Error("La respuesta del servidor para el blog no tiene el formato esperado.");
   }
 
-  return value;
+  return {
+    ...value,
+    slug: normalizeBlogSlug(value.slug) as string,
+  };
 };
 
 /**
@@ -143,7 +138,10 @@ export const getBlogPosts = async (idioma: string, token?: string): Promise<Blog
       throw new Error("La respuesta del servidor para el listado del blog no tiene el formato esperado.");
     }
 
-    return response.data;
+    return response.data.map((post) => ({
+      ...post,
+      slug: normalizeBlogSlug(post.slug) as string,
+    }));
   } catch (error) {
     throw error;
   }

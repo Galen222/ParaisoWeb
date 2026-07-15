@@ -22,7 +22,8 @@ async def get_sitemap_blog_entries(
     db: AsyncSession = Depends(get_db),
 ) -> list[schemas.SitemapBlogEntry]:
     """Devuelve los datos mínimos tras validar token y origen local."""
-    response.headers["Cache-Control"] = "public, max-age=300, stale-while-revalidate=600"
+    response.headers["Cache-Control"] = "no-store, max-age=0"
+    response.headers["Pragma"] = "no-cache"
 
     try:
         return await SitemapService(db).get_blog_entries()

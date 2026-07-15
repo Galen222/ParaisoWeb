@@ -3,11 +3,10 @@
 import axios from "axios";
 import { getBlogPostBySlug, getBlogPostById, BlogPost } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
+import { normalizeBlogSlug } from "../utils/blogSlug";
 
 const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
-const VALID_SLUG_PATTERN = /^[\p{L}\p{N}\p{M}-]+$/u;
-const MAX_SLUG_LENGTH = 150;
 
 interface BlogDataResult {
   redirect?: { destination: string; permanent: boolean };
@@ -30,8 +29,7 @@ const isValidTranslatedPost = (
     post &&
       post.id_noticia === expectedId &&
       post.idioma === locale &&
-      post.slug.length <= MAX_SLUG_LENGTH &&
-      VALID_SLUG_PATTERN.test(post.slug)
+      normalizeBlogSlug(post.slug) !== null
   );
 
 /** Devuelve un texto técnico acotado sin volcar cabeceras, respuestas o tokens completos. */
@@ -53,7 +51,8 @@ const getErrorMessageForLog = (error: unknown): string => {
  */
 export async function loadBlogData(slug: string, locale: string): Promise<BlogDataResult> {
   // Evita solicitar la API con parámetros que no pueden corresponder a una ruta válida.
-  if (slug.length > MAX_SLUG_LENGTH || !VALID_SLUG_PATTERN.test(slug) || !SUPPORTED_LOCALES.has(locale)) {
+  const normalizedSlug = normalizeBlogSlug(slug);
+  if (normalizedSlug === null || !SUPPORTED_LOCALES.has(locale)) {
     return {
       blogDetails: null,
       error: null,
@@ -63,7 +62,7 @@ export async function loadBlogData(slug: string, locale: string): Promise<BlogDa
 
   try {
     const token = await getTimedToken();
-    const blogDetails = await getBlogPostBySlug(slug, token, locale);
+    const blogDetails = await getBlogPostBySlug(normalizedSlug, token, locale);
 
     // Si el idioma del blog no coincide con el idioma actual, se busca su traducción equivalente.
     if (blogDetails.idioma !== locale) {

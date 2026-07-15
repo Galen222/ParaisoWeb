@@ -19,6 +19,7 @@ Dependencias:
 
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
+from .middleware.cache_control import ApiNoStoreMiddleware
 from .middleware.logging import LoggingMiddleware
 from .middleware.rate_limit import RateLimitMiddleware, RateLimitRule
 from .middleware.request_size import RequestSizeLimitMiddleware, RequestSizeRule
@@ -95,6 +96,9 @@ def create_app() -> FastAPI:
         ),
         version="2.0.0",
         lifespan=lifespan,
+        docs_url="/docs" if settings.ENABLE_API_DOCS else None,
+        redoc_url="/redoc" if settings.ENABLE_API_DOCS else None,
+        openapi_url="/openapi.json" if settings.ENABLE_API_DOCS else None,
     )
 
     @app.get("/livez", tags=["Health"])
@@ -135,6 +139,11 @@ def create_app() -> FastAPI:
             logger.info("La conexión con la base de datos se ha recuperado.")
         elif previous_database_available and not database_available:
             logger.warning("Se ha perdido la conexión con la base de datos; la API continúa en modo degradado.")
+
+        if not database_available:
+            # /livez indica que el proceso está vivo; /health actúa como readiness y
+            # debe señalar con 503 que una dependencia necesaria no está disponible.
+            response.status_code = 503
 
         return {
             "status": "ok" if database_available else "degraded",
@@ -233,6 +242,10 @@ def create_app() -> FastAPI:
             )
         ],
     )
+
+    # Impide que respuestas autenticadas o con datos de la API queden almacenadas
+    # en navegadores, proxies o CDN. El sitemap público de Next.js mantiene su propia caché.
+    app.add_middleware(ApiNoStoreMiddleware)
 
     # Middleware de logging
     app.add_middleware(LoggingMiddleware)

@@ -61,6 +61,10 @@ class BlogSlugValidationTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(_is_valid_blog_slug("articulo_con_guion_bajo"))
         self.assertFalse(_is_valid_blog_slug("articulo con espacios"))
         self.assertFalse(_is_valid_blog_slug("\u0301articulo"))
+        self.assertFalse(_is_valid_blog_slug("-"))
+        self.assertFalse(_is_valid_blog_slug("-articulo"))
+        self.assertFalse(_is_valid_blog_slug("articulo-"))
+        self.assertFalse(_is_valid_blog_slug("articulo--duplicado"))
 
     def test_acepta_letras_numeros_marcas_y_guiones(self) -> None:
         self.assertTrue(_is_valid_blog_slug("jamon-iberico-2026"))

@@ -57,6 +57,7 @@ class Settings(BaseSettings):
         HEALTHCHECK_DATABASE_TIMEOUT_SECONDS (float): Tiempo máximo de comprobación de MySQL.
         CORS_ALLOWED_ORIGINS (str): Orígenes frontend autorizados, separados por comas.
         TRUSTED_PROXY_IPS (str): Proxies autorizados para aportar X-Forwarded-For.
+        ENABLE_API_DOCS (bool): Habilita OpenAPI, Swagger UI y ReDoc de forma explícita.
     """
     SMTP_SERVER: str
     SMTP_PORT: int
@@ -88,6 +89,7 @@ class Settings(BaseSettings):
         "http://www.paraisodeljamon.com,https://www.paraisodeljamon.com"
     )
     TRUSTED_PROXY_IPS: str = "127.0.0.1,::1"
+    ENABLE_API_DOCS: bool = False
 
     @field_validator("CORS_ALLOWED_ORIGINS")
     @classmethod

@@ -18,12 +18,12 @@ Dependencias:
 """
 
 import logging
-import unicodedata
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Path
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import DBAPIError, TimeoutError as SQLAlchemyTimeoutError
 from typing import List, Literal
+from ..core.blog_slug import normalize_blog_slug
 from ..models import schemas
 from ..dependencies import verify_token, get_db
 from ..services.blog_service import BlogService
@@ -37,26 +37,9 @@ SupportedLanguage = Literal["es", "en", "de"]
 
 
 def _is_valid_blog_slug(slug: str) -> bool:
-    """Valida el mismo conjunto Unicode de caracteres admitido por las rutas del frontend."""
-    if not slug:
-        return False
+    """Valida el mismo slug canónico usado por el frontend y el sitemap."""
+    return normalize_blog_slug(slug) is not None
 
-    previous_was_alphanumeric_or_mark = False
-    for character in slug:
-        if character == "-":
-            previous_was_alphanumeric_or_mark = False
-            continue
-        if character.isalnum():
-            previous_was_alphanumeric_or_mark = True
-            continue
-        if (
-            unicodedata.category(character).startswith("M")
-            and previous_was_alphanumeric_or_mark
-        ):
-            continue
-        return False
-
-    return True
 
 @router.get("/blog", response_model=List[schemas.Blog])
 async def get_blog_posts(
@@ -136,8 +119,8 @@ async def get_blog_post_by_slug(
         # Dos rutas visualmente idénticas pueden llegar en NFC o NFD según el navegador.
         # La base de datos almacena el slug canónico, así que se normaliza antes de validar
         # y consultar para no devolver un 404 falso por una representación Unicode distinta.
-        normalized_slug = unicodedata.normalize("NFC", slug)
-        if not _is_valid_blog_slug(normalized_slug):
+        normalized_slug = normalize_blog_slug(slug)
+        if normalized_slug is None:
             raise HTTPException(status_code=422, detail="Slug de blog no válido")
 
         blog_service = BlogService(db)
