@@ -82,12 +82,30 @@ class EnvironmentExampleTests(unittest.TestCase):
             "SMTP_USERNAME": "tests@example.com",
             "SMTP_PASSWORD": "secret",
             "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
-            "secret_key": "test-secret",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
             "token_interval_seconds": 60,
         }
 
         self.assertFalse(Settings(**common).DATABASE_ECHO_SQL)
         self.assertTrue(Settings(**common, DATABASE_ECHO_SQL=True).DATABASE_ECHO_SQL)
+
+    def test_secret_key_rechaza_valores_cortos_y_recorta_espacios(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
+            "token_interval_seconds": 60,
+        }
+
+        with self.assertRaises(ValidationError):
+            Settings(**common, secret_key="demasiado-corta")
+
+        expected = "a" * 32
+        configured = Settings(**common, secret_key=f"  {expected}  ")
+        self.assertEqual(configured.secret_key, expected)
 
     def test_cors_normaliza_barras_finales_y_elimina_duplicados(self) -> None:
         settings = Settings(
@@ -97,7 +115,7 @@ class EnvironmentExampleTests(unittest.TestCase):
             SMTP_USERNAME="tests@example.com",
             SMTP_PASSWORD="secret",
             DATABASE_URL="mysql+aiomysql://u:p@127.0.0.1/db",
-            secret_key="test-secret",
+            secret_key="test-secret-key-with-at-least-32-characters",
             token_interval_seconds=60,
             CORS_ALLOWED_ORIGINS=(
                 "https://example.com/, http://localhost:3000, https://example.com"
@@ -117,7 +135,7 @@ class EnvironmentExampleTests(unittest.TestCase):
             "SMTP_USERNAME": "tests@example.com",
             "SMTP_PASSWORD": "secret",
             "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
-            "secret_key": "test-secret",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
             "token_interval_seconds": 60,
         }
 
@@ -135,7 +153,7 @@ class EnvironmentExampleTests(unittest.TestCase):
             "SMTP_USERNAME": "tests@example.com",
             "SMTP_PASSWORD": "secret",
             "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
-            "secret_key": "test-secret",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
             "token_interval_seconds": 60,
         }
 

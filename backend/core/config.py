@@ -94,6 +94,15 @@ class Settings(BaseSettings):
     TRUSTED_PROXY_IPS: str = "127.0.0.1,::1"
     ENABLE_API_DOCS: bool = False
 
+    @field_validator("secret_key")
+    @classmethod
+    def validate_secret_key(cls, value: str) -> str:
+        """Exige una clave HMAC suficientemente larga y elimina espacios accidentales."""
+        normalized = value.strip()
+        if len(normalized) < 32:
+            raise ValueError("secret_key debe contener al menos 32 caracteres")
+        return normalized
+
     @field_validator("CORS_ALLOWED_ORIGINS")
     @classmethod
     def validate_cors_allowed_origins(cls, value: str) -> str:

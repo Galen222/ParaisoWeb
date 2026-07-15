@@ -49,6 +49,19 @@ const requestSitemapToken = async (
   return token;
 };
 
+const requestSitemapEntries = async (
+  sitemapApiUrl: string,
+  token: string,
+  signal: AbortSignal
+): Promise<Response> =>
+  fetch(sitemapApiUrl, {
+    headers: {
+      Accept: "application/json",
+      "x-timed-token": token,
+    },
+    signal,
+  });
+
 const isSitemapBlogEntry = (value: unknown): value is SitemapBlogEntry => {
   if (typeof value !== "object" || value === null) {
     return false;
@@ -72,17 +85,27 @@ export const getSitemapBlogEntries = async (): Promise<SitemapBlogEntry[]> => {
 
   try {
     const sitemapApiUrl = getSitemapApiUrl();
-    const token = await requestSitemapToken(
-      getTokenUrlForSitemap(sitemapApiUrl),
+    const tokenUrl = getTokenUrlForSitemap(sitemapApiUrl);
+    let token = await requestSitemapToken(tokenUrl, controller.signal);
+    let response = await requestSitemapEntries(
+      sitemapApiUrl,
+      token,
       controller.signal
     );
-    const response = await fetch(sitemapApiUrl, {
-      headers: {
-        Accept: "application/json",
-        "x-timed-token": token,
-      },
-      signal: controller.signal,
-    });
+
+    // El token puede cambiar entre las dos peticiones justo al cruzar una ventana
+    // temporal. En ese único caso se obtiene uno nuevo y se repite la lectura una vez.
+    if (response.status === 403) {
+      const refreshedToken = await requestSitemapToken(tokenUrl, controller.signal);
+      if (refreshedToken !== token) {
+        token = refreshedToken;
+        response = await requestSitemapEntries(
+          sitemapApiUrl,
+          token,
+          controller.signal
+        );
+      }
+    }
 
     if (!response.ok) {
       throw new Error(`La API del sitemap respondió con HTTP ${response.status}.`);

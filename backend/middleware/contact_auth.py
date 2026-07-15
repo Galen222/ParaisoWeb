@@ -74,6 +74,12 @@ class ContactTokenGuardMiddleware:
             await self._send_json_error(send, 403, "Token inválido o expirado")
             return
 
+        # La autenticación se realiza antes de leer el cuerpo. Conservar el resultado en
+        # el scope evita verificar de nuevo después de un multipart lento, cuando el
+        # intervalo del token ya podría haber cambiado aunque fuese válido al comenzar.
+        state = scope.setdefault("state", {})
+        state["timed_token_verified"] = True
+
         await self.app(scope, receive, send)
 
     def _is_protected(self, method: str, path: str) -> bool:

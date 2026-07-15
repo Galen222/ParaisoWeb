@@ -46,7 +46,10 @@ async def get_db():
         yield session
 
 
-async def verify_token(x_timed_token: Optional[str] = Header(None)):
+async def verify_token(
+    request: Request,
+    x_timed_token: Optional[str] = Header(None),
+):
     """
     Verifica la presencia y validez del token temporal en el encabezado `x-timed-token`.
 
@@ -64,6 +67,12 @@ async def verify_token(x_timed_token: Optional[str] = Header(None)):
     Returns:
         None
     """
+    # El middleware ASGI ya validó los endpoints protegidos antes de leer su cuerpo.
+    # Reutilizar ese resultado evita falsos 403 si una subida lenta cruza varios
+    # intervalos del token entre la primera comprobación y el parseo de FastAPI.
+    if getattr(request.state, "timed_token_verified", False):
+        return
+
     if x_timed_token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

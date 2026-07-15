@@ -227,12 +227,11 @@ export function useCookieLogic(): CookieLogic {
 
   /**
    * Maneja el clic en el enlace de la política de cookies.
-   * - Reinicia el consentimiento de cookies.
+   * - Conserva el consentimiento actual mientras el usuario consulta la política.
    * - Cierra el modal de cookies.
    * - Redirige al usuario a la página de política de cookies.
    */
   const handleCookiesPolicyLinkClick = async () => {
-    resetCookieConsent();
     setShowCookieModal(false);
     setCookiesModalClosed(true);
 
@@ -254,12 +253,11 @@ export function useCookieLogic(): CookieLogic {
 
   /**
    * Maneja el clic en el enlace de la política de privacidad.
-   * - Reinicia el consentimiento de cookies.
+   * - Conserva el consentimiento actual mientras el usuario consulta la política.
    * - Cierra el modal de cookies.
    * - Redirige al usuario a la página de política de privacidad.
    */
   const handlePrivacyPolicyLinkClick = async () => {
-    resetCookieConsent();
     setShowCookieModal(false);
     setCookiesModalClosed(true);
 

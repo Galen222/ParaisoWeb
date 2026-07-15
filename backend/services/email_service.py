@@ -97,7 +97,7 @@ class ColoredFormatter(logging.Formatter):
 logger.propagate = False
 logger.setLevel(logging.INFO)
 
-if not logger.hasHandlers():
+if not logger.handlers:
     handler = logging.StreamHandler()
     handler.setFormatter(ColoredFormatter())
     logger.addHandler(handler)
