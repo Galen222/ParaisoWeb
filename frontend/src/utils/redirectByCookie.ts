@@ -28,6 +28,12 @@ const getLocaleFromPath = (pathname: string): string => {
   return firstSegment && SUPPORTED_LOCALES.has(firstSegment) ? firstSegment : DEFAULT_LOCALE;
 };
 
+/** Conserva los parámetros de consulta originales al cambiar únicamente el idioma. */
+const getQuerySuffix = (resolvedUrl: string): string => {
+  const queryIndex = resolvedUrl.indexOf("?");
+  return queryIndex >= 0 ? resolvedUrl.slice(queryIndex) : "";
+};
+
 /** Construye la ruta localizada sin añadir `/es` al idioma predeterminado. */
 const buildLocalizedDestination = (locale: string, basePath: string): string => {
   const normalizedBasePath = basePath ? normalizePath(basePath) : "";
@@ -77,7 +83,7 @@ export function redirectByCookie(context: GetServerSidePropsContext, basePath: s
   // console.log(`[REDIRECT] Redirigiendo a ${buildLocalizedDestination(localeCookie, basePath)}`);
   return {
     redirect: {
-      destination: buildLocalizedDestination(localeCookie, basePath),
+      destination: `${buildLocalizedDestination(localeCookie, basePath)}${getQuerySuffix(context.resolvedUrl)}`,
       permanent: false,
     },
   };

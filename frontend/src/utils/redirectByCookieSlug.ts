@@ -49,6 +49,12 @@ const getErrorMessageForLog = (error: unknown): string => {
   return "Error desconocido";
 };
 
+/** Conserva los parámetros de consulta originales al redirigir a la traducción. */
+const getQuerySuffix = (resolvedUrl: string): string => {
+  const queryIndex = resolvedUrl.indexOf("?");
+  return queryIndex >= 0 ? resolvedUrl.slice(queryIndex) : "";
+};
+
 /** Construye la ruta traducida respetando que español es el idioma sin prefijo. */
 const buildLocalizedBlogPath = (locale: string, slug: string): string =>
   `${locale === DEFAULT_LOCALE ? "" : `/${locale}`}/blog/${slug}`;
@@ -105,7 +111,7 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
         if (isValidTranslatedPost(translatedBlogPost, localeCookie, blogPost.id_noticia)) {
           return {
             redirect: {
-              destination: buildLocalizedBlogPath(localeCookie, translatedBlogPost.slug),
+              destination: `${buildLocalizedBlogPath(localeCookie, translatedBlogPost.slug)}${getQuerySuffix(context.resolvedUrl)}`,
               permanent: false,
             },
           };

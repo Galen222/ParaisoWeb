@@ -12,7 +12,10 @@ const getRequestHost = (headers: IncomingHttpHeaders): string | null => {
 export const isSameRequestHost = (refererUrl: URL, headers: IncomingHttpHeaders): boolean => {
   const requestHost = getRequestHost(headers);
   if (!requestHost) {
-    return true;
+    // Sin Host no se puede demostrar que el referer pertenece a esta petición.
+    // Tratarlo como mismo origen permitiría saltarse una redirección usando un
+    // referer externo en peticiones mal formadas o proxies incompletos.
+    return false;
   }
 
   try {

@@ -120,6 +120,7 @@ class EmailService:
         self.smtp_username = settings.SMTP_USERNAME
         self.smtp_password = settings.SMTP_PASSWORD
         self.smtp_timeout = settings.SMTP_TIMEOUT_SECONDS
+        self.smtp_tls_mode = settings.SMTP_TLS_MODE
         self.file_service = FileService()
 
     async def send_contact_email(
@@ -199,11 +200,14 @@ class EmailService:
 
         # Enviar correo
         try:
+            # STARTTLS (puerto 587), TLS implícito (habitualmente 465) y SMTP sin TLS
+            # requieren parámetros distintos. El modo configurable conserva STARTTLS por defecto.
             await aiosmtplib.send(
                 msg,
                 hostname=self.smtp_server,
                 port=self.smtp_port,
-                start_tls=True,
+                use_tls=self.smtp_tls_mode == "tls",
+                start_tls=self.smtp_tls_mode == "starttls",
                 username=self.smtp_username,
                 password=self.smtp_password,
                 timeout=self.smtp_timeout,

@@ -6,7 +6,7 @@ import asyncio
 import unittest
 from unittest.mock import AsyncMock, patch
 
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.testclient import TestClient
 from sqlalchemy.exc import OperationalError
 
@@ -93,6 +93,8 @@ class TimeoutAndDatabaseErrorTests(unittest.IsolatedAsyncioTestCase):
         self.assertIsNotNone(await_args)
         assert await_args is not None
         self.assertEqual(await_args.kwargs["timeout"], 7.5)
+        self.assertFalse(await_args.kwargs["use_tls"])
+        self.assertTrue(await_args.kwargs["start_tls"])
 
     async def test_lifespan_no_se_bloquea_si_mysql_no_responde(self) -> None:
         from backend import main
@@ -119,6 +121,27 @@ class TimeoutAndDatabaseErrorTests(unittest.IsolatedAsyncioTestCase):
         ):
             async with main.lifespan(app):
                 self.assertFalse(app.state.database_available)
+
+    async def test_health_usa_el_timeout_configurado(self) -> None:
+        from backend import main
+
+        app = main.create_app()
+        health_route = next(route for route in app.routes if getattr(route, "path", None) == "/health")
+        captured_timeouts: list[float] = []
+
+        async def fake_wait_for(awaitable, timeout):
+            captured_timeouts.append(timeout)
+            awaitable.close()
+            raise TimeoutError
+
+        with (
+            patch.object(main.settings, "HEALTHCHECK_DATABASE_TIMEOUT_SECONDS", 0.25),
+            patch.object(main.asyncio, "wait_for", new=fake_wait_for),
+        ):
+            result = await health_route.endpoint(Response())
+
+        self.assertEqual(captured_timeouts, [0.25])
+        self.assertEqual(result["status"], "degraded")
 
     async def test_blog_devuelve_503_cuando_mysql_no_esta_disponible(self) -> None:
         database_error = OperationalError("SELECT 1", {}, Exception("sin conexión"))

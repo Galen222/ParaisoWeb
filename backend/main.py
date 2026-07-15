@@ -113,7 +113,10 @@ def create_app() -> FastAPI:
         try:
             # El estado de arranque puede quedar obsoleto si MySQL cae o se recupera después.
             # El límite evita que un pool sin conexión bloquee durante demasiado tiempo el health check.
-            await asyncio.wait_for(check_database_connection(), timeout=2.0)
+            await asyncio.wait_for(
+                check_database_connection(),
+                timeout=settings.HEALTHCHECK_DATABASE_TIMEOUT_SECONDS,
+            )
             database_available = True
         except Exception:
             database_available = False
@@ -170,20 +173,11 @@ def create_app() -> FastAPI:
     # Middleware de logging
     app.add_middleware(LoggingMiddleware)
 
-    # Configuración de CORS
-    origins = [
-        "http://localhost:3000",  # Desarrollo local
-        "https://galenn.asuscomm.com",
-        "http://paraisodeljamon.com",  # Producción
-        "https://paraisodeljamon.com",
-        "http://www.paraisodeljamon.com",
-        "https://www.paraisodeljamon.com",
-    ]
-
-    # Añade el Middleware
+    # Configuración de CORS desde entorno. Mantenerla fuera del código evita que un
+    # dominio de Plesk, preproducción o desarrollo quede bloqueado tras un despliegue.
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=origins,
+        allow_origins=settings.cors_allowed_origins,
         allow_credentials=True,
         allow_methods=["GET", "POST", "OPTIONS"],
         allow_headers=["Content-Type", "x-timed-token"],

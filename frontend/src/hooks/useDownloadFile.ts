@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { saveAs } from "file-saver";
 import { useToastMessage } from "./useToast";
+import { DOWNLOAD_REQUEST_TIMEOUT_MS } from "../config/api.config";
 
 /**
  * Interfaz para el objeto retornado por el hook `useDownloadFile`.
@@ -38,11 +39,16 @@ export function useDownloadFile(): DownloadFileHook {
 
     isDownloadingRef.current = true;
     setIsDownloading(true);
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), DOWNLOAD_REQUEST_TIMEOUT_MS);
+
     try {
-      // Realiza la solicitud de descarga
+      // Realiza la solicitud de descarga. El timeout evita que una conexión abierta
+      // indefinidamente deje el botón bloqueado y el loader activo para siempre.
       // En una petición GET no se envía Content-Type: el tipo pertenece a la respuesta del servidor.
       const response = await fetch(filePath, {
         method: "GET",
+        signal: controller.signal,
       });
 
       if (!response.ok) {
@@ -67,6 +73,7 @@ export function useDownloadFile(): DownloadFileHook {
       // Mostrar notificación de error
       showToast(errorMessageId, 3000, "error"); // Muestra el toast utilizando el hook
     } finally {
+      window.clearTimeout(timeoutId);
       isDownloadingRef.current = false;
       setIsDownloading(false); // Finaliza el estado de descarga
     }

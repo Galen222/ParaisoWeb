@@ -7,7 +7,7 @@
 import axios from "axios";
 import { requestWithTimedToken } from "./timedTokenRequest";
 import { isValidApiDateString } from "../utils/apiDate";
-import { READ_REQUEST_TIMEOUT_MS } from "../config/api.config";
+import { READ_REQUEST_TIMEOUT_MS, requirePublicApiUrl } from "../config/api.config";
 
 /**
  * Interfaz para representar los datos de una publicación de blog.
@@ -67,13 +67,8 @@ const requireValidSlug = (slug: string): string => {
 /**
  * Obtiene la URL configurada sin hacer fallar la importación del módulo durante el build.
  */
-const getApiUrl = (): string => {
-  if (!API_URL) {
-    throw new Error("La variable de entorno NEXT_PUBLIC_API_BLOG_URL no está definida.");
-  }
-
-  return API_URL;
-};
+const getApiUrl = (): string =>
+  requirePublicApiUrl(API_URL, "NEXT_PUBLIC_API_BLOG_URL");
 
 /** Comprueba en tiempo de ejecución que una respuesta conserva el contrato del blog. */
 const isBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): value is BlogPost => {

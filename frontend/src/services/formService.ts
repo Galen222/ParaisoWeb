@@ -6,7 +6,7 @@
 
 import axios, { AxiosResponse } from "axios";
 import { getTimedToken } from "./tokenService";
-import { CONTACT_REQUEST_TIMEOUT_MS } from "../config/api.config";
+import { CONTACT_REQUEST_TIMEOUT_MS, requirePublicApiUrl } from "../config/api.config";
 
 /**
  * Interfaz para los datos del formulario de contacto.
@@ -27,13 +27,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_CONTACTO_URL;
 /**
  * Obtiene la URL configurada sin hacer fallar la importación del módulo durante el build.
  */
-const getApiUrl = (): string => {
-  if (!API_URL) {
-    throw new Error("La variable de entorno NEXT_PUBLIC_API_CONTACTO_URL no está definida.");
-  }
-
-  return API_URL;
-};
+const getApiUrl = (): string =>
+  requirePublicApiUrl(API_URL, "NEXT_PUBLIC_API_CONTACTO_URL");
 
 // Crea una instancia de axios con configuraciones predeterminadas.
 const axiosInstance = axios.create({

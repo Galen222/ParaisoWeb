@@ -15,9 +15,11 @@ Dependencias:
 - Pathlib: Para manejar rutas al archivo `.env`.
 """
 
-from pydantic import Field
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 from pathlib import Path
+from typing import Literal
+from urllib.parse import urlsplit
 
 
 class Settings(BaseSettings):
@@ -43,6 +45,9 @@ class Settings(BaseSettings):
         CONTACT_MAX_REQUEST_BYTES (int): Tamaño máximo del cuerpo multipart de contacto.
         DATABASE_STARTUP_TIMEOUT_SECONDS (float): Tiempo máximo para inicializar MySQL.
         SMTP_TIMEOUT_SECONDS (float): Tiempo máximo de conexión y envío SMTP.
+        SMTP_TLS_MODE (str): Modo TLS SMTP: starttls, tls o none.
+        HEALTHCHECK_DATABASE_TIMEOUT_SECONDS (float): Tiempo máximo de comprobación de MySQL.
+        CORS_ALLOWED_ORIGINS (str): Orígenes frontend autorizados, separados por comas.
         TRUSTED_PROXY_IPS (str): Proxies autorizados para aportar X-Forwarded-For.
     """
     SMTP_SERVER: str
@@ -59,7 +64,45 @@ class Settings(BaseSettings):
     CONTACT_MAX_REQUEST_BYTES: int = Field(default=11 * 1024 * 1024, gt=0)
     DATABASE_STARTUP_TIMEOUT_SECONDS: float = Field(default=10.0, gt=0)
     SMTP_TIMEOUT_SECONDS: float = Field(default=15.0, gt=0)
+    SMTP_TLS_MODE: Literal["starttls", "tls", "none"] = "starttls"
+    HEALTHCHECK_DATABASE_TIMEOUT_SECONDS: float = Field(default=2.0, gt=0)
+    CORS_ALLOWED_ORIGINS: str = (
+        "http://localhost:3000,https://galenn.asuscomm.com,"
+        "http://paraisodeljamon.com,https://paraisodeljamon.com,"
+        "http://www.paraisodeljamon.com,https://www.paraisodeljamon.com"
+    )
     TRUSTED_PROXY_IPS: str = "127.0.0.1,::1"
+
+    @field_validator("CORS_ALLOWED_ORIGINS")
+    @classmethod
+    def validate_cors_allowed_origins(cls, value: str) -> str:
+        """Rechaza orígenes CORS ambiguos o incompatibles con credenciales."""
+        origins = [origin.strip().rstrip("/") for origin in value.split(",") if origin.strip()]
+        if not origins:
+            raise ValueError("CORS_ALLOWED_ORIGINS debe contener al menos un origen")
+
+        for origin in origins:
+            if origin == "*":
+                raise ValueError("CORS_ALLOWED_ORIGINS no puede usar '*' con credenciales")
+
+            parsed = urlsplit(origin)
+            if (
+                parsed.scheme not in {"http", "https"}
+                or not parsed.netloc
+                or parsed.username is not None
+                or parsed.password is not None
+                or parsed.path not in {"", "/"}
+                or parsed.query
+                or parsed.fragment
+            ):
+                raise ValueError(f"Origen CORS no válido: {origin}")
+
+        return ",".join(dict.fromkeys(origins))
+
+    @property
+    def cors_allowed_origins(self) -> list[str]:
+        """Devuelve orígenes CORS normalizados y sin duplicados."""
+        return [origin for origin in self.CORS_ALLOWED_ORIGINS.split(",") if origin]
 
     @property
     def trusted_proxy_ips(self) -> set[str]:
