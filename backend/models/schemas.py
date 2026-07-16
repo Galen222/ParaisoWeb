@@ -15,7 +15,59 @@ Este archivo incluye:
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from typing import Literal, Optional
 from datetime import datetime
+from urllib.parse import unquote
+import re
 import unicodedata
+
+from ..core.blog_slug import normalize_blog_slug
+
+
+MAX_ASSET_DECODE_PASSES = 5
+
+
+def _is_safe_public_asset_path(value: object) -> bool:
+    """Valida rutas relativas de recursos con el mismo criterio defensivo del frontend."""
+    if not isinstance(value, str) or not value or value.strip() != value:
+        return False
+    if value.startswith("/") or "\\" in value or any(character in value for character in "?#"):
+        return False
+    if any(unicodedata.category(character) in {"Cc", "Cf"} for character in value):
+        return False
+
+    for segment in value.split("/"):
+        if not segment:
+            return False
+
+        decoded_segment = segment
+        try:
+            for _ in range(MAX_ASSET_DECODE_PASSES):
+                if re.search(r"%(?![0-9A-Fa-f]{2})", decoded_segment):
+                    return False
+                next_value = unquote(decoded_segment, errors="strict")
+                if next_value == decoded_segment:
+                    break
+                decoded_segment = next_value
+            else:
+                return False
+        except (UnicodeDecodeError, ValueError):
+            return False
+
+        if (
+            decoded_segment in {".", ".."}
+            or "/" in decoded_segment
+            or "\\" in decoded_segment
+            or any(unicodedata.category(character) in {"Cc", "Cf"} for character in decoded_segment)
+        ):
+            return False
+
+    return True
+
+
+def _require_non_blank(value: object, field_name: str) -> object:
+    """Rechaza textos obligatorios vacíos sin modificar su contenido visible."""
+    if isinstance(value, str) and not value.strip():
+        raise ValueError(f"{field_name} no puede estar vacío")
+    return value
 
 
 # Esquema para el Formulario de Contacto
@@ -172,12 +224,34 @@ class CharcuteriaBase(BaseModel):
         imagen_url (str): URL de la imagen del producto.
         categoria (str): Categoría del producto (ejemplo: 'Embutidos').
     """
-    idioma: str
+    idioma: Literal["es", "en", "de"]
     nombre: str
     empresa: Optional[str] = None
     descripcion: str
     imagen_url: str
     categoria: str
+
+    @field_validator("nombre", "descripcion", "categoria", mode="before")
+    @classmethod
+    def validate_required_text(cls, value: object, info) -> object:
+        """Impide que una fila con textos invisibles invalide toda la respuesta pública."""
+        return _require_non_blank(value, info.field_name)
+
+    @field_validator("empresa", mode="before")
+    @classmethod
+    def normalize_optional_company(cls, value: object) -> object:
+        """Representa empresas heredadas vacías como ausencia real."""
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value
+
+    @field_validator("imagen_url")
+    @classmethod
+    def validate_image_path(cls, value: str) -> str:
+        """Solo expone imágenes relativas que permanezcan dentro del directorio público."""
+        if not _is_safe_public_asset_path(value):
+            raise ValueError("imagen_url no contiene una ruta pública segura")
+        return value
 
 
 class CharcuteriaCreate(CharcuteriaBase):
@@ -197,7 +271,7 @@ class Charcuteria(CharcuteriaBase):
         id_producto (int): Identificador único del producto.
         fecha (datetime): Fecha de creación del registro.
     """
-    id_producto: int
+    id_producto: int = Field(gt=0)
     fecha: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
@@ -217,13 +291,46 @@ class BlogBase(BaseModel):
         imagen_url (str): URL de la imagen principal de la publicación.
         imagen_url_2 (Optional[str]): URL de una segunda imagen (opcional).
     """
-    idioma: str
+    idioma: Literal["es", "en", "de"]
     slug: str
     titulo: str
     contenido: str
     autor: str
     imagen_url: str
     imagen_url_2: Optional[str] = None
+
+    @field_validator("slug", mode="before")
+    @classmethod
+    def validate_slug(cls, value: object) -> str:
+        """Normaliza el slug y rechaza rutas que el frontend no puede representar."""
+        normalized_slug = normalize_blog_slug(value)
+        if normalized_slug is None:
+            raise ValueError("slug no válido")
+        return normalized_slug
+
+    @field_validator("titulo", "contenido", "autor", mode="before")
+    @classmethod
+    def validate_required_text(cls, value: object, info) -> object:
+        """Rechaza textos obligatorios formados únicamente por espacios."""
+        return _require_non_blank(value, info.field_name)
+
+    @field_validator("imagen_url")
+    @classmethod
+    def validate_primary_image_path(cls, value: str) -> str:
+        """Valida la ruta pública obligatoria de la imagen principal."""
+        if not _is_safe_public_asset_path(value):
+            raise ValueError("imagen_url no contiene una ruta pública segura")
+        return value
+
+    @field_validator("imagen_url_2", mode="before")
+    @classmethod
+    def validate_optional_image_path(cls, value: object) -> object:
+        """Normaliza imágenes opcionales vacías y valida las rutas informadas."""
+        if isinstance(value, str) and not value.strip():
+            return None
+        if value is not None and not _is_safe_public_asset_path(value):
+            raise ValueError("imagen_url_2 no contiene una ruta pública segura")
+        return value
 
 
 class BlogCreate(BlogBase):
@@ -244,7 +351,7 @@ class Blog(BlogBase):
         fecha_publicacion (datetime): Fecha de publicación de la noticia.
         fecha_actualizacion (datetime): Fecha de última actualización de la noticia.
     """
-    id_noticia: int
+    id_noticia: int = Field(gt=0)
     fecha_publicacion: datetime
     fecha_actualizacion: Optional[datetime] = None
 

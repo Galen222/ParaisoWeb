@@ -42,7 +42,7 @@ class ServiceResultOrderingTests(unittest.IsolatedAsyncioTestCase):
         self.assertIn("blog.id_noticia DESC", sql)
 
 
-    async def test_blog_slug_resolution_is_limited_and_deterministic(self) -> None:
+    async def test_blog_slug_resolution_is_ordered_and_deterministic(self) -> None:
         session = _CapturingSession()
         post = await BlogService(session).get_post_by_slug("articulo", "es")
 
@@ -54,7 +54,7 @@ class ServiceResultOrderingTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertIsNone(post)
         self.assertIn("blog.id_noticia ASC", sql)
-        self.assertIn("LIMIT 1", sql)
+        self.assertNotIn("LIMIT", sql)
 
     async def test_charcuteria_uses_id_as_name_tiebreaker(self) -> None:
         session = _CapturingSession()

@@ -23,6 +23,16 @@ export interface CookieProps {
   onPrivacyPolicyLinkClick: () => void;
 }
 
+/** Deja que el navegador gestione nueva pestaña, nueva ventana o descarga del enlace. */
+const shouldHandlePolicyLinkInCurrentTab = (
+  event: React.MouseEvent<HTMLAnchorElement>
+): boolean =>
+  event.button === 0 &&
+  !event.altKey &&
+  !event.ctrlKey &&
+  !event.metaKey &&
+  !event.shiftKey;
+
 /**
  * Componente Cookie
  *
@@ -271,8 +281,11 @@ const Cookie: React.FC<CookieProps> = ({
             {intl.formatMessage({ id: "cookie_Texto4_1" })}
             <Link
               href="/politica-cookies"
-              onClick={(e) => {
-                e.preventDefault();
+              onClick={(event) => {
+                if (!shouldHandlePolicyLinkInCurrentTab(event)) {
+                  return;
+                }
+                event.preventDefault();
                 onCookiesPolicyLinkClick();
               }}
               className={`${styles.link} d-inline`}
@@ -282,8 +295,11 @@ const Cookie: React.FC<CookieProps> = ({
             {intl.formatMessage({ id: "cookie_Texto4_2" })}
             <Link
               href="/politica-privacidad"
-              onClick={(e) => {
-                e.preventDefault();
+              onClick={(event) => {
+                if (!shouldHandlePolicyLinkInCurrentTab(event)) {
+                  return;
+                }
+                event.preventDefault();
                 onPrivacyPolicyLinkClick();
               }}
               className={`${styles.link} d-inline`}

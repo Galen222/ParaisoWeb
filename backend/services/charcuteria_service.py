@@ -16,10 +16,17 @@ Dependencias:
 - Models: Modelos de datos definidos en la capa ORM.
 """
 
+import logging
+from typing import List
+
+from pydantic import ValidationError
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from typing import List
-from ..models import models
+
+from ..models import models, schemas
+
+logger = logging.getLogger(__name__)
+
 
 class CharcuteriaService:
     """
@@ -38,7 +45,22 @@ class CharcuteriaService:
         """
         self.db = db
 
-    async def get_all_products(self, idioma: str) -> List[models.Charcuteria]:
+    @staticmethod
+    def _validate_public_product(
+        product: models.Charcuteria,
+    ) -> schemas.Charcuteria | None:
+        """Convierte una fila ORM en una respuesta pública o la omite si está dañada."""
+        try:
+            return schemas.Charcuteria.model_validate(product)
+        except ValidationError:
+            logger.warning(
+                "Producto de charcutería omitido por datos públicos no válidos: id=%s idioma=%s",
+                getattr(product, "id_producto", None),
+                getattr(product, "idioma", None),
+            )
+            return None
+
+    async def get_all_products(self, idioma: str) -> List[schemas.Charcuteria]:
         """
         Obtiene todos los productos de charcutería en un idioma específico.
 
@@ -49,7 +71,7 @@ class CharcuteriaService:
             idioma (str): Idioma de los productos a obtener.
 
         Returns:
-            List[models.Charcuteria]: Lista de productos de charcutería en el idioma solicitado.
+            List[schemas.Charcuteria]: Productos válidos del idioma solicitado.
         """
         result = await self.db.execute(
             select(models.Charcuteria)
@@ -57,7 +79,13 @@ class CharcuteriaService:
             .order_by(
                 models.Charcuteria.categoria.asc(),
                 models.Charcuteria.nombre.asc(),
-                models.Charcuteria.id_producto.asc()
+                models.Charcuteria.id_producto.asc(),
             )
         )
-        return list(result.scalars().all())
+
+        products: list[schemas.Charcuteria] = []
+        for row in result.scalars().all():
+            validated_product = self._validate_public_product(row)
+            if validated_product is not None:
+                products.append(validated_product)
+        return products

@@ -57,3 +57,18 @@ test("una segunda imagen opcional vacía no invalida el artículo", async () => 
   assert.match(source, /value\.trim\(\) === "" \|\| isSafePublicAssetPath\(value\)/);
   assert.match(source, /imagen_url_2:[\s\S]*?value\.imagen_url_2\.trim\(\) === ""[\s\S]*?\? null/);
 });
+
+test("los enlaces legales respetan la apertura en otra pestaña o ventana", async () => {
+  const source = await readFile(
+    new URL("../src/components/Cookie.tsx", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(source, /const shouldHandlePolicyLinkInCurrentTab/);
+  assert.match(source, /!event\.ctrlKey/);
+  assert.match(source, /!event\.metaKey/);
+  assert.match(source, /!event\.shiftKey/);
+  assert.match(source, /if \(!shouldHandlePolicyLinkInCurrentTab\(event\)\) \{[\s\S]*?return;/);
+  assert.match(source, /event\.preventDefault\(\);[\s\S]*?onCookiesPolicyLinkClick\(\)/);
+  assert.match(source, /event\.preventDefault\(\);[\s\S]*?onPrivacyPolicyLinkClick\(\)/);
+});
