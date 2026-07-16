@@ -44,6 +44,12 @@ interface ExpectedBlogIdentity {
 const isNonBlankString = (value: unknown): value is string =>
   typeof value === "string" && value.trim() !== "";
 
+/** Acepta ausencia real o cadenas vacías heredadas en una imagen que es opcional. */
+const isOptionalPublicAssetPath = (value: unknown): value is string | null | undefined =>
+  value === undefined ||
+  value === null ||
+  (typeof value === "string" && (value.trim() === "" || isSafePublicAssetPath(value)));
+
 /** Valida los idiomas que existen en las rutas y en la base de datos. */
 const requireSupportedLanguage = (idioma: string): string => {
   if (!SUPPORTED_LANGUAGES.has(idioma)) {
@@ -91,9 +97,7 @@ const isBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): value 
     isNonBlankString(post.contenido) &&
     isNonBlankString(post.autor) &&
     isSafePublicAssetPath(post.imagen_url) &&
-    (post.imagen_url_2 === undefined ||
-      post.imagen_url_2 === null ||
-      isSafePublicAssetPath(post.imagen_url_2)) &&
+    isOptionalPublicAssetPath(post.imagen_url_2) &&
     isValidApiDateString(post.fecha_publicacion) &&
     (post.fecha_actualizacion === null || isValidApiDateString(post.fecha_actualizacion)) &&
     (expected.id === undefined || post.id_noticia === expected.id) &&
@@ -103,15 +107,23 @@ const isBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): value 
 };
 
 /** Rechaza respuestas 2xx mal formadas antes de que provoquen un error durante el render. */
+const normalizeBlogPost = (value: BlogPost): BlogPost => ({
+  ...value,
+  slug: normalizeBlogSlug(value.slug) as string,
+  // Algunos registros antiguos representan la ausencia de la segunda imagen como
+  // cadena vacía. No debe invalidarse todo el artículo por un campo opcional vacío.
+  imagen_url_2:
+    typeof value.imagen_url_2 === "string" && value.imagen_url_2.trim() === ""
+      ? null
+      : value.imagen_url_2,
+});
+
 const requireBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): BlogPost => {
   if (!isBlogPost(value, expected)) {
     throw new Error("La respuesta del servidor para el blog no tiene el formato esperado.");
   }
 
-  return {
-    ...value,
-    slug: normalizeBlogSlug(value.slug) as string,
-  };
+  return normalizeBlogPost(value);
 };
 
 /**
@@ -172,7 +184,7 @@ export const getBlogPosts = async (
 
       seenIds.add(post.id_noticia);
       seenSlugs.add(normalizedSlug);
-      uniquePosts.push({ ...post, slug: normalizedSlug });
+      uniquePosts.push(normalizeBlogPost({ ...post, slug: normalizedSlug }));
     }
 
     if (duplicatePosts > 0) {

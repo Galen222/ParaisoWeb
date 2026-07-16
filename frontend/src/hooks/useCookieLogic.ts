@@ -1,11 +1,12 @@
 // hooks/useCookieLogic.ts
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
 import {
   COOKIE_CONSENT_CLEARED_EVENT,
   COOKIE_CONSENT_NAME,
+  COOKIE_CONSENT_SYNC_STORAGE_KEY,
   createDeviceCookie,
   getCookieValue,
   revokeCookieCategories,
@@ -105,64 +106,16 @@ export function useCookieLogic(): CookieLogic {
   } = useCookieConsent();
 
   /**
-   * Efecto para restaurar la elección guardada y establecer el estado inicial.
-   * - Respeta la aceptación, el rechazo o la selección personalizada persistida.
-   * - No interpreta cookies antiguas o aisladas como una aceptación explícita de la política actual.
-   * - Muestra el modal de cookies si no hay una elección previa.
+   * Restaura la preferencia persistida y sincroniza tanto los estados de selección
+   * como los consentimientos efectivos usados por el resto de la aplicación.
    */
-  useEffect(() => {
-    const restoreSavedConsent = () => {
-      const savedPreference = getCookieValue(COOKIE_CONSENT_NAME);
-      const customPreference = savedPreference ? parseCustomCookieConsent(savedPreference) : null;
+  const restoreSavedConsent = useCallback(() => {
+    const savedPreference = getCookieValue(COOKIE_CONSENT_NAME);
+    const customPreference = savedPreference ? parseCustomCookieConsent(savedPreference) : null;
 
-      // Restaura primero la elección explícita, incluso cuando se rechazaron todas las cookies opcionales.
-      if (savedPreference === COOKIE_CONSENT_REJECTED) {
-        // El rechazo persistido también debe retirar cookies antiguas que pudieran seguir en el navegador.
-        revokeCookieCategories({ analysis: true, googleAnalytics: true, personalization: true });
-        setAcceptCookieAnalysis(false);
-        setCookieConsentAnalysis(false);
-        setAcceptCookieAnalysisGoogle(false);
-        setCookieConsentAnalysisGoogle(false);
-        setAcceptCookiePersonalization(false);
-        setCookieConsentPersonalization(false);
-        setShowCookieModal(false);
-        setCookiesModalClosed(true);
-        return;
-      }
-
-      if (savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference) {
-        const analysis = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.analysis === true;
-        const googleAnalytics = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.googleAnalytics === true;
-        const personalization = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.personalization === true;
-
-        // Una selección personalizada puede revocar categorías que se aceptaron anteriormente.
-        revokeCookieCategories({
-          analysis: !analysis,
-          googleAnalytics: !googleAnalytics,
-          personalization: !personalization,
-        });
-
-        setAcceptCookieAnalysis(analysis);
-        setCookieConsentAnalysis(analysis);
-        setAcceptCookieAnalysisGoogle(googleAnalytics);
-        setCookieConsentAnalysisGoogle(googleAnalytics);
-        setAcceptCookiePersonalization(personalization);
-        setCookieConsentPersonalization(personalization);
-
-        if (analysis) {
-          createDeviceCookie();
-        }
-        if (googleAnalytics) {
-          initGA();
-        }
-
-        setShowCookieModal(false);
-        setCookiesModalClosed(true);
-        return;
-      }
-
-      // Una cookie opcional aislada no demuestra que el usuario aceptara la versión actual
-      // de la política. Se retira cualquier resto anterior y se solicita una decisión explícita.
+    // Restaura primero la elección explícita, incluso cuando se rechazaron todas las cookies opcionales.
+    if (savedPreference === COOKIE_CONSENT_REJECTED) {
+      // El rechazo persistido también debe retirar cookies antiguas que pudieran seguir en el navegador.
       revokeCookieCategories({ analysis: true, googleAnalytics: true, personalization: true });
       setAcceptCookieAnalysis(false);
       setCookieConsentAnalysis(false);
@@ -170,13 +123,53 @@ export function useCookieLogic(): CookieLogic {
       setCookieConsentAnalysisGoogle(false);
       setAcceptCookiePersonalization(false);
       setCookieConsentPersonalization(false);
-      setShowCookieModal(true);
-      setCookiesModalClosed(false);
-    };
+      setShowCookieModal(false);
+      setCookiesModalClosed(true);
+      return;
+    }
 
-    // Restaura la preferencia fuera del cuerpo síncrono del efecto y cancela la tarea al desmontar.
-    const restoreConsentTimeout = window.setTimeout(restoreSavedConsent, 0);
-    return () => window.clearTimeout(restoreConsentTimeout);
+    if (savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference) {
+      const analysis = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.analysis === true;
+      const googleAnalytics = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.googleAnalytics === true;
+      const personalization = savedPreference === COOKIE_CONSENT_ACCEPTED || customPreference?.personalization === true;
+
+      // Una selección personalizada puede revocar categorías que se aceptaron anteriormente.
+      revokeCookieCategories({
+        analysis: !analysis,
+        googleAnalytics: !googleAnalytics,
+        personalization: !personalization,
+      });
+
+      setAcceptCookieAnalysis(analysis);
+      setCookieConsentAnalysis(analysis);
+      setAcceptCookieAnalysisGoogle(googleAnalytics);
+      setCookieConsentAnalysisGoogle(googleAnalytics);
+      setAcceptCookiePersonalization(personalization);
+      setCookieConsentPersonalization(personalization);
+
+      if (analysis) {
+        createDeviceCookie();
+      }
+      if (googleAnalytics) {
+        initGA();
+      }
+
+      setShowCookieModal(false);
+      setCookiesModalClosed(true);
+      return;
+    }
+
+    // Una cookie opcional aislada no demuestra que el usuario aceptara la versión actual
+    // de la política. Se retira cualquier resto anterior y se solicita una decisión explícita.
+    revokeCookieCategories({ analysis: true, googleAnalytics: true, personalization: true });
+    setAcceptCookieAnalysis(false);
+    setCookieConsentAnalysis(false);
+    setAcceptCookieAnalysisGoogle(false);
+    setCookieConsentAnalysisGoogle(false);
+    setAcceptCookiePersonalization(false);
+    setCookieConsentPersonalization(false);
+    setShowCookieModal(true);
+    setCookiesModalClosed(false);
   }, [
     setAcceptCookieAnalysis,
     setAcceptCookieAnalysisGoogle,
@@ -185,6 +178,54 @@ export function useCookieLogic(): CookieLogic {
     setCookieConsentAnalysisGoogle,
     setCookieConsentPersonalization,
   ]);
+
+  /**
+   * Efecto para restaurar la elección guardada y establecer el estado inicial.
+   * - Respeta la aceptación, el rechazo o la selección personalizada persistida.
+   * - No interpreta cookies antiguas o aisladas como una aceptación explícita de la política actual.
+   * - Muestra el modal de cookies si no hay una elección previa.
+   */
+  useEffect(() => {
+    // Restaura la preferencia fuera del cuerpo síncrono del efecto y cancela la tarea al desmontar.
+    const restoreConsentTimeout = window.setTimeout(restoreSavedConsent, 0);
+    return () => window.clearTimeout(restoreConsentTimeout);
+  }, [restoreSavedConsent]);
+
+  /**
+   * Sincroniza cambios realizados en otra pestaña o mientras esta permanecía en segundo
+   * plano. Las cookies no generan eventos por sí mismas, por lo que se combina una señal
+   * efímera de storage con una comprobación al recuperar foco o visibilidad.
+   */
+  useEffect(() => {
+    const synchronizeConsent = () => {
+      // Mientras se consulta una política desde el modal, una ausencia de preferencia
+      // debe seguir esperando a que el usuario abandone la página legal.
+      if (isReviewingConsentPolicy && !getCookieValue(COOKIE_CONSENT_NAME)) {
+        return;
+      }
+      restoreSavedConsent();
+    };
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === COOKIE_CONSENT_SYNC_STORAGE_KEY && event.newValue !== null) {
+        synchronizeConsent();
+      }
+    };
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        synchronizeConsent();
+      }
+    };
+
+    window.addEventListener("storage", handleStorage);
+    window.addEventListener("focus", synchronizeConsent);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      window.removeEventListener("storage", handleStorage);
+      window.removeEventListener("focus", synchronizeConsent);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [isReviewingConsentPolicy, restoreSavedConsent]);
 
   /**
    * Efecto para guardar el idioma en cookies si se ha aceptado la personalización.

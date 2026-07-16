@@ -105,9 +105,32 @@ export const getCharcuteriaProducts = async (
     }
 
     // Evita tarjetas repetidas si un proxy o una consulta defectuosa duplica una fila.
-    return Array.from(
-      new Map(validProducts.map((product) => [product.id_producto, product])).values()
-    );
+    // Map sobrescribía silenciosamente la primera fila con la última, aunque mantenía la
+    // posición inicial. Se conserva de forma explícita la primera respuesta, igual que en blog.
+    const seenProductIds = new Set<number>();
+    const uniqueProducts: CharcuteriaProduct[] = [];
+    let duplicateProducts = 0;
+
+    for (const product of validProducts) {
+      if (seenProductIds.has(product.id_producto)) {
+        duplicateProducts += 1;
+        continue;
+      }
+
+      seenProductIds.add(product.id_producto);
+      uniqueProducts.push({
+        ...product,
+        // `empresa` es opcional. Los valores vacíos heredados se representan como
+        // ausencia real para no renderizar un encabezado sin contenido.
+        empresa: product.empresa?.trim() || null,
+      });
+    }
+
+    if (duplicateProducts > 0) {
+      console.error(`Se omitieron ${duplicateProducts} productos de charcutería duplicados.`);
+    }
+
+    return uniqueProducts;
   } catch (error) {
     /* // console.error("Error recibiendo los productos de charcuteria:", error); */
     throw error;

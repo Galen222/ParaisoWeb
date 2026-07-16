@@ -210,7 +210,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
                       <h3 className={styles.backProductName}>{product.nombre}</h3>
                       {product.categoria && <h3 className={styles.backCategory}>{product.categoria}</h3>}
                       <p className={styles.descripcion}>{product.descripcion}</p>
-                      <h3 className={styles.empresa}>{product.empresa}</h3>
+                      {product.empresa && <h3 className={styles.empresa}>{product.empresa}</h3>}
                     </div>
                   </div>
                 </div>

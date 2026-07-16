@@ -9,6 +9,9 @@ export const COOKIE_CONSENT_NAME = "_cookie_consent";
 /** Evento emitido al borrar la elección para volver a solicitar el consentimiento sin recargar. */
 export const COOKIE_CONSENT_CLEARED_EVENT = "paraisoweb:cookie-consent-cleared";
 
+/** Clave efímera usada para avisar a otras pestañas de un cambio de consentimiento. */
+export const COOKIE_CONSENT_SYNC_STORAGE_KEY = "paraisoweb:cookie-consent-sync";
+
 /** Categorías de cookies opcionales que deben revocarse. */
 export interface CookieCategoriesToRevoke {
   analysis?: boolean;
@@ -84,17 +87,36 @@ export const revokeCookieCategories = ({
   }
 };
 
+/** Avisa a las demás pestañas sin guardar la preferencia en localStorage. */
+const notifyCookieConsentChanged = (): void => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(
+      COOKIE_CONSENT_SYNC_STORAGE_KEY,
+      `${Date.now()}:${Math.random()}`
+    );
+    window.localStorage.removeItem(COOKIE_CONSENT_SYNC_STORAGE_KEY);
+  } catch {
+    // El consentimiento sigue guardado en cookie aunque el almacenamiento esté bloqueado.
+  }
+};
+
 /**
  * Guarda la elección de consentimiento durante un año.
  * El valor incluye una versión para poder invalidarlo si cambia la política.
  */
 export const saveCookieConsentPreference = (preference: string): void => {
   setClientCookie(COOKIE_CONSENT_NAME, preference, 31536000);
+  notifyCookieConsentChanged();
 };
 
 /** Elimina la elección guardada para que el modal pueda volver a solicitarla. */
 export const clearCookieConsentPreference = (): void => {
   expireCookie(COOKIE_CONSENT_NAME);
+  notifyCookieConsentChanged();
   if (typeof window !== "undefined") {
     window.dispatchEvent(new Event(COOKIE_CONSENT_CLEARED_EVENT));
   }

@@ -106,6 +106,7 @@ test("blog y charcutería validan las rutas de imagen antes de renderizarlas", a
   ]);
 
   assert.match(blogService, /isSafePublicAssetPath\(post\.imagen_url\)/);
-  assert.match(blogService, /isSafePublicAssetPath\(post\.imagen_url_2\)/);
+  assert.match(blogService, /isOptionalPublicAssetPath\(post\.imagen_url_2\)/);
+  assert.match(blogService, /isSafePublicAssetPath\(value\)/);
   assert.match(charcuteriaService, /isSafePublicAssetPath\(product\.imagen_url\)/);
 });

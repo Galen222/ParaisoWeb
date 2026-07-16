@@ -14,7 +14,9 @@ test("charcutería omite filas inválidas sin perder las válidas y elimina dupl
   const source = await readFile(new URL("../src/services/charcuteriaService.ts", import.meta.url), "utf8");
   assert.match(source, /const validProducts = response\.data\.filter/);
   assert.match(source, /Se omitieron \$\{discardedProducts\} productos/);
-  assert.match(source, /new Map\(validProducts\.map\(\(product\) => \[product\.id_producto, product\]\)\)/);
+  assert.match(source, /const seenProductIds = new Set<number>\(\)/);
+  assert.match(source, /seenProductIds\.has\(product\.id_producto\)/);
+  assert.match(source, /productos de charcutería duplicados/);
 });
 
 test("el sitemap tolera entradas parciales y conserva una traducción única por idioma", async () => {

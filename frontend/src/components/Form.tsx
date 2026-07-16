@@ -189,6 +189,13 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
         showToast("contacto_ArchivoNoJPG-PDF", 4000, "error");
         return;
       }
+      // Un adjunto vacío nunca puede superar la validación de contenido del backend.
+      // Rechazarlo aquí evita solicitar un token y subir un cuerpo que terminaría en 400.
+      if (file.size === 0) {
+        clearSelectedFile();
+        showToast("contacto_ArchivoNoJPG-PDF", 4000, "error");
+        return;
+      }
       if (file.size > 10485760) {
         clearSelectedFile();
         showToast("contacto_ArchivoGrande", 4000, "error");
