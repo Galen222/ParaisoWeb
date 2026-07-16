@@ -192,3 +192,51 @@ test("el título alemán de Arenal conserva el número romano IV", async () => {
 
   assert.equal(messages.arenal_Titulo, "Willkommen in Paraíso Del Jamón IV");
 });
+
+test("los errores temporales del artículo no publican canonical ni og:url", async () => {
+  const [app, articlePage] = await Promise.all([
+    readFile(new URL("../src/pages/_app.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/pages/blog/[slug].tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(
+    app,
+    /const isBlogContentError = router\.pathname === "\/blog\/\[slug\]" && Boolean\(pageProps\.error\)/
+  );
+  assert.match(app, /const seoPath = isErrorPage \? undefined : router\.asPath/);
+  assert.match(articlePage, /url: error \? undefined : currentUrl/);
+});
+
+test("las cuatro sucursales mantienen su identidad exacta en la interfaz", async () => {
+  const [map, ...localeSources] = await Promise.all([
+    readFile(new URL("../src/components/Map.tsx", import.meta.url), "utf8"),
+    ...["es", "en", "de"].map((locale) =>
+      readFile(new URL(`../src/locales/${locale}/common.json`, import.meta.url), "utf8")
+    ),
+  ]);
+
+  for (const roman of ["I", "II", "III", "IV"]) {
+    assert.match(map, new RegExp(`name: "Paraíso Del Jamón ${roman}"`));
+    for (const localeSource of localeSources) {
+      assert.match(localeSource, new RegExp(`Paraíso Del Jamón ${roman}`));
+      assert.doesNotMatch(localeSource, new RegExp(`Paraíso del Jamón ${roman}`));
+    }
+  }
+});
+test("la política de cookies enlaza a la ayuda oficial HTTPS de Safari", async () => {
+  const expectedUrls = {
+    es: "https://support.apple.com/es-es/guide/safari/sfri11471/mac",
+    en: "https://support.apple.com/en-us/guide/safari/sfri11471/mac",
+    de: "https://support.apple.com/de-de/guide/safari/sfri11471/mac",
+  };
+
+  for (const [locale, expectedUrl] of Object.entries(expectedUrls)) {
+    const messages = JSON.parse(
+      await readFile(new URL(`../src/locales/${locale}/common.json`, import.meta.url), "utf8")
+    );
+    assert.equal(
+      messages.politicaCookies_Desactivacion_Texto3_Punto4_Enlace,
+      expectedUrl
+    );
+  }
+});

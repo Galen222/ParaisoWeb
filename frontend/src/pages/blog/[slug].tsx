@@ -157,7 +157,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
         openGraph={{
           title: previewTitle,
           description: previewContent,
-          url: currentUrl,
+          url: error ? undefined : currentUrl,
           images: blogDetails?.imagen_url
             ? [
                 {

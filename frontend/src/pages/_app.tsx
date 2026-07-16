@@ -60,7 +60,8 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
   const formattedLocale = useLocaleFormatted(appLocale);
 
   const currentMessages = messages[appLocale] || messages["es"];
-  const isErrorPage = router.pathname === "/404" || router.pathname === "/_error";
+  const isBlogContentError = router.pathname === "/blog/[slug]" && Boolean(pageProps.error);
+  const isErrorPage = router.pathname === "/404" || router.pathname === "/_error" || isBlogContentError;
   // Las páginas de error no representan una URL canónica ni traducciones equivalentes.
   // Publicar `/404` como canonical/hreflang asociaba cualquier URL inexistente a una
   // ruta técnica que tampoco debe indexarse.

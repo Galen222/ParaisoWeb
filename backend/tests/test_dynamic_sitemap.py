@@ -17,27 +17,38 @@ from backend.routers.sitemap import get_sitemap_blog_entries
 from backend.services.sitemap_service import SitemapService
 
 
-class _Result:
+class _ScalarResult:
     def __init__(self, rows: list[SimpleNamespace]):
         self._rows = rows
+
+    def scalars(self) -> "_ScalarResult":
+        return self
 
     def all(self) -> list[SimpleNamespace]:
         return self._rows
 
 
+def _blog_row(**overrides) -> SimpleNamespace:
+    values = {
+        "id_noticia": 7,
+        "idioma": "es",
+        "slug": "cafe\u0301-iberico",
+        "titulo": "Café ibérico",
+        "contenido": "Contenido público",
+        "autor": "Equipo editorial",
+        "imagen_url": "articulos/cafe-iberico.webp",
+        "imagen_url_2": None,
+        "fecha_publicacion": datetime(2026, 7, 15, 9, 0, 0),
+        "fecha_actualizacion": datetime(2026, 7, 15, 10, 0, 0),
+    }
+    values.update(overrides)
+    return SimpleNamespace(**values)
+
+
 class SitemapServiceTests(unittest.IsolatedAsyncioTestCase):
     async def test_devuelve_solo_los_campos_publicos_necesarios(self) -> None:
         db = AsyncMock()
-        db.execute.return_value = _Result(
-            [
-                SimpleNamespace(
-                    id_noticia=7,
-                    idioma="es",
-                    slug="cafe\u0301-iberico",
-                    lastmod=datetime(2026, 7, 15, 10, 0, 0),
-                )
-            ]
-        )
+        db.execute.return_value = _ScalarResult([_blog_row()])
 
         entries = await SitemapService(db).get_blog_entries()
 
@@ -48,40 +59,15 @@ class SitemapServiceTests(unittest.IsolatedAsyncioTestCase):
             {"id_noticia", "idioma", "slug", "lastmod"},
         )
 
-    async def test_omite_filas_con_slug_o_fecha_no_validos(self) -> None:
+    async def test_omite_articulos_que_la_api_publica_tampoco_puede_servir(self) -> None:
         db = AsyncMock()
-        db.execute.return_value = _Result(
+        db.execute.return_value = _ScalarResult(
             [
-                SimpleNamespace(
-                    id_noticia=1,
-                    idioma="es",
-                    slug="slug con espacios",
-                    lastmod=datetime(2026, 1, 1),
-                ),
-                SimpleNamespace(
-                    id_noticia=2,
-                    idioma="en",
-                    slug="valid-slug",
-                    lastmod=None,
-                ),
-                SimpleNamespace(
-                    id_noticia=0,
-                    idioma="de",
-                    slug="invalid-id",
-                    lastmod=datetime(2026, 1, 1),
-                ),
-                SimpleNamespace(
-                    id_noticia="3",
-                    idioma="es",
-                    slug=None,
-                    lastmod=datetime(2026, 1, 1),
-                ),
-                SimpleNamespace(
-                    id_noticia=4,
-                    idioma="fr",
-                    slug="unsupported-language",
-                    lastmod=datetime(2026, 1, 1),
-                ),
+                _blog_row(id_noticia=1, slug="slug con espacios"),
+                _blog_row(id_noticia=2, titulo="   "),
+                _blog_row(id_noticia=3, imagen_url="../privado.webp"),
+                _blog_row(id_noticia=4, fecha_publicacion=None, fecha_actualizacion=None),
+                _blog_row(id_noticia=5, idioma="fr"),
             ]
         )
 
