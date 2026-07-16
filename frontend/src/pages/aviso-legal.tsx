@@ -127,13 +127,15 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
         <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Obligaciones_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1" })}</p>
         <ul className={styles.listas}>
-          <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto1" })}</li>
-          <ul className={styles.listas2}>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto1_1" })}</li>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto1_2" })}</li>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto1_3" })}</li>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto1_4" })}</li>
-          </ul>
+          <li>
+            {intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto1" })}
+            <ul className={styles.listas2}>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto1_1" })}</li>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto1_2" })}</li>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto1_3" })}</li>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto1_4" })}</li>
+            </ul>
+          </li>
           <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto2" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1_Punto3" })}</li>
         </ul>
@@ -147,18 +149,20 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
           <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto6" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto7" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto8" })}</li>
-          <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9" })}</li>
-          <ul className={styles.listas2}>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_1" })}</li>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_2" })}</li>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_3" })}</li>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_4" })}</li>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_5" })}</li>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_6" })}</li>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_7" })}</li>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_8" })}</li>
-            <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_9" })}</li>
-          </ul>
+          <li>
+            {intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9" })}
+            <ul className={styles.listas2}>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_1" })}</li>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_2" })}</li>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_3" })}</li>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_4" })}</li>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_5" })}</li>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_6" })}</li>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_7" })}</li>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_8" })}</li>
+              <li>{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto2_Punto9_9" })}</li>
+            </ul>
+          </li>
         </ul>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto3" })}</p>
       </div>

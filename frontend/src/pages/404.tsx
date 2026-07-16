@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { NextPage } from "next";
+import { NextSeo } from "next-seo";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
@@ -19,7 +20,9 @@ const Custom404Page: NextPage = () => {
   const imageError = "/images/web/404.png"; // Ruta de la imagen de error 404
 
   return (
-    <div className="pageContainer">
+    <>
+      <NextSeo noindex nofollow />
+      <div className="pageContainer">
       {/* Título que muestra el código de estado HTTP */}
       {/* Mensaje de error internacionalizado */}
       <h1 className="text-center">{message}</h1> {/* Muestra el mensaje de error */}
@@ -27,7 +30,8 @@ const Custom404Page: NextPage = () => {
       <div className={styles.imageContainer}>
         <img src={imageError} alt="Error 404" /> {/* Muestra la imagen de error 404 */}
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

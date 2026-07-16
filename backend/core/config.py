@@ -22,6 +22,9 @@ from pathlib import Path
 from typing import Literal
 from urllib.parse import urlsplit
 
+from sqlalchemy.engine import make_url
+from sqlalchemy.exc import ArgumentError
+
 
 class Settings(BaseSettings):
     """
@@ -140,6 +143,27 @@ class Settings(BaseSettings):
         if not value.strip():
             raise ValueError("SMTP_PASSWORD no puede estar vacía")
         return value
+
+
+    @field_validator("DATABASE_URL")
+    @classmethod
+    def validate_database_url(cls, value: str) -> str:
+        """Exige la URL asíncrona que utiliza el motor y una base de datos concreta."""
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("DATABASE_URL no puede estar vacía")
+
+        try:
+            parsed = make_url(normalized)
+        except (ArgumentError, TypeError, ValueError) as error:
+            raise ValueError("DATABASE_URL no contiene una URL de conexión válida") from error
+
+        if parsed.drivername != "mysql+aiomysql":
+            raise ValueError("DATABASE_URL debe usar el driver asíncrono mysql+aiomysql")
+        if not parsed.database:
+            raise ValueError("DATABASE_URL debe incluir el nombre de la base de datos")
+
+        return normalized
 
     @field_validator("secret_key")
     @classmethod

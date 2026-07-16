@@ -89,6 +89,35 @@ class EnvironmentExampleTests(unittest.TestCase):
         self.assertFalse(Settings(**common).DATABASE_ECHO_SQL)
         self.assertTrue(Settings(**common, DATABASE_ECHO_SQL=True).DATABASE_ECHO_SQL)
 
+
+    def test_database_url_rechaza_valores_vacios_drivers_sincronos_y_base_ausente(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        invalid_urls = (
+            "",
+            "   ",
+            "mysql://u:p@127.0.0.1/db",
+            "mysql+pymysql://u:p@127.0.0.1/db",
+            "mysql+aiomysql://u:p@127.0.0.1",
+        )
+        for invalid_url in invalid_urls:
+            with self.subTest(database_url=repr(invalid_url)), self.assertRaises(ValidationError):
+                Settings(**common, DATABASE_URL=invalid_url)
+
+        configured = Settings(
+            **common,
+            DATABASE_URL="  mysql+aiomysql://u:p@127.0.0.1/db  ",
+        )
+        self.assertEqual(configured.DATABASE_URL, "mysql+aiomysql://u:p@127.0.0.1/db")
+
     def test_secret_key_rechaza_valores_cortos_y_recorta_espacios(self) -> None:
         common = {
             "_env_file": None,

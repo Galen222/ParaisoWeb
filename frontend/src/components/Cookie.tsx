@@ -123,10 +123,15 @@ const Cookie: React.FC<CookieProps> = ({
     const previouslyFocusedElement = document.activeElement instanceof HTMLElement
       ? document.activeElement
       : null;
+    const previousBodyOverflow = document.body.style.overflow;
 
+    // Un diálogo modal no debe permitir que la rueda o el gesto táctil desplacen
+    // el contenido que permanece oculto detrás del fondo semitransparente.
+    document.body.style.overflow = "hidden";
     dialogRef.current?.focus({ preventScroll: true });
 
     return () => {
+      document.body.style.overflow = previousBodyOverflow;
       if (previouslyFocusedElement?.isConnected) {
         previouslyFocusedElement.focus({ preventScroll: true });
       }

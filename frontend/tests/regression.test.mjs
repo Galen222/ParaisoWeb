@@ -334,3 +334,91 @@ test("un tipo de carrusel desconocido no ejecuta undefined.map", async () => {
   assert.match(carousel, /if \(!slides \|\| slides\.length === 0\)/);
   assert.match(carousel, /console\.error\([\s\S]*`Carrusel no disponible:/);
 });
+
+test("el aviso legal anida las listas secundarias dentro de su elemento de lista", async () => {
+  const legalNotice = await readFile(
+    new URL("../src/pages/aviso-legal.tsx", import.meta.url),
+    "utf8"
+  );
+
+  assert.doesNotMatch(
+    legalNotice,
+    /<\/li>\s*<ul className=\{styles\.listas2\}>/
+  );
+  assert.match(
+    legalNotice,
+    /avisoLegal_Obligaciones_Texto1_Punto1[\s\S]*?<ul className=\{styles\.listas2\}>[\s\S]*?<\/ul>\s*<\/li>/
+  );
+  assert.match(
+    legalNotice,
+    /avisoLegal_Obligaciones_Texto2_Punto9[\s\S]*?<ul className=\{styles\.listas2\}>[\s\S]*?<\/ul>\s*<\/li>/
+  );
+});
+
+test("el modal de cookies bloquea el fondo y muestra el foco de sus interruptores", async () => {
+  const [cookie, cookieStyles] = await Promise.all([
+    readFile(new URL("../src/components/Cookie.tsx", import.meta.url), "utf8"),
+    readFile(
+      new URL("../src/styles/components/Cookie.module.css", import.meta.url),
+      "utf8"
+    ),
+  ]);
+
+  assert.match(cookie, /const previousBodyOverflow = document\.body\.style\.overflow/);
+  assert.match(cookie, /document\.body\.style\.overflow = "hidden"/);
+  assert.match(cookie, /document\.body\.style\.overflow = previousBodyOverflow/);
+  assert.match(cookieStyles, /input:focus-visible \+ \.slider/);
+  assert.match(cookieStyles, /\.hiddenCheckbox \{[\s\S]*?width: 1px;[\s\S]*?height: 1px;/);
+  assert.doesNotMatch(cookieStyles, /\.hiddenCheckbox \{[\s\S]*?width: 0;/);
+});
+
+test("las cabeceras de la tabla de cookies están traducidas y tienen alcance semántico", async () => {
+  const cookiePolicy = await readFile(
+    new URL("../src/pages/politica-cookies.tsx", import.meta.url),
+    "utf8"
+  );
+  const requiredKeys = [
+    "politicaCookies_Utilizadas_CabeceraNombre",
+    "politicaCookies_Utilizadas_CabeceraTitular",
+    "politicaCookies_Utilizadas_CabeceraFinalidad",
+    "politicaCookies_Utilizadas_CabeceraDuracion",
+  ];
+
+  assert.match(cookiePolicy, /<th scope="row">/);
+  assert.match(cookiePolicy, /<th scope="col">/);
+  assert.doesNotMatch(cookiePolicy, /<t[dh]>Nombre<\/t[dh]>/);
+  assert.doesNotMatch(cookiePolicy, /<t[dh]>Titular<\/t[dh]>/);
+  assert.doesNotMatch(cookiePolicy, /<t[dh]>Finalidad<\/t[dh]>/);
+  assert.doesNotMatch(cookiePolicy, /<t[dh]>Duración<\/t[dh]>/);
+
+  for (const locale of ["es", "en", "de"]) {
+    const messages = JSON.parse(
+      await readFile(new URL(`../src/locales/${locale}/common.json`, import.meta.url), "utf8")
+    );
+    for (const key of requiredKeys) assert.equal(typeof messages[key], "string");
+  }
+});
+
+test("las páginas de error y el error temporal del blog no son indexables", async () => {
+  const [errorPage, notFoundPage, blogDetail] = await Promise.all([
+    readFile(new URL("../src/pages/_error.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/pages/404.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/pages/blog/[slug].tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(errorPage, /<NextSeo noindex nofollow \/>/);
+  assert.match(notFoundPage, /<NextSeo noindex nofollow \/>/);
+  assert.match(blogDetail, /noindex=\{Boolean\(error\)\}/);
+  assert.match(blogDetail, /nofollow=\{Boolean\(error\)\}/);
+});
+
+test("la firma PDF puede aparecer dentro de los primeros 1024 bytes", async () => {
+  const { hasPdfSignature } = await loadTypeScriptModule(
+    "../src/utils/pdfSignature.ts"
+  );
+
+  assert.equal(await hasPdfSignature(new Blob(["%PDF-1.7"])), true);
+  assert.equal(await hasPdfSignature(new Blob(["comentario previo\n%PDF-1.7"])), true);
+  assert.equal(await hasPdfSignature(new Blob(["x".repeat(1020), "%PDF-1.7"])), false);
+  assert.equal(await hasPdfSignature(new Blob(["contenido HTML"])), false);
+});

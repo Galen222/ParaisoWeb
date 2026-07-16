@@ -151,6 +151,8 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
         {...getSEOConfig(currentLocale, currentMessages)}
         title={previewTitle}
         description={previewContent}
+        noindex={Boolean(error)}
+        nofollow={Boolean(error)}
         openGraph={{
           title: previewTitle,
           description: previewContent,

@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { NextPage, NextPageContext } from "next";
+import { NextSeo } from "next-seo";
 import { useIntl } from "react-intl"; // Hook para internacionalización
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking"; // Hook personalizado para seguimiento de visitas
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA"; // Hook personalizado para seguimiento con Google Analytics
@@ -67,7 +68,9 @@ const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }: ErrorPageProps): Re
   const imageError = "/images/web/error.png"; // Ruta de la imagen de error
 
   return (
-    <div className="pageContainer">
+    <>
+      <NextSeo noindex nofollow />
+      <div className="pageContainer">
       {/* Título que muestra el código de estado HTTP */}
       <h1>{statusCode}</h1>
       {/* Mensaje de error internacionalizado */}
@@ -76,7 +79,8 @@ const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }: ErrorPageProps): Re
       <div className={styles.imageContainer}>
         <img src={imageError} alt={`Error ${statusCode}`} />
       </div>
-    </div>
+      </div>
+    </>
   );
 };
 

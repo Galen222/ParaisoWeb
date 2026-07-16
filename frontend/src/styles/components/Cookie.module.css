@@ -50,12 +50,15 @@
 /* Checkbox oculto para accesibilidad */
 .hiddenCheckbox {
   position: absolute; /* Posiciona de manera absoluta */
-  opacity: 0; /* Hace el checkbox completamente transparente */
-  width: 0; /* Ancho de 0 para ocultarlo */
-  height: 0; /* Altura de 0 para ocultarlo */
-  margin: 0; /* Elimina márgenes */
+  width: 1px; /* Mantiene el control enfocable sin ocupar espacio visible */
+  height: 1px; /* Mantiene el control enfocable sin ocupar espacio visible */
+  margin: -1px; /* Retira el píxel del flujo visual */
   padding: 0; /* Elimina padding */
-  border: none; /* Elimina el borde */
+  overflow: hidden; /* Oculta el control nativo */
+  clip: rect(0 0 0 0); /* Compatibilidad con navegadores anteriores */
+  clip-path: inset(50%); /* Oculta visualmente sin eliminarlo del árbol accesible */
+  white-space: nowrap; /* Evita que el control genere dimensiones inesperadas */
+  border: 0; /* Elimina el borde */
 }
 
 /* Estilo para el deslizador (slider) del interruptor */
@@ -92,6 +95,12 @@ input:checked + .slider {
 /* Transformación de la bola cuando el checkbox está marcado */
 input:checked + .slider:before {
   transform: translateX(20px); /* Mueve la bola 20 píxeles a la derecha */
+}
+
+/* El foco del checkbox oculto debe quedar visible sobre su interruptor asociado. */
+input:focus-visible + .slider {
+  outline: 3px solid Highlight;
+  outline-offset: 3px;
 }
 
 /* Contenedor para los botones de aceptación y cancelación */

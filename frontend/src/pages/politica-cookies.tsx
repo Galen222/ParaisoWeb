@@ -128,19 +128,27 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
         {Array.from({ length: 4 }, (_, i) => (
           <React.Fragment key={i}>
             <tr>
-              <td>Nombre</td>
+              <th scope="row">
+                {intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraNombre" })}
+              </th>
               <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Nombre${i + 1}` })}</td>
             </tr>
             <tr>
-              <td>Titular</td>
+              <th scope="row">
+                {intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraTitular" })}
+              </th>
               <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Titular${i + 1}` })}</td>
             </tr>
             <tr>
-              <td>Finalidad</td>
+              <th scope="row">
+                {intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraFinalidad" })}
+              </th>
               <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Finalidad${i + 1}` })}</td>
             </tr>
             <tr>
-              <td>Duración</td>
+              <th scope="row">
+                {intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraDuracion" })}
+              </th>
               <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Duracion${i + 1}` })}</td>
             </tr>
             {i < 3 && ( // Condición para no mostrar el separador en el último grupo
@@ -161,10 +169,10 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
     <table className="table table-dark table-striped-columns rounded-3 overflow-hidden">
       <thead>
         <tr>
-          <th>Nombre</th>
-          <th>Titular</th>
-          <th>Finalidad</th>
-          <th>Duración</th>
+          <th scope="col">{intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraNombre" })}</th>
+          <th scope="col">{intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraTitular" })}</th>
+          <th scope="col">{intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraFinalidad" })}</th>
+          <th scope="col">{intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraDuracion" })}</th>
         </tr>
       </thead>
       <tbody className="table-group-divider">

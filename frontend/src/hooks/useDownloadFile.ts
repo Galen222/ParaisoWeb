@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { saveAs } from "file-saver";
 import { useToastMessage } from "./useToast";
 import { DOWNLOAD_REQUEST_TIMEOUT_MS } from "../config/api.config";
+import { hasPdfSignature } from "../utils/pdfSignature";
 
 /**
  * Interfaz para el objeto retornado por el hook `useDownloadFile`.
@@ -13,14 +14,6 @@ export interface DownloadFileHook {
   isDownloading: boolean;
 }
 
-const PDF_SIGNATURE = "%PDF-";
-
-/** Comprueba la firma real de un PDF sin confiar únicamente en la extensión o el MIME. */
-const hasPdfSignature = async (blob: Blob): Promise<boolean> => {
-  const signatureBytes = new Uint8Array(await blob.slice(0, PDF_SIGNATURE.length).arrayBuffer());
-  const signature = String.fromCharCode(...signatureBytes);
-  return signature === PDF_SIGNATURE;
-};
 
 /**
  * Hook personalizado para gestionar la descarga de archivos.
