@@ -140,14 +140,25 @@ export const getBlogPosts = async (
       token,
       signal
     );
-    if (
-      !Array.isArray(response.data) ||
-      !response.data.every((post) => isBlogPost(post, { idioma: validatedLanguage }))
-    ) {
+    if (!Array.isArray(response.data)) {
       throw new Error("La respuesta del servidor para el listado del blog no tiene el formato esperado.");
     }
 
-    return response.data.map((post) => ({
+    const validPosts = response.data.filter((post) =>
+      isBlogPost(post, { idioma: validatedLanguage })
+    );
+    const discardedPosts = response.data.length - validPosts.length;
+    if (discardedPosts > 0) {
+      console.error(`Se omitieron ${discardedPosts} artículos de blog con datos no válidos.`);
+    }
+
+    // Una respuesta repetida no debe duplicar tarjetas ni claves React. Se conserva
+    // la primera aparición porque la API ya entrega el orden editorial esperado.
+    const uniquePosts = Array.from(
+      new Map(validPosts.map((post) => [post.id_noticia, post])).values()
+    );
+
+    return uniquePosts.map((post) => ({
       ...post,
       slug: normalizeBlogSlug(post.slug) as string,
     }));

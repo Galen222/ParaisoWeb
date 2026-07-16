@@ -115,15 +115,34 @@ export const getSitemapBlogEntries = async (): Promise<SitemapBlogEntry[]> => {
     }
 
     const data: unknown = await response.json();
-    if (!Array.isArray(data) || !data.every(isSitemapBlogEntry)) {
+    if (!Array.isArray(data)) {
       throw new Error("La API del sitemap devolvió un formato no válido.");
     }
 
-    return data.map((entry) => ({
+    const validEntries = data.filter(isSitemapBlogEntry);
+    const discardedEntries = data.length - validEntries.length;
+    if (discardedEntries > 0) {
+      console.error(`Se omitieron ${discardedEntries} entradas no válidas del sitemap.`);
+    }
+
+    const normalizedEntries = validEntries.map((entry) => ({
       ...entry,
       slug: normalizeBlogSlug(entry.slug) as string,
       lastmod: new Date(normalizeApiDateValue(entry.lastmod)).toISOString(),
     }));
+
+    // Cada artículo solo puede aportar una URL por idioma. Si llega repetida, se
+    // conserva la actualización más reciente para evitar alternates duplicados.
+    const uniqueEntries = new Map<string, SitemapBlogEntry>();
+    for (const entry of normalizedEntries) {
+      const key = `${entry.id_noticia}:${entry.idioma}`;
+      const current = uniqueEntries.get(key);
+      if (!current || entry.lastmod > current.lastmod) {
+        uniqueEntries.set(key, entry);
+      }
+    }
+
+    return Array.from(uniqueEntries.values());
   } finally {
     clearTimeout(timeoutId);
   }

@@ -40,6 +40,18 @@ class ContactForm(BaseModel):
         """Elimina espacios exteriores y normaliza Unicode antes de validar el nombre."""
         return unicodedata.normalize("NFC", v.strip()) if isinstance(v, str) else v
 
+    @field_validator('email', mode='before')
+    @classmethod
+    def strip_email(cls, v: str) -> str:
+        """Elimina espacios exteriores antes de aplicar la validación EmailStr."""
+        return v.strip() if isinstance(v, str) else v
+
+    @field_validator('reason', mode='before')
+    @classmethod
+    def strip_reason(cls, v: str) -> str:
+        """Normaliza espacios accidentales sin alterar los valores permitidos."""
+        return v.strip() if isinstance(v, str) else v
+
     @field_validator('name')
     @classmethod
     def validate_name(cls, v: str) -> str:

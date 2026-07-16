@@ -88,14 +88,22 @@ export const getCharcuteriaProducts = async (
       signal
     );
 
-    if (
-      !Array.isArray(response.data) ||
-      !response.data.every((product) => isCharcuteriaProduct(product, idioma))
-    ) {
+    if (!Array.isArray(response.data)) {
       throw new Error("La respuesta del servidor para charcutería no tiene el formato esperado.");
     }
 
-    return response.data;
+    const validProducts = response.data.filter((product) =>
+      isCharcuteriaProduct(product, idioma)
+    );
+    const discardedProducts = response.data.length - validProducts.length;
+    if (discardedProducts > 0) {
+      console.error(`Se omitieron ${discardedProducts} productos de charcutería con datos no válidos.`);
+    }
+
+    // Evita tarjetas repetidas si un proxy o una consulta defectuosa duplica una fila.
+    return Array.from(
+      new Map(validProducts.map((product) => [product.id_producto, product])).values()
+    );
   } catch (error) {
     /* // console.error("Error recibiendo los productos de charcuteria:", error); */
     throw error;
