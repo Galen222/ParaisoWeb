@@ -472,3 +472,58 @@ test("la política explica que rechazar cookies se recuerda durante un año", as
     for (const fragment of fragments) assert.match(explanation, new RegExp(fragment));
   }
 });
+
+test("la fase 8 redirige un slug existente en otro idioma a su traducción canónica", async () => {
+  const [blogLoader, localeFallback] = await Promise.all([
+    readFile(new URL("../src/services/blogLoader.ts", import.meta.url), "utf8"),
+    loadTypeScriptModule("../src/utils/blogLocaleFallback.ts"),
+  ]);
+
+  assert.deepEqual(localeFallback.getBlogFallbackLocales("en"), ["es", "de"]);
+  assert.equal(localeFallback.isSupportedBlogLocale("fr"), false);
+  assert.match(blogLoader, /getBlogFallbackLocales\(locale\)/);
+  assert.match(blogLoader, /error\.response\?\.status === 404/);
+  assert.match(blogLoader, /getBlogPostById\(blogDetails\.id_noticia, locale, token\)/);
+  assert.match(blogLoader, /destination: buildLocalizedBlogPath\(locale, normalizedTranslatedSlug\)/);
+});
+
+test("Google Analytics ignora el identificador público de ejemplo y formatos inválidos", async () => {
+  const { normalizeGoogleAnalyticsId } = await loadTypeScriptModule(
+    "../src/utils/googleAnalyticsId.ts"
+  );
+
+  assert.equal(normalizeGoogleAnalyticsId(undefined), null);
+  assert.equal(normalizeGoogleAnalyticsId("G-XXXXXXXXXX"), null);
+  assert.equal(normalizeGoogleAnalyticsId("UA-123456-1"), null);
+  assert.equal(normalizeGoogleAnalyticsId("  g-ab12cd34ef  "), "G-AB12CD34EF");
+});
+
+test("el endpoint interno del sitemap solo acepta direcciones loopback", async () => {
+  const { requireLoopbackSitemapApiUrl } = await loadTypeScriptModule(
+    "../src/utils/sitemapApiUrl.ts"
+  );
+
+  assert.equal(
+    requireLoopbackSitemapApiUrl("http://127.0.0.1:8000/api/sitemap/blog"),
+    "http://127.0.0.1:8000/api/sitemap/blog"
+  );
+  assert.equal(
+    requireLoopbackSitemapApiUrl("http://[::1]:8000/api/sitemap/blog"),
+    "http://[::1]:8000/api/sitemap/blog"
+  );
+  assert.throws(
+    () => requireLoopbackSitemapApiUrl("https://api.example.com/api/sitemap/blog"),
+    /loopback local/
+  );
+});
+
+test("el enlace alemán de ayuda de Firefox no queda truncado", async () => {
+  const messages = JSON.parse(
+    await readFile(new URL("../src/locales/de/common.json", import.meta.url), "utf8")
+  );
+
+  assert.equal(
+    messages.politicaCookies_Desactivacion_Texto3_Punto2_Enlace,
+    "https://support.mozilla.org/de/kb/cookies-und-website-daten-in-firefox-loschen"
+  );
+});

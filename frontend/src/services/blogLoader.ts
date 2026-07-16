@@ -5,8 +5,7 @@ import { getBlogPostBySlug, getBlogPostById, BlogPost } from "../services/blogSe
 import { getTimedToken } from "../services/tokenService";
 import { normalizeBlogSlug } from "../utils/blogSlug";
 import { buildLocalizedBlogPath } from "../utils/blogPath";
-
-const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+import { getBlogFallbackLocales, isSupportedBlogLocale } from "../utils/blogLocaleFallback";
 
 interface BlogDataResult {
   redirect?: { destination: string; permanent: boolean };
@@ -49,7 +48,7 @@ const getErrorMessageForLog = (error: unknown): string => {
 export async function loadBlogData(slug: string, locale: string): Promise<BlogDataResult> {
   // Evita solicitar la API con parámetros que no pueden corresponder a una ruta válida.
   const normalizedSlug = normalizeBlogSlug(slug);
-  if (normalizedSlug === null || !SUPPORTED_LOCALES.has(locale)) {
+  if (normalizedSlug === null || !isSupportedBlogLocale(locale)) {
     return {
       blogDetails: null,
       error: null,
@@ -59,9 +58,43 @@ export async function loadBlogData(slug: string, locale: string): Promise<BlogDa
 
   try {
     const token = await getTimedToken();
-    const blogDetails = await getBlogPostBySlug(normalizedSlug, token, locale);
+    let blogDetails: BlogPost | null = null;
 
-    // Si el idioma del blog no coincide con el idioma actual, se busca su traducción equivalente.
+    try {
+      blogDetails = await getBlogPostBySlug(normalizedSlug, token, locale);
+    } catch (error: unknown) {
+      if (!(axios.isAxiosError(error) && error.response?.status === 404)) {
+        throw error;
+      }
+    }
+
+    // Un enlace guardado o compartido puede conservar el slug de otro idioma. Si el
+    // artículo no existe con el locale actual, se localiza su noticia equivalente y
+    // se redirige a la URL canónica traducida en vez de devolver un 404 falso.
+    if (blogDetails === null) {
+      const fallbackLocales = getBlogFallbackLocales(locale);
+
+      for (const fallbackLocale of fallbackLocales) {
+        try {
+          blogDetails = await getBlogPostBySlug(normalizedSlug, token, fallbackLocale);
+          break;
+        } catch (error: unknown) {
+          if (!(axios.isAxiosError(error) && error.response?.status === 404)) {
+            throw error;
+          }
+        }
+      }
+    }
+
+    if (blogDetails === null) {
+      return {
+        blogDetails: null,
+        error: null,
+        notFound: true,
+      };
+    }
+
+    // Si el slug encontrado pertenece a otro idioma, se busca su traducción equivalente.
     if (blogDetails.idioma !== locale) {
       const translatedBlogPost = await getBlogPostById(blogDetails.id_noticia, locale, token);
 

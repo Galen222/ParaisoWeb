@@ -77,7 +77,7 @@ class EnvironmentExampleTests(unittest.TestCase):
     def test_el_log_sql_esta_desactivado_por_defecto_y_puede_activarse(self) -> None:
         common = {
             "_env_file": None,
-            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_SERVER": "smtp.test.local",
             "SMTP_PORT": 587,
             "SMTP_USERNAME": "tests@example.com",
             "SMTP_PASSWORD": "secret",
@@ -93,7 +93,7 @@ class EnvironmentExampleTests(unittest.TestCase):
     def test_database_url_rechaza_valores_vacios_drivers_sincronos_y_base_ausente(self) -> None:
         common = {
             "_env_file": None,
-            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_SERVER": "smtp.test.local",
             "SMTP_PORT": 587,
             "SMTP_USERNAME": "tests@example.com",
             "SMTP_PASSWORD": "secret",
@@ -121,7 +121,7 @@ class EnvironmentExampleTests(unittest.TestCase):
     def test_secret_key_rechaza_valores_cortos_y_recorta_espacios(self) -> None:
         common = {
             "_env_file": None,
-            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_SERVER": "smtp.test.local",
             "SMTP_PORT": 587,
             "SMTP_USERNAME": "tests@example.com",
             "SMTP_PASSWORD": "secret",
@@ -144,7 +144,7 @@ class EnvironmentExampleTests(unittest.TestCase):
     def test_smtp_rechaza_puertos_fuera_del_rango_tcp(self) -> None:
         common = {
             "_env_file": None,
-            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_SERVER": "smtp.test.local",
             "SMTP_USERNAME": "tests@example.com",
             "SMTP_PASSWORD": "secret",
             "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
@@ -167,16 +167,16 @@ class EnvironmentExampleTests(unittest.TestCase):
         }
 
         with self.assertRaises(ValidationError):
-            Settings(**common, SMTP_SERVER="smtp.example.com\nmalicioso", SMTP_USERNAME="tests@example.com")
+            Settings(**common, SMTP_SERVER="smtp.test.local\nmalicioso", SMTP_USERNAME="tests@example.com")
         with self.assertRaises(ValidationError):
-            Settings(**common, SMTP_SERVER="smtp.example.com", SMTP_USERNAME="no-es-un-correo")
+            Settings(**common, SMTP_SERVER="smtp.test.local", SMTP_USERNAME="no-es-un-correo")
 
         configured = Settings(
             **common,
-            SMTP_SERVER="  smtp.example.com  ",
+            SMTP_SERVER="  smtp.test.local  ",
             SMTP_USERNAME="tests@example.com",
         )
-        self.assertEqual(configured.SMTP_SERVER, "smtp.example.com")
+        self.assertEqual(configured.SMTP_SERVER, "smtp.test.local")
         self.assertEqual(str(configured.SMTP_USERNAME), "tests@example.com")
 
     def test_smtp_rechaza_url_puerto_y_password_vacia(self) -> None:
@@ -189,7 +189,7 @@ class EnvironmentExampleTests(unittest.TestCase):
             "token_interval_seconds": 60,
         }
 
-        for invalid_host in ("https://smtp.example.com", "smtp.example.com:587"):
+        for invalid_host in ("https://smtp.test.local", "smtp.test.local:587"):
             with self.subTest(host=invalid_host), self.assertRaises(ValidationError):
                 Settings(
                     **common,
@@ -201,7 +201,7 @@ class EnvironmentExampleTests(unittest.TestCase):
             with self.subTest(password=repr(invalid_password)), self.assertRaises(ValidationError):
                 Settings(
                     **common,
-                    SMTP_SERVER="smtp.example.com",
+                    SMTP_SERVER="smtp.test.local",
                     SMTP_PASSWORD=invalid_password,
                 )
 
@@ -213,10 +213,50 @@ class EnvironmentExampleTests(unittest.TestCase):
         self.assertEqual(configured.SMTP_SERVER, "2001:db8::1")
         self.assertEqual(configured.SMTP_PASSWORD, " secret con espacios ")
 
+    def test_rechaza_valores_publicos_del_env_example_que_no_son_configuracion_real(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.test.local",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "DATABASE_URL": "mysql+aiomysql://tests:secret@127.0.0.1/db",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        invalid_overrides = (
+            {"SMTP_SERVER": "smtp.example.com"},
+            {"SMTP_USERNAME": "usuario@example.com"},
+            {"DATABASE_URL": "mysql+aiomysql://usuario:secret@127.0.0.1/db"},
+            {"DATABASE_URL": "mysql+aiomysql://tests:contrasena@127.0.0.1/db"},
+        )
+        for overrides in invalid_overrides:
+            with self.subTest(overrides=overrides), self.assertRaises(ValidationError):
+                Settings(**(common | overrides))
+
+    def test_tamano_multipart_no_puede_ser_inferior_al_adjunto_permitido(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.test.local",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "DATABASE_URL": "mysql+aiomysql://tests:secret@127.0.0.1/db",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        with self.assertRaises(ValidationError):
+            Settings(**common, CONTACT_MAX_REQUEST_BYTES=10 * 1024 * 1024)
+
+        configured = Settings(**common, CONTACT_MAX_REQUEST_BYTES=11 * 1024 * 1024)
+        self.assertEqual(configured.CONTACT_MAX_REQUEST_BYTES, 11 * 1024 * 1024)
+
     def test_cors_normaliza_barras_finales_y_elimina_duplicados(self) -> None:
         settings = Settings(
             _env_file=None,
-            SMTP_SERVER="smtp.example.com",
+            SMTP_SERVER="smtp.test.local",
             SMTP_PORT=587,
             SMTP_USERNAME="tests@example.com",
             SMTP_PASSWORD="secret",
@@ -236,7 +276,7 @@ class EnvironmentExampleTests(unittest.TestCase):
     def test_cors_rechaza_comodin_y_origen_con_ruta(self) -> None:
         common = {
             "_env_file": None,
-            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_SERVER": "smtp.test.local",
             "SMTP_PORT": 587,
             "SMTP_USERNAME": "tests@example.com",
             "SMTP_PASSWORD": "secret",
@@ -262,7 +302,7 @@ class EnvironmentExampleTests(unittest.TestCase):
     def test_trusted_proxy_ips_rechaza_hosts_y_normaliza_ipv4_mapeada(self) -> None:
         common = {
             "_env_file": None,
-            "SMTP_SERVER": "smtp.example.com",
+            "SMTP_SERVER": "smtp.test.local",
             "SMTP_PORT": 587,
             "SMTP_USERNAME": "tests@example.com",
             "SMTP_PASSWORD": "secret",

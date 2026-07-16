@@ -1,4 +1,5 @@
 import { requirePublicApiUrl } from "../config/api.config";
+import { requireLoopbackSitemapApiUrl } from "../utils/sitemapApiUrl";
 import { isValidApiDateString, normalizeApiDateValue } from "../utils/apiDate";
 import { normalizeBlogSlug } from "../utils/blogSlug";
 
@@ -17,7 +18,9 @@ export interface SitemapBlogEntry {
 }
 
 const getSitemapApiUrl = (): string =>
-  requirePublicApiUrl(process.env.SITEMAP_API_URL, "SITEMAP_API_URL");
+  requireLoopbackSitemapApiUrl(
+    requirePublicApiUrl(process.env.SITEMAP_API_URL, "SITEMAP_API_URL")
+  );
 
 const getTokenUrlForSitemap = (sitemapApiUrl: string): string =>
   new URL("../get-token", sitemapApiUrl).toString();

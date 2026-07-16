@@ -26,8 +26,13 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.exc import ArgumentError
 
 
+EXAMPLE_SMTP_SERVER = "smtp.example.com"
+EXAMPLE_SMTP_USERNAME = "usuario@example.com"
 EXAMPLE_SMTP_PASSWORD = "cambiar_por_secreto"
+EXAMPLE_DATABASE_USERNAME = "usuario"
+EXAMPLE_DATABASE_PASSWORD = "contrasena"
 EXAMPLE_SECRET_KEY = "cambiar_por_una_clave_aleatoria_de_32_caracteres_o_mas"
+MIN_CONTACT_REQUEST_BYTES = 11 * 1024 * 1024
 
 
 class Settings(BaseSettings):
@@ -88,7 +93,10 @@ class Settings(BaseSettings):
     CONTACT_RATE_LIMIT_WINDOW_SECONDS: int = Field(default=600, gt=0)
     TOKEN_RATE_LIMIT_REQUESTS: int = Field(default=120, gt=0)
     TOKEN_RATE_LIMIT_WINDOW_SECONDS: int = Field(default=60, gt=0)
-    CONTACT_MAX_REQUEST_BYTES: int = Field(default=11 * 1024 * 1024, gt=0)
+    CONTACT_MAX_REQUEST_BYTES: int = Field(
+        default=MIN_CONTACT_REQUEST_BYTES,
+        ge=MIN_CONTACT_REQUEST_BYTES,
+    )
     DATABASE_STARTUP_TIMEOUT_SECONDS: float = Field(default=10.0, gt=0)
     SMTP_TIMEOUT_SECONDS: float = Field(default=15.0, gt=0)
     SMTP_TLS_MODE: Literal["starttls", "tls", "none"] = "starttls"
@@ -108,6 +116,8 @@ class Settings(BaseSettings):
         normalized = value.strip()
         if not normalized or any(character.isspace() for character in normalized):
             raise ValueError("SMTP_SERVER debe contener un host sin espacios")
+        if normalized.lower().rstrip(".") == EXAMPLE_SMTP_SERVER:
+            raise ValueError("SMTP_SERVER debe sustituir el valor del archivo .env.example")
 
         # Las direcciones IP literales son válidas, incluidas IPv6. Para nombres DNS,
         # se rechazan esquemas, credenciales, puertos y etiquetas no válidas antes de
@@ -140,6 +150,14 @@ class Settings(BaseSettings):
 
         return f"{ascii_host}." if normalized.endswith(".") else ascii_host
 
+    @field_validator("SMTP_USERNAME")
+    @classmethod
+    def validate_smtp_username(cls, value: EmailStr) -> EmailStr:
+        """Evita arrancar con la cuenta pública usada únicamente como ejemplo."""
+        if str(value).lower() == EXAMPLE_SMTP_USERNAME:
+            raise ValueError("SMTP_USERNAME debe sustituir el valor del archivo .env.example")
+        return value
+
     @field_validator("SMTP_PASSWORD")
     @classmethod
     def validate_smtp_password(cls, value: str) -> str:
@@ -169,6 +187,8 @@ class Settings(BaseSettings):
             raise ValueError("DATABASE_URL debe usar el driver asíncrono mysql+aiomysql")
         if not parsed.database:
             raise ValueError("DATABASE_URL debe incluir el nombre de la base de datos")
+        if parsed.username == EXAMPLE_DATABASE_USERNAME or parsed.password == EXAMPLE_DATABASE_PASSWORD:
+            raise ValueError("DATABASE_URL debe sustituir las credenciales del archivo .env.example")
 
         return normalized
 

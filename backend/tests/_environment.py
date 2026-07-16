@@ -6,7 +6,7 @@ import os
 def configure_test_environment() -> None:
     """Define valores de prueba solo cuando la variable no existe en el entorno."""
     defaults = {
-        "SMTP_SERVER": "smtp.example.com",
+        "SMTP_SERVER": "smtp.test.local",
         "SMTP_PORT": "587",
         "SMTP_USERNAME": "tests@example.com",
         "SMTP_PASSWORD": "test-password",

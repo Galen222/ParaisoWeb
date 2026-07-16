@@ -1,6 +1,7 @@
 // utils/gaUtils.ts
 
 import ReactGA from "react-ga4";
+import { normalizeGoogleAnalyticsId } from "./googleAnalyticsId";
 
 /**
  * Variable que indica si Google Analytics está desactivado.
@@ -33,7 +34,9 @@ const setGADisabled = (analyticsId: string, disabled: boolean): void => {
  * Si la configuración no está disponible, registra el problema sin interrumpir la aplicación.
  */
 export const initGA = (): boolean => {
-  const analyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID;
+  const analyticsId = normalizeGoogleAnalyticsId(
+    process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
+  );
   if (!analyticsId) {
     initializedAnalyticsId = null;
     gaDisabled = true;
@@ -100,7 +103,9 @@ export const sendGAButtonClick = (usedButton: string): void => {
  */
 export const disableGA = async () => {
   if (!gaDisabled) {
-    const analyticsId = process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID || "";
+    const analyticsId = normalizeGoogleAnalyticsId(
+      process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID
+    );
     if (analyticsId) {
       setGADisabled(analyticsId, true);
       /* console.log(`GA desactivado`); */
