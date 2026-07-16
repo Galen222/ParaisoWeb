@@ -618,5 +618,14 @@
   "avisoLegal_Actualizacion_Titulo": "Actualización en el Aviso Legal",
   "avisoLegal_Actualizacion_Texto": "PACAVA S.A se reserva el derecho a modificar el presente Aviso Legal para adaptarlo a novedades legislativas o jurisprudenciales, así como a prácticas de la industria, por ello le recomendamos revisarlo cada vez que acceda a nuestro sitio web para estar adecuadamente informado.",
   "aviso-legal_SEO_Titulo": "Paraíso Del Jamón - Aviso Legal",
-  "aviso-legal_SEO_Descripcion": "Revisa el aviso legal de El Paraíso Del Jamón para conocer los términos de uso de nuestro sitio web y la protección de tus datos."
+  "aviso-legal_SEO_Descripcion": "Revisa el aviso legal de El Paraíso Del Jamón para conocer los términos de uso de nuestro sitio web y la protección de tus datos.",
+  "charcuteria_MostrarDetalles": "Mostrar detalles de {product}",
+  "charcuteria_OcultarDetalles": "Ocultar detalles de {product}",
+  "paginador_Navegacion": "Paginación",
+  "paginador_PrimeraPagina": "Ir a la primera página",
+  "paginador_PaginaAnterior": "Ir a la página anterior",
+  "paginador_Pagina": "Ir a la página {page}",
+  "paginador_PaginaActual": "Página {page}, página actual",
+  "paginador_PaginaSiguiente": "Ir a la página siguiente",
+  "paginador_UltimaPagina": "Ir a la última página"
 }

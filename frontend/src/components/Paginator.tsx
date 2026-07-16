@@ -1,6 +1,7 @@
 // components/Paginator.tsx
 
 import React from "react";
+import { useIntl } from "react-intl";
 import styles from "../styles/components/Paginator.module.css";
 
 /**
@@ -28,6 +29,8 @@ export interface PaginatorProps {
   hasPreviousPage: boolean;
 }
 
+type PageEntry = number | "ellipsis";
+
 /**
  * Componente Paginator que muestra una barra de navegación de páginas
  * @param {PaginatorProps} props - Propiedades del componente
@@ -44,25 +47,27 @@ export const Paginator: React.FC<PaginatorProps> = ({
   hasNextPage,
   hasPreviousPage,
 }) => {
+  const intl = useIntl();
+
   /**
    * Genera el array de números de página a mostrar
    * Implementa una lógica que muestra un número limitado de páginas
    * con puntos suspensivos para indicar saltos
-   * @returns {(number|string)[]} Array con números de página y puntos suspensivos
+   * @returns {PageEntry[]} Array con números de página y puntos suspensivos
    */
-  const getPageNumbers = () => {
+  const getPageNumbers = (): PageEntry[] => {
     const delta = 2; // Número de páginas a mostrar a cada lado de la página actual
-    const range = [];
-    const rangeWithDots = [];
-    let l;
+    const range: number[] = [];
+    const rangeWithDots: PageEntry[] = [];
+    let previousPage: number | undefined;
 
     // Siempre mostrar la primera página
     range.push(1);
 
     // Calcular el rango de páginas alrededor de la página actual
-    for (let i = currentPage - delta; i <= currentPage + delta; i++) {
-      if (i > 1 && i < totalPages) {
-        range.push(i);
+    for (let page = currentPage - delta; page <= currentPage + delta; page++) {
+      if (page > 1 && page < totalPages) {
+        range.push(page);
       }
     }
 
@@ -75,56 +80,91 @@ export const Paginator: React.FC<PaginatorProps> = ({
     const uniqueRange = [...new Set(range)].sort((a, b) => a - b);
 
     // Agregar puntos suspensivos donde sea necesario
-    for (const i of uniqueRange) {
-      if (l) {
-        if (i - l === 2) {
+    for (const page of uniqueRange) {
+      if (previousPage !== undefined) {
+        if (page - previousPage === 2) {
           // Si hay un espacio de 2 entre números, agregar el número intermedio
-          rangeWithDots.push(l + 1);
-        } else if (i - l !== 1) {
-          // Si hay un espacio mayor a 2, agregar puntos suspensivos
-          rangeWithDots.push("...");
+          rangeWithDots.push(previousPage + 1);
+        } else if (page - previousPage !== 1) {
+          // Si hay un espacio mayor a 2, agregar puntos suspensivos no interactivos
+          rangeWithDots.push("ellipsis");
         }
       }
-      rangeWithDots.push(i);
-      l = i;
+      rangeWithDots.push(page);
+      previousPage = page;
     }
 
     return rangeWithDots;
   };
 
   return (
-    <div className={styles.paginator}>
+    <nav className={styles.paginator} aria-label={intl.formatMessage({ id: "paginador_Navegacion" })}>
       {/* Botón para ir a la primera página */}
-      <button className={styles.paginatorButton} onClick={onFirstPage} disabled={!hasPreviousPage || currentPage <= 1}>
+      <button
+        type="button"
+        className={styles.paginatorButton}
+        onClick={onFirstPage}
+        disabled={!hasPreviousPage || currentPage <= 1}
+        aria-label={intl.formatMessage({ id: "paginador_PrimeraPagina" })}
+      >
         &laquo;
       </button>
 
       {/* Botón para ir a la página anterior */}
-      <button className={styles.paginatorButton} onClick={onPreviousPage} disabled={!hasPreviousPage || currentPage <= 1}>
+      <button
+        type="button"
+        className={styles.paginatorButton}
+        onClick={onPreviousPage}
+        disabled={!hasPreviousPage || currentPage <= 1}
+        aria-label={intl.formatMessage({ id: "paginador_PaginaAnterior" })}
+      >
         &lt;
       </button>
 
-      {/* Botones para números de página */}
-      {getPageNumbers().map((pageNum, index) => (
-        <button
-          key={index}
-          className={`${styles.paginatorButton} ${pageNum === currentPage ? styles.active : ""}`}
-          onClick={() => (typeof pageNum === "number" ? onPageChange(pageNum) : null)}
-          disabled={typeof pageNum !== "number"}
-        >
-          {pageNum}
-        </button>
-      ))}
+      {/* Botones para números de página y separadores no interactivos */}
+      {getPageNumbers().map((pageEntry, index) =>
+        pageEntry === "ellipsis" ? (
+          <span key={`ellipsis-${index}`} className={styles.paginatorEllipsis} aria-hidden="true">
+            …
+          </span>
+        ) : (
+          <button
+            type="button"
+            key={`page-${pageEntry}`}
+            className={`${styles.paginatorButton} ${pageEntry === currentPage ? styles.active : ""}`}
+            onClick={() => onPageChange(pageEntry)}
+            aria-current={pageEntry === currentPage ? "page" : undefined}
+            aria-label={intl.formatMessage(
+              { id: pageEntry === currentPage ? "paginador_PaginaActual" : "paginador_Pagina" },
+              { page: pageEntry }
+            )}
+          >
+            {pageEntry}
+          </button>
+        )
+      )}
 
       {/* Botón para ir a la página siguiente */}
-      <button className={styles.paginatorButton} onClick={onNextPage} disabled={!hasNextPage || currentPage >= totalPages}>
+      <button
+        type="button"
+        className={styles.paginatorButton}
+        onClick={onNextPage}
+        disabled={!hasNextPage || currentPage >= totalPages}
+        aria-label={intl.formatMessage({ id: "paginador_PaginaSiguiente" })}
+      >
         &gt;
       </button>
 
       {/* Botón para ir a la última página */}
-      <button className={styles.paginatorButton} onClick={onLastPage} disabled={!hasNextPage || currentPage >= totalPages}>
+      <button
+        type="button"
+        className={styles.paginatorButton}
+        onClick={onLastPage}
+        disabled={!hasNextPage || currentPage >= totalPages}
+        aria-label={intl.formatMessage({ id: "paginador_UltimaPagina" })}
+      >
         &raquo;
       </button>
-    </div>
+    </nav>
   );
 };

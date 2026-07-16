@@ -1,6 +1,7 @@
 // components/Navbar.tsx
 
 import React, { useRef } from "react";
+import type { FocusEvent, KeyboardEvent } from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
 import { useRouter } from "next/router";
@@ -73,6 +74,7 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
   const handleLocaleChange = useLocaleChange();
   const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();
   const navbarMenuRef = useRef<HTMLDivElement>(null);
+  const restaurantsButtonRef = useRef<HTMLButtonElement>(null);
   const { isSticky } = useStickyNav(navbarMenuRef);
   const { isMobile } = useScreenSize();
 
@@ -81,8 +83,25 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
   };
 
   const handleDropdownClick = () => {
-    if (!restaurantsMenu) {
+    if (restaurantsMenu) {
+      closeRestaurantsMenu();
+    } else {
       openRestaurantsMenu();
+    }
+  };
+
+  const handleRestaurantsBlur = (event: FocusEvent<HTMLDivElement>) => {
+    // Mantiene el menú abierto al mover el foco entre el botón y sus enlaces.
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      closeRestaurantsMenu();
+    }
+  };
+
+  const handleRestaurantsKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape" && restaurantsMenu) {
+      event.preventDefault();
+      closeRestaurantsMenu();
+      restaurantsButtonRef.current?.focus();
     }
   };
 
@@ -189,9 +208,27 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
           <Link href="/" locale={router.locale} onClick={handleLinkClick}>
             {intl.formatMessage({ id: "navbar_inicio" })}
           </Link>
-          <div className={styles.linksDropdown} onMouseEnter={openRestaurantsMenu} onMouseLeave={closeRestaurantsMenu} onClick={handleDropdownClick}>
-            <span className={styles.noLink}>{intl.formatMessage({ id: "navbar_restaurantes" })}</span>
-            <div className={`${styles.dropdown} ${restaurantsMenu ? styles.show : styles.hide}`}>
+          <div
+            className={styles.linksDropdown}
+            onMouseEnter={openRestaurantsMenu}
+            onMouseLeave={closeRestaurantsMenu}
+            onBlur={handleRestaurantsBlur}
+            onKeyDown={handleRestaurantsKeyDown}
+          >
+            <button
+              ref={restaurantsButtonRef}
+              type="button"
+              className={styles.noLink}
+              onClick={handleDropdownClick}
+              aria-expanded={restaurantsMenu}
+              aria-controls="navbar-restaurants-menu"
+            >
+              {intl.formatMessage({ id: "navbar_restaurantes" })}
+            </button>
+            <div
+              id="navbar-restaurants-menu"
+              className={`${styles.dropdown} ${restaurantsMenu ? styles.show : styles.hide}`}
+            >
               <Link href="/san-bernardo" locale={router.locale} onClick={closeRestaurantsMenu}>
                 San Bernardo
               </Link>

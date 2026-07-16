@@ -73,7 +73,7 @@ const SanBernardoPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
           description: intl.formatMessage({ id: "san-bernardo_SEO_Descripcion" }),
           images: [
             {
-              url: "/images/carousel/sb/carousel-sb-1.png",
+              url: `${siteUrl.replace(/\/+$/, "")}/images/carousel/sb/carousel-sb-1.png`,
               alt: intl.formatMessage({ id: "san-bernardo_Carousel_Alt1" }),
             },
           ],

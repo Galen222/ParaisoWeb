@@ -69,7 +69,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
   const flippedCards =
     flippedCardState.locale === currentLocale ? flippedCardState.cards : {};
 
-  // Función para manejar el click
+  // Función para manejar el click o la activación por teclado
   const handleCardClick = (productId: string) => {
     setFlippedCardState((previousState) => {
       const currentCards =
@@ -83,6 +83,13 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
         },
       };
     });
+  };
+
+  const handleCardKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, productId: string) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      handleCardClick(productId);
+    }
   };
 
   // Aseguro que products sea siempre un array
@@ -169,11 +176,24 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
             {paginatedProducts.map((product) => (
               <div className={styles.card} key={product.id_producto}>
                 <div
-                  className={`${styles.cardInner} ${isTouchDevice && flippedCards[product.id_producto] ? styles.isFlipped : ""}`}
+                  className={`${styles.cardInner} ${flippedCards[product.id_producto] ? styles.isFlipped : ""}`}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={Boolean(flippedCards[product.id_producto])}
+                  aria-label={intl.formatMessage(
+                    {
+                      id: flippedCards[product.id_producto]
+                        ? "charcuteria_OcultarDetalles"
+                        : "charcuteria_MostrarDetalles",
+                    },
+                    { product: product.nombre }
+                  )}
                   onClick={() => {
-                    // Habilita el flip al hacer clic solo en dispositivos tactiles
+                    // Habilita el flip al hacer clic solo en dispositivos tactiles;
+                    // en escritorio el ratón conserva el efecto hover existente.
                     if (isTouchDevice) handleCardClick(String(product.id_producto));
                   }}
+                  onKeyDown={(event) => handleCardKeyDown(event, String(product.id_producto))}
                 >
                   {/* Lado frontal de la tarjeta con imagen y nombre del producto */}
                   <div className={styles.front}>

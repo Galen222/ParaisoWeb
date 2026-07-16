@@ -148,46 +148,22 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
   };
 
   /**
-   * Maneja la validación y sanitización del email en tiempo real
-   * Implementa reglas estrictas para el formato del email
+   * Valida el email en tiempo real sin modificar silenciosamente lo escrito.
+   * Eliminar espacios o caracteres inválidos podría transformar una dirección
+   * equivocada en otra dirección válida y enviar el mensaje a un destinatario distinto.
    */
   const handleValidateEmail = (e: ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-    let sanitizedValue = "";
+    const value = e.target.value.normalize("NFC");
+    const emailParts = value.split("@");
+    const hasValidParts =
+      emailParts.length === 2 &&
+      emailParts[0] !== "" &&
+      emailParts[1] !== "" &&
+      validateEmailPart(emailParts[0]) &&
+      validateEmailPart(emailParts[1]);
 
-    for (const char of value) {
-      const isDomainPart = sanitizedValue.includes("@");
-      const isAllowedCharacter = isDomainPart
-        ? /[a-zA-Z0-9.-]/.test(char)
-        : /[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~@-]/.test(char);
-
-      if (!isAllowedCharacter) continue;
-      if (char === "@" && isDomainPart) continue;
-
-      if (char === "." || char === "-") {
-        // Si el siguiente carácter es @, no añadimos el . o -
-        if (value.indexOf("@") > -1 && value.indexOf("@") === sanitizedValue.length + 1) continue;
-
-        if (sanitizedValue === "" || sanitizedValue.endsWith("@")) continue;
-        if (sanitizedValue.endsWith(".") || sanitizedValue.endsWith("-")) continue;
-      }
-
-      sanitizedValue += char;
-    }
-
-    if (sanitizedValue.includes("@")) {
-      const [localPart, domainPart] = sanitizedValue.split("@");
-
-      if (validateEmailPart(localPart) && domainPart && validateEmailPart(domainPart)) {
-        const isValid = validator.isEmail(sanitizedValue);
-        setIsValidEmail(isValid);
-        setFormData((current) => ({ ...current, email: sanitizedValue }));
-        return;
-      }
-    }
-
-    setFormData((current) => ({ ...current, email: sanitizedValue }));
-    setIsValidEmail(false);
+    setFormData((current) => ({ ...current, email: value }));
+    setIsValidEmail(hasValidParts && validator.isEmail(value));
   };
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {

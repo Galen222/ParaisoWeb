@@ -73,7 +73,7 @@ const ArenalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element 
           description: intl.formatMessage({ id: "arenal_SEO_Descripcion" }),
           images: [
             {
-              url: "/images/carousel/ar/carousel-ar-1.png",
+              url: `${siteUrl.replace(/\/+$/, "")}/images/carousel/ar/carousel-ar-1.png`,
               alt: intl.formatMessage({ id: "arenal_Carousel_Alt1" }),
             },
           ],

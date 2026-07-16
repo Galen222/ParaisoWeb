@@ -618,5 +618,14 @@
   "avisoLegal_Actualizacion_Titulo": "Aktualisierung des rechtlichen Hinweises",
   "avisoLegal_Actualizacion_Texto": "PACAVA S.A behält sich das Recht vor, diesen rechtlichen Hinweis zu ändern, um ihn an gesetzliche oder rechtsprechende Entwicklungen sowie an Branchenpraktiken anzupassen. Daher empfehlen wir, ihn bei jedem Zugriff auf unsere Website zu überprüfen, um ordnungsgemäß informiert zu sein.",
   "aviso-legal_SEO_Titulo": "Paraíso Del Jamón - Rechtlicher Hinweis",
-  "aviso-legal_SEO_Descripcion": "Lesen Sie den rechtlichen Hinweis von El Paraíso Del Jamón, um die Nutzungsbedingungen unserer Website und den Schutz Ihrer Daten zu erfahren."
+  "aviso-legal_SEO_Descripcion": "Lesen Sie den rechtlichen Hinweis von El Paraíso Del Jamón, um die Nutzungsbedingungen unserer Website und den Schutz Ihrer Daten zu erfahren.",
+  "charcuteria_MostrarDetalles": "Details zu {product} anzeigen",
+  "charcuteria_OcultarDetalles": "Details zu {product} ausblenden",
+  "paginador_Navegacion": "Seitennavigation",
+  "paginador_PrimeraPagina": "Zur ersten Seite",
+  "paginador_PaginaAnterior": "Zur vorherigen Seite",
+  "paginador_Pagina": "Zu Seite {page}",
+  "paginador_PaginaActual": "Seite {page}, aktuelle Seite",
+  "paginador_PaginaSiguiente": "Zur nächsten Seite",
+  "paginador_UltimaPagina": "Zur letzten Seite"
 }

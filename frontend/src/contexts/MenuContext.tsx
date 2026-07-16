@@ -57,7 +57,7 @@ export interface MenuProviderProps {
 export const MenuProvider: React.FC<MenuProviderProps> = ({ children }: MenuProviderProps): React.JSX.Element => {
   // Estado y funciones para el menú móvil
   const [mobileMenu, setMobileMenu] = useState(false);
-  const toggleMobileMenu = () => setMobileMenu(!mobileMenu); // Alterna el estado del menú móvil
+  const toggleMobileMenu = () => setMobileMenu((isOpen) => !isOpen); // Alterna siempre desde el último estado confirmado
   const closeMobileMenu = () => setMobileMenu(false); // Cierra el menú móvil
 
   // Estado y funciones para el submenú de restaurantes

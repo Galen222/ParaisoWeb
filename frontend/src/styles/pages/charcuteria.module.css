@@ -43,6 +43,12 @@
   transform-style: preserve-3d; /* Preserva la perspectiva 3D */
 }
 
+.cardInner:focus-visible {
+  outline: 3px solid rgba(175, 36, 36, 0.904); /* Permite localizar la tarjeta al navegar con teclado */
+  outline-offset: 4px;
+  border-radius: 10px;
+}
+
 /* Estilos para las caras frontal y trasera de la tarjeta */
 .front,
 .back {

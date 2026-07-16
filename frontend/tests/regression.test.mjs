@@ -177,3 +177,77 @@ test("los componentes corregidos conservan HTML válido y controles nativos", as
   assert.match(navbar, /className=\{styles\.flagButton\}/);
   assert.doesNotMatch(navbar, /<img[\s\S]*?onClick=\{\(\) => handleLocaleChange/);
 });
+
+
+test("la fase 3 preserva el email escrito y usa actualizaciones de estado no obsoletas", async () => {
+  const [form, menuContext] = await Promise.all([
+    readFile(new URL("../src/components/Form.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/contexts/MenuContext.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(form, /const value = e\.target\.value\.normalize\("NFC"\)/);
+  assert.match(form, /email: value/);
+  assert.doesNotMatch(form, /sanitizedValue/);
+  assert.match(menuContext, /setMobileMenu\(\(isOpen\) => !isOpen\)/);
+});
+
+test("los menús, tarjetas y paginador de fase 3 son utilizables con teclado", async () => {
+  const [navbar, charcuteria, paginator] = await Promise.all([
+    readFile(new URL("../src/components/Navbar.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/pages/charcuteria.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/Paginator.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(navbar, /aria-controls="navbar-restaurants-menu"/);
+  assert.match(navbar, /event\.key === "Escape"/);
+  assert.doesNotMatch(navbar, /onFocus=\{openRestaurantsMenu\}/);
+
+  assert.match(charcuteria, /role="button"/);
+  assert.match(charcuteria, /tabIndex=\{0\}/);
+  assert.match(charcuteria, /aria-pressed=/);
+  assert.match(charcuteria, /handleCardKeyDown/);
+
+  assert.match(paginator, /<nav className=\{styles\.paginator\}/);
+  assert.match(paginator, /aria-current=\{pageEntry === currentPage \? "page" : undefined\}/);
+  assert.match(paginator, /className=\{styles\.paginatorEllipsis\}/);
+  assert.doesNotMatch(paginator, /disabled=\{typeof pageNum !== "number"\}/);
+});
+
+test("las imágenes Open Graph específicas usan URLs absolutas", async () => {
+  const pages = [
+    "san-bernardo.tsx",
+    "bravo-murillo.tsx",
+    "reina-victoria.tsx",
+    "arenal.tsx",
+    "gastronomia.tsx",
+    "nosotros.tsx",
+  ];
+
+  for (const page of pages) {
+    const source = await readFile(new URL(`../src/pages/${page}`, import.meta.url), "utf8");
+    assert.doesNotMatch(source, /url: "\/images\//);
+    assert.match(source, /url: `\$\{siteUrl\.replace\(\/\\\/\+\$\/, ""\)\}\/images\//);
+  }
+});
+
+test("las claves accesibles nuevas existen en los tres idiomas", async () => {
+  const locales = ["es", "en", "de"];
+  const requiredKeys = [
+    "charcuteria_MostrarDetalles",
+    "charcuteria_OcultarDetalles",
+    "paginador_Navegacion",
+    "paginador_PrimeraPagina",
+    "paginador_PaginaAnterior",
+    "paginador_Pagina",
+    "paginador_PaginaActual",
+    "paginador_PaginaSiguiente",
+    "paginador_UltimaPagina",
+  ];
+
+  for (const locale of locales) {
+    const messages = JSON.parse(
+      await readFile(new URL(`../src/locales/${locale}/common.json`, import.meta.url), "utf8")
+    );
+    for (const key of requiredKeys) assert.equal(typeof messages[key], "string");
+  }
+});

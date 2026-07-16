@@ -72,7 +72,7 @@ const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): React.JSX.El
           description: intl.formatMessage({ id: "bravo-murillo_SEO_Descripcion" }),
           images: [
             {
-              url: "/images/carousel/bm/carousel-bm-1.png",
+              url: `${siteUrl.replace(/\/+$/, "")}/images/carousel/bm/carousel-bm-1.png`,
               alt: intl.formatMessage({ id: "bravo-murillo_Carousel_Alt1" }),
             },
           ],

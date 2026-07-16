@@ -67,7 +67,7 @@ const NosotrosPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elemen
           description: intl.formatMessage({ id: "nosotros_SEO_Descripcion" }),
           images: [
             {
-              url: "/images/nosotros/nosotros4.png",
+              url: `${siteUrl.replace(/\/+$/, "")}/images/nosotros/nosotros4.png`,
               alt: intl.formatMessage({ id: "nosotros_Carousel_Alt4" }),
             },
           ],

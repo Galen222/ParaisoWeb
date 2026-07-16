@@ -229,6 +229,14 @@
   cursor: pointer; /* Cambia el cursor al pasar sobre el elemento */
   display: flex; /* Utiliza flexbox para alinear contenido */
   align-items: center; /* Centra verticalmente el contenido */
+  border: 0; /* El botón nativo conserva el aspecto anterior del texto */
+  background: transparent;
+  font: inherit;
+}
+
+.noLink:focus-visible {
+  outline: 3px solid white; /* El menú de restaurantes debe ser localizable con teclado */
+  outline-offset: 2px;
 }
 
 /* Pseudo-elementos ::after para la barra inferior blanca */

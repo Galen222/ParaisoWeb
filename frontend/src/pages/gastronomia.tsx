@@ -99,7 +99,7 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
           description: intl.formatMessage({ id: "gastronomia_SEO_Descripcion" }),
           images: [
             {
-              url: "/images/gastronomia/raciones2.png",
+              url: `${siteUrl.replace(/\/+$/, "")}/images/gastronomia/raciones2.png`,
               alt: intl.formatMessage({ id: "gastronomia_Carousel_Alt2" }),
             },
           ],

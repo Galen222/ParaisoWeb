@@ -73,7 +73,7 @@ const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.E
           description: intl.formatMessage({ id: "reina-victoria_SEO_Descripcion" }),
           images: [
             {
-              url: "/images/carousel/rv/carousel-rv-1.png",
+              url: `${siteUrl.replace(/\/+$/, "")}/images/carousel/rv/carousel-rv-1.png`,
               alt: intl.formatMessage({ id: "reina-victoria_Carousel_Alt1" }),
             },
           ],
