@@ -3,8 +3,14 @@
 from datetime import datetime, timezone
 import unittest
 
+from pydantic import ValidationError
+
 from backend.models import models
-from backend.models.schemas import _is_safe_public_asset_path
+from backend.models.schemas import (
+    Blog as BlogSchema,
+    Charcuteria as CharcuteriaSchema,
+    _is_safe_public_asset_path,
+)
 from backend.services.blog_service import BlogService
 from backend.services.charcuteria_service import CharcuteriaService
 
@@ -80,6 +86,36 @@ class PublicContentValidationTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(_is_safe_public_asset_path("foto%3Fversion.png"))
         self.assertFalse(_is_safe_public_asset_path("foto%2523ancla.png"))
         self.assertTrue(_is_safe_public_asset_path("carpeta/imagen-normal.png"))
+
+
+    def test_blog_rechaza_controles_e_identificadores_bidi_en_textos_publicos(self) -> None:
+        for field_name, unsafe_value in (
+            ("titulo", "\u202eTítulo invertido"),
+            ("titulo", "Título\u200boculto"),
+            ("autor", "Autor\x00oculto"),
+            ("contenido", "\u200b"),
+        ):
+            with self.subTest(field=field_name), self.assertRaises(ValidationError):
+                BlogSchema.model_validate(_blog(1, **{field_name: unsafe_value}))
+
+    def test_charcuteria_rechaza_controles_e_identificadores_bidi(self) -> None:
+        for field_name, unsafe_value in (
+            ("nombre", "\u202eProducto invertido"),
+            ("nombre", "Producto\ufeffoculto"),
+            ("categoria", "Categoría\x00oculta"),
+            ("descripcion", "\u200b"),
+            ("empresa", "\u2066Empresa"),
+        ):
+            with self.subTest(field=field_name), self.assertRaises(ValidationError):
+                CharcuteriaSchema.model_validate(_product(1, **{field_name: unsafe_value}))
+
+    def test_textos_multilinea_conservan_saltos_y_emoji_compuesto(self) -> None:
+        content = "Primera línea\n\tFamilia 👨‍👩‍👧‍👦"
+        post = BlogSchema.model_validate(_blog(1, contenido=content))
+        product = CharcuteriaSchema.model_validate(_product(1, descripcion=content))
+
+        self.assertEqual(post.contenido, content)
+        self.assertEqual(product.descripcion, content)
 
     async def test_blog_list_conserva_filas_validas_si_otra_esta_danada(self) -> None:
         valid_post = _blog(1)

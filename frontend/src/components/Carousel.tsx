@@ -5,6 +5,7 @@ import Slider from "react-slick";
 import { useIntl } from "react-intl";
 import { slidesData } from "../utils/slidesData";
 import styles from "../styles/components/Carousel.module.css";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 /**
  * Interface para definir las propiedades de cada diapositiva.
@@ -42,6 +43,7 @@ export interface CarouselProps {
 const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
   // `intl` es una instancia del hook useIntl, utilizada para obtener mensajes localizados.
   const intl = useIntl();
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   // Configuración del carrusel utilizando react-slick
   const settings = {
@@ -49,11 +51,13 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
     arrows: false,
     dots: true,
     infinite: true,
-    speed: 500,
+    speed: prefersReducedMotion ? 0 : 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: !prefersReducedMotion,
     autoplaySpeed: 3000,
+    pauseOnHover: true,
+    pauseOnFocus: true,
   };
 
   // Obtener las diapositivas correspondientes al tipo de carrusel

@@ -91,6 +91,12 @@ const requestTimedToken = async (): Promise<string> => {
 };
 
 export const getTimedToken = (signal?: AbortSignal): Promise<string> => {
+  // Una operación cancelada antes de empezar no debe crear una petición HTTP compartida
+  // que ningún consumidor necesita.
+  if (signal?.aborted) {
+    return Promise.reject(createAbortError());
+  }
+
   if (!pendingTokenRequest) {
     pendingTokenRequest = requestTimedToken().finally(() => {
       pendingTokenRequest = null;

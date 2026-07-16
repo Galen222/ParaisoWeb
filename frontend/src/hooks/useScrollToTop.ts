@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import useScreenSize from "./useScreenSize";
+import { getMotionSafeScrollBehavior } from "../utils/motion";
 
 /**
  * Tipos de posicionamiento del botón según el dispositivo y la situación.
@@ -99,7 +100,7 @@ const useScrollToTop = (): UseScrollToTopOutput => {
    */
   const scrollToTop = () => {
     if (typeof window !== "undefined") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({ top: 0, behavior: getMotionSafeScrollBehavior() });
     }
   };
 

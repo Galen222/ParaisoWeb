@@ -178,7 +178,7 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
                 <p>{message}</p>
             </main>
             <footer>
-                <p>Este correo fue enviado automáticamente desde el formulario de contacto del sitio web Paraíso Del Jamón.</p>
+                <p>Este correo fue enviado automáticamente desde el formulario de contacto del sitio web El Paraíso Del Jamón.</p>
             </footer>
         </div>
     </body>

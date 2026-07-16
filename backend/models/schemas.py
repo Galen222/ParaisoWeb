@@ -64,11 +64,51 @@ def _is_safe_public_asset_path(value: object) -> bool:
     return True
 
 
-def _require_non_blank(value: object, field_name: str) -> object:
-    """Rechaza textos obligatorios vacíos sin modificar su contenido visible."""
-    if isinstance(value, str) and not value.strip():
+ALLOWED_PUBLIC_FORMAT_CHARACTERS = {"\u00ad", "\u200c", "\u200d"}
+BIDI_CONTROL_CHARACTERS = {
+    "\u061c",
+    "\u200e",
+    "\u200f",
+    *map(chr, range(0x202A, 0x202F)),
+    *map(chr, range(0x2066, 0x206A)),
+}
+
+
+def _has_visible_public_character(value: str) -> bool:
+    """Exige alguna letra, número, signo o puntuación realmente visible."""
+    return any(unicodedata.category(character)[0] in {"L", "N", "P", "S"} for character in value)
+
+
+def _require_safe_public_text(
+    value: object,
+    field_name: str,
+    *,
+    multiline: bool = False,
+) -> object:
+    """Rechaza textos públicos vacíos, controles y marcas bidireccionales peligrosas."""
+    if not isinstance(value, str):
+        return value
+
+    if not value.strip() or not _has_visible_public_character(value):
         raise ValueError(f"{field_name} no puede estar vacío")
+
+    allowed_controls = {"\t", "\n", "\r"} if multiline else set()
+    for character in value:
+        category = unicodedata.category(character)
+        if (
+            (category == "Cc" and character not in allowed_controls)
+            or (category == "Cf" and character not in ALLOWED_PUBLIC_FORMAT_CHARACTERS)
+            or category in {"Zl", "Zp"}
+            or character in BIDI_CONTROL_CHARACTERS
+        ):
+            raise ValueError(f"{field_name} contiene caracteres de control no permitidos")
+
     return value
+
+
+def _require_non_blank(value: object, field_name: str) -> object:
+    """Compatibilidad interna para validaciones que solo requieren contenido visible."""
+    return _require_safe_public_text(value, field_name)
 
 
 # Esquema para el Formulario de Contacto
@@ -232,18 +272,26 @@ class CharcuteriaBase(BaseModel):
     imagen_url: str
     categoria: str
 
-    @field_validator("nombre", "descripcion", "categoria", mode="before")
+    @field_validator("nombre", "categoria", mode="before")
     @classmethod
-    def validate_required_text(cls, value: object, info) -> object:
-        """Impide que una fila con textos invisibles invalide toda la respuesta pública."""
-        return _require_non_blank(value, info.field_name)
+    def validate_required_single_line_text(cls, value: object, info) -> object:
+        """Protege los textos de una línea usados como encabezados públicos."""
+        return _require_safe_public_text(value, info.field_name)
+
+    @field_validator("descripcion", mode="before")
+    @classmethod
+    def validate_required_multiline_text(cls, value: object, info) -> object:
+        """Permite saltos normales, pero no controles invisibles en la descripción."""
+        return _require_safe_public_text(value, info.field_name, multiline=True)
 
     @field_validator("empresa", mode="before")
     @classmethod
     def normalize_optional_company(cls, value: object) -> object:
-        """Representa empresas heredadas vacías como ausencia real."""
+        """Representa empresas heredadas vacías como ausencia real y valida las informadas."""
         if isinstance(value, str) and not value.strip():
             return None
+        if value is not None:
+            return _require_safe_public_text(value, "empresa")
         return value
 
     @field_validator("imagen_url")
@@ -309,11 +357,17 @@ class BlogBase(BaseModel):
             raise ValueError("slug no válido")
         return normalized_slug
 
-    @field_validator("titulo", "contenido", "autor", mode="before")
+    @field_validator("titulo", "autor", mode="before")
     @classmethod
-    def validate_required_text(cls, value: object, info) -> object:
-        """Rechaza textos obligatorios formados únicamente por espacios."""
-        return _require_non_blank(value, info.field_name)
+    def validate_required_single_line_text(cls, value: object, info) -> object:
+        """Protege títulos y autores usados en tarjetas y metadatos públicos."""
+        return _require_safe_public_text(value, info.field_name)
+
+    @field_validator("contenido", mode="before")
+    @classmethod
+    def validate_required_multiline_text(cls, value: object, info) -> object:
+        """Conserva el formato normal del artículo y rechaza controles peligrosos."""
+        return _require_safe_public_text(value, info.field_name, multiline=True)
 
     @field_validator("imagen_url")
     @classmethod

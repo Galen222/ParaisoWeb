@@ -90,8 +90,8 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
   return (
     <>
       <Head>
-        <title>Paraíso del Jamón</title>
-        <meta name="description" content="Paraíso del Jamón" />
+        <title>El Paraíso Del Jamón</title>
+        <meta name="description" content="El Paraíso Del Jamón" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <IntlProvider locale={appLocale} messages={currentMessages}>

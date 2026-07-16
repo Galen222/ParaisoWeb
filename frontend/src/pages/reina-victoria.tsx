@@ -87,7 +87,7 @@ const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.E
       <OrganizationJsonLd
         type="Organization"
         id={organizationId}
-        name="Paraíso Del Jamón"
+        name="El Paraíso Del Jamón"
         url={siteUrl.replace(/\/+$/, "")}
         logo={`${siteUrl.replace(/\/+$/, "")}/images/navbar/imagenLogo.png`}
         contactPoint={[
@@ -108,7 +108,7 @@ const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.E
         parentOrganization={{
           "@type": "Organization",
           "@id": organizationId,
-          name: "Paraíso Del Jamón",
+          name: "El Paraíso Del Jamón",
         }}
         telephone="+34 91 534 91 08"
         address={{

@@ -26,18 +26,18 @@ test("el footer invalida el año cada medianoche sin romper la hidratación", as
   assert.match(source, /window\.clearTimeout\(timeoutId\)/);
 });
 
-test("blog y charcutería descartan textos obligatorios vacíos", async () => {
+test("blog y charcutería descartan textos vacíos o con controles peligrosos", async () => {
   const [blogService, charcuteriaService] = await Promise.all([
     readFile(new URL("../src/services/blogService.ts", import.meta.url), "utf8"),
     readFile(new URL("../src/services/charcuteriaService.ts", import.meta.url), "utf8"),
   ]);
 
-  assert.match(blogService, /isNonBlankString\(post\.titulo\)/);
-  assert.match(blogService, /isNonBlankString\(post\.contenido\)/);
-  assert.match(blogService, /isNonBlankString\(post\.autor\)/);
-  assert.match(charcuteriaService, /isNonBlankString\(product\.nombre\)/);
-  assert.match(charcuteriaService, /isNonBlankString\(product\.descripcion\)/);
-  assert.match(charcuteriaService, /isNonBlankString\(product\.categoria\)/);
+  assert.match(blogService, /isSafePublicSingleLineText\(post\.titulo\)/);
+  assert.match(blogService, /isSafePublicMultilineText\(post\.contenido\)/);
+  assert.match(blogService, /isSafePublicSingleLineText\(post\.autor\)/);
+  assert.match(charcuteriaService, /isSafePublicSingleLineText\(product\.nombre\)/);
+  assert.match(charcuteriaService, /isSafePublicMultilineText\(product\.descripcion\)/);
+  assert.match(charcuteriaService, /isSafePublicSingleLineText\(product\.categoria\)/);
 });
 
 test("el blog y el sitemap eliminan rutas repetidas por slug", async () => {

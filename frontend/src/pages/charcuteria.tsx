@@ -136,7 +136,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
       <OrganizationJsonLd
         type="Organization"
         id={`${siteUrl.replace(/\/+$/, "")}/#organization`}
-        name="Paraíso Del Jamón"
+        name="El Paraíso Del Jamón"
         url={siteUrl.replace(/\/+$/, "")}
         logo={`${siteUrl.replace(/\/+$/, "")}/images/navbar/imagenLogo.png`}
         contactPoint={[

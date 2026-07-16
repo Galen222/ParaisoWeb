@@ -138,7 +138,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
 
   // Título y descripción para SEO
   const previewTitle = blogDetails?.titulo
-    ? `Paraíso Del Jamón - ${buildSeoPreview(blogDetails.titulo, 50)}`
+    ? `El Paraíso Del Jamón - ${buildSeoPreview(blogDetails.titulo, 50)}`
     : intl.formatMessage({ id: "blog_Details_SEO_Titulo_Preview" });
 
   const previewContent = blogDetails?.contenido
@@ -172,7 +172,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
       <OrganizationJsonLd
         type="Organization"
         id={`${siteUrl.replace(/\/+$/, "")}/#organization`}
-        name="Paraíso Del Jamón"
+        name="El Paraíso Del Jamón"
         url={siteUrl.replace(/\/+$/, "")}
         logo={`${siteUrl.replace(/\/+$/, "")}/images/navbar/imagenLogo.png`}
         contactPoint={[

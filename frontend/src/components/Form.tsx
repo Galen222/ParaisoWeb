@@ -13,6 +13,7 @@ import {
 import validator from "validator";
 import styles from "../styles/components/Form.module.css";
 import { isContactFormComplete } from "../utils/contactFormValidation";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 const ALLOWED_FILE_MIME_TYPES = new Set(["image/jpeg", "application/pdf"]);
 const GENERIC_FILE_MIME_TYPES = new Set(["", "application/octet-stream"]);
@@ -56,6 +57,7 @@ const getErrorMessageForLog = (error: unknown): string =>
 
 const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element => {
   const intl = useIntl();
+  const prefersReducedMotion = usePrefersReducedMotion();
   const [isPushingSend, setIsPushingSend] = useState(false);
   const [isPushingFile, setIsPushingFile] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -360,9 +362,11 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
           />
           <button
             type="button"
-            className={`btn btn-outline-secondary ${styles.fileButton} ${isPushingFile ? "animate-push" : ""}`}
+            className={`btn btn-outline-secondary ${styles.fileButton} ${!prefersReducedMotion && isPushingFile ? "animate-push" : ""}`}
             onClick={() => {
-              setIsPushingFile(true);
+              if (!prefersReducedMotion) {
+                setIsPushingFile(true);
+              }
               fileInputRef.current?.click();
             }}
             onAnimationEnd={() => setIsPushingFile(false)}
@@ -401,9 +405,13 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
       <button
         type="submit"
-        className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${isPushingSend ? "animate-push" : ""}`}
+        className={`btn btn-primary mt-25p mx-auto ${styles.submitButton} ${!prefersReducedMotion && isPushingSend ? "animate-push" : ""}`}
         disabled={!isFormComplete() || isSubmitting}
-        onClick={() => setIsPushingSend(true)}
+        onClick={() => {
+          if (!prefersReducedMotion) {
+            setIsPushingSend(true);
+          }
+        }}
         onAnimationEnd={() => setIsPushingSend(false)}
         aria-disabled={!isFormComplete() || isSubmitting}
       >

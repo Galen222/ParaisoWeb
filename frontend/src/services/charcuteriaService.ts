@@ -9,6 +9,7 @@ import { requestWithTimedToken } from "./timedTokenRequest";
 import { isValidApiDateString } from "../utils/apiDate";
 import { READ_REQUEST_TIMEOUT_MS, requirePublicApiUrl } from "../config/api.config";
 import { isSafePublicAssetPath } from "../utils/publicAssetPath";
+import { isSafePublicMultilineText, isSafePublicSingleLineText } from "../utils/publicText";
 
 /**
  * Interfaz para representar los datos de un producto de charcutería.
@@ -36,10 +37,6 @@ const SUPPORTED_LANGUAGES = new Set(["es", "en", "de"]);
 const getApiUrl = (): string =>
   requirePublicApiUrl(API_URL, "NEXT_PUBLIC_API_CHARCUTERIA_URL");
 
-/** Exige contenido visible en los campos obligatorios de cada tarjeta. */
-const isNonBlankString = (value: unknown): value is string =>
-  typeof value === "string" && value.trim() !== "";
-
 /** Comprueba el contrato mínimo que necesita la interfaz antes de renderizar una tarjeta. */
 const isCharcuteriaProduct = (value: unknown, expectedLanguage: string): value is CharcuteriaProduct => {
   if (typeof value !== "object" || value === null) {
@@ -52,11 +49,11 @@ const isCharcuteriaProduct = (value: unknown, expectedLanguage: string): value i
     typeof product.id_producto === "number" &&
     product.id_producto > 0 &&
     product.idioma === expectedLanguage &&
-    isNonBlankString(product.nombre) &&
-    (product.empresa === null || typeof product.empresa === "string") &&
-    isNonBlankString(product.descripcion) &&
+    isSafePublicSingleLineText(product.nombre) &&
+    (product.empresa === null || isSafePublicSingleLineText(product.empresa)) &&
+    isSafePublicMultilineText(product.descripcion) &&
     isSafePublicAssetPath(product.imagen_url) &&
-    isNonBlankString(product.categoria) &&
+    isSafePublicSingleLineText(product.categoria) &&
     (product.fecha === null || isValidApiDateString(product.fecha))
   );
 };

@@ -10,6 +10,7 @@ import { isValidApiDateString } from "../utils/apiDate";
 import { READ_REQUEST_TIMEOUT_MS, requirePublicApiUrl } from "../config/api.config";
 import { normalizeBlogSlug } from "../utils/blogSlug";
 import { isSafePublicAssetPath } from "../utils/publicAssetPath";
+import { isSafePublicMultilineText, isSafePublicSingleLineText } from "../utils/publicText";
 
 /**
  * Interfaz para representar los datos de una publicación de blog.
@@ -39,10 +40,6 @@ interface ExpectedBlogIdentity {
   idioma?: string;
   slug?: string;
 }
-
-/** Exige contenido visible en los campos que la interfaz necesita para renderizar el artículo. */
-const isNonBlankString = (value: unknown): value is string =>
-  typeof value === "string" && value.trim() !== "";
 
 /** Acepta ausencia real o cadenas vacías heredadas en una imagen que es opcional. */
 const isOptionalPublicAssetPath = (value: unknown): value is string | null | undefined =>
@@ -93,9 +90,9 @@ const isBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): value 
     typeof post.idioma === "string" &&
     SUPPORTED_LANGUAGES.has(post.idioma) &&
     normalizedResponseSlug !== null &&
-    isNonBlankString(post.titulo) &&
-    isNonBlankString(post.contenido) &&
-    isNonBlankString(post.autor) &&
+    isSafePublicSingleLineText(post.titulo) &&
+    isSafePublicMultilineText(post.contenido) &&
+    isSafePublicSingleLineText(post.autor) &&
     isSafePublicAssetPath(post.imagen_url) &&
     isOptionalPublicAssetPath(post.imagen_url_2) &&
     isValidApiDateString(post.fecha_publicacion) &&

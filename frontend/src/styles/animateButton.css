@@ -44,3 +44,13 @@
   -webkit-animation-iteration-count: 1; /* Número de repeticiones de la animación en WebKit */
   animation-iteration-count: 1; /* Número de repeticiones de la animación estándar */
 }
+
+/* Respeta la preferencia del sistema y evita una animación innecesaria en los botones. */
+@media (prefers-reduced-motion: reduce) {
+  .animate-push {
+    -webkit-animation: none;
+    animation: none;
+    -webkit-transform: none;
+    transform: none;
+  }
+}

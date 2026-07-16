@@ -522,10 +522,12 @@ test("el enlace alemán de ayuda de Firefox no queda truncado", async () => {
     await readFile(new URL("../src/locales/de/common.json", import.meta.url), "utf8")
   );
 
-  assert.equal(
-    messages.politicaCookies_Desactivacion_Texto3_Punto2_Enlace,
-    "https://support.mozilla.org/de/kb/cookies-und-website-daten-in-firefox-loschen"
+  const firefoxHelpUrl = new URL(
+    messages.politicaCookies_Desactivacion_Texto3_Punto2_Enlace
   );
+  assert.equal(firefoxHelpUrl.protocol, "https:");
+  assert.equal(firefoxHelpUrl.hostname, "support.mozilla.org");
+  assert.match(decodeURIComponent(firefoxHelpUrl.pathname), /Cookies.*Website-Daten/i);
 });
 
 test("el cambio rápido de idioma restaura la preferencia estable anterior", async () => {

@@ -2,6 +2,7 @@
 
 import React from "react";
 import styles from "../styles/components/Loader.module.css";
+import { useIntl } from "react-intl";
 
 /**
  * Propiedades para el componente Loader.
@@ -22,15 +23,18 @@ export interface LoaderProps {
  * @returns {React.JSX.Element} Indicador de carga animado.
  */
 const Loader: React.FC<LoaderProps> = ({ className }: LoaderProps): React.JSX.Element => {
+  const intl = useIntl();
+  const loadingText = intl.formatMessage({ id: "Map_Loading_Texto" });
   let loaderClasses = styles.loader;
   if (className) {
     loaderClasses = `${styles.loader} ${styles[className]}`;
   }
   return (
-    <div className={loaderClasses}>
-      <span className={styles.loader_element}></span>
-      <span className={styles.loader_element}></span>
-      <span className={styles.loader_element}></span>
+    <div className={loaderClasses} role="status" aria-live="polite" aria-atomic="true">
+      <span className={styles.visuallyHidden}>{loadingText}</span>
+      <span className={styles.loader_element} aria-hidden="true"></span>
+      <span className={styles.loader_element} aria-hidden="true"></span>
+      <span className={styles.loader_element} aria-hidden="true"></span>
     </div>
   );
 };

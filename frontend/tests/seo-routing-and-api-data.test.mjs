@@ -171,7 +171,7 @@ test("cada restaurante tiene una identidad estable y está vinculado con la marc
     assert.match(page, /const organizationId = `\$\{siteUrl\}\/#organization`/);
     const expectedRestaurantId = `const restaurantId = \`\${siteUrl}/#restaurant-${restaurant.slug}\`;`;
     assert.ok(page.includes(expectedRestaurantId));
-    assert.match(page, /<OrganizationJsonLd[\s\S]*?id=\{organizationId\}[\s\S]*?name="Paraíso Del Jamón"/);
+    assert.match(page, /<OrganizationJsonLd[\s\S]*?id=\{organizationId\}[\s\S]*?name="El Paraíso Del Jamón"/);
     assert.match(
       page,
       new RegExp(`<LocalBusinessJsonLd[\\s\\S]*?id=\\{restaurantId\\}[\\s\\S]*?name="${restaurant.name}"`)
@@ -179,7 +179,7 @@ test("cada restaurante tiene una identidad estable y está vinculado con la marc
     assert.match(page, new RegExp(`branchCode="${restaurant.branchCode}"`));
     assert.match(
       page,
-      /parentOrganization=\{\{[\s\S]*?"@type": "Organization"[\s\S]*?"@id": organizationId[\s\S]*?name: "Paraíso Del Jamón"/
+      /parentOrganization=\{\{[\s\S]*?"@type": "Organization"[\s\S]*?"@id": organizationId[\s\S]*?name: "El Paraíso Del Jamón"/
     );
     assert.doesNotMatch(page, /<LocalBusinessJsonLd[\s\S]*?id=\{currentUrl\}/);
   }

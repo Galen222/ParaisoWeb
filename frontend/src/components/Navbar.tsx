@@ -39,7 +39,7 @@ const IMAGE_CONSTANTS = {
   /**
    * Texto alternativo para la imagen del logo.
    */
-  logoAlt: "Logo Paraíso Del Jamón",
+  logoAlt: "Logo El Paraíso Del Jamón",
 
   /**
    * Rutas de las imágenes de las banderas por idioma.

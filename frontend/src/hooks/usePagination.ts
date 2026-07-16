@@ -1,6 +1,7 @@
 // hooks/usePagination.ts
 
 import { useState, useMemo, useEffect, useRef } from "react";
+import { getMotionSafeScrollBehavior } from "../utils/motion";
 
 /**
  * Interfaz para las opciones de paginación
@@ -127,7 +128,7 @@ export function usePagination<T>({
 
     previousPageRef.current = currentPage;
     document.getElementById("principal")?.scrollIntoView({
-      behavior: "smooth",
+      behavior: getMotionSafeScrollBehavior(),
     });
   }, [currentPage]);
 
