@@ -56,6 +56,7 @@ def _is_safe_public_asset_path(value: object) -> bool:
             decoded_segment in {".", ".."}
             or "/" in decoded_segment
             or "\\" in decoded_segment
+            or any(character in decoded_segment for character in "?#")
             or any(unicodedata.category(character) in {"Cc", "Cf"} for character in decoded_segment)
         ):
             return False

@@ -18,14 +18,59 @@ const getLocaleFromPath = (pathname: string): string => {
   return firstSegment && SUPPORTED_LOCALES.has(firstSegment) ? firstSegment : DEFAULT_LOCALE;
 };
 
-/** Comprueba si una ruta corresponde al detalle de un artículo del blog. */
-const isBlogDetailsPath = (pathname: string): boolean => {
+/** Obtiene el slug canónico de una ruta de detalle del blog. */
+const getBlogDetailsSlugFromPath = (pathname: string): string | null => {
   const segments = pathname.split("/").filter(Boolean);
   if (segments[0] && SUPPORTED_LOCALES.has(segments[0])) {
     segments.shift();
   }
 
-  return segments.length === 2 && segments[0] === "blog" && Boolean(segments[1]);
+  if (segments.length !== 2 || segments[0] !== "blog") {
+    return null;
+  }
+
+  try {
+    return normalizeBlogSlug(decodeURIComponent(segments[1]));
+  } catch {
+    return null;
+  }
+};
+
+interface BlogRefererCandidate {
+  locale: string;
+  slug: string;
+}
+
+/**
+ * Detecta una posible navegación manual entre traducciones sin asumir que cualquier
+ * artículo en otro idioma representa la misma noticia.
+ */
+const getBlogRefererCandidate = (
+  context: GetServerSidePropsContext,
+  locale: string
+): BlogRefererCandidate | null => {
+  const referer = context.req.headers.referer;
+  if (!referer) {
+    return null;
+  }
+
+  try {
+    const refererUrl = new URL(referer);
+    const refererLocale = getLocaleFromPath(refererUrl.pathname);
+    const refererSlug = getBlogDetailsSlugFromPath(refererUrl.pathname);
+
+    if (
+      !isSameRequestHost(refererUrl, context.req.headers) ||
+      refererLocale === locale ||
+      refererSlug === null
+    ) {
+      return null;
+    }
+
+    return { locale: refererLocale, slug: refererSlug };
+  } catch {
+    return null;
+  }
 };
 
 /** Comprueba que la respuesta corresponde realmente a una traducción navegable. */
@@ -94,21 +139,7 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
     return null;
   }
 
-  // No aplica la preferencia anterior cuando la petición procede de un cambio manual de idioma en otro detalle del blog.
-  const referer = context.req.headers.referer;
-  if (referer) {
-    try {
-      const refererUrl = new URL(referer);
-      const isSameHost = isSameRequestHost(refererUrl, context.req.headers);
-      const refererLocale = getLocaleFromPath(refererUrl.pathname);
-
-      if (isSameHost && isBlogDetailsPath(refererUrl.pathname) && refererLocale !== locale) {
-        return null;
-      }
-    } catch {
-      // Si el referer no es una URL válida, se continúa con la preferencia guardada.
-    }
-  }
+  const refererCandidate = getBlogRefererCandidate(context, locale);
 
   // Next.js ya expone las cookies parseadas; así no se depende de que la cabecera
   // utilice un espacio después de cada punto y coma.
@@ -121,6 +152,31 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
       const blogPost = await findBlogPostBySlug(normalizedSlug, locale, token);
 
       if (blogPost) {
+        if (refererCandidate) {
+          try {
+            const refererBlogPost = await getBlogPostBySlug(
+              refererCandidate.slug,
+              token,
+              refererCandidate.locale
+            );
+
+            // Solo se omite la redirección por cookie cuando ambas rutas pertenecen
+            // realmente a la misma noticia. Otro artículo en distinto idioma debe
+            // seguir respetando la preferencia guardada del usuario.
+            if (refererBlogPost.id_noticia === blogPost.id_noticia) {
+              return null;
+            }
+          } catch (error: unknown) {
+            if (!(axios.isAxiosError(error) && error.response?.status === 404)) {
+              console.error(
+                "No se pudo confirmar el cambio manual de idioma del artículo:",
+                getErrorMessageForLog(error)
+              );
+              return null;
+            }
+          }
+        }
+
         const translatedBlogPost =
           blogPost.idioma === localeCookie
             ? blogPost

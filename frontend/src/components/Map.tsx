@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { getGoogleMapsLoader } from "../utils/GoogleMapsLoader"; // Cambio: Usamos el Singleton
 import { useIntl } from "react-intl";
 import styles from "../styles/components/Map.module.css";
+import { buildTelephoneHref } from "../utils/telephoneHref";
 
 /**
  * Tipo de dato para una ubicación específica.
@@ -147,7 +148,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
         <p>${location.address} ${intl.formatMessage({ id: "Map_Marker_Pais" })}</p>
         <p>${intl.formatMessage({
           id: "Map_Marker_Telefono",
-        })}<a class="text-decoration-none" href="tel:${location.telephone}" target="_blank" rel="noopener noreferrer">
+        })}<a class="text-decoration-none" href="${buildTelephoneHref(location.telephone)}">
        ${location.telephone}
       </a></p>
         <p><a class="text-decoration-none" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(

@@ -46,6 +46,8 @@ const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): React.JSX.El
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
   const siteUrl = getPublicSiteUrl();
+  const organizationId = `${siteUrl}/#organization`;
+  const restaurantId = `${siteUrl}/#restaurant-bravo-murillo`;
   const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
   const currentMessages = messages[currentLocale] || messages["es"];
 
@@ -83,7 +85,7 @@ const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): React.JSX.El
       {/* JSON-LD para Organización */}
       <OrganizationJsonLd
         type="Organization"
-        id={`${siteUrl.replace(/\/+$/, "")}/#organization`}
+        id={organizationId}
         name="Paraíso Del Jamón"
         url={siteUrl.replace(/\/+$/, "")}
         logo={`${siteUrl.replace(/\/+$/, "")}/images/navbar/imagenLogo.png`}
@@ -97,10 +99,16 @@ const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): React.JSX.El
       {/* JSON-LD para LocalBusiness */}
       <LocalBusinessJsonLd
         type="Restaurant"
-        id={currentUrl}
+        id={restaurantId}
         name="Paraíso Del Jamón II"
         description={intl.formatMessage({ id: "bravo-murillo_SEO_Descripcion" })}
         url={currentUrl}
+        branchCode="II"
+        parentOrganization={{
+          "@type": "Organization",
+          "@id": organizationId,
+          name: "Paraíso Del Jamón",
+        }}
         telephone="+34 91 553 97 83"
         address={{
           streetAddress: "Bravo Murillo, 124",

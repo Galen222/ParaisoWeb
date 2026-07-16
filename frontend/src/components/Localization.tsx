@@ -3,6 +3,7 @@
 import React from "react";
 import { useIntl } from "react-intl";
 import styles from "../styles/components/Localization.module.css"; // Crea un archivo CSS o reutiliza uno existente
+import { buildTelephoneHref } from "../utils/telephoneHref";
 
 /**
  * Propiedades para el componente Localization.
@@ -24,6 +25,7 @@ export interface LocalizationProps {
  */
 const Localization: React.FC<LocalizationProps> = ({ localizationName }: LocalizationProps): React.JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
+  const telephone = intl.formatMessage({ id: `contacto_Informacion_${localizationName}_Telefono_Numero` });
 
   return (
     <div className={styles.localesContainer}>
@@ -40,8 +42,8 @@ const Localization: React.FC<LocalizationProps> = ({ localizationName }: Localiz
         {/* Teléfono de la ubicación con enlace para realizar llamada */}
         <p>
           <span className="fw-bold">{intl.formatMessage({ id: `contacto_Informacion_${localizationName}_Telefono_Texto` })}</span>
-          <a className={styles.link} href={`tel:${intl.formatMessage({ id: `contacto_Informacion_${localizationName}_Telefono_Numero` })}`}>
-            {intl.formatMessage({ id: `contacto_Informacion_${localizationName}_Telefono_Numero` })}
+          <a className={styles.link} href={buildTelephoneHref(telephone)}>
+            {telephone}
           </a>
         </p>
 

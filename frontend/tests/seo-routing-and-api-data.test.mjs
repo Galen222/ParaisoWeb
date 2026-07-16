@@ -110,3 +110,85 @@ test("blog y charcutería validan las rutas de imagen antes de renderizarlas", a
   assert.match(blogService, /isSafePublicAssetPath\(value\)/);
   assert.match(charcuteriaService, /isSafePublicAssetPath\(product\.imagen_url\)/);
 });
+
+test("la redirección por cookie distingue un cambio manual de otro artículo", async () => {
+  const redirect = await readFile(
+    new URL("../src/utils/redirectByCookieSlug.ts", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(redirect, /getBlogRefererCandidate/);
+  assert.match(redirect, /getBlogPostBySlug\([\s\S]*?refererCandidate\.slug[\s\S]*?refererCandidate\.locale/);
+  assert.match(redirect, /refererBlogPost\.id_noticia === blogPost\.id_noticia/);
+  assert.doesNotMatch(
+    redirect,
+    /isBlogDetailsPath\(refererUrl\.pathname\)[\s\S]*?return null/
+  );
+});
+
+test("las rutas públicas rechazan delimitadores URL aunque estén codificados", async () => {
+  const { isSafePublicAssetPath } = await loadTypeScriptModule(
+    "../src/utils/publicAssetPath.ts"
+  );
+
+  assert.equal(isSafePublicAssetPath("foto%3Fversion.png"), false);
+  assert.equal(isSafePublicAssetPath("foto%2523ancla.png"), false);
+  assert.equal(isSafePublicAssetPath("carpeta/imagen-normal.png"), true);
+});
+
+test("los enlaces telefónicos usan un destino normalizado sin alterar el texto visible", async () => {
+  const [{ buildTelephoneHref }, map, localization] = await Promise.all([
+    loadTypeScriptModule("../src/utils/telephoneHref.ts"),
+    readFile(new URL("../src/components/Map.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/Localization.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.equal(buildTelephoneHref("+34 91 532 83 50"), "tel:+34915328350");
+  assert.equal(buildTelephoneHref("(91) 532-83-50"), "tel:915328350");
+  assert.match(map, /href="\$\{buildTelephoneHref\(location\.telephone\)\}"/);
+  assert.doesNotMatch(map, /href="tel:\$\{location\.telephone\}"/);
+  assert.doesNotMatch(
+    map,
+    /buildTelephoneHref\(location\.telephone\)[\s\S]{0,80}target="_blank"/
+  );
+  assert.match(localization, /href=\{buildTelephoneHref\(telephone\)\}/);
+});
+
+test("cada restaurante tiene una identidad estable y está vinculado con la marca", async () => {
+  const restaurants = [
+    { file: "san-bernardo.tsx", slug: "san-bernardo", name: "Paraíso Del Jamón I", branchCode: "I" },
+    { file: "bravo-murillo.tsx", slug: "bravo-murillo", name: "Paraíso Del Jamón II", branchCode: "II" },
+    { file: "reina-victoria.tsx", slug: "reina-victoria", name: "Paraíso Del Jamón III", branchCode: "III" },
+    { file: "arenal.tsx", slug: "arenal", name: "Paraíso Del Jamón IV", branchCode: "IV" },
+  ];
+
+  for (const restaurant of restaurants) {
+    const page = await readFile(
+      new URL(`../src/pages/${restaurant.file}`, import.meta.url),
+      "utf8"
+    );
+
+    assert.match(page, /const organizationId = `\$\{siteUrl\}\/#organization`/);
+    const expectedRestaurantId = `const restaurantId = \`\${siteUrl}/#restaurant-${restaurant.slug}\`;`;
+    assert.ok(page.includes(expectedRestaurantId));
+    assert.match(page, /<OrganizationJsonLd[\s\S]*?id=\{organizationId\}[\s\S]*?name="Paraíso Del Jamón"/);
+    assert.match(
+      page,
+      new RegExp(`<LocalBusinessJsonLd[\\s\\S]*?id=\\{restaurantId\\}[\\s\\S]*?name="${restaurant.name}"`)
+    );
+    assert.match(page, new RegExp(`branchCode="${restaurant.branchCode}"`));
+    assert.match(
+      page,
+      /parentOrganization=\{\{[\s\S]*?"@type": "Organization"[\s\S]*?"@id": organizationId[\s\S]*?name: "Paraíso Del Jamón"/
+    );
+    assert.doesNotMatch(page, /<LocalBusinessJsonLd[\s\S]*?id=\{currentUrl\}/);
+  }
+});
+
+test("el título alemán de Arenal conserva el número romano IV", async () => {
+  const messages = JSON.parse(
+    await readFile(new URL("../src/locales/de/common.json", import.meta.url), "utf8")
+  );
+
+  assert.equal(messages.arenal_Titulo, "Willkommen in Paraíso Del Jamón IV");
+});

@@ -48,7 +48,7 @@ export const isSafePublicAssetPath = (value: unknown): value is string => {
       decodedSegment !== ".." &&
       !decodedSegment.includes("/") &&
       !decodedSegment.includes("\\") &&
-      !/[\p{Cc}\p{Cf}]/u.test(decodedSegment)
+      !/[?#\p{Cc}\p{Cf}]/u.test(decodedSegment)
     );
   });
 };

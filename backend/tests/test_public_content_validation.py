@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 import unittest
 
 from backend.models import models
+from backend.models.schemas import _is_safe_public_asset_path
 from backend.services.blog_service import BlogService
 from backend.services.charcuteria_service import CharcuteriaService
 
@@ -74,6 +75,12 @@ def _product(product_id: int, **overrides):
 
 
 class PublicContentValidationTests(unittest.IsolatedAsyncioTestCase):
+
+    def test_rutas_publicas_rechazan_delimitadores_url_codificados(self) -> None:
+        self.assertFalse(_is_safe_public_asset_path("foto%3Fversion.png"))
+        self.assertFalse(_is_safe_public_asset_path("foto%2523ancla.png"))
+        self.assertTrue(_is_safe_public_asset_path("carpeta/imagen-normal.png"))
+
     async def test_blog_list_conserva_filas_validas_si_otra_esta_danada(self) -> None:
         valid_post = _blog(1)
         invalid_post = _blog(2, titulo="   ")
