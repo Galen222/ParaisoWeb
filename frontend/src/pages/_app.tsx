@@ -60,7 +60,12 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
   const formattedLocale = useLocaleFormatted(appLocale);
 
   const currentMessages = messages[appLocale] || messages["es"];
-  const includeLanguageAlternates = router.pathname !== "/blog/[slug]";
+  const isErrorPage = router.pathname === "/404" || router.pathname === "/_error";
+  // Las páginas de error no representan una URL canónica ni traducciones equivalentes.
+  // Publicar `/404` como canonical/hreflang asociaba cualquier URL inexistente a una
+  // ruta técnica que tampoco debe indexarse.
+  const seoPath = isErrorPage ? undefined : router.asPath;
+  const includeLanguageAlternates = !isErrorPage && router.pathname !== "/blog/[slug]";
 
   // Actualiza el atributo `lang` del documento HTML
   useEffect(() => {
@@ -89,7 +94,7 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
       <IntlProvider locale={appLocale} messages={currentMessages}>
-        <DefaultSeo {...getSEOConfig(appLocale, currentMessages, router.asPath, includeLanguageAlternates)} />
+        <DefaultSeo {...getSEOConfig(appLocale, currentMessages, seoPath, includeLanguageAlternates)} />
         <MenuProvider>
           <React.StrictMode>
             {showCookieModal && (

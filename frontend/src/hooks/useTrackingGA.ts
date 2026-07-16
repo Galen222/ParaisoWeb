@@ -14,6 +14,9 @@ import { sendGAButtonClick, sendGAPageView } from "../utils/gaUtils";
 export function useVisitedPageTrackingGA(currentPage: string) {
   const { cookieConsentAnalysisGoogle } = useCookieConsent(); // Verifica el consentimiento de cookies
   const router = useRouter();
+  // Analytics no registra el fragmento, por lo que un cambio exclusivo de ancla
+  // representa la misma página y no debe disparar otra vista duplicada.
+  const routeWithoutHash = router.asPath.split("#", 1)[0];
 
   useEffect(() => {
     if (cookieConsentAnalysisGoogle) {
@@ -23,7 +26,7 @@ export function useVisitedPageTrackingGA(currentPage: string) {
       sendGAPageView(page, currentPage);
       /* console.log("Página " + window.location.pathname + window.location.search + " añadida a log de GA4"); */
     }
-  }, [cookieConsentAnalysisGoogle, currentPage, router.asPath]); // Ejecuta el efecto cuando cambia el consentimiento o la ruta real
+  }, [cookieConsentAnalysisGoogle, currentPage, routeWithoutHash]); // Ignora cambios exclusivos de ancla
 }
 
 /**

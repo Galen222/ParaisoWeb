@@ -106,7 +106,7 @@ const getSEOConfig = (
     openGraph: {
       type: "website",
       locale: formattedLocale,
-      url: currentUrl,
+      url: routePath ? currentUrl : undefined,
       siteName: "El Paraíso Del Jamón",
       images: [
         {

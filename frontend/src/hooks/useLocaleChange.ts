@@ -47,12 +47,14 @@ export function useLocaleChange(): LocaleChangeHandler {
   const { cookieConsentPersonalization } = useCookieConsent();
   const localeChangeSequenceRef = useRef(0);
   const activeRequestControllerRef = useRef<AbortController | null>(null);
+  const activeNavigationLocaleRef = useRef<string | null>(null);
   const stableLocalePreferenceRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     return () => {
       activeRequestControllerRef.current?.abort();
       activeRequestControllerRef.current = null;
+      activeNavigationLocaleRef.current = null;
     };
   }, []);
 
@@ -69,8 +71,43 @@ export function useLocaleChange(): LocaleChangeHandler {
         return;
       }
 
-      // Evita repetir la navegación y las peticiones del blog al pulsar el idioma que ya está activo.
+      // Pulsar el locale actual mientras otro cambio sigue pendiente significa cancelar
+      // la elección anterior. El retorno temprano previo dejaba viva aquella petición o
+      // navegación y podía terminar cambiando el idioma después de la última pulsación.
       if (newLocale === router.locale) {
+        const pendingController = activeRequestControllerRef.current;
+        const pendingNavigationLocale = activeNavigationLocaleRef.current;
+        if (pendingController === null) {
+          return;
+        }
+
+        pendingController.abort();
+        activeRequestControllerRef.current = null;
+        activeNavigationLocaleRef.current = null;
+        ++localeChangeSequenceRef.current;
+
+        if (cookieConsentPersonalization) {
+          const stableLocalePreference = stableLocalePreferenceRef.current;
+          if (stableLocalePreference && SUPPORTED_LOCALES.has(stableLocalePreference)) {
+            saveLocalePreference(stableLocalePreference);
+          } else {
+            clearLocalePreference();
+          }
+        }
+
+        // AbortController detiene las consultas del blog, pero no una transición de Next.js
+        // que ya haya comenzado. Una sustitución hacia el locale que el usuario acaba de
+        // confirmar invalida esa transición sin añadir otra entrada al historial.
+        if (pendingNavigationLocale && pendingNavigationLocale !== newLocale) {
+          try {
+            await router.replace(router.asPath, router.asPath, { locale: newLocale });
+          } catch (error: unknown) {
+            console.error(
+              "No se pudo cancelar el cambio de idioma pendiente:",
+              getErrorMessageForLog(error)
+            );
+          }
+        }
         return;
       }
 
@@ -186,6 +223,7 @@ export function useLocaleChange(): LocaleChangeHandler {
 
       // Espera a que termine la navegación para que la promesa del manejador represente el cambio real de idioma.
       try {
+        activeNavigationLocaleRef.current = newLocale;
         const navigationCompleted = await router.push(newPath, newPath, { locale: newLocale });
         if (localeChangeSequence === localeChangeSequenceRef.current) {
           if (navigationCompleted) {
@@ -205,6 +243,9 @@ export function useLocaleChange(): LocaleChangeHandler {
       } finally {
         if (activeRequestControllerRef.current === controller) {
           activeRequestControllerRef.current = null;
+        }
+        if (activeNavigationLocaleRef.current === newLocale) {
+          activeNavigationLocaleRef.current = null;
         }
       }
     },
