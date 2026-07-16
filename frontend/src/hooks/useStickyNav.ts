@@ -2,10 +2,20 @@
 
 import { useState, useEffect } from "react";
 
-const useStickyNav = <T extends HTMLElement>(navbarRef: React.RefObject<T | null>) => {
+const useStickyNav = <T extends HTMLElement>(
+  navbarRef: React.RefObject<T | null>,
+  enabled = true
+) => {
   const [isSticky, setIsSticky] = useState(false);
 
   useEffect(() => {
+    if (!enabled) {
+      // El estado visible ya se fuerza a false al devolver el hook. La limpieza diferida
+      // evita una actualización síncrona dentro del efecto y elimina cualquier valor anterior.
+      const resetTimeoutId = window.setTimeout(() => setIsSticky(false), 0);
+      return () => window.clearTimeout(resetTimeoutId);
+    }
+
     let lastKnownPosition: number | null = null;
     let animationFrameId: number | null = null;
     let orientationTimeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -84,9 +94,9 @@ const useStickyNav = <T extends HTMLElement>(navbarRef: React.RefObject<T | null
       }
       restoreNavbarPosition();
     };
-  }, [navbarRef]);
+  }, [navbarRef, enabled]);
 
-  return { isSticky };
+  return { isSticky: enabled && isSticky };
 };
 
 export default useStickyNav;

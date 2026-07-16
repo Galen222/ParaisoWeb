@@ -24,6 +24,10 @@ class _CapturingSession:
                     def all():
                         return []
 
+                    @staticmethod
+                    def first():
+                        return None
+
                 return _Scalars()
 
         return _Result()
@@ -36,6 +40,21 @@ class ServiceResultOrderingTests(unittest.IsolatedAsyncioTestCase):
 
         sql = str(session.statement.compile(dialect=mysql.dialect()))
         self.assertIn("blog.id_noticia DESC", sql)
+
+
+    async def test_blog_slug_resolution_is_limited_and_deterministic(self) -> None:
+        session = _CapturingSession()
+        post = await BlogService(session).get_post_by_slug("articulo", "es")
+
+        sql = str(
+            session.statement.compile(
+                dialect=mysql.dialect(),
+                compile_kwargs={"literal_binds": True},
+            )
+        )
+        self.assertIsNone(post)
+        self.assertIn("blog.id_noticia ASC", sql)
+        self.assertIn("LIMIT 1", sql)
 
     async def test_charcuteria_uses_id_as_name_tiebreaker(self) -> None:
         session = _CapturingSession()

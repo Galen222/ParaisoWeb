@@ -47,6 +47,7 @@ export function useLocaleChange(): LocaleChangeHandler {
   const { cookieConsentPersonalization } = useCookieConsent();
   const localeChangeSequenceRef = useRef(0);
   const activeRequestControllerRef = useRef<AbortController | null>(null);
+  const stableLocalePreferenceRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
     return () => {
@@ -71,6 +72,17 @@ export function useLocaleChange(): LocaleChangeHandler {
       // Evita repetir la navegación y las peticiones del blog al pulsar el idioma que ya está activo.
       if (newLocale === router.locale) {
         return;
+      }
+
+      // Conserva la preferencia estable anterior únicamente al iniciar una secuencia nueva.
+      // Una segunda pulsación rápida no debe tomar como referencia la cookie provisional
+      // escrita por la primera navegación todavía pendiente.
+      if (activeRequestControllerRef.current === null) {
+        const savedLocalePreference = getCookieValue("_locale");
+        stableLocalePreferenceRef.current =
+          savedLocalePreference && SUPPORTED_LOCALES.has(savedLocalePreference)
+            ? savedLocalePreference
+            : undefined;
       }
 
       // Cada solicitud invalida y cancela las anteriores para que una respuesta lenta no
@@ -153,7 +165,7 @@ export function useLocaleChange(): LocaleChangeHandler {
 
       // Si el usuario ha consentido la personalización, actualiza la cookie antes de navegar.
       // Así getServerSideProps recibe ya el nuevo idioma y no redirige de vuelta por leer la preferencia anterior.
-      const previousLocalePreference = getCookieValue("_locale");
+      const previousLocalePreference = stableLocalePreferenceRef.current;
       let localePreferenceUpdated = false;
       if (cookieConsentPersonalization) {
         saveLocalePreference(newLocale);
@@ -175,9 +187,15 @@ export function useLocaleChange(): LocaleChangeHandler {
       // Espera a que termine la navegación para que la promesa del manejador represente el cambio real de idioma.
       try {
         const navigationCompleted = await router.push(newPath, newPath, { locale: newLocale });
-        if (localeChangeSequence === localeChangeSequenceRef.current && !navigationCompleted) {
-          restorePreviousLocalePreference();
-          console.error("El cambio de idioma fue cancelado antes de completar la navegación.");
+        if (localeChangeSequence === localeChangeSequenceRef.current) {
+          if (navigationCompleted) {
+            stableLocalePreferenceRef.current = localePreferenceUpdated
+              ? newLocale
+              : previousLocalePreference;
+          } else {
+            restorePreviousLocalePreference();
+            console.error("El cambio de idioma fue cancelado antes de completar la navegación.");
+          }
         }
       } catch (error: unknown) {
         if (!controller.signal.aborted && localeChangeSequence === localeChangeSequenceRef.current) {

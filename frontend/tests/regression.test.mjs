@@ -527,3 +527,36 @@ test("el enlace alemán de ayuda de Firefox no queda truncado", async () => {
     "https://support.mozilla.org/de/kb/cookies-und-website-daten-in-firefox-loschen"
   );
 });
+
+test("el cambio rápido de idioma restaura la preferencia estable anterior", async () => {
+  const localeChangeHook = await readFile(
+    new URL("../src/hooks/useLocaleChange.ts", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(localeChangeHook, /stableLocalePreferenceRef/);
+  assert.match(
+    localeChangeHook,
+    /if \(activeRequestControllerRef\.current === null\)[\s\S]*?getCookieValue\("_locale"\)/
+  );
+  assert.match(
+    localeChangeHook,
+    /const previousLocalePreference = stableLocalePreferenceRef\.current/
+  );
+  assert.doesNotMatch(
+    localeChangeHook,
+    /const previousLocalePreference = getCookieValue\("_locale"\)/
+  );
+});
+
+test("la barra fija recalcula su posición al aparecer en escritorio", async () => {
+  const [stickyHook, navbar] = await Promise.all([
+    readFile(new URL("../src/hooks/useStickyNav.ts", import.meta.url), "utf8"),
+    readFile(new URL("../src/components/Navbar.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(stickyHook, /enabled = true/);
+  assert.match(stickyHook, /if \(!enabled\)[\s\S]*?setIsSticky\(false\)/);
+  assert.match(stickyHook, /\[navbarRef, enabled\]/);
+  assert.match(navbar, /useStickyNav\(navbarMenuRef, !isMobile\)/);
+});

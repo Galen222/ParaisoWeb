@@ -81,10 +81,20 @@ class BlogService:
         query = select(models.Blog).where(models.Blog.slug == slug)
         if idioma:
             query = query.where(models.Blog.idioma == idioma)
-        
+
+        # La base de datos no impone unicidad sobre ``slug`` e ``idioma``. Si existen
+        # filas duplicadas, devuelve de forma determinista la versión más reciente en
+        # lugar de propagar ``MultipleResultsFound`` y convertir la lectura pública en 500.
+        query = query.order_by(
+            func.coalesce(
+                models.Blog.fecha_actualizacion,
+                models.Blog.fecha_publicacion
+            ).desc(),
+            models.Blog.id_noticia.asc()
+        ).limit(1)
+
         result = await self.db.execute(query)
-        post = result.scalar_one_or_none()
-        return post
+        return result.scalars().first()
 
     async def get_post_by_id(self, id_noticia: int, idioma: str) -> Optional[models.Blog]:
         """

@@ -42,6 +42,9 @@ test("las rutas de imágenes procedentes de la API no pueden escapar de su carpe
   assert.equal(isSafePublicAssetPath("jamón-ibérico.png"), true);
   assert.equal(isSafePublicAssetPath("../web/error.png"), false);
   assert.equal(isSafePublicAssetPath("%2e%2e/web/error.png"), false);
+  assert.equal(isSafePublicAssetPath("%252e%252e/web/error.png"), false);
+  assert.equal(isSafePublicAssetPath("imagenes%252fprivadas/foto.png"), false);
+  assert.equal(isSafePublicAssetPath("foto%E2%80%AEgnp.png"), false);
   assert.equal(isSafePublicAssetPath("https://example.com/image.png"), false);
   assert.equal(isSafePublicAssetPath("imagen.png?version=2"), false);
   assert.equal(isSafePublicAssetPath("/imagen.png"), false);

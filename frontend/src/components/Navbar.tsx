@@ -75,8 +75,8 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
   const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();
   const navbarMenuRef = useRef<HTMLDivElement>(null);
   const restaurantsButtonRef = useRef<HTMLButtonElement>(null);
-  const { isSticky } = useStickyNav(navbarMenuRef);
   const { isMobile } = useScreenSize();
+  const { isSticky } = useStickyNav(navbarMenuRef, !isMobile);
   const previousIsMobileRef = useRef(isMobile);
 
   const handleLinkClick = () => {
