@@ -13,6 +13,7 @@ import { redirectByCookie } from "../utils/redirectByCookie";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
 import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
+import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 import styles from "../styles/pages/contacto.module.css";
 // Importa los mensajes de traducción
 import esMessages from "../locales/es/common.json";
@@ -39,7 +40,7 @@ export type ContactoPageComponent = NextPage & { pageTitleText?: string };
 const ContactoPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const siteUrl = getPublicSiteUrl();
   const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
   const currentMessages = messages[currentLocale] || messages["es"];
 

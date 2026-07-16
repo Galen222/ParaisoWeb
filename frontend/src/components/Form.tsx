@@ -282,7 +282,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
         <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
         <input
           type="text"
-          autoComplete="given-name"
+          autoComplete="name"
           id="name"
           name="name"
           value={formData.name}

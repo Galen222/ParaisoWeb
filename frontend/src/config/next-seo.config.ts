@@ -1,6 +1,7 @@
 // config/next-seo.config.ts
 
 import { DefaultSeoProps } from "next-seo";
+import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 
 const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
@@ -73,7 +74,7 @@ const getSEOConfig = (
   currentPath?: string,
   includeLanguageAlternates = true
 ): DefaultSeoProps => {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const siteUrl = getPublicSiteUrl();
   const normalizedSiteUrl = siteUrl.replace(/\/+$/, "");
   const routePath = currentPath ? normalizeRoutePath(currentPath) : null;
   const currentUrl = routePath ? buildLocalizedUrl(normalizedSiteUrl, locale, routePath) : normalizedSiteUrl;

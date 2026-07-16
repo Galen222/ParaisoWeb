@@ -11,6 +11,7 @@ import { useDownloadFile } from "../hooks/useDownloadFile";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import getSEOConfig from "../config/next-seo.config"; // Importa la configuración de SEO
 import useCurrentUrl from "../hooks/useCurrentUrl";
+import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Función de redirección basada en cookies
 import styles from "../styles/pages/gastronomia.module.css"; // Importa los estilos específicos de la página
 // Importa los mensajes de traducción
@@ -37,7 +38,7 @@ export type GastronomiaPageComponent = NextPage & { pageTitleText?: string };
 const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const siteUrl = getPublicSiteUrl();
   const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
   const currentMessages = messages[currentLocale] || messages["es"];
 

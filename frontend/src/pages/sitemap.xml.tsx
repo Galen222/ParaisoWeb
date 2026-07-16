@@ -10,6 +10,7 @@ import {
   type SitemapBlogEntry,
   type SitemapLocale,
 } from "../services/sitemapService";
+import { requireConfiguredPublicSiteUrl } from "../utils/publicSiteUrl";
 
 const DEFAULT_LOCALE: SitemapLocale = "es";
 const SUPPORTED_LOCALES: readonly SitemapLocale[] = ["es", "en", "de"];
@@ -30,26 +31,7 @@ const STATIC_ROUTES = [
   "/aviso-legal",
 ] as const;
 
-const getSiteUrl = (): string => {
-  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
-  if (!configuredUrl) {
-    throw new Error("La variable NEXT_PUBLIC_SITE_URL no está definida.");
-  }
-
-  const parsedUrl = new URL(configuredUrl);
-  if (
-    !["http:", "https:"].includes(parsedUrl.protocol) ||
-    parsedUrl.username !== "" ||
-    parsedUrl.password !== "" ||
-    parsedUrl.pathname !== "/" ||
-    parsedUrl.search !== "" ||
-    parsedUrl.hash !== ""
-  ) {
-    throw new Error("NEXT_PUBLIC_SITE_URL debe contener únicamente el origen HTTP(S) canónico.");
-  }
-
-  return parsedUrl.origin;
-};
+const getSiteUrl = (): string => requireConfiguredPublicSiteUrl();
 
 const localizedPath = (locale: SitemapLocale, route: string): string => {
   if (locale === DEFAULT_LOCALE) {
@@ -135,7 +117,19 @@ export const getServerSideProps: GetServerSideProps<Record<string, never>> = asy
 ) => {
   try {
     const siteUrl = getSiteUrl();
-    const blogEntries = await getSitemapBlogEntries();
+    let blogEntries: SitemapBlogEntry[] = [];
+    let blogEntriesAvailable = true;
+
+    try {
+      blogEntries = await getSitemapBlogEntries();
+    } catch (error: unknown) {
+      blogEntriesAvailable = false;
+      console.error(
+        "No se han podido añadir los artículos al sitemap; se publicarán las rutas estáticas:",
+        error instanceof Error ? error.message : "error desconocido"
+      );
+    }
+
     const fields = [...buildStaticFields(siteUrl), ...buildBlogFields(siteUrl, blogEntries)];
     const uniqueFields = Array.from(
       new Map(fields.map((field) => [field.loc, field])).values()
@@ -143,7 +137,9 @@ export const getServerSideProps: GetServerSideProps<Record<string, never>> = asy
 
     context.res.setHeader(
       "Cache-Control",
-      "public, s-maxage=300, stale-while-revalidate=600"
+      blogEntriesAvailable
+        ? "public, s-maxage=300, stale-while-revalidate=600"
+        : "public, s-maxage=60, stale-while-revalidate=300"
     );
     return getServerSideSitemapLegacy(context, uniqueFields);
   } catch (error) {

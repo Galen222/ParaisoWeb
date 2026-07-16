@@ -15,6 +15,7 @@ import { NextSeo, OrganizationJsonLd } from "next-seo";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
+import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 import { usePagination } from "../hooks/usePagination";
 import { Paginator } from "../components/Paginator";
 import { buildBlogPath } from "../utils/blogPath";
@@ -52,7 +53,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
   const currentLocale = intl.locale || "es";
   const currentMessages = messages[currentLocale] || messages["es"];
   const currentUrl = useCurrentUrl();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const siteUrl = getPublicSiteUrl();
 
   // Hook para obtener las publicaciones del blog
   const { data: blogs, loading: loadingBlog, error } = useFetchBlog();

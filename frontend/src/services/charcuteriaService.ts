@@ -8,6 +8,7 @@ import axios from "axios";
 import { requestWithTimedToken } from "./timedTokenRequest";
 import { isValidApiDateString } from "../utils/apiDate";
 import { READ_REQUEST_TIMEOUT_MS, requirePublicApiUrl } from "../config/api.config";
+import { isSafePublicAssetPath } from "../utils/publicAssetPath";
 
 /**
  * Interfaz para representar los datos de un producto de charcutería.
@@ -50,7 +51,7 @@ const isCharcuteriaProduct = (value: unknown, expectedLanguage: string): value i
     typeof product.nombre === "string" &&
     (product.empresa === null || typeof product.empresa === "string") &&
     typeof product.descripcion === "string" &&
-    typeof product.imagen_url === "string" &&
+    isSafePublicAssetPath(product.imagen_url) &&
     typeof product.categoria === "string" &&
     (product.fecha === null || isValidApiDateString(product.fecha))
   );

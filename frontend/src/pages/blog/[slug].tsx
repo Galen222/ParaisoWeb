@@ -18,6 +18,7 @@ import useCurrentUrl from "../../hooks/useCurrentUrl";
 import { formatBlogDate } from "../../utils/blogDate";
 import { normalizeBlogSlug } from "../../utils/blogSlug";
 import { buildLocalizedBlogPath } from "../../utils/blogPath";
+import { getPublicSiteUrl } from "../../utils/publicSiteUrl";
 
 // Mensajes de traducción
 import esMessages from "../../locales/es/common.json";
@@ -87,7 +88,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
   const currentLocale = intl.locale || "es"; // Idioma actual con fallback a "es"
   const currentMessages = messages[currentLocale] || messages["es"]; // Mensajes en el idioma actual
   const currentUrl = useCurrentUrl(); // URL actual
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const siteUrl = getPublicSiteUrl();
   const normalizedSiteUrl = siteUrl.replace(/\/+$/, "");
   const publicationDate = blogDetails ? formatBlogDate(blogDetails.fecha_publicacion, currentLocale) : "";
   const updateDate = blogDetails?.fecha_actualizacion ? formatBlogDate(blogDetails.fecha_actualizacion, currentLocale) : null;
@@ -295,7 +296,11 @@ export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = asyn
   }
 
   // Cargar los datos del artículo del blog
-  const blogData = await loadBlogData(normalizedSlug, locale);
+  const blogData = await loadBlogData(
+    normalizedSlug,
+    locale,
+    getQuerySuffix(context.resolvedUrl)
+  );
 
   if (blogData.notFound) {
     return { notFound: true };

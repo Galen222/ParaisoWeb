@@ -12,6 +12,7 @@ import styles from "../styles/pages/politica-privacidad.module.css";
 import { NextSeo, OrganizationJsonLd } from "next-seo";
 import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
+import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 // Importa los mensajes de traducción
 import esMessages from "../locales/es/common.json";
 import enMessages from "../locales/en/common.json";
@@ -43,7 +44,7 @@ export type PoliticaPrivacidadPageComponent = NextPage & { pageTitleText?: strin
 const PoliticaPrivacidadPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const siteUrl = getPublicSiteUrl();
   const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
   const currentMessages = messages[currentLocale] || messages["es"];
 

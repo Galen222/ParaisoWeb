@@ -484,7 +484,7 @@ test("la fase 8 redirige un slug existente en otro idioma a su traducción canó
   assert.match(blogLoader, /getBlogFallbackLocales\(locale\)/);
   assert.match(blogLoader, /error\.response\?\.status === 404/);
   assert.match(blogLoader, /getBlogPostById\(blogDetails\.id_noticia, locale, token\)/);
-  assert.match(blogLoader, /destination: buildLocalizedBlogPath\(locale, normalizedTranslatedSlug\)/);
+  assert.match(blogLoader, /destination: buildLocalizedBlogPath\(locale, normalizedTranslatedSlug, routeSuffix\)/);
 });
 
 test("Google Analytics ignora el identificador público de ejemplo y formatos inválidos", async () => {

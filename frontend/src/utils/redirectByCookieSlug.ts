@@ -1,11 +1,13 @@
 // utils/redirectByCookieSlug.ts
 
+import axios from "axios";
 import { GetServerSidePropsContext } from "next";
 import { BlogPost, getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
 import { isSameRequestHost } from "./requestHost";
 import { normalizeBlogSlug } from "./blogSlug";
 import { buildLocalizedBlogPath } from "./blogPath";
+import { getBlogFallbackLocales } from "./blogLocaleFallback";
 
 const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
@@ -54,6 +56,28 @@ const getQuerySuffix = (resolvedUrl: string): string => {
   return queryIndex >= 0 ? resolvedUrl.slice(queryIndex) : "";
 };
 
+
+/** Localiza la noticia aunque el enlace conserve el slug de otro idioma. */
+const findBlogPostBySlug = async (
+  slug: string,
+  locale: string,
+  token: string
+): Promise<BlogPost | null> => {
+  const locales = [locale, ...getBlogFallbackLocales(locale)];
+
+  for (const candidateLocale of locales) {
+    try {
+      return await getBlogPostBySlug(slug, token, candidateLocale);
+    } catch (error: unknown) {
+      if (!(axios.isAxiosError(error) && error.response?.status === 404)) {
+        throw error;
+      }
+    }
+  }
+
+  return null;
+};
+
 /**
  * Redirige a un slug basado en la cookie de idioma si corresponde.
  *
@@ -94,10 +118,13 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
   if (localeCookie && SUPPORTED_LOCALES.has(localeCookie) && locale !== localeCookie) {
     try {
       const token = await getTimedToken();
-      const blogPost = await getBlogPostBySlug(normalizedSlug, token, locale);
+      const blogPost = await findBlogPostBySlug(normalizedSlug, locale, token);
 
       if (blogPost) {
-        const translatedBlogPost = await getBlogPostById(blogPost.id_noticia, localeCookie, token);
+        const translatedBlogPost =
+          blogPost.idioma === localeCookie
+            ? blogPost
+            : await getBlogPostById(blogPost.id_noticia, localeCookie, token);
 
         const normalizedTranslatedSlug = normalizeBlogSlug(translatedBlogPost?.slug);
         if (

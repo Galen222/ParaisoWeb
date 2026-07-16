@@ -12,6 +12,7 @@ import { NextSeo, OrganizationJsonLd } from "next-seo"; // Importa NextSeo para 
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import useCurrentUrl from "../hooks/useCurrentUrl";
+import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 // Importa los mensajes de traducción
 import esMessages from "../locales/es/common.json";
 import enMessages from "../locales/en/common.json";
@@ -38,7 +39,7 @@ export type NosotrosPageComponent = NextPage & { pageTitleText?: string };
 const NosotrosPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const siteUrl = getPublicSiteUrl();
   const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
   const currentMessages = messages[currentLocale] || messages["es"];
 

@@ -2,8 +2,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 import { useRouter } from "next/router";
 import { buildCanonicalPageUrl } from "../utils/canonicalUrl";
-
-const DEFAULT_SITE_URL = "https://www.paraisodeljamon.com";
+import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 
 /**
  * Hook personalizado para obtener la URL actual de la página.
@@ -15,7 +14,7 @@ const DEFAULT_SITE_URL = "https://www.paraisodeljamon.com";
  */
 const useCurrentUrl = (): string => {
   const router = useRouter();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || DEFAULT_SITE_URL;
+  const siteUrl = getPublicSiteUrl();
 
   const subscribe = useCallback(
     (onUrlChange: () => void): (() => void) => {

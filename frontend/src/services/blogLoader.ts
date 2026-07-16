@@ -43,9 +43,14 @@ const getErrorMessageForLog = (error: unknown): string => {
  *
  * @param {string} slug - Slug del artículo.
  * @param {string} locale - Idioma actual.
+ * @param {string} routeSuffix - Query original que debe conservar una redirección canónica.
  * @returns {Promise<BlogDataResult>} Objeto con detalles del artículo, redirección, 404 o error.
  */
-export async function loadBlogData(slug: string, locale: string): Promise<BlogDataResult> {
+export async function loadBlogData(
+  slug: string,
+  locale: string,
+  routeSuffix = ""
+): Promise<BlogDataResult> {
   // Evita solicitar la API con parámetros que no pueden corresponder a una ruta válida.
   const normalizedSlug = normalizeBlogSlug(slug);
   if (normalizedSlug === null || !isSupportedBlogLocale(locale)) {
@@ -113,7 +118,7 @@ export async function loadBlogData(slug: string, locale: string): Promise<BlogDa
 
       return {
         redirect: {
-          destination: buildLocalizedBlogPath(locale, normalizedTranslatedSlug),
+          destination: buildLocalizedBlogPath(locale, normalizedTranslatedSlug, routeSuffix),
           permanent: false,
         },
       };

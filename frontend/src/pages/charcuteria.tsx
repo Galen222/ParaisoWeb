@@ -15,6 +15,7 @@ import { NextSeo, OrganizationJsonLd } from "next-seo";
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import useCurrentUrl from "../hooks/useCurrentUrl";
+import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 import { usePagination } from "../hooks/usePagination";
 import { Paginator } from "../components/Paginator";
 // Importa los mensajes de traducción
@@ -50,7 +51,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
   // Hooks de internacionalización y URL
   const intl = useIntl();
   const currentUrl = useCurrentUrl();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.paraisodeljamon.com";
+  const siteUrl = getPublicSiteUrl();
   const currentLocale = intl.locale || "es";
   const currentMessages = messages[currentLocale] || messages["es"];
 
