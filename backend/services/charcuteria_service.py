@@ -56,7 +56,8 @@ class CharcuteriaService:
             .where(models.Charcuteria.idioma == idioma)
             .order_by(
                 models.Charcuteria.categoria.asc(),
-                models.Charcuteria.nombre.asc()
+                models.Charcuteria.nombre.asc(),
+                models.Charcuteria.id_producto.asc()
             )
         )
         return list(result.scalars().all())

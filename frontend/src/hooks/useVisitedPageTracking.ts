@@ -6,6 +6,7 @@ import { getCookieValue, setClientCookie } from "../utils/cookieUtils";
 
 const MAX_VISITED_PAGES = 25;
 const MAX_VISITED_COOKIE_VALUE_LENGTH = 2048;
+const MAX_VISITED_PAGE_LENGTH = 200;
 
 /** Decodifica valores nuevos y conserva cookies antiguas o parcialmente dañadas. */
 const decodeVisitedPage = (value: string): string => {
@@ -51,7 +52,10 @@ export function useVisitedPageTracking(currentPage: string) {
 
     /* console.log("El consentimiento de cookies de análisis ha sido aceptado."); */
     const normalizedCurrentPage = currentPage.trim();
-    if (!normalizedCurrentPage) {
+    if (
+      !normalizedCurrentPage ||
+      normalizedCurrentPage.length > MAX_VISITED_PAGE_LENGTH
+    ) {
       return;
     }
 
@@ -59,7 +63,7 @@ export function useVisitedPageTracking(currentPage: string) {
     const pagesVisited = (visitedPageValue ? visitedPageValue.split(",") : [])
       .map(decodeVisitedPage)
       .map((page) => page.trim())
-      .filter(Boolean);
+      .filter((page) => page.length > 0 && page.length <= MAX_VISITED_PAGE_LENGTH);
     const uniquePagesVisited = Array.from(new Set(pagesVisited));
 
     if (uniquePagesVisited.includes(normalizedCurrentPage)) {

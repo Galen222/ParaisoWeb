@@ -1,0 +1,5 @@
+Al aplicar este ZIP sobre la fase 10, elimina estos archivos antiguos porque han sido renombrados:
+
+frontend/tests/phase10.test.mjs
+frontend/tests/phase9.test.mjs
+backend/tests/test_phase10_contact_normalization.py

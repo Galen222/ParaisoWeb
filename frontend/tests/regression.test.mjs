@@ -179,7 +179,7 @@ test("los componentes corregidos conservan HTML válido y controles nativos", as
 });
 
 
-test("la fase 3 preserva el email escrito y usa actualizaciones de estado no obsoletas", async () => {
+test("el formulario preserva el email escrito y usa actualizaciones de estado no obsoletas", async () => {
   const [form, menuContext] = await Promise.all([
     readFile(new URL("../src/components/Form.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/contexts/MenuContext.tsx", import.meta.url), "utf8"),
@@ -191,7 +191,7 @@ test("la fase 3 preserva el email escrito y usa actualizaciones de estado no obs
   assert.match(menuContext, /setMobileMenu\(\(isOpen\) => !isOpen\)/);
 });
 
-test("los menús, tarjetas y paginador de fase 3 son utilizables con teclado", async () => {
+test("los menús, tarjetas y paginador son utilizables con teclado", async () => {
   const [navbar, charcuteria, paginator] = await Promise.all([
     readFile(new URL("../src/components/Navbar.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/pages/charcuteria.tsx", import.meta.url), "utf8"),
@@ -252,7 +252,7 @@ test("las claves accesibles nuevas existen en los tres idiomas", async () => {
   }
 });
 
-test("la fase 4 retira del foco los menús ocultos y limpia su estado", async () => {
+test("los menús ocultos se retiran del foco y limpian su estado", async () => {
   const [navbar, menuContext, navbarStyles] = await Promise.all([
     readFile(new URL("../src/components/Navbar.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/contexts/MenuContext.tsx", import.meta.url), "utf8"),
@@ -473,7 +473,7 @@ test("la política explica que rechazar cookies se recuerda durante un año", as
   }
 });
 
-test("la fase 8 redirige un slug existente en otro idioma a su traducción canónica", async () => {
+test("un slug existente en otro idioma redirige a su traducción canónica", async () => {
   const [blogLoader, localeFallback] = await Promise.all([
     readFile(new URL("../src/services/blogLoader.ts", import.meta.url), "utf8"),
     loadTypeScriptModule("../src/utils/blogLocaleFallback.ts"),

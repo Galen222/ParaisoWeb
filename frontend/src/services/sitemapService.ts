@@ -142,7 +142,9 @@ export const getSitemapBlogEntries = async (): Promise<SitemapBlogEntry[]> => {
       }
     }
 
-    return Array.from(uniqueEntries.values());
+    return Array.from(uniqueEntries.values()).sort((left, right) =>
+      left.id_noticia - right.id_noticia || left.idioma.localeCompare(right.idioma)
+    );
   } finally {
     clearTimeout(timeoutId);
   }

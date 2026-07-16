@@ -58,9 +58,10 @@ class BlogService:
             .where(models.Blog.idioma == idioma)
             .order_by(
                 func.coalesce(
-                    models.Blog.fecha_actualizacion, 
+                    models.Blog.fecha_actualizacion,
                     models.Blog.fecha_publicacion
-                ).desc()
+                ).desc(),
+                models.Blog.id_noticia.desc()
             )
         )
         return list(result.scalars().all())

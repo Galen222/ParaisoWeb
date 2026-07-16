@@ -1,4 +1,4 @@
-"""Regresiones de normalización del formulario incorporadas en la fase 10."""
+"""Pruebas de normalización de campos del formulario de contacto."""
 
 import unittest
 
