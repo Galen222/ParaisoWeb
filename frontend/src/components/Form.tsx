@@ -366,7 +366,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
             accept=".jpg,.jpeg,.pdf,image/jpeg,application/pdf"
             className="d-none"
             onChange={handleFileChange}
-            required={formData.reason === "factura" || formData.reason === "curriculum"}
+            aria-required={formData.reason === "factura" || formData.reason === "curriculum"}
           />
           <button
             type="button"

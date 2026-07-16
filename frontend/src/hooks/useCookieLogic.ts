@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
 import {
+  COOKIE_CONSENT_CLEARED_EVENT,
   COOKIE_CONSENT_NAME,
   createDeviceCookie,
   getCookieValue,
-  isGoogleAnalyticsCookie,
   revokeCookieCategories,
   saveLocalePreference,
   saveCookieConsentPreference,
@@ -107,7 +107,7 @@ export function useCookieLogic(): CookieLogic {
   /**
    * Efecto para restaurar la elección guardada y establecer el estado inicial.
    * - Respeta la aceptación, el rechazo o la selección personalizada persistida.
-   * - Mantiene la detección de cookies existentes para elecciones anteriores.
+   * - No interpreta cookies antiguas o aisladas como una aceptación explícita de la política actual.
    * - Muestra el modal de cookies si no hay una elección previa.
    */
   useEffect(() => {
@@ -161,36 +161,17 @@ export function useCookieLogic(): CookieLogic {
         return;
       }
 
-      // Compatibilidad con elecciones anteriores: comprueba las cookies opcionales ya existentes.
-      const cookieValuePersonalization = getCookieValue("_locale");
-      const hasValidPersonalizationCookie =
-        cookieValuePersonalization !== undefined && ["es", "en", "de"].includes(cookieValuePersonalization);
-      const hasAnalysisCookie = Boolean(getCookieValue("_visited") || getCookieValue("_device"));
-      const hasGoogleAnalyticsCookie = document.cookie
-        .split(";")
-        .map((cookie) => cookie.trim().split("=", 1)[0])
-        .some(isGoogleAnalyticsCookie);
-
-      if (hasValidPersonalizationCookie) {
-        setAcceptCookiePersonalization(true);
-        setCookieConsentPersonalization(true);
-      }
-      if (hasAnalysisCookie) {
-        setAcceptCookieAnalysis(true);
-        setCookieConsentAnalysis(true);
-      }
-      if (hasGoogleAnalyticsCookie) {
-        setAcceptCookieAnalysisGoogle(true);
-        setCookieConsentAnalysisGoogle(true);
-        initGA();
-      }
-
-      // Muestra el modal únicamente cuando no existe una elección ni cookies opcionales válidas previas.
-      if (!hasAnalysisCookie && !hasGoogleAnalyticsCookie && !hasValidPersonalizationCookie) {
-        setShowCookieModal(true);
-      } else {
-        setCookiesModalClosed(true);
-      }
+      // Una cookie opcional aislada no demuestra que el usuario aceptara la versión actual
+      // de la política. Se retira cualquier resto anterior y se solicita una decisión explícita.
+      revokeCookieCategories({ analysis: true, googleAnalytics: true, personalization: true });
+      setAcceptCookieAnalysis(false);
+      setCookieConsentAnalysis(false);
+      setAcceptCookieAnalysisGoogle(false);
+      setCookieConsentAnalysisGoogle(false);
+      setAcceptCookiePersonalization(false);
+      setCookieConsentPersonalization(false);
+      setShowCookieModal(true);
+      setCookiesModalClosed(false);
     };
 
     // Restaura la preferencia fuera del cuerpo síncrono del efecto y cancela la tarea al desmontar.
@@ -215,6 +196,21 @@ export function useCookieLogic(): CookieLogic {
       saveLocalePreference(currentLocale);
     }
   }, [router.locale, cookieConsentPersonalization]);
+
+  /**
+   * Si el usuario borra las cookies desde la política, vuelve a abrir el diálogo en la misma
+   * navegación. Sin este evento la cookie desaparecía, pero la interfaz seguía cerrada hasta recargar.
+   */
+  useEffect(() => {
+    const handleConsentCleared = () => {
+      setIsReviewingConsentPolicy(false);
+      setShowCookieModal(true);
+      setCookiesModalClosed(false);
+    };
+
+    window.addEventListener(COOKIE_CONSENT_CLEARED_EVENT, handleConsentCleared);
+    return () => window.removeEventListener(COOKIE_CONSENT_CLEARED_EVENT, handleConsentCleared);
+  }, []);
 
 
   /**

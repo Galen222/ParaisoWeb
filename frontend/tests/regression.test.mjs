@@ -282,6 +282,48 @@ test("el diálogo de cookies tiene destino legal real y semántica accesible", a
   assert.doesNotMatch(cookie, /href="#"/);
 });
 
+test("el diálogo de cookies contiene el foco y lo restaura al cerrarse", async () => {
+  const cookie = await readFile(
+    new URL("../src/components/Cookie.tsx", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(cookie, /const dialogRef = useRef<HTMLDivElement>\(null\)/);
+  assert.match(cookie, /dialogRef\.current\?\.focus\(\{ preventScroll: true \}\)/);
+  assert.match(cookie, /previouslyFocusedElement\.focus\(\{ preventScroll: true \}\)/);
+  assert.match(cookie, /event\.key !== "Tab"/);
+  assert.match(cookie, /tabIndex=\{-1\}/);
+  assert.match(cookie, /onKeyDown=\{handleDialogKeyDown\}/);
+  assert.match(cookie, /aria-describedby="cookie-dialog-description"/);
+});
+
+test("el formulario no usa validación nativa sobre un input de archivo oculto", async () => {
+  const form = await readFile(
+    new URL("../src/components/Form.tsx", import.meta.url),
+    "utf8"
+  );
+  const fileInput = form.match(/<input\s+ref=\{fileInputRef\}[\s\S]*?\/>/)?.[0] ?? "";
+
+  assert.match(fileInput, /className="d-none"/);
+  assert.match(fileInput, /aria-required=\{formData\.reason === "factura" \|\| formData\.reason === "curriculum"\}/);
+  assert.doesNotMatch(fileInput, /(^|\s)required=/);
+});
+
+test("borrar o invalidar el consentimiento vuelve a solicitar una decisión explícita", async () => {
+  const [cookieUtils, cookieLogic] = await Promise.all([
+    readFile(new URL("../src/utils/cookieUtils.ts", import.meta.url), "utf8"),
+    readFile(new URL("../src/hooks/useCookieLogic.ts", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(cookieUtils, /export const COOKIE_CONSENT_CLEARED_EVENT/);
+  assert.match(cookieUtils, /window\.dispatchEvent\(new Event\(COOKIE_CONSENT_CLEARED_EVENT\)\)/);
+  assert.match(cookieUtils, /setAcceptCookiePersonalization\(false\);[\s\S]*setCookieConsentAnalysisGoogle\(false\);[\s\S]*await disableGA\(\)/);
+
+  assert.match(cookieLogic, /window\.addEventListener\(COOKIE_CONSENT_CLEARED_EVENT, handleConsentCleared\)/);
+  assert.match(cookieLogic, /revokeCookieCategories\(\{ analysis: true, googleAnalytics: true, personalization: true \}\);[\s\S]*setShowCookieModal\(true\);/);
+  assert.doesNotMatch(cookieLogic, /hasValidPersonalizationCookie|hasAnalysisCookie|hasGoogleAnalyticsCookie/);
+});
+
 test("un tipo de carrusel desconocido no ejecuta undefined.map", async () => {
   const carousel = await readFile(
     new URL("../src/components/Carousel.tsx", import.meta.url),

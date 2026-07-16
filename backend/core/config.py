@@ -136,8 +136,8 @@ class Settings(BaseSettings):
     @field_validator("SMTP_PASSWORD")
     @classmethod
     def validate_smtp_password(cls, value: str) -> str:
-        """Evita aceptar una contraseña vacía que solo fallaría al enviar el correo."""
-        if value == "":
+        """Evita aceptar una contraseña vacía o compuesta solo por espacios."""
+        if not value.strip():
             raise ValueError("SMTP_PASSWORD no puede estar vacía")
         return value
 
@@ -153,19 +153,26 @@ class Settings(BaseSettings):
     @field_validator("CORS_ALLOWED_ORIGINS")
     @classmethod
     def validate_cors_allowed_origins(cls, value: str) -> str:
-        """Rechaza orígenes CORS ambiguos o incompatibles con credenciales."""
-        origins = [origin.strip().rstrip("/") for origin in value.split(",") if origin.strip()]
-        if not origins:
+        """Valida y normaliza orígenes CORS para que coincidan con el formato del navegador."""
+        raw_origins = [origin.strip() for origin in value.split(",") if origin.strip()]
+        if not raw_origins:
             raise ValueError("CORS_ALLOWED_ORIGINS debe contener al menos un origen")
 
-        for origin in origins:
+        normalized_origins: list[str] = []
+        for origin in raw_origins:
             if origin == "*":
                 raise ValueError("CORS_ALLOWED_ORIGINS no puede usar '*' con credenciales")
 
-            parsed = urlsplit(origin)
+            try:
+                parsed = urlsplit(origin)
+                port = parsed.port
+            except ValueError as error:
+                raise ValueError(f"Origen CORS no válido: {origin}") from error
+
             if (
-                parsed.scheme not in {"http", "https"}
+                parsed.scheme.lower() not in {"http", "https"}
                 or not parsed.netloc
+                or parsed.hostname is None
                 or parsed.username is not None
                 or parsed.password is not None
                 or parsed.path not in {"", "/"}
@@ -174,7 +181,43 @@ class Settings(BaseSettings):
             ):
                 raise ValueError(f"Origen CORS no válido: {origin}")
 
-        return ",".join(dict.fromkeys(origins))
+            hostname = parsed.hostname
+            try:
+                parsed_ip = ip_address(hostname)
+                normalized_host = (
+                    f"[{parsed_ip.compressed}]" if isinstance(parsed_ip, IPv6Address) else str(parsed_ip)
+                )
+            except ValueError:
+                candidate = hostname[:-1] if hostname.endswith(".") else hostname
+                try:
+                    ascii_host = candidate.encode("idna").decode("ascii").lower()
+                except UnicodeError as error:
+                    raise ValueError(f"Origen CORS no válido: {origin}") from error
+
+                labels = ascii_host.split(".")
+                if (
+                    len(ascii_host) > 253
+                    or not labels
+                    or any(
+                        not label
+                        or len(label) > 63
+                        or label.startswith("-")
+                        or label.endswith("-")
+                        or any(not (character.isalnum() or character == "-") for character in label)
+                        for label in labels
+                    )
+                ):
+                    raise ValueError(f"Origen CORS no válido: {origin}")
+                normalized_host = f"{ascii_host}." if hostname.endswith(".") else ascii_host
+
+            scheme = parsed.scheme.lower()
+            default_port = 80 if scheme == "http" else 443
+            port_suffix = "" if port is None or port == default_port else f":{port}"
+            normalized_origin = f"{scheme}://{normalized_host}{port_suffix}"
+            if normalized_origin not in normalized_origins:
+                normalized_origins.append(normalized_origin)
+
+        return ",".join(normalized_origins)
 
 
     @field_validator("TRUSTED_PROXY_IPS")

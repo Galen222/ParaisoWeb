@@ -1,6 +1,6 @@
 // components/Cookie.tsx
 
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
 import { useIntl } from "react-intl";
 import Link from "next/link";
 import { useCookieConsent } from "../contexts/CookieContext";
@@ -41,6 +41,7 @@ const Cookie: React.FC<CookieProps> = ({
 }: CookieProps): React.JSX.Element => {
   const intl = useIntl();
   const [isCustomizing, setIsCustomizing] = useState(false); // Estado para manejar si se están personalizando las cookies
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   // Obtiene y maneja el estado de consentimiento de cookies del contexto
   const {
@@ -114,18 +115,76 @@ const Cookie: React.FC<CookieProps> = ({
     setIsCustomizing(true);
   };
 
+  /**
+   * Coloca el foco dentro del diálogo al abrirlo y lo devuelve al elemento anterior al cerrarse.
+   * De este modo el teclado no continúa navegando por el contenido oculto tras el modal.
+   */
+  useEffect(() => {
+    const previouslyFocusedElement = document.activeElement instanceof HTMLElement
+      ? document.activeElement
+      : null;
+
+    dialogRef.current?.focus({ preventScroll: true });
+
+    return () => {
+      if (previouslyFocusedElement?.isConnected) {
+        previouslyFocusedElement.focus({ preventScroll: true });
+      }
+    };
+  }, []);
+
+  /** Mantiene la navegación por tabulador dentro del diálogo modal. */
+  const handleDialogKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key !== "Tab") {
+      return;
+    }
+
+    const dialog = dialogRef.current;
+    if (!dialog) {
+      return;
+    }
+
+    const focusableElements = Array.from(
+      dialog.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )
+    ).filter((element) => !element.hasAttribute("hidden") && element.getAttribute("aria-hidden") !== "true");
+
+    if (focusableElements.length === 0) {
+      event.preventDefault();
+      dialog.focus();
+      return;
+    }
+
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+    const activeElement = document.activeElement;
+
+    if (event.shiftKey && (activeElement === firstElement || activeElement === dialog)) {
+      event.preventDefault();
+      lastElement.focus();
+    } else if (!event.shiftKey && activeElement === lastElement) {
+      event.preventDefault();
+      firstElement.focus();
+    }
+  };
+
   return (
     <div className={styles.cookieModalBackdrop}>
       <div
+        ref={dialogRef}
         className={styles.cookieModal}
         role="dialog"
         aria-modal="true"
         aria-labelledby="cookie-dialog-title"
+        aria-describedby="cookie-dialog-description"
+        tabIndex={-1}
+        onKeyDown={handleDialogKeyDown}
       >
         <p id="cookie-dialog-title" role="heading" aria-level={2} className="fs-16p fw-bold">
           {intl.formatMessage({ id: "cookie_Texto1" })}
         </p>
-        <p>{intl.formatMessage({ id: "cookie_Texto2" })}</p>
+        <p id="cookie-dialog-description">{intl.formatMessage({ id: "cookie_Texto2" })}</p>
 
         {/* Sección de personalización de cookies si se está en modo de personalización */}
         {isCustomizing && (

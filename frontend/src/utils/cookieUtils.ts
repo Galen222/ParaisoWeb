@@ -6,6 +6,9 @@ import { disableGA } from "../utils/gaUtils";
 /** Nombre de la cookie necesaria que conserva la elección de consentimiento. */
 export const COOKIE_CONSENT_NAME = "_cookie_consent";
 
+/** Evento emitido al borrar la elección para volver a solicitar el consentimiento sin recargar. */
+export const COOKIE_CONSENT_CLEARED_EVENT = "paraisoweb:cookie-consent-cleared";
+
 /** Categorías de cookies opcionales que deben revocarse. */
 export interface CookieCategoriesToRevoke {
   analysis?: boolean;
@@ -92,6 +95,9 @@ export const saveCookieConsentPreference = (preference: string): void => {
 /** Elimina la elección guardada para que el modal pueda volver a solicitarla. */
 export const clearCookieConsentPreference = (): void => {
   expireCookie(COOKIE_CONSENT_NAME);
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event(COOKIE_CONSENT_CLEARED_EVENT));
+  }
 };
 
 /** Guarda el idioma elegido durante un año. */
@@ -172,28 +178,22 @@ export const deleteCookies = async (
     // const domains = ["paraisodeljamon.com", ".paraisodeljamon.com"]; // Producción
     // const domains = [".asuscomm.com"]; // Desarrollo
     const domains = [".asuscomm.com", "paraisodeljamon.com", ".paraisodeljamon.com"]; // En Servidor
-    let hasAnalysisCookie = false;
-    let hasGoogleAnalyticsCookie = false;
-    let hasPersonalizationCookie = false;
 
     for (const cookie of cookies) {
       const [cookieName] = cookie.split("=");
 
       // Borra la cookie de personalización aunque el estado de React se haya quedado desincronizado.
       if (cookieName === "_locale") {
-        hasPersonalizationCookie = true;
         expireCookie(cookieName);
       }
 
       // Borra las cookies de análisis que existan realmente, con independencia del estado en memoria.
       if (cookieName === "_device" || cookieName === "_visited") {
-        hasAnalysisCookie = true;
         expireCookie(cookieName);
       }
 
       // Las cookies de Google pueden ser host-only o pertenecer al dominio raíz. Se intentan ambas variantes.
       if (isGoogleAnalyticsCookie(cookieName)) {
-        hasGoogleAnalyticsCookie = true;
         expireCookie(cookieName);
         domains.forEach((domain) => {
           expireCookie(cookieName, domain);
@@ -202,20 +202,15 @@ export const deleteCookies = async (
       }
     }
 
-    // Sincroniza el contexto aunque las cookies ya hubieran desaparecido por caducidad o por otra pestaña.
-    if (cookieConsentPersonalization || hasPersonalizationCookie) {
-      setAcceptCookiePersonalization(false);
-      setCookieConsentPersonalization(false);
-    }
-    if (cookieConsentAnalysis || hasAnalysisCookie) {
-      setAcceptCookieAnalysis(false);
-      setCookieConsentAnalysis(false);
-    }
-    if (cookieConsentAnalysisGoogle || hasGoogleAnalyticsCookie) {
-      setAcceptCookieAnalysisGoogle(false);
-      setCookieConsentAnalysisGoogle(false);
-      await disableGA();
-    }
+    // Sincroniza siempre el contexto aunque las cookies ya hubieran desaparecido por caducidad,
+    // por otra pestaña o antes de que se confirmara una selección del modal.
+    setAcceptCookiePersonalization(false);
+    setCookieConsentPersonalization(false);
+    setAcceptCookieAnalysis(false);
+    setCookieConsentAnalysis(false);
+    setAcceptCookieAnalysisGoogle(false);
+    setCookieConsentAnalysisGoogle(false);
+    await disableGA();
 
     // Borra también la cookie necesaria que conserva la elección del usuario.
     clearCookieConsentPreference();

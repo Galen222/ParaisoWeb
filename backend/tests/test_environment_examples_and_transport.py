@@ -163,12 +163,13 @@ class EnvironmentExampleTests(unittest.TestCase):
                     SMTP_PASSWORD="secret",
                 )
 
-        with self.assertRaises(ValidationError):
-            Settings(
-                **common,
-                SMTP_SERVER="smtp.example.com",
-                SMTP_PASSWORD="",
-            )
+        for invalid_password in ("", "   ", "\t\n"):
+            with self.subTest(password=repr(invalid_password)), self.assertRaises(ValidationError):
+                Settings(
+                    **common,
+                    SMTP_SERVER="smtp.example.com",
+                    SMTP_PASSWORD=invalid_password,
+                )
 
         configured = Settings(
             **common,
@@ -189,7 +190,7 @@ class EnvironmentExampleTests(unittest.TestCase):
             secret_key="test-secret-key-with-at-least-32-characters",
             token_interval_seconds=60,
             CORS_ALLOWED_ORIGINS=(
-                "https://example.com/, http://localhost:3000, https://example.com"
+                "HTTPS://EXAMPLE.COM:443/, http://localhost:3000, https://example.com"
             ),
         )
 
@@ -214,6 +215,14 @@ class EnvironmentExampleTests(unittest.TestCase):
             Settings(**common, CORS_ALLOWED_ORIGINS="*")
         with self.assertRaises(ValidationError):
             Settings(**common, CORS_ALLOWED_ORIGINS="https://example.com/api")
+
+        for invalid_origin in (
+            "https://example.com:abc",
+            "https://example.com:70000",
+            "https://exa_mple.com",
+        ):
+            with self.subTest(origin=invalid_origin), self.assertRaises(ValidationError):
+                Settings(**common, CORS_ALLOWED_ORIGINS=invalid_origin)
 
 
     def test_trusted_proxy_ips_rechaza_hosts_y_normaliza_ipv4_mapeada(self) -> None:
