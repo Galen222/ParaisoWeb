@@ -177,6 +177,12 @@
   height: auto; /* Mantiene la proporción de la imagen */
 }
 
+/* Evita que las reglas de display del menú anulen el atributo HTML hidden. */
+.navbarMenu[hidden],
+.dropdown[hidden] {
+  display: none !important;
+}
+
 /* Contenedor para los enlaces de la barra de navegación */
 .navbarMenu {
   width: 100%; /* Ancho completo del contenedor */

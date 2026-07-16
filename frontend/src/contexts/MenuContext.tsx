@@ -1,6 +1,6 @@
 // contexts/MobileMenuContext.tsx
 
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, { createContext, useCallback, useContext, useState, ReactNode } from "react";
 
 /**
  * Interfaz para el contexto del menú.
@@ -57,13 +57,13 @@ export interface MenuProviderProps {
 export const MenuProvider: React.FC<MenuProviderProps> = ({ children }: MenuProviderProps): React.JSX.Element => {
   // Estado y funciones para el menú móvil
   const [mobileMenu, setMobileMenu] = useState(false);
-  const toggleMobileMenu = () => setMobileMenu((isOpen) => !isOpen); // Alterna siempre desde el último estado confirmado
-  const closeMobileMenu = () => setMobileMenu(false); // Cierra el menú móvil
+  const toggleMobileMenu = useCallback(() => setMobileMenu((isOpen) => !isOpen), []); // Alterna siempre desde el último estado confirmado
+  const closeMobileMenu = useCallback(() => setMobileMenu(false), []); // Cierra el menú móvil
 
   // Estado y funciones para el submenú de restaurantes
   const [restaurantsMenu, setRestaurantsMenu] = useState(false);
-  const openRestaurantsMenu = () => setRestaurantsMenu(true); // Abre el submenú de restaurantes
-  const closeRestaurantsMenu = () => setRestaurantsMenu(false); // Cierra el submenú de restaurantes
+  const openRestaurantsMenu = useCallback(() => setRestaurantsMenu(true), []); // Abre el submenú de restaurantes
+  const closeRestaurantsMenu = useCallback(() => setRestaurantsMenu(false), []); // Cierra el submenú de restaurantes
 
   return (
     <MenuContext.Provider value={{ mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu }}>

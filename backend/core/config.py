@@ -97,11 +97,49 @@ class Settings(BaseSettings):
     @field_validator("SMTP_SERVER")
     @classmethod
     def validate_smtp_server(cls, value: str) -> str:
-        """Normaliza el host SMTP y rechaza valores vacíos o con espacios/controles."""
+        """Normaliza el host SMTP y rechaza URLs, puertos y nombres inválidos."""
         normalized = value.strip()
         if not normalized or any(character.isspace() for character in normalized):
             raise ValueError("SMTP_SERVER debe contener un host sin espacios")
-        return normalized
+
+        # Las direcciones IP literales son válidas, incluidas IPv6. Para nombres DNS,
+        # se rechazan esquemas, credenciales, puertos y etiquetas no válidas antes de
+        # que aiosmtplib falle durante el primer envío.
+        try:
+            return str(ip_address(normalized))
+        except ValueError:
+            pass
+
+        candidate = normalized[:-1] if normalized.endswith(".") else normalized
+        try:
+            ascii_host = candidate.encode("idna").decode("ascii")
+        except UnicodeError as error:
+            raise ValueError("SMTP_SERVER no contiene un nombre de host válido") from error
+
+        labels = ascii_host.split(".")
+        if (
+            len(ascii_host) > 253
+            or not labels
+            or any(
+                not label
+                or len(label) > 63
+                or label.startswith("-")
+                or label.endswith("-")
+                or any(not (character.isalnum() or character == "-") for character in label)
+                for label in labels
+            )
+        ):
+            raise ValueError("SMTP_SERVER no contiene un nombre de host válido")
+
+        return f"{ascii_host}." if normalized.endswith(".") else ascii_host
+
+    @field_validator("SMTP_PASSWORD")
+    @classmethod
+    def validate_smtp_password(cls, value: str) -> str:
+        """Evita aceptar una contraseña vacía que solo fallaría al enviar el correo."""
+        if value == "":
+            raise ValueError("SMTP_PASSWORD no puede estar vacía")
+        return value
 
     @field_validator("secret_key")
     @classmethod

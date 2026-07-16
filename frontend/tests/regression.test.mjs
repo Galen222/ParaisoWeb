@@ -251,3 +251,44 @@ test("las claves accesibles nuevas existen en los tres idiomas", async () => {
     for (const key of requiredKeys) assert.equal(typeof messages[key], "string");
   }
 });
+
+test("la fase 4 retira del foco los menús ocultos y limpia su estado", async () => {
+  const [navbar, menuContext, navbarStyles] = await Promise.all([
+    readFile(new URL("../src/components/Navbar.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/contexts/MenuContext.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/styles/components/Navbar.module.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(navbar, /hidden=\{!mobileMenu\}/);
+  assert.match(navbar, /hidden=\{!restaurantsMenu\}/);
+  assert.match(navbar, /previousIsMobileRef/);
+  assert.match(navbar, /closeMobileMenu\(\);[\s\S]*closeRestaurantsMenu\(\);/);
+  assert.match(navbarStyles, /\.navbarMenu\[hidden\],[\s\S]*\.dropdown\[hidden\][\s\S]*display: none !important/);
+  assert.match(menuContext, /const closeMobileMenu = useCallback/);
+  assert.match(menuContext, /const closeRestaurantsMenu = useCallback/);
+});
+
+test("el diálogo de cookies tiene destino legal real y semántica accesible", async () => {
+  const cookie = await readFile(
+    new URL("../src/components/Cookie.tsx", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(cookie, /role="dialog"/);
+  assert.match(cookie, /aria-modal="true"/);
+  assert.match(cookie, /aria-labelledby="cookie-dialog-title"/);
+  assert.match(cookie, /href="\/politica-cookies"/);
+  assert.match(cookie, /href="\/politica-privacidad"/);
+  assert.doesNotMatch(cookie, /href="#"/);
+});
+
+test("un tipo de carrusel desconocido no ejecuta undefined.map", async () => {
+  const carousel = await readFile(
+    new URL("../src/components/Carousel.tsx", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(carousel, /const slides: Slide\[\] \| undefined/);
+  assert.match(carousel, /if \(!slides \|\| slides\.length === 0\)/);
+  assert.match(carousel, /console\.error\([\s\S]*`Carrusel no disponible:/);
+});

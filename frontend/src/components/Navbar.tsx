@@ -1,6 +1,6 @@
 // components/Navbar.tsx
 
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import type { FocusEvent, KeyboardEvent } from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
@@ -77,10 +77,22 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
   const restaurantsButtonRef = useRef<HTMLButtonElement>(null);
   const { isSticky } = useStickyNav(navbarMenuRef);
   const { isMobile } = useScreenSize();
+  const previousIsMobileRef = useRef(isMobile);
 
   const handleLinkClick = () => {
     closeMobileMenu();
+    closeRestaurantsMenu();
   };
+
+  // Al pasar de móvil a escritorio, cierra los menús para que no reaparezcan
+  // con un estado antiguo al volver a reducir el ancho de la ventana.
+  useEffect(() => {
+    if (previousIsMobileRef.current && !isMobile) {
+      closeMobileMenu();
+      closeRestaurantsMenu();
+    }
+    previousIsMobileRef.current = isMobile;
+  }, [isMobile, closeMobileMenu, closeRestaurantsMenu]);
 
   const handleDropdownClick = () => {
     if (restaurantsMenu) {
@@ -141,8 +153,8 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
                   aria-label={IMAGE_CONSTANTS.flagsAlt[lng as keyof typeof IMAGE_CONSTANTS.flagsAlt]}
                   aria-pressed={router.locale === lng}
                   onClick={() => {
+                    handleLinkClick();
                     void handleLocaleChange(lng);
-                    closeMobileMenu();
                   }}
                 >
                   <img
@@ -155,7 +167,12 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
             </div>
           </div>
         </div>
-        <div id="navbar-mobile-menu" className={`${styles.navbarMenu} ${mobileMenu ? styles.showMenu : ""}`}>
+        <div
+          id="navbar-mobile-menu"
+          className={`${styles.navbarMenu} ${mobileMenu ? styles.showMenu : ""}`}
+          hidden={!mobileMenu}
+          aria-hidden={!mobileMenu}
+        >
           <div className={styles.links}>
             <Link href="/" locale={router.locale} onClick={handleLinkClick}>
               {intl.formatMessage({ id: "navbar_inicio" })}
@@ -228,17 +245,19 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
             <div
               id="navbar-restaurants-menu"
               className={`${styles.dropdown} ${restaurantsMenu ? styles.show : styles.hide}`}
+              hidden={!restaurantsMenu}
+              aria-hidden={!restaurantsMenu}
             >
-              <Link href="/san-bernardo" locale={router.locale} onClick={closeRestaurantsMenu}>
+              <Link href="/san-bernardo" locale={router.locale} onClick={handleLinkClick}>
                 San Bernardo
               </Link>
-              <Link href="/bravo-murillo" locale={router.locale} onClick={closeRestaurantsMenu}>
+              <Link href="/bravo-murillo" locale={router.locale} onClick={handleLinkClick}>
                 Bravo Murillo
               </Link>
-              <Link href="/reina-victoria" locale={router.locale} onClick={closeRestaurantsMenu}>
+              <Link href="/reina-victoria" locale={router.locale} onClick={handleLinkClick}>
                 Reina Victoria
               </Link>
-              <Link href="/arenal" locale={router.locale} onClick={closeRestaurantsMenu}>
+              <Link href="/arenal" locale={router.locale} onClick={handleLinkClick}>
                 Arenal
               </Link>
             </div>
@@ -282,7 +301,10 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
                   className={styles.flagButton}
                   aria-label={IMAGE_CONSTANTS.flagsAlt[lng as keyof typeof IMAGE_CONSTANTS.flagsAlt]}
                   aria-pressed={router.locale === lng}
-                  onClick={() => void handleLocaleChange(lng)}
+                  onClick={() => {
+                    handleLinkClick();
+                    void handleLocaleChange(lng);
+                  }}
                 >
                   <img
                     src={IMAGE_CONSTANTS.flags[lng as keyof typeof IMAGE_CONSTANTS.flags]}

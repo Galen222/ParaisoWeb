@@ -116,8 +116,15 @@ const Cookie: React.FC<CookieProps> = ({
 
   return (
     <div className={styles.cookieModalBackdrop}>
-      <div className={styles.cookieModal}>
-        <p className="fs-16p fw-bold">{intl.formatMessage({ id: "cookie_Texto1" })}</p>
+      <div
+        className={styles.cookieModal}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cookie-dialog-title"
+      >
+        <p id="cookie-dialog-title" role="heading" aria-level={2} className="fs-16p fw-bold">
+          {intl.formatMessage({ id: "cookie_Texto1" })}
+        </p>
         <p>{intl.formatMessage({ id: "cookie_Texto2" })}</p>
 
         {/* Sección de personalización de cookies si se está en modo de personalización */}
@@ -199,7 +206,7 @@ const Cookie: React.FC<CookieProps> = ({
           <p className="d-inline">
             {intl.formatMessage({ id: "cookie_Texto4_1" })}
             <Link
-              href="#"
+              href="/politica-cookies"
               onClick={(e) => {
                 e.preventDefault();
                 onCookiesPolicyLinkClick();
@@ -210,7 +217,7 @@ const Cookie: React.FC<CookieProps> = ({
             </Link>
             {intl.formatMessage({ id: "cookie_Texto4_2" })}
             <Link
-              href="#"
+              href="/politica-privacidad"
               onClick={(e) => {
                 e.preventDefault();
                 onPrivacyPolicyLinkClick();

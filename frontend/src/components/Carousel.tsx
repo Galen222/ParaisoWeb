@@ -58,7 +58,14 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
 
   // Obtener las diapositivas correspondientes al tipo de carrusel
   const allSlides = slidesData(intl);
-  const slides: Slide[] = allSlides[carouselType];
+  const slides: Slide[] | undefined = allSlides[carouselType];
+
+  // Una clave desconocida no debe derribar la página completa con `undefined.map`.
+  // Se registra únicamente la clave técnica y se conserva un contenedor vacío.
+  if (!slides || slides.length === 0) {
+    console.error(`Carrusel no disponible: tipo desconocido "${carouselType}".`);
+    return <div className={styles.carouselContainer} />;
+  }
 
   return (
     <div className={styles.carouselContainer}>

@@ -145,6 +145,39 @@ class EnvironmentExampleTests(unittest.TestCase):
         self.assertEqual(configured.SMTP_SERVER, "smtp.example.com")
         self.assertEqual(str(configured.SMTP_USERNAME), "tests@example.com")
 
+    def test_smtp_rechaza_url_puerto_y_password_vacia(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        for invalid_host in ("https://smtp.example.com", "smtp.example.com:587"):
+            with self.subTest(host=invalid_host), self.assertRaises(ValidationError):
+                Settings(
+                    **common,
+                    SMTP_SERVER=invalid_host,
+                    SMTP_PASSWORD="secret",
+                )
+
+        with self.assertRaises(ValidationError):
+            Settings(
+                **common,
+                SMTP_SERVER="smtp.example.com",
+                SMTP_PASSWORD="",
+            )
+
+        configured = Settings(
+            **common,
+            SMTP_SERVER="2001:db8::1",
+            SMTP_PASSWORD=" secret con espacios ",
+        )
+        self.assertEqual(configured.SMTP_SERVER, "2001:db8::1")
+        self.assertEqual(configured.SMTP_PASSWORD, " secret con espacios ")
+
     def test_cors_normaliza_barras_finales_y_elimina_duplicados(self) -> None:
         settings = Settings(
             _env_file=None,
