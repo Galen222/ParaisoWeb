@@ -131,6 +131,11 @@ class EnvironmentExampleTests(unittest.TestCase):
 
         with self.assertRaises(ValidationError):
             Settings(**common, secret_key="demasiado-corta")
+        with self.assertRaises(ValidationError):
+            Settings(
+                **common,
+                secret_key="cambiar_por_una_clave_aleatoria_de_32_caracteres_o_mas",
+            )
 
         expected = "a" * 32
         configured = Settings(**common, secret_key=f"  {expected}  ")
@@ -192,7 +197,7 @@ class EnvironmentExampleTests(unittest.TestCase):
                     SMTP_PASSWORD="secret",
                 )
 
-        for invalid_password in ("", "   ", "\t\n"):
+        for invalid_password in ("", "   ", "\t\n", "cambiar_por_secreto"):
             with self.subTest(password=repr(invalid_password)), self.assertRaises(ValidationError):
                 Settings(
                     **common,

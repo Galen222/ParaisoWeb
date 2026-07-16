@@ -26,6 +26,10 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.exc import ArgumentError
 
 
+EXAMPLE_SMTP_PASSWORD = "cambiar_por_secreto"
+EXAMPLE_SECRET_KEY = "cambiar_por_una_clave_aleatoria_de_32_caracteres_o_mas"
+
+
 class Settings(BaseSettings):
     """
     Clase de configuración que gestiona las variables de entorno de la aplicación.
@@ -139,9 +143,12 @@ class Settings(BaseSettings):
     @field_validator("SMTP_PASSWORD")
     @classmethod
     def validate_smtp_password(cls, value: str) -> str:
-        """Evita aceptar una contraseña vacía o compuesta solo por espacios."""
-        if not value.strip():
+        """Evita aceptar una contraseña vacía o el valor público del archivo de ejemplo."""
+        normalized = value.strip()
+        if not normalized:
             raise ValueError("SMTP_PASSWORD no puede estar vacía")
+        if normalized == EXAMPLE_SMTP_PASSWORD:
+            raise ValueError("SMTP_PASSWORD debe sustituir el valor del archivo .env.example")
         return value
 
 
@@ -168,10 +175,12 @@ class Settings(BaseSettings):
     @field_validator("secret_key")
     @classmethod
     def validate_secret_key(cls, value: str) -> str:
-        """Exige una clave HMAC suficientemente larga y elimina espacios accidentales."""
+        """Exige una clave HMAC real, suficientemente larga, y elimina espacios accidentales."""
         normalized = value.strip()
         if len(normalized) < 32:
             raise ValueError("secret_key debe contener al menos 32 caracteres")
+        if normalized == EXAMPLE_SECRET_KEY:
+            raise ValueError("secret_key debe sustituir el valor público del archivo .env.example")
         return normalized
 
     @field_validator("CORS_ALLOWED_ORIGINS")

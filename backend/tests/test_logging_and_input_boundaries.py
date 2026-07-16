@@ -63,6 +63,20 @@ class ContactNameValidationTests(unittest.TestCase):
         self.assertEqual(modifier.name, "DʼAngelo")
 
 
+class AttachmentHeaderValidationTests(unittest.IsolatedAsyncioTestCase):
+    async def test_pdf_con_comentario_inicial_se_acepta_y_rebobina(self) -> None:
+        service = FileService()
+        upload = UploadFile(
+            file=BytesIO(b"comentario previo\n%PDF-1.7\ncontenido"),
+            filename="documento.pdf",
+        )
+
+        mime_type = await service.validate_file_headers(upload)
+
+        self.assertEqual(mime_type, "application/pdf")
+        self.assertEqual(await upload.read(5), b"comen")
+
+
 class AttachmentSizeStatusTests(unittest.IsolatedAsyncioTestCase):
     async def test_archivo_sobredimensionado_devuelve_413_si_el_tamano_es_conocido(self) -> None:
         service = FileService()

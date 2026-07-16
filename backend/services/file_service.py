@@ -115,16 +115,20 @@ class FileService:
             first_chunk = await file.read(8192)
             await file.seek(0)  # Regresar el puntero del archivo al inicio
 
-            # Detectar tipo MIME usando filetype
+            # Detectar tipo MIME usando filetype. Algunos PDF válidos incluyen unos pocos
+            # bytes de comentario antes de `%PDF-`; se aplica el mismo límite de 1024 bytes
+            # que usa el frontend, pero solo cuando ninguna otra firma ha sido reconocida.
             kind = filetype.guess(first_chunk)
-            if kind is None:
+            if kind is not None:
+                mime_type = kind.mime
+            elif b"%PDF-" in first_chunk[:1024]:
+                mime_type = "application/pdf"
+            else:
                 logger.error(f"{ANSI_RED}No se pudo determinar el tipo de archivo | {file_log_context(file)}{ANSI_RESET}")
                 raise HTTPException(
                     status_code=400,
                     detail="No se pudo determinar el tipo de archivo"
                 )
-
-            mime_type = kind.mime
 
             if mime_type not in self.ALLOWED_MIME_TYPES:
                 logger.error(f"{ANSI_RED}Tipo de archivo no permitido: {mime_type} | {file_log_context(file)}{ANSI_RESET}")

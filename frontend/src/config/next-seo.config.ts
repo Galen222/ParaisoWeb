@@ -145,10 +145,6 @@ const getSEOConfig = (
         content: "El Paraíso Del Jamón",
       },
       {
-        name: "robots",
-        content: "index, follow",
-      },
-      {
         name: "keywords",
         content: messages["seo_keywords"],
       },

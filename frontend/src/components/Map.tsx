@@ -194,8 +194,9 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
     let cancelled = false;
 
     const init = async () => {
-      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "";
-      if (!apiKey) {
+      const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim() || "";
+      const isExampleApiKey = apiKey === "cambiar_por_clave_publica_de_google_maps";
+      if (!apiKey || isExampleApiKey) {
         if (!cancelled) {
           setIsLoaded(false);
           setLoadError("La clave de API de Google Maps no está configurada.");

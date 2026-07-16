@@ -422,3 +422,53 @@ test("la firma PDF puede aparecer dentro de los primeros 1024 bytes", async () =
   assert.equal(await hasPdfSignature(new Blob(["x".repeat(1020), "%PDF-1.7"])), false);
   assert.equal(await hasPdfSignature(new Blob(["contenido HTML"])), false);
 });
+
+
+test("el formulario usa la misma validación de correo que el backend sin restricciones extra de guiones", async () => {
+  const form = await readFile(
+    new URL("../src/components/Form.tsx", import.meta.url),
+    "utf8"
+  );
+
+  assert.doesNotMatch(form, /validateEmailPart/);
+  assert.doesNotMatch(form, /\[\.\-\]\{2,\}/);
+  assert.match(form, /setIsValidEmail\(validator\.isEmail\(value\)\)/);
+});
+
+test("la configuración SEO no genera una segunda directiva robots contradictoria", async () => {
+  const seoConfig = await readFile(
+    new URL("../src/config/next-seo.config.ts", import.meta.url),
+    "utf8"
+  );
+
+  assert.doesNotMatch(seoConfig, /name:\s*["']robots["']/);
+  assert.doesNotMatch(seoConfig, /content:\s*["']index, follow["']/);
+});
+
+test("la clave de ejemplo de Google Maps se trata como configuración ausente", async () => {
+  const map = await readFile(
+    new URL("../src/components/Map.tsx", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(map, /NEXT_PUBLIC_GOOGLE_MAPS_API_KEY\?\.trim\(\)/);
+  assert.match(map, /apiKey === "cambiar_por_clave_publica_de_google_maps"/);
+  assert.match(map, /if \(!apiKey \|\| isExampleApiKey\)/);
+});
+
+test("la política explica que rechazar cookies se recuerda durante un año", async () => {
+  const expectedFragments = {
+    es: ["se recordará durante un año", "retirar el consentimiento"],
+    en: ["remembered for one year", "withdraw consent"],
+    de: ["ein Jahr lang gespeichert", "Einwilligung widerrufen"],
+  };
+
+  for (const [locale, fragments] of Object.entries(expectedFragments)) {
+    const messages = JSON.parse(
+      await readFile(new URL(`../src/locales/${locale}/common.json`, import.meta.url), "utf8")
+    );
+    const explanation = messages.politicaCookies_Aceptacion_Texto3_Punto3;
+
+    for (const fragment of fragments) assert.match(explanation, new RegExp(fragment));
+  }
+});

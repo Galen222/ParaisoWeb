@@ -88,23 +88,6 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     };
   }, []);
 
-  /**
-   * Valida cada parte del email según reglas específicas
-   * @param part - Parte del email a validar
-   * @returns boolean indicando si la parte es válida
-   */
-  const validateEmailPart = (part: string): boolean => {
-    // No permite . o - al inicio o final de cada parte
-    if (part.startsWith(".") || part.startsWith("-") || part.endsWith(".") || part.endsWith("-")) {
-      return false;
-    }
-    // No permite múltiples . o - consecutivos
-    if (/[.-]{2,}/.test(part)) {
-      return false;
-    }
-    return true;
-  };
-
   const handlePrivacyCheck = (e: ChangeEvent<HTMLInputElement>) => {
     setIsPrivacyChecked(e.target.checked);
   };
@@ -154,16 +137,11 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
    */
   const handleValidateEmail = (e: ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.normalize("NFC");
-    const emailParts = value.split("@");
-    const hasValidParts =
-      emailParts.length === 2 &&
-      emailParts[0] !== "" &&
-      emailParts[1] !== "" &&
-      validateEmailPart(emailParts[0]) &&
-      validateEmailPart(emailParts[1]);
 
     setFormData((current) => ({ ...current, email: value }));
-    setIsValidEmail(hasValidParts && validator.isEmail(value));
+    // La librería aplica la sintaxis de correo completa. Añadir restricciones sobre
+    // guiones rechazaba direcciones que el backend acepta y que son válidas.
+    setIsValidEmail(validator.isEmail(value));
   };
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
