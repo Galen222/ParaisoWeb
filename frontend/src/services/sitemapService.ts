@@ -133,16 +133,40 @@ export const getSitemapBlogEntries = async (): Promise<SitemapBlogEntry[]> => {
 
     // Cada artículo solo puede aportar una URL por idioma. Si llega repetida, se
     // conserva la actualización más reciente para evitar alternates duplicados.
-    const uniqueEntries = new Map<string, SitemapBlogEntry>();
+    const uniqueArticleLocales = new Map<string, SitemapBlogEntry>();
     for (const entry of normalizedEntries) {
       const key = `${entry.id_noticia}:${entry.idioma}`;
-      const current = uniqueEntries.get(key);
+      const current = uniqueArticleLocales.get(key);
       if (!current || entry.lastmod > current.lastmod) {
-        uniqueEntries.set(key, entry);
+        uniqueArticleLocales.set(key, entry);
       }
     }
 
-    return Array.from(uniqueEntries.values()).sort((left, right) =>
+    // Dos IDs distintos con el mismo slug e idioma producirían exactamente la misma
+    // URL pública y una ruta ambigua. Se conserva la versión más reciente y, en empate,
+    // el ID menor para que el resultado sea estable entre ejecuciones.
+    const uniqueRoutes = new Map<string, SitemapBlogEntry>();
+    let duplicateRoutes = 0;
+    for (const entry of uniqueArticleLocales.values()) {
+      const routeKey = `${entry.idioma}:${entry.slug}`;
+      const current = uniqueRoutes.get(routeKey);
+      if (current) {
+        duplicateRoutes += 1;
+      }
+      if (
+        !current ||
+        entry.lastmod > current.lastmod ||
+        (entry.lastmod === current.lastmod && entry.id_noticia < current.id_noticia)
+      ) {
+        uniqueRoutes.set(routeKey, entry);
+      }
+    }
+
+    if (duplicateRoutes > 0) {
+      console.error(`Se omitieron ${duplicateRoutes} rutas duplicadas del sitemap.`);
+    }
+
+    return Array.from(uniqueRoutes.values()).sort((left, right) =>
       left.id_noticia - right.id_noticia || left.idioma.localeCompare(right.idioma)
     );
   } finally {

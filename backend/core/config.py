@@ -15,13 +15,14 @@ Dependencias:
 - Pathlib: Para manejar rutas al archivo `.env`.
 """
 
-from pydantic import EmailStr, Field, field_validator
-from pydantic_settings import BaseSettings
+import math
 from ipaddress import IPv6Address, ip_address
 from pathlib import Path
 from typing import Literal
 from urllib.parse import urlsplit
 
+from pydantic import EmailStr, Field, field_validator
+from pydantic_settings import BaseSettings
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import ArgumentError
 
@@ -108,6 +109,18 @@ class Settings(BaseSettings):
     )
     TRUSTED_PROXY_IPS: str = "127.0.0.1,::1"
     ENABLE_API_DOCS: bool = False
+
+    @field_validator(
+        "DATABASE_STARTUP_TIMEOUT_SECONDS",
+        "SMTP_TIMEOUT_SECONDS",
+        "HEALTHCHECK_DATABASE_TIMEOUT_SECONDS",
+    )
+    @classmethod
+    def validate_finite_timeout(cls, value: float) -> float:
+        """Rechaza infinito y NaN para que los límites de espera sigan siendo efectivos."""
+        if not math.isfinite(value):
+            raise ValueError("Los tiempos máximos deben ser números finitos")
+        return value
 
     @field_validator("SMTP_SERVER")
     @classmethod

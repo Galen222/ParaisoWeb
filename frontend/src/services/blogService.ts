@@ -40,6 +40,10 @@ interface ExpectedBlogIdentity {
   slug?: string;
 }
 
+/** Exige contenido visible en los campos que la interfaz necesita para renderizar el artículo. */
+const isNonBlankString = (value: unknown): value is string =>
+  typeof value === "string" && value.trim() !== "";
+
 /** Valida los idiomas que existen en las rutas y en la base de datos. */
 const requireSupportedLanguage = (idioma: string): string => {
   if (!SUPPORTED_LANGUAGES.has(idioma)) {
@@ -83,9 +87,9 @@ const isBlogPost = (value: unknown, expected: ExpectedBlogIdentity = {}): value 
     typeof post.idioma === "string" &&
     SUPPORTED_LANGUAGES.has(post.idioma) &&
     normalizedResponseSlug !== null &&
-    typeof post.titulo === "string" &&
-    typeof post.contenido === "string" &&
-    typeof post.autor === "string" &&
+    isNonBlankString(post.titulo) &&
+    isNonBlankString(post.contenido) &&
+    isNonBlankString(post.autor) &&
     isSafePublicAssetPath(post.imagen_url) &&
     (post.imagen_url_2 === undefined ||
       post.imagen_url_2 === null ||
@@ -152,16 +156,30 @@ export const getBlogPosts = async (
       console.error(`Se omitieron ${discardedPosts} artículos de blog con datos no válidos.`);
     }
 
-    // Una respuesta repetida no debe duplicar tarjetas ni claves React. Se conserva
-    // la primera aparición porque la API ya entrega el orden editorial esperado.
-    const uniquePosts = Array.from(
-      new Map(validPosts.map((post) => [post.id_noticia, post])).values()
-    );
+    // Una respuesta repetida no debe duplicar tarjetas, claves React ni rutas. Se
+    // conserva la primera aparición porque la API ya entrega el orden editorial esperado.
+    const seenIds = new Set<number>();
+    const seenSlugs = new Set<string>();
+    const uniquePosts: BlogPost[] = [];
+    let duplicatePosts = 0;
 
-    return uniquePosts.map((post) => ({
-      ...post,
-      slug: normalizeBlogSlug(post.slug) as string,
-    }));
+    for (const post of validPosts) {
+      const normalizedSlug = normalizeBlogSlug(post.slug) as string;
+      if (seenIds.has(post.id_noticia) || seenSlugs.has(normalizedSlug)) {
+        duplicatePosts += 1;
+        continue;
+      }
+
+      seenIds.add(post.id_noticia);
+      seenSlugs.add(normalizedSlug);
+      uniquePosts.push({ ...post, slug: normalizedSlug });
+    }
+
+    if (duplicatePosts > 0) {
+      console.error(`Se omitieron ${duplicatePosts} artículos de blog con identificador o slug duplicado.`);
+    }
+
+    return uniquePosts;
   } catch (error) {
     throw error;
   }

@@ -36,6 +36,10 @@ const SUPPORTED_LANGUAGES = new Set(["es", "en", "de"]);
 const getApiUrl = (): string =>
   requirePublicApiUrl(API_URL, "NEXT_PUBLIC_API_CHARCUTERIA_URL");
 
+/** Exige contenido visible en los campos obligatorios de cada tarjeta. */
+const isNonBlankString = (value: unknown): value is string =>
+  typeof value === "string" && value.trim() !== "";
+
 /** Comprueba el contrato mínimo que necesita la interfaz antes de renderizar una tarjeta. */
 const isCharcuteriaProduct = (value: unknown, expectedLanguage: string): value is CharcuteriaProduct => {
   if (typeof value !== "object" || value === null) {
@@ -48,11 +52,11 @@ const isCharcuteriaProduct = (value: unknown, expectedLanguage: string): value i
     typeof product.id_producto === "number" &&
     product.id_producto > 0 &&
     product.idioma === expectedLanguage &&
-    typeof product.nombre === "string" &&
+    isNonBlankString(product.nombre) &&
     (product.empresa === null || typeof product.empresa === "string") &&
-    typeof product.descripcion === "string" &&
+    isNonBlankString(product.descripcion) &&
     isSafePublicAssetPath(product.imagen_url) &&
-    typeof product.categoria === "string" &&
+    isNonBlankString(product.categoria) &&
     (product.fecha === null || isValidApiDateString(product.fecha))
   );
 };

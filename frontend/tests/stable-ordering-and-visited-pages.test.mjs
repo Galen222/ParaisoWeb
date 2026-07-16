@@ -8,7 +8,7 @@ test("el sitemap ordena las entradas tras eliminar duplicados", async () => {
     "utf8"
   );
 
-  assert.match(source, /Array\.from\(uniqueEntries\.values\(\)\)\.sort/);
+  assert.match(source, /Array\.from\(uniqueRoutes\.values\(\)\)\.sort/);
   assert.match(source, /left\.id_noticia - right\.id_noticia/);
   assert.match(source, /left\.idioma\.localeCompare\(right\.idioma\)/);
 });

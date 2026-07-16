@@ -13,7 +13,30 @@ import { useRouter } from "next/router";
 import { useMenu } from "../contexts/MenuContext";
 import styles from "../styles/components/Footer.module.css";
 
-const subscribeToCurrentYear = (): (() => void) => () => undefined;
+const subscribeToCurrentYear = (onStoreChange: () => void): (() => void) => {
+  let timeoutId: number | null = null;
+
+  const scheduleNextMidnight = (): void => {
+    const now = new Date();
+    const nextMidnight = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate() + 1
+    );
+    timeoutId = window.setTimeout(() => {
+      onStoreChange();
+      scheduleNextMidnight();
+    }, Math.max(1, nextMidnight.getTime() - now.getTime() + 1000));
+  };
+
+  scheduleNextMidnight();
+  return () => {
+    if (timeoutId !== null) {
+      window.clearTimeout(timeoutId);
+    }
+  };
+};
+
 const getCurrentYear = (): string => new Date().getFullYear().toString();
 const getServerCurrentYear = (): string => "";
 
@@ -27,6 +50,8 @@ const Footer: React.FC = (): React.JSX.Element => {
   // El servidor y el primer render del navegador deben producir el mismo texto.
   // El año local se completa después del montaje para no provocar una diferencia
   // de hidratación cuando la petición cruza el cambio de año o usa otra zona horaria.
+  // La suscripción se invalida cada medianoche para que una pestaña abierta durante
+  // Nochevieja muestre el año nuevo sin obligar al usuario a recargar la página.
   const currentYear = useSyncExternalStore(
     subscribeToCurrentYear,
     getCurrentYear,

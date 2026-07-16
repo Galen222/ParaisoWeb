@@ -6,7 +6,8 @@ test("blog omite filas inválidas sin perder las válidas y elimina duplicados",
   const source = await readFile(new URL("../src/services/blogService.ts", import.meta.url), "utf8");
   assert.match(source, /const validPosts = response\.data\.filter/);
   assert.match(source, /Se omitieron \$\{discardedPosts\} artículos/);
-  assert.match(source, /new Map\(validPosts\.map\(\(post\) => \[post\.id_noticia, post\]\)\)/);
+  assert.match(source, /const seenIds = new Set<number>\(\)/);
+  assert.match(source, /const seenSlugs = new Set<string>\(\)/);
 });
 
 test("charcutería omite filas inválidas sin perder las válidas y elimina duplicados", async () => {
@@ -22,4 +23,5 @@ test("el sitemap tolera entradas parciales y conserva una traducción única por
   assert.match(source, /Se omitieron \$\{discardedEntries\} entradas no válidas/);
   assert.match(source, /const key = `\$\{entry\.id_noticia\}:\$\{entry\.idioma\}`/);
   assert.match(source, /entry\.lastmod > current\.lastmod/);
+  assert.match(source, /const routeKey = `\$\{entry\.idioma\}:\$\{entry\.slug\}`/);
 });

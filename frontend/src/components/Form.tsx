@@ -139,9 +139,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     const value = e.target.value.normalize("NFC");
 
     setFormData((current) => ({ ...current, email: value }));
-    // La librería aplica la sintaxis de correo completa. Añadir restricciones sobre
-    // guiones rechazaba direcciones que el backend acepta y que son válidas.
-    setIsValidEmail(validator.isEmail(value));
+    // El backend elimina únicamente espacios exteriores antes de validar. Aplicar
+    // el mismo criterio permite pegar una dirección con espacios accidentales sin
+    // modificarla mientras se escribe ni discrepar con la respuesta del servidor.
+    setIsValidEmail(validator.isEmail(value.trim()));
   };
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -276,7 +277,11 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <form
+      onSubmit={handleSubmit}
+      className={styles.form}
+      noValidate
+    >
       <div>
         <h3 className="text-center">{intl.formatMessage({ id: "contacto_Titulo_Formulario" })}</h3>
         <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
