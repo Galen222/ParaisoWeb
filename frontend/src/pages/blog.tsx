@@ -153,7 +153,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
                     <img src={`${IMAGE_BASE_URL}${blog.imagen_url}`} alt={blog.titulo} className={styles.blogImage} />
                   </div>
                   <div className={styles.blogText}>
-                    <h3>{blog.titulo}</h3>
+                    <h3 aria-level={2}>{blog.titulo}</h3>
                   </div>
                 </div>
               </Link>

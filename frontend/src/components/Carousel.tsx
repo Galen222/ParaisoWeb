@@ -1,6 +1,6 @@
 // components/Carousel.tsx
 
-import React from "react";
+import React, { useRef, useState } from "react";
 import Slider from "react-slick";
 import { useIntl } from "react-intl";
 import { slidesData } from "../utils/slidesData";
@@ -45,6 +45,8 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
   // `intl` es una instancia del hook useIntl, utilizada para obtener mensajes localizados.
   const intl = useIntl();
   const prefersReducedMotion = usePrefersReducedMotion();
+  const sliderRef = useRef<Slider | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   // Configuración del carrusel utilizando react-slick
   const settings = {
@@ -55,7 +57,7 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
     speed: prefersReducedMotion ? 0 : 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    autoplay: !prefersReducedMotion,
+    autoplay: !prefersReducedMotion && !isPaused,
     autoplaySpeed: 3000,
     pauseOnHover: true,
     pauseOnFocus: true,
@@ -72,9 +74,28 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
     return <div className={styles.carouselContainer} />;
   }
 
+  const handleAutoplayToggle = (): void => {
+    if (isPaused) {
+      sliderRef.current?.slickPlay();
+    } else {
+      sliderRef.current?.slickPause();
+    }
+    setIsPaused((currentValue) => !currentValue);
+  };
+
   return (
     <div className={styles.carouselContainer}>
-      <Slider {...settings}>
+      {!prefersReducedMotion && (
+        <button
+          type="button"
+          className={styles.autoplayButton}
+          onClick={handleAutoplayToggle}
+          aria-pressed={isPaused}
+        >
+          {intl.formatMessage({ id: isPaused ? "carousel_Reanudar" : "carousel_Pausar" })}
+        </button>
+      )}
+      <Slider ref={sliderRef} {...settings}>
         {/* Mapea cada diapositiva y la renderiza según su tipo */}
         {slides.map((slide, index) => (
           <div key={index}>
@@ -84,7 +105,7 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
             ) : (
               // Si la diapositiva es texto, muestra el contenido en un contenedor de texto
               <div className={styles.text}>
-                <h3>{slide.content}</h3>
+                <h3 aria-level={2}>{slide.content}</h3>
               </div>
             )}
           </div>

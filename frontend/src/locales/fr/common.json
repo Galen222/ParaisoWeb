@@ -12,6 +12,8 @@
   "navbar_blog": "Blog",
   "navbar_contacto": "Contact",
   "navbar_menu": "Menu de navigation",
+  "carousel_Pausar": "Mettre le carrousel en pause",
+  "carousel_Reanudar": "Reprendre le carrousel",
   "app_CookieAcceptAll": "Cookies acceptés avec succès",
   "app_CookieAccept": "Cookies personnalisés acceptés avec succès",
   "app_CookieDenied": "Cookies refusés avec succès",

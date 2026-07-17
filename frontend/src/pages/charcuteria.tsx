@@ -208,17 +208,17 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
                   <div className={styles.front}>
                     <img src={`${IMAGE_BASE_URL}${product.imagen_url}`} alt={product.nombre} className={styles.productImage} />
                     <div className={styles.textOverlay}>
-                      <h3 className={styles.frontProductName}>{product.nombre}</h3>
-                      {product.categoria && <h3 className={styles.frontCategory}>{product.categoria}</h3>}
+                      <h3 aria-level={2} className={styles.frontProductName}>{product.nombre}</h3>
+                      {product.categoria && <p className={styles.frontCategory}>{product.categoria}</p>}
                     </div>
                   </div>
                   {/* Lado posterior de la tarjeta con descripción del producto */}
                   <div className={styles.back}>
                     <div>
-                      <h3 className={styles.backProductName}>{product.nombre}</h3>
-                      {product.categoria && <h3 className={styles.backCategory}>{product.categoria}</h3>}
+                      <h3 aria-level={2} className={styles.backProductName}>{product.nombre}</h3>
+                      {product.categoria && <p className={styles.backCategory}>{product.categoria}</p>}
                       <p className={styles.descripcion}>{product.descripcion}</p>
-                      {product.empresa && <h3 className={styles.empresa}>{product.empresa}</h3>}
+                      {product.empresa && <p className={styles.empresa}>{product.empresa}</p>}
                     </div>
                   </div>
                 </div>

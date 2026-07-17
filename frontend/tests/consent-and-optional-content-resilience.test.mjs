@@ -44,7 +44,7 @@ test("la ficha de charcutería no crea encabezados vacíos para empresas ausente
     "utf8"
   );
 
-  assert.match(source, /\{product\.empresa && <h3 className=\{styles\.empresa\}>/);
+  assert.match(source, /\{product\.empresa && <p className=\{styles\.empresa\}>/);
 });
 
 test("una segunda imagen opcional vacía no invalida el artículo", async () => {

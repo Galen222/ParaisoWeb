@@ -83,14 +83,14 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
         <h1 className="text-center">{intl.formatMessage({ id: "avisoLegal_Principal_Titulo" })}</h1>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Principal_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Principal_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Principal_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Principal_Texto2" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Principal_Texto3" })}</p>
       </div>
       {/* Datos Identificativos */}
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Titulo" })}</h3>
         <ul className={`text-left ${styles.listas}`}>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto1" })}</li>
           <li>{intl.formatMessage({ id: "avisoLegal_DatosIdentificativos_Punto2" })}</li>
@@ -107,11 +107,11 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
       </div>
       {/* Secciones adicionales de contenido legal */}
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Objeto_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Objeto_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Objeto_Texto" })}</p>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Privacidad_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Privacidad_Titulo" })}</h3>
         <p className="ti-20p">
           {intl.formatMessage({ id: "avisoLegal_Privacidad_Texto" })}
           <Link href="/politica-privacidad" locale={router.locale} className={styles.link}>
@@ -121,14 +121,14 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
         </p>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Propiedad_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Propiedad_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Propiedad_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Propiedad_Texto2" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Propiedad_Texto3" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Propiedad_Texto4" })}</p>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Obligaciones_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Obligaciones_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto1" })}</p>
         <ul className={styles.listas}>
           <li>
@@ -171,7 +171,7 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Obligaciones_Texto3" })}</p>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Responsabilidad_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Responsabilidad_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Responsabilidad_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Responsabilidad_Texto2" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Responsabilidad_Texto3" })}</p>
@@ -185,7 +185,7 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Responsabilidad_Texto5" })}</p>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Hipervinculos_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Hipervinculos_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Hipervinculos_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Hipervinculos_Texto2" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Hipervinculos_Texto3" })}</p>
@@ -199,7 +199,7 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Hipervinculos_Texto5" })}</p>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Proteccion_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Proteccion_Titulo" })}</h3>
         <p className="ti-20p">
           {intl.formatMessage({ id: "avisoLegal_Proteccion_Texto" })}
           <Link href="/politica-privacidad" locale={router.locale} className={styles.link}>
@@ -209,7 +209,7 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
         </p>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Cookies_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Cookies_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Cookies_Texto1" })}</p>
         <p className="ti-20p">
           {intl.formatMessage({ id: "avisoLegal_Cookies_Texto2" })}
@@ -221,20 +221,20 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Cookies_Texto3" })}</p>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Declaraciones_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Declaraciones_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Declaraciones_Texto" })}</p>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Fuerza_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Fuerza_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Fuerza_Texto" })}</p>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Resolucion_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Resolucion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Resolucion_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Resolucion_Texto2" })}</p>
       </div>
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Actualizacion_Titulo" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Actualizacion_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Actualizacion_Texto" })}</p>
       </div>
       <ScrollToTopButton /> {/* Usa el componente de scroll-to-top */}

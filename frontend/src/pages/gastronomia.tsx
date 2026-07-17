@@ -145,7 +145,7 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
       </div>
       {/* Sección de raciones */}
       <div className="mt-25p mb-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo2" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo2" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto2" })}</p>
         <div className={`${styles.imageContainer}`}>
           {images.raciones.map((image, index) => (
@@ -158,7 +158,7 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
       </div>
       {/* Sección de platos combinados */}
       <div className="mt-25p mb-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo4" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo4" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto4" })}</p>
         <div className={`${styles.imageContainer}`}>
           {images.combinados.map((image, index) => (
@@ -171,7 +171,7 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
       </div>
       {/* Sección de bocadillos */}
       <div className="mt-25p">
-        <h3 className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo5" })}</h3>
+        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "gastronomia_Titulo5" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto5" })}</p>
         <div className={`${styles.imageContainer}`}>
           {images.bocadillos.map((image, index) => (

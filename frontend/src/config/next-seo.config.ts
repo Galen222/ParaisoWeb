@@ -145,8 +145,8 @@ const getSEOConfig = (
         : undefined,
     additionalMetaTags: [
       {
-        name: "PACAVA S.A",
-        content: "El Paraíso Del Jamón",
+        name: "author",
+        content: "PACAVA S.A.",
       },
       {
         name: "keywords",

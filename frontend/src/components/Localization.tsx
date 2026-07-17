@@ -31,7 +31,7 @@ const Localization: React.FC<LocalizationProps> = ({ localizationName }: Localiz
     <div className={styles.localesContainer}>
       <div className={styles.contactLocation}>
         {/* Título de la sección, usando el nombre de la ubicación */}
-        <h3 className="text-center">{intl.formatMessage({ id: `contacto_Informacion_${localizationName}_Titulo` })}</h3>
+        <h3 aria-level={2} className="text-center">{intl.formatMessage({ id: `contacto_Informacion_${localizationName}_Titulo` })}</h3>
 
         {/* Dirección de la ubicación */}
         <p>

@@ -7,6 +7,28 @@
   border-radius: 10px; /* Bordes redondeados de 10 píxeles para suavizar la apariencia */
   overflow: hidden; /* Oculta cualquier contenido que exceda los límites del contenedor */
   line-height: 0; /* Elimina el espacio vertical entre líneas dentro del contenedor */
+  position: relative; /* Permite colocar el control de reproducción sobre el carrusel */
+}
+
+/* Control visible para detener o reanudar el movimiento automático */
+.autoplayButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  border: 2px solid white;
+  border-radius: 6px;
+  padding: 8px 12px;
+  background-color: rgba(74, 64, 58, 0.85);
+  color: white;
+  font: inherit;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.autoplayButton:focus-visible {
+  outline: 3px solid #000;
+  outline-offset: 2px;
 }
 
 /* Estilo para las imágenes dentro del carrusel */

@@ -26,46 +26,42 @@ export interface TransportProps {
 const Transport: React.FC<TransportProps> = ({ transportName }: TransportProps): React.JSX.Element => {
   const intl = useIntl(); // Hook para obtener mensajes localizados
 
-  // Variables para las imágenes y los textos alternativos internacionalizados
+  // Variables para las imágenes decorativas de cada medio de transporte
   const imageMetro = "/images/transport/metro.png";
-  const imageMetroAlt = intl.formatMessage({ id: `${transportName}_Metro_Titulo`, defaultMessage: "Metro" });
 
   const imageBus = "/images/transport/bus.png";
-  const imageBusAlt = intl.formatMessage({ id: `${transportName}_Bus_Titulo`, defaultMessage: "Autobús" });
 
   const imageTaxi = "/images/transport/taxi.png";
-  const imageTaxiAlt = intl.formatMessage({ id: `${transportName}_Taxi_Titulo`, defaultMessage: "Taxi" });
 
   const imageParking = "/images/transport/parking.png";
-  const imageParkingAlt = intl.formatMessage({ id: `${transportName}_Aparcamiento_Titulo`, defaultMessage: "Aparcamiento" });
 
   return (
     <div className={styles.transportContainer}>
       {/* Información del transporte en metro */}
       <div className={styles.transportItem}>
-        <img src={imageMetro} alt={imageMetroAlt} />
-        <h4>{intl.formatMessage({ id: `${transportName}_Metro_Titulo` })}</h4>
+        <img src={imageMetro} alt="" />
+        <h4 aria-level={2}>{intl.formatMessage({ id: `${transportName}_Metro_Titulo` })}</h4>
         <p>{intl.formatMessage({ id: `${transportName}_Metro_Lineas` })}</p>
       </div>
 
       {/* Información del transporte en autobús */}
       <div className={styles.transportItem}>
-        <img src={imageBus} alt={imageBusAlt} />
-        <h4>{intl.formatMessage({ id: `${transportName}_Bus_Titulo` })}</h4>
+        <img src={imageBus} alt="" />
+        <h4 aria-level={2}>{intl.formatMessage({ id: `${transportName}_Bus_Titulo` })}</h4>
         <p>{intl.formatMessage({ id: `${transportName}_Bus_Lineas` })}</p>
       </div>
 
       {/* Información del servicio de taxi */}
       <div className={styles.transportItem}>
-        <img src={imageTaxi} alt={imageTaxiAlt} />
-        <h4>{intl.formatMessage({ id: `${transportName}_Taxi_Titulo` })}</h4>
+        <img src={imageTaxi} alt="" />
+        <h4 aria-level={2}>{intl.formatMessage({ id: `${transportName}_Taxi_Titulo` })}</h4>
         <p>{intl.formatMessage({ id: `${transportName}_Taxi_Descripcion` })}</p>
       </div>
 
       {/* Información sobre aparcamiento cercano */}
       <div className={styles.transportItem}>
-        <img src={imageParking} alt={imageParkingAlt} />
-        <h4>{intl.formatMessage({ id: `${transportName}_Aparcamiento_Titulo` })}</h4>
+        <img src={imageParking} alt="" />
+        <h4 aria-level={2}>{intl.formatMessage({ id: `${transportName}_Aparcamiento_Titulo` })}</h4>
         <p>{intl.formatMessage({ id: `${transportName}_Aparcamiento_Descripcion` })}</p>
       </div>
     </div>

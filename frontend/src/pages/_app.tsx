@@ -115,7 +115,9 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
               />
             )}
             <Navbar cookiesModalClosed={cookiesModalClosed} pageTitleText={pageTitleText} />
-            <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} mapLocale={mapLocale} />
+            <main>
+              <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} mapLocale={mapLocale} />
+            </main>
             <Footer />
             <ToastContainer />
           </React.StrictMode>

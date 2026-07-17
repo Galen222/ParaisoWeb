@@ -27,7 +27,10 @@ declare module "react-slick" {
   /**
    * Clase del componente `Slider` de "react-slick", que acepta las propiedades definidas en `Settings`.
    */
-  class Slider extends React.Component<Settings, Record<string, never>> {}
+  class Slider extends React.Component<Settings, Record<string, never>> {
+    slickPause(): void; // Detiene la reproducción automática del carrusel.
+    slickPlay(): void; // Reanuda la reproducción automática del carrusel.
+  }
 
   export default Slider;
 }

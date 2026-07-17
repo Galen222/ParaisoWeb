@@ -75,7 +75,7 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
   const { locales } = router;
   const handleLocaleChange = useLocaleChange();
   const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();
-  const navbarMenuRef = useRef<HTMLDivElement>(null);
+  const navbarMenuRef = useRef<HTMLElement>(null);
   const restaurantsButtonRef = useRef<HTMLButtonElement>(null);
   const { isMobile } = useScreenSize();
   const { isSticky } = useStickyNav(navbarMenuRef, !isMobile);
@@ -222,7 +222,11 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
 
   return (
     <>
-      <div ref={navbarMenuRef} className={`${styles.navbarMenu} ${isSticky ? styles.sticky : ""}`}>
+      <nav
+        ref={navbarMenuRef}
+        className={`${styles.navbarMenu} ${isSticky ? styles.sticky : ""}`}
+        aria-label={intl.formatMessage({ id: "navbar_menu" })}
+      >
         <div className={styles.links}>
           <Link href="/" locale={router.locale} onClick={handleLinkClick}>
             {intl.formatMessage({ id: "navbar_inicio" })}
@@ -283,8 +287,8 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
             {intl.formatMessage({ id: "navbar_contacto" })}
           </Link>
         </div>
-      </div>
-      <nav className={styles.navbar}>
+      </nav>
+      <header className={styles.navbar}>
         <div className={styles.navbarTop}>
           <div className={styles.imgLogoContainer}>
             <Link href="/" locale={router.locale} onClick={handleLinkClick}>
@@ -322,7 +326,7 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
         <div className={styles.animatedTitleContainer}>
           <AnimatedTitle key={pageTitleText} pageTitleText={pageTitleText} cookiesModalClosed={cookiesModalClosed} />
         </div>
-      </nav>
+      </header>
     </>
   );
 };

@@ -288,7 +288,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
       noValidate
     >
       <div>
-        <h3 className="text-center">{intl.formatMessage({ id: "contacto_Titulo_Formulario" })}</h3>
+        <h3 aria-level={2} className="text-center">{intl.formatMessage({ id: "contacto_Titulo_Formulario" })}</h3>
         <label htmlFor="name">{intl.formatMessage({ id: "contacto_Nombre" })}</label>
         <input
           type="text"
@@ -394,6 +394,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
               onChange={handlePrivacyCheck}
               className={styles.hiddenCheckbox}
               required
+              aria-labelledby="privacyCheckText"
             />
             {isPrivacyChecked && (
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -401,7 +402,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
               </svg>
             )}
           </label>
-          <span className={styles.checkText}>
+          <span id="privacyCheckText" className={styles.checkText}>
             <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}</span>
             <Link href="/politica-privacidad" className={styles.link}>
               <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
