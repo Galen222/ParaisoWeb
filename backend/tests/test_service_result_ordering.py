@@ -4,7 +4,6 @@ import unittest
 
 from sqlalchemy.dialects import mysql
 
-from backend.models import models
 from backend.services.blog_service import BlogService
 from backend.services.charcuteria_service import CharcuteriaService
 

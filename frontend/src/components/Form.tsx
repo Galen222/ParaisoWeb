@@ -10,15 +10,12 @@ import {
   isFormSubmissionCancelled,
   FormData as FormServiceData,
 } from "../services/formService";
-import validator from "validator";
 import styles from "../styles/components/Form.module.css";
 import { isContactFormComplete } from "../utils/contactFormValidation";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 import { containsUnsupportedContactMessageControl } from "../utils/contactMessage";
-
-const ALLOWED_FILE_MIME_TYPES = new Set(["image/jpeg", "application/pdf"]);
-const GENERIC_FILE_MIME_TYPES = new Set(["", "application/octet-stream"]);
-const ALLOWED_FILE_EXTENSIONS = new Set([".jpg", ".jpeg", ".pdf"]);
+import { isValidContactEmail } from "../utils/contactEmailValidation";
+import { hasAllowedContactFileMetadata } from "../utils/contactFileValidation";
 
 export interface FormProps {
   onSubmit: () => void;
@@ -145,7 +142,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     // El backend elimina únicamente espacios exteriores antes de validar. Aplicar
     // el mismo criterio permite pegar una dirección con espacios accidentales sin
     // modificarla mientras se escribe ni discrepar con la respuesta del servidor.
-    setIsValidEmail(validator.isEmail(value.trim()));
+    setIsValidEmail(isValidContactEmail(value));
   };
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -172,14 +169,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     };
 
     if (file) {
-      const extensionSeparatorIndex = file.name.lastIndexOf(".");
-      const fileExtension = extensionSeparatorIndex >= 0 ? file.name.slice(extensionSeparatorIndex).toLowerCase() : "";
-      const hasAllowedExtension = ALLOWED_FILE_EXTENSIONS.has(fileExtension);
-      const hasAllowedMimeType = ALLOWED_FILE_MIME_TYPES.has(file.type) || GENERIC_FILE_MIME_TYPES.has(file.type);
-
       // Algunos navegadores no informan el MIME o usan application/octet-stream.
-      // En esos casos se permite continuar por extensión; el backend valida el contenido real.
-      if (!hasAllowedExtension || !hasAllowedMimeType) {
+      // En esos casos se permite continuar por extensión; si informan un MIME concreto,
+      // debe corresponder con ella. El backend valida después la firma real del contenido.
+      if (!hasAllowedContactFileMetadata(file.name, file.type)) {
         clearSelectedFile();
         showToast("contacto_ArchivoNoJPG-PDF", 4000, "error");
         return;

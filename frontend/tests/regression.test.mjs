@@ -432,7 +432,7 @@ test("el formulario usa la misma validación de correo que el backend sin restri
 
   assert.doesNotMatch(form, /validateEmailPart/);
   assert.doesNotMatch(form, /\[\.\-\]\{2,\}/);
-  assert.match(form, /setIsValidEmail\(validator\.isEmail\(value\.trim\(\)\)\)/);
+  assert.match(form, /setIsValidEmail\(isValidContactEmail\(value\)\)/);
 });
 
 test("la configuración SEO no genera una segunda directiva robots contradictoria", async () => {

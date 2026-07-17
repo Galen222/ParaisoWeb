@@ -8,7 +8,7 @@ test("el formulario valida el correo con el mismo recorte exterior que el backen
     "utf8"
   );
 
-  assert.match(source, /validator\.isEmail\(value\.trim\(\)\)/);
+  assert.match(source, /isValidContactEmail\(value\)/);
   assert.match(source, /<form[\s\S]*?noValidate/);
   assert.match(source, /setFormData\(\(current\) => \(\{ \.\.\.current, email: value \}\)\)/);
 });

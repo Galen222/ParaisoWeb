@@ -1,6 +1,6 @@
 // hooks/useCookieLogic.ts
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
 import {
@@ -15,6 +15,7 @@ import {
 } from "../utils/cookieUtils";
 import { initGA } from "../utils/gaUtils"; // Importa la función desde utils
 import { shouldReopenConsentModal } from "../utils/cookieConsentState";
+import { shouldPersistLocalePreference } from "../utils/localePreferenceSync";
 
 const COOKIE_CONSENT_VERSION = "v1";
 const COOKIE_CONSENT_ACCEPTED = `${COOKIE_CONSENT_VERSION}.accepted`;
@@ -90,6 +91,13 @@ export function useCookieLogic(): CookieLogic {
 
   // Hook de Next.js para acceder al enrutador
   const router = useRouter();
+
+  // Conserva el estado anterior para distinguir un cambio real de idioma de una
+  // restauración de consentimiento recibida desde otra pestaña.
+  const localePreferenceSnapshotRef = useRef({
+    locale: router.locale || "es",
+    personalizationEnabled: false,
+  });
 
   // Estado y funciones para el consentimiento de cookies desde el contexto
   const {
@@ -228,14 +236,21 @@ export function useCookieLogic(): CookieLogic {
   }, [isReviewingConsentPolicy, restoreSavedConsent]);
 
   /**
-   * Efecto para guardar el idioma en cookies si se ha aceptado la personalización.
-   * - Establece la cookie `_locale` con el locale actual si se ha dado consentimiento para la personalización.
+   * Efecto para guardar cambios reales de idioma si ya se había aceptado la personalización.
+   * - No sobrescribe `_locale` cuando el consentimiento se restaura desde otra pestaña.
+   * - Los botones de aceptación guardan explícitamente el locale de la pestaña que toma la decisión.
    */
   useEffect(() => {
-    const currentLocale = router.locale || "es"; // Obtener el locale actual
-    if (cookieConsentPersonalization) {
-      saveLocalePreference(currentLocale);
+    const currentSnapshot = {
+      locale: router.locale || "es",
+      personalizationEnabled: cookieConsentPersonalization,
+    };
+
+    if (shouldPersistLocalePreference(localePreferenceSnapshotRef.current, currentSnapshot)) {
+      saveLocalePreference(currentSnapshot.locale);
     }
+
+    localePreferenceSnapshotRef.current = currentSnapshot;
   }, [router.locale, cookieConsentPersonalization]);
 
   /**
@@ -376,6 +391,9 @@ export function useCookieLogic(): CookieLogic {
     }
 
     if (AcceptCookiePersonalization) {
+      // La pestaña donde se acepta la personalización define la preferencia inicial.
+      // Las demás pestañas restaurarán el consentimiento sin sobrescribir este idioma.
+      saveLocalePreference(router.locale || "es");
       setCookieConsentPersonalization(true);
     } else {
       setCookieConsentPersonalization(false);
@@ -424,6 +442,8 @@ export function useCookieLogic(): CookieLogic {
     initGA();
 
     setAcceptCookiePersonalization(true);
+    // Guarda el idioma antes de emitir la señal de sincronización a otras pestañas.
+    saveLocalePreference(router.locale || "es");
     setCookieConsentPersonalization(true);
 
     saveCookieConsentPreference(COOKIE_CONSENT_ACCEPTED);
