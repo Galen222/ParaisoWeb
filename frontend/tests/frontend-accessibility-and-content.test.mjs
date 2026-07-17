@@ -63,3 +63,35 @@ test("los mensajes compartidos conservan la identidad exacta de la marca", async
   assert.match(source, /const fullTitle = `El Paraíso Del Jamón - \$\{title\}`;/);
   assert.doesNotMatch(source, /El Paraíso del Jamón/);
 });
+
+test("los textos españoles del blog conservan sus tildes", async () => {
+  const messages = JSON.parse(await readSource("src/locales/es/common.json"));
+
+  assert.match(messages.blog_Details_Error, /artículo/);
+  assert.match(messages.blog_Details_Error, /inténtelo/);
+  assert.equal(messages.blog_Details_SEO_Titulo_Preview, "El Paraíso Del Jamón - Artículo");
+  assert.match(messages.blog_Details_SEO_Contenido_Preview, /artículo completo/);
+  assert.equal(messages.sharedLink_cuerpo, "Puede leer el artículo en ");
+});
+
+test("el texto español de reservas escribe teléfono correctamente", async () => {
+  const messages = JSON.parse(await readSource("src/locales/es/common.json"));
+
+  assert.match(messages.reservas_Texto2, /números de teléfono/);
+  assert.doesNotMatch(messages.reservas_Texto2, /\btelefono\b/);
+});
+
+test("la clasificación española de cookies no contiene las erratas corregidas", async () => {
+  const messages = JSON.parse(await readSource("src/locales/es/common.json"));
+
+  assert.match(messages.politicaCookies_Clasificacion1_Texto2, /cookies sean instaladas/);
+  assert.match(messages.politicaCookies_Clasificacion3_Texto_Punto1, /por ejemplo controlar el tráfico/);
+  assert.match(messages.politicaCookies_Clasificacion3_Texto_Punto2, /características de carácter general predefinidas/);
+
+  const policyText = [
+    messages.politicaCookies_Clasificacion1_Texto2,
+    messages.politicaCookies_Clasificacion3_Texto_Punto1,
+    messages.politicaCookies_Clasificacion3_Texto_Punto2,
+  ].join(" ");
+  assert.doesNotMatch(policyText, /\bseas instaladas\b|jemeplo|\btrafico\b|caracteristicas|prefefinidas/);
+});

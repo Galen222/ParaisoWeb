@@ -27,19 +27,26 @@ function buildSpanishCanonicalRedirect(requestUrl) {
   return `${canonicalPath}${search}`;
 }
 
-async function startServer() {
-  process.env.NODE_ENV ||= "production";
+/**
+ * Normaliza el puerto de escucha sin aceptar valores parcialmente numéricos ni
+ * números que Node.js no puede utilizar como puerto TCP.
+ */
+function resolvePort(value) {
+  const normalizedValue = typeof value === "string" ? value.trim() : "";
+  if (!/^\d+$/.test(normalizedValue)) return 3000;
 
-  const next = require("next");
-  const parsedPort = Number.parseInt(process.env.PORT || "3000", 10);
-  const port = Number.isSafeInteger(parsedPort) && parsedPort > 0 ? parsedPort : 3000;
-  const hostname = process.env.HOST || "0.0.0.0";
-  const app = next({ dev: false, hostname, port });
-  const handle = app.getRequestHandler();
+  const parsedPort = Number(normalizedValue);
+  return Number.isSafeInteger(parsedPort) && parsedPort >= 1 && parsedPort <= 65535
+    ? parsedPort
+    : 3000;
+}
 
-  await app.prepare();
-
-  const server = createServer((request, response) => {
+/**
+ * Crea el listener HTTP y transforma tanto errores síncronos como promesas
+ * rechazadas de Next.js en una respuesta 500 controlada.
+ */
+function createRequestListener(handle) {
+  return (request, response) => {
     const redirectTarget = buildSpanishCanonicalRedirect(request.url);
     if (redirectTarget !== null) {
       response.statusCode = 308;
@@ -49,19 +56,55 @@ async function startServer() {
       return;
     }
 
-    Promise.resolve(handle(request, response)).catch((error) => {
-      console.error(error);
-      if (!response.headersSent) {
-        response.statusCode = 500;
-        response.setHeader("Content-Type", "text/plain; charset=utf-8");
-      }
-      if (!response.writableEnded) response.end("Internal Server Error");
-    });
-  });
+    Promise.resolve()
+      .then(() => handle(request, response))
+      .catch((error) => {
+        console.error(error);
+        if (!response.headersSent) {
+          response.statusCode = 500;
+          response.setHeader("Content-Type", "text/plain; charset=utf-8");
+        }
+        if (!response.writableEnded) response.end("Internal Server Error");
+      });
+  };
+}
 
-  server.listen(port, hostname, () => {
-    console.log(`> Ready on http://${hostname}:${port}`);
+/**
+ * Espera a que el servidor esté escuchando y rechaza el arranque si el puerto
+ * no puede abrirse. Así `app.js` puede informar correctamente del fallo a Plesk.
+ */
+function listenServer(server, port, hostname) {
+  return new Promise((resolve, reject) => {
+    const handleError = (error) => {
+      server.off("listening", handleListening);
+      reject(error);
+    };
+    const handleListening = () => {
+      server.off("error", handleError);
+      resolve();
+    };
+
+    server.once("error", handleError);
+    server.once("listening", handleListening);
+    server.listen(port, hostname);
   });
+}
+
+async function startServer() {
+  process.env.NODE_ENV ||= "production";
+
+  const next = require("next");
+  const port = resolvePort(process.env.PORT);
+  const hostname = process.env.HOST || "0.0.0.0";
+  const app = next({ dev: false, hostname, port });
+  const handle = app.getRequestHandler();
+
+  await app.prepare();
+
+  const server = createServer(createRequestListener(handle));
+  await listenServer(server, port, hostname);
+  console.log(`> Ready on http://${hostname}:${port}`);
+  return server;
 }
 
 if (require.main === module) {
@@ -71,4 +114,10 @@ if (require.main === module) {
   });
 }
 
-module.exports = { buildSpanishCanonicalRedirect, startServer };
+module.exports = {
+  buildSpanishCanonicalRedirect,
+  createRequestListener,
+  listenServer,
+  resolvePort,
+  startServer,
+};

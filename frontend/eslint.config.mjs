@@ -1,12 +1,17 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
+import reactHooks from "eslint-plugin-react-hooks";
 
 export default defineConfig([
   ...nextVitals,
   ...nextTs,
 
   {
+    files: ["src/**/*.{ts,tsx}"],
+    plugins: {
+      "react-hooks": reactHooks,
+    },
     rules: {
       // Deuda previa: se mantiene visible, pero no bloquea la migración.
       "@typescript-eslint/no-explicit-any": "warn",
@@ -18,6 +23,14 @@ export default defineConfig([
       "react-hooks/set-state-in-effect": "warn",
       "react-hooks/immutability": "warn",
       "react-hooks/refs": "warn",
+    },
+  },
+
+  {
+    files: ["app.js", "server.cjs"],
+    rules: {
+      // Ambos archivos son CommonJS porque Plesk y el servidor personalizado los cargan con Node.js.
+      "@typescript-eslint/no-require-imports": "off",
     },
   },
 
