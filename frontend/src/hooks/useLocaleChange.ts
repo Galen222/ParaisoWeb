@@ -116,7 +116,7 @@ export function useLocaleChange(): LocaleChangeHandler {
       // Una segunda pulsación rápida no debe tomar como referencia la cookie provisional
       // escrita por la primera navegación todavía pendiente.
       if (activeRequestControllerRef.current === null) {
-        const savedLocalePreference = getCookieValue("_locale");
+        const savedLocalePreference = getCookieValue("NEXT_LOCALE");
         stableLocalePreferenceRef.current =
           savedLocalePreference && SUPPORTED_LOCALES.has(savedLocalePreference)
             ? savedLocalePreference

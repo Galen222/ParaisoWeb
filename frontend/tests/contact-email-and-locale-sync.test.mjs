@@ -112,14 +112,35 @@ test("la pestaña que acepta personalización guarda su locale antes de sincroni
   assert.match(source, /setAcceptCookiePersonalization\(true\);[\s\S]*?saveLocalePreference\(router\.locale \|\| "es"\);[\s\S]*?saveCookieConsentPreference\(COOKIE_CONSENT_ACCEPTED\);/);
 });
 
-test("Next redirige el prefijo español a la URL canónica sin prefijo", async () => {
+test("la configuración no crea redirecciones propias sobre las rutas españolas canónicas", async () => {
   const source = await readFile(new URL("../next.config.ts", import.meta.url), "utf8");
 
-  assert.match(source, /source: "\/es", destination: "\/", permanent: true, locale: false/);
-  assert.match(
-    source,
-    /source: "\/es\/:path\*", destination: "\/:path\*", permanent: true, locale: false/
-  );
+  assert.doesNotMatch(source, /source: "\/es"/);
+  assert.doesNotMatch(source, /source: "\/es\/:path\*"/);
+  assert.match(source, /defaultLocale: "es"/);
+});
+
+test("la preferencia de idioma usa la cookie oficial que entiende Next", async () => {
+  const files = await Promise.all([
+    readFile(new URL("../src/utils/cookieUtils.ts", import.meta.url), "utf8"),
+    readFile(new URL("../src/utils/redirectByCookie.ts", import.meta.url), "utf8"),
+    readFile(new URL("../src/utils/redirectByCookieSlug.ts", import.meta.url), "utf8"),
+    readFile(new URL("../src/hooks/useLocaleChange.ts", import.meta.url), "utf8"),
+  ]);
+  const combinedSource = files.join("\n");
+
+  assert.match(combinedSource, /NEXT_LOCALE/);
+  assert.doesNotMatch(combinedSource, /["']_locale["']/);
+});
+
+test("el formulario no renderiza una clase CSS inexistente en los campos de contacto", async () => {
+  const [formSource, formStyles] = await Promise.all([
+    readFile(new URL("../src/components/Form.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/styles/components/Form.module.css", import.meta.url), "utf8"),
+  ]);
+
+  assert.doesNotMatch(formSource, /styles\.input/);
+  assert.match(formStyles, /\.form input,/);
 });
 
 test("las palabras clave SEO inglesas no mezclan texto español", async () => {

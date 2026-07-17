@@ -62,7 +62,7 @@ export const revokeCookieCategories = ({
   }
 
   if (personalization) {
-    expireCookie("_locale");
+    expireCookie("NEXT_LOCALE");
   }
 
   if (analysis) {
@@ -124,12 +124,12 @@ export const clearCookieConsentPreference = (): void => {
 
 /** Guarda el idioma elegido durante un año. */
 export const saveLocalePreference = (locale: string): void => {
-  setClientCookie("_locale", locale, 31536000);
+  setClientCookie("NEXT_LOCALE", locale, 31536000);
 };
 
 /** Elimina el idioma guardado cuando una navegación no llega a completarse. */
 export const clearLocalePreference = (): void => {
-  expireCookie("_locale");
+  expireCookie("NEXT_LOCALE");
 };
 
 /**
@@ -205,7 +205,7 @@ export const deleteCookies = async (
       const [cookieName] = cookie.split("=");
 
       // Borra la cookie de personalización aunque el estado de React se haya quedado desincronizado.
-      if (cookieName === "_locale") {
+      if (cookieName === "NEXT_LOCALE") {
         expireCookie(cookieName);
       }
 

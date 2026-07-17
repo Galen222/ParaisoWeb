@@ -6,7 +6,7 @@ export interface LocalePreferenceSnapshot {
 /**
  * Solo persiste cambios reales de idioma cuando la personalización ya estaba activa.
  * Una restauración de consentimiento desde otra pestaña no debe sobrescribir la cookie
- * `_locale` que acaba de guardar la pestaña donde el usuario tomó la decisión.
+ * `NEXT_LOCALE` que acaba de guardar la pestaña donde el usuario tomó la decisión.
  */
 export const shouldPersistLocalePreference = (
   previous: LocalePreferenceSnapshot,

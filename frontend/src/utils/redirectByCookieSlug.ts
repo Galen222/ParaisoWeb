@@ -157,7 +157,7 @@ export async function redirectByCookieSlug(
 
   // Next.js ya expone las cookies parseadas; así no se depende de que la cabecera
   // utilice un espacio después de cada punto y coma.
-  const localeCookie = context.req.cookies._locale;
+  const localeCookie = context.req.cookies.NEXT_LOCALE;
 
   // Solo aplica la redirección si la cookie contiene un idioma soportado y distinto del actual.
   if (localeCookie && SUPPORTED_LOCALES.has(localeCookie) && locale !== localeCookie) {

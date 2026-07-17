@@ -238,7 +238,7 @@ export function useCookieLogic(): CookieLogic {
 
   /**
    * Efecto para guardar cambios reales de idioma si ya se había aceptado la personalización.
-   * - No sobrescribe `_locale` cuando el consentimiento se restaura desde otra pestaña.
+   * - No sobrescribe `NEXT_LOCALE` cuando el consentimiento se restaura desde otra pestaña.
    * - Los botones de aceptación guardan explícitamente el locale de la pestaña que toma la decisión.
    */
   useEffect(() => {

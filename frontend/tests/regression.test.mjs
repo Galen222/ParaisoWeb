@@ -541,7 +541,7 @@ test("el cambio rápido de idioma restaura la preferencia estable anterior", asy
   assert.match(localeChangeHook, /stableLocalePreferenceRef/);
   assert.match(
     localeChangeHook,
-    /if \(activeRequestControllerRef\.current === null\)[\s\S]*?getCookieValue\("_locale"\)/
+    /if \(activeRequestControllerRef\.current === null\)[\s\S]*?getCookieValue\("NEXT_LOCALE"\)/
   );
   assert.match(
     localeChangeHook,
@@ -549,7 +549,7 @@ test("el cambio rápido de idioma restaura la preferencia estable anterior", asy
   );
   assert.doesNotMatch(
     localeChangeHook,
-    /const previousLocalePreference = getCookieValue\("_locale"\)/
+    /const previousLocalePreference = getCookieValue\("NEXT_LOCALE"\)/
   );
 });
 

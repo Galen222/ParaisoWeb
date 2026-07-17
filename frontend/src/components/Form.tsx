@@ -298,7 +298,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
           value={formData.name}
           onChange={handleValidateName}
           required
-          className={`${styles.input} ${styles.nameInput}`}
+          className={styles.nameInput}
         />
       </div>
 
@@ -329,7 +329,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
           onChange={handleValidateEmail}
           maxLength={254}
           required
-          className={`${styles.input} ${isValidEmail ? styles.emailValid : styles.emailInvalid}`}
+          className={isValidEmail ? styles.emailValid : styles.emailInvalid}
         />
       </div>
 

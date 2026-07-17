@@ -47,7 +47,7 @@ const buildLocalizedDestination = (locale: string, basePath: string): string => 
 
 export function redirectByCookie(context: GetServerSidePropsContext, basePath: string) {
   const { req, locale } = context;
-  const localeCookie = req.cookies._locale;
+  const localeCookie = req.cookies.NEXT_LOCALE;
 
   // Verifica si el `referer` procede de la misma página en otro idioma.
   const referer = req.headers.referer || "";
@@ -64,7 +64,7 @@ export function redirectByCookie(context: GetServerSidePropsContext, basePath: s
       const refererLocale = getLocaleFromPath(refererUrl.pathname);
       // console.log(`refererLocale: ${refererLocale}`);
 
-      // No redirige al cambiar el idioma manualmente, incluido el español sin prefijo `/es`.
+      // No redirige al cambiar el idioma manualmente, incluido el español cuya ruta canónica no lleva `/es`.
       if (isSameHost && isSamePage && refererLocale !== locale) {
         // console.log(`[NO REDIRECT] Cambio de idioma manual detectado, referer: ${referer}`);
         return { props: {} };
