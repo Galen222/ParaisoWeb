@@ -29,10 +29,12 @@ from .routers import contacto, charcuteria, blog, sitemap, token
 from .database import engine
 from .models.models import Base
 from .core.config import settings
+from .core.logging_config import configure_logging
 import asyncio
 import logging
 from sqlalchemy import text
 
+configure_logging(settings)
 logger = logging.getLogger(__name__)
 
 

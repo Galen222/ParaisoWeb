@@ -2,12 +2,14 @@
 
 import axios from "axios";
 import { GetServerSidePropsContext } from "next";
+import type { AppLogger } from "../logging/appLogger";
+import { clientLogger } from "../logging/clientLogger";
 import { BlogPost, getBlogPostBySlug, getBlogPostById } from "../services/blogService";
 import { getTimedToken } from "../services/tokenService";
 import { isSameRequestHost } from "./requestHost";
 import { normalizeBlogSlug } from "./blogSlug";
 import { buildLocalizedBlogPath } from "./blogPath";
-import { getBlogFallbackLocales } from "./blogLocaleFallback";
+import { getBlogFallbackLocales, selectUniqueBlogFallbackPost } from "./blogLocaleFallback";
 
 const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
@@ -108,11 +110,19 @@ const findBlogPostBySlug = async (
   locale: string,
   token: string
 ): Promise<BlogPost | null> => {
-  const locales = [locale, ...getBlogFallbackLocales(locale)];
+  try {
+    // Una coincidencia en el idioma de la ruta siempre tiene prioridad y no es ambigua.
+    return await getBlogPostBySlug(slug, token, locale);
+  } catch (error: unknown) {
+    if (!(axios.isAxiosError(error) && error.response?.status === 404)) {
+      throw error;
+    }
+  }
 
-  for (const candidateLocale of locales) {
+  const fallbackPosts: BlogPost[] = [];
+  for (const fallbackLocale of getBlogFallbackLocales(locale)) {
     try {
-      return await getBlogPostBySlug(slug, token, candidateLocale);
+      fallbackPosts.push(await getBlogPostBySlug(slug, token, fallbackLocale));
     } catch (error: unknown) {
       if (!(axios.isAxiosError(error) && error.response?.status === 404)) {
         throw error;
@@ -120,7 +130,8 @@ const findBlogPostBySlug = async (
     }
   }
 
-  return null;
+  // No elige arbitrariamente una noticia si dos idiomas reutilizan el mismo slug.
+  return selectUniqueBlogFallbackPost(fallbackPosts);
 };
 
 /**
@@ -129,7 +140,10 @@ const findBlogPostBySlug = async (
  * @param {GetServerSidePropsContext} context - Contexto proporcionado por Next.js.
  * @returns {Promise<{ redirect: { destination: string, permanent: boolean } } | null>} Objeto de redirección o null si no aplica.
  */
-export async function redirectByCookieSlug(context: GetServerSidePropsContext): Promise<{ redirect: { destination: string; permanent: boolean } } | null> {
+export async function redirectByCookieSlug(
+  context: GetServerSidePropsContext,
+  logger: AppLogger = clientLogger
+): Promise<{ redirect: { destination: string; permanent: boolean } } | null> {
   const slug = context.params?.slug;
   const locale = context.locale || DEFAULT_LOCALE;
 
@@ -168,7 +182,7 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
             }
           } catch (error: unknown) {
             if (!(axios.isAxiosError(error) && error.response?.status === 404)) {
-              console.error(
+              logger.error(
                 "No se pudo confirmar el cambio manual de idioma del artículo:",
                 getErrorMessageForLog(error)
               );
@@ -199,10 +213,10 @@ export async function redirectByCookieSlug(context: GetServerSidePropsContext): 
           };
         }
 
-        console.error("Redirección por cookie ignorada: la traducción recibida no es válida.");
+        logger.error("Redirección por cookie ignorada: la traducción recibida no es válida.");
       }
     } catch (error: unknown) {
-      console.error("Error durante la redirección basada en cookie:", getErrorMessageForLog(error));
+      logger.error("Error durante la redirección basada en cookie:", getErrorMessageForLog(error));
     }
   }
 

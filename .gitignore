@@ -5,3 +5,6 @@ backprod.bat
 backdocs.bat
 docs
 update.txt
+
+# Logs rotados de producción
+logs/

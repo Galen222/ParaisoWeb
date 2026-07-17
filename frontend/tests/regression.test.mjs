@@ -332,7 +332,7 @@ test("un tipo de carrusel desconocido no ejecuta undefined.map", async () => {
 
   assert.match(carousel, /const slides: Slide\[\] \| undefined/);
   assert.match(carousel, /if \(!slides \|\| slides\.length === 0\)/);
-  assert.match(carousel, /console\.error\([\s\S]*`Carrusel no disponible:/);
+  assert.match(carousel, /clientLogger\.error\([\s\S]*`Carrusel no disponible:/);
 });
 
 test("el aviso legal anida las listas secundarias dentro de su elemento de lista", async () => {

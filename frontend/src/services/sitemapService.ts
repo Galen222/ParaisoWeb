@@ -2,6 +2,8 @@ import { requirePublicApiUrl } from "../config/api.config";
 import { requireLoopbackSitemapApiUrl } from "../utils/sitemapApiUrl";
 import { isValidApiDateString, normalizeApiDateValue } from "../utils/apiDate";
 import { normalizeBlogSlug } from "../utils/blogSlug";
+import type { AppLogger } from "../logging/appLogger";
+import { clientLogger } from "../logging/clientLogger";
 
 const SITEMAP_REQUEST_TIMEOUT_MS = 10000;
 const SUPPORTED_LANGUAGES = new Set(["es", "en", "de"]);
@@ -82,7 +84,9 @@ const isSitemapBlogEntry = (value: unknown): value is SitemapBlogEntry => {
   );
 };
 
-export const getSitemapBlogEntries = async (): Promise<SitemapBlogEntry[]> => {
+export const getSitemapBlogEntries = async (
+  logger: AppLogger = clientLogger
+): Promise<SitemapBlogEntry[]> => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), SITEMAP_REQUEST_TIMEOUT_MS);
 
@@ -122,7 +126,7 @@ export const getSitemapBlogEntries = async (): Promise<SitemapBlogEntry[]> => {
     const validEntries = data.filter(isSitemapBlogEntry);
     const discardedEntries = data.length - validEntries.length;
     if (discardedEntries > 0) {
-      console.error(`Se omitieron ${discardedEntries} entradas no válidas del sitemap.`);
+      logger.error(`Se omitieron ${discardedEntries} entradas no válidas del sitemap.`);
     }
 
     const normalizedEntries = validEntries.map((entry) => ({
@@ -163,7 +167,7 @@ export const getSitemapBlogEntries = async (): Promise<SitemapBlogEntry[]> => {
     }
 
     if (duplicateRoutes > 0) {
-      console.error(`Se omitieron ${duplicateRoutes} rutas duplicadas del sitemap.`);
+      logger.error(`Se omitieron ${duplicateRoutes} rutas duplicadas del sitemap.`);
     }
 
     return Array.from(uniqueRoutes.values()).sort((left, right) =>

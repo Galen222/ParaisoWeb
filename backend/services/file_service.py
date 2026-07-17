@@ -24,30 +24,8 @@ from typing import Dict, Optional, Set, Union
 from fastapi import UploadFile, HTTPException
 import logging
 
-# Colores ANSI para salida en consola
-ANSI_GREEN = "\033[32m"
-ANSI_RED = "\033[31m"
-ANSI_RESET = "\033[0m"
-
-# Configurar logger
-logger = logging.getLogger("file_service")
-
-class ColoredFormatter(logging.Formatter):
-    def format(self, record):
-        message = super().format(record)
-        if record.levelno == logging.ERROR:
-            return f"{ANSI_RED}ERROR-LOG{ANSI_RESET}: {message}"
-        elif record.levelno == logging.INFO:
-            return f"{ANSI_GREEN}INFO-LOG{ANSI_RESET}: {message}"
-        return message
-
-logger.propagate = False
-logger.setLevel(logging.INFO)
-
-if not logger.handlers:
-    handler = logging.StreamHandler()
-    handler.setFormatter(ColoredFormatter())
-    logger.addHandler(handler)
+# El handler y el formato se configuran de forma centralizada al arrancar la API.
+logger = logging.getLogger(__name__)
 
 
 def file_log_context(file: UploadFile) -> str:
@@ -109,7 +87,7 @@ class FileService:
                 - 400: Si el tipo MIME no está permitido.
                 - 400: Si la extensión del archivo no corresponde al tipo MIME.
         """
-        logger.info(f"{ANSI_GREEN}Validando tipo MIME y extensión | {file_log_context(file)}{ANSI_RESET}")
+        logger.info("Validando tipo MIME y extensión | %s", file_log_context(file))
         try:
             # Leer los primeros 8 KB para determinar el tipo
             first_chunk = await file.read(8192)
@@ -124,14 +102,14 @@ class FileService:
             elif b"%PDF-" in first_chunk[:1024]:
                 mime_type = "application/pdf"
             else:
-                logger.error(f"{ANSI_RED}No se pudo determinar el tipo de archivo | {file_log_context(file)}{ANSI_RESET}")
+                logger.error("No se pudo determinar el tipo de archivo | %s", file_log_context(file))
                 raise HTTPException(
                     status_code=400,
                     detail="No se pudo determinar el tipo de archivo"
                 )
 
             if mime_type not in self.ALLOWED_MIME_TYPES:
-                logger.error(f"{ANSI_RED}Tipo de archivo no permitido: {mime_type} | {file_log_context(file)}{ANSI_RESET}")
+                logger.error("Tipo de archivo no permitido: %s | %s", mime_type, file_log_context(file))
                 raise HTTPException(
                     status_code=400,
                     detail=f"Tipo de archivo no permitido. Se permiten: {', '.join(self.ALLOWED_MIME_TYPES.keys())}"
@@ -140,7 +118,7 @@ class FileService:
             # Verificar la extensión del archivo
             file_ext = os.path.splitext(file.filename or "")[1].lower()
             if file_ext not in self.ALLOWED_MIME_TYPES[mime_type]:
-                logger.error(f"{ANSI_RED}Extensión no válida para tipo {mime_type} | {file_log_context(file)}{ANSI_RESET}")
+                logger.error("Extensión no válida para tipo %s | %s", mime_type, file_log_context(file))
                 raise HTTPException(
                     status_code=400,
                     detail=f"Extensión de archivo no válida para el tipo {mime_type}"
@@ -173,13 +151,14 @@ class FileService:
                 - 413: Si el archivo excede el tamaño máximo permitido.
                 - 400: Si se detecta contenido malicioso.
         """
-        logger.info(f"{ANSI_GREEN}Escaneando contenido de archivo | {file_log_context(file)}{ANSI_RESET}")
+        logger.info("Escaneando contenido de archivo | %s", file_log_context(file))
         try:
             # Si Starlette conoce el tamaño, rechaza el adjunto antes de leerlo por completo.
             if file.size is not None and file.size > self.MAX_FILE_SIZE:
                 logger.error(
-                    f"{ANSI_RED}Archivo excede tamaño máximo ({file.size} bytes) | "
-                    f"{file_log_context(file)}{ANSI_RESET}"
+                    "Archivo excede tamaño máximo (%s bytes) | %s",
+                    file.size,
+                    file_log_context(file),
                 )
                 raise HTTPException(
                     status_code=413,
@@ -199,8 +178,9 @@ class FileService:
                 total_size += len(chunk)
                 if total_size > self.MAX_FILE_SIZE:
                     logger.error(
-                        f"{ANSI_RED}Archivo excede tamaño máximo durante la lectura ({total_size} bytes) | "
-                        f"{file_log_context(file)}{ANSI_RESET}"
+                        "Archivo excede tamaño máximo durante la lectura (%s bytes) | %s",
+                        total_size,
+                        file_log_context(file),
                     )
                     raise HTTPException(
                         status_code=413,
@@ -214,8 +194,9 @@ class FileService:
                 for signature in self.MALICIOUS_SIGNATURES:
                     if signature in content_to_scan:
                         logger.error(
-                            f"{ANSI_RED}Firma maliciosa detectada: {signature} | "
-                            f"{file_log_context(file)}{ANSI_RESET}"
+                            "Firma maliciosa detectada: %s | %s",
+                            signature,
+                            file_log_context(file),
                         )
                         raise HTTPException(
                             status_code=400,
@@ -233,8 +214,9 @@ class FileService:
             # persistente del contenido, aunque no revele directamente el archivo.
             file_hash_value = file_hash.hexdigest()
             logger.info(
-                f"{ANSI_GREEN}Archivo limpio | bytes={total_size} | "
-                f"{file_log_context(file)}{ANSI_RESET}"
+                "Archivo limpio | bytes=%s | %s",
+                total_size,
+                file_log_context(file),
             )
             return file_hash_value
         except HTTPException:
@@ -266,7 +248,7 @@ class FileService:
                 - 400: Si el archivo no cumple con los criterios definidos.
         """
         if not file:
-            logger.info(f"{ANSI_GREEN}No se recibió archivo para procesar.{ANSI_RESET}")
+            logger.info("No se recibió archivo para procesar.")
             return None
 
         # Validar cabeceras y tipo MIME
@@ -275,7 +257,7 @@ class FileService:
         # Escanear contenido y obtener hash
         file_hash = await self.scan_file_content(file)
 
-        logger.info(f"{ANSI_GREEN}Archivo procesado exitosamente | {file_log_context(file)}{ANSI_RESET}")
+        logger.info("Archivo procesado exitosamente | %s", file_log_context(file))
 
         return {
             'filename': file.filename,

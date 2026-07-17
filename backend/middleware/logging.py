@@ -7,7 +7,7 @@ Middleware para logging detallado de peticiones HTTP en FastAPI.
 
 Este módulo proporciona un middleware personalizado para FastAPI que implementa
 logging detallado de todas las peticiones HTTP y sus respuestas. Incluye:
-- Logs coloreados para distinguir entre éxitos y errores
+- Destino y formato distintos para desarrollo y producción
 - Información detallada de cada petición y respuesta
 - Tiempos de proceso
 - Detalles específicos de errores cuando ocurren
@@ -25,7 +25,6 @@ Example:
     ```
 """
 
-import datetime  # Importar datetime para obtener la hora actual
 import json
 import logging
 import time
@@ -34,86 +33,25 @@ from http import HTTPStatus
 from typing import AsyncIterator, Callable
 
 from fastapi import Request, Response
-from starlette.middleware.base import BaseHTTPMiddleware
 
-# Códigos ANSI para colorear la salida en terminal
-ANSI_GREEN = "\033[32m"  # Color verde para éxitos
-ANSI_RED = "\033[31m"    # Color rojo para errores
-ANSI_RESET = "\033[0m"   # Resetear colores a los por defecto
+from ..core.config import settings
+from starlette.middleware.base import BaseHTTPMiddleware
 
 # Límite del cuerpo usado únicamente para describir errores en logs.
 # La respuesta completa continúa enviándose al cliente sin almacenarla en memoria.
 MAX_ERROR_LOG_BODY_BYTES = 8 * 1024
 
-# Configurar loggers
-# Desactivar solo los logs de acceso de Uvicorn
-logging.getLogger("uvicorn.access").disabled = True
-
-# Configurar el logger personalizado
-logger = logging.getLogger("custom_middleware")
-logger.propagate = False
-logger.setLevel(logging.INFO)
+# El handler, el nivel y el destino se configuran una sola vez al arrancar la API.
+logger = logging.getLogger(__name__)
 
 
 def get_status_text(status_code: int) -> str:
-    """
-    Obtiene el texto descriptivo del código de estado HTTP y lo colorea según sea éxito o error.
-
-    Args:
-        status_code (int): Código de estado HTTP (ej: 200, 404, 500)
-
-    Returns:
-        str: Texto formateado y coloreado del estado HTTP (ej: "200 OK" en verde)
-
-    Example:
-        >>> get_status_text(200)
-        '[verde]200 OK[/verde]'
-        >>> get_status_text(404)
-        '[rojo]404 Not Found[/rojo]'
-    """
+    """Obtiene el texto descriptivo de un código HTTP sin introducir colores en archivos."""
     try:
         status = HTTPStatus(status_code)
-        if status_code < 400:
-            return f"{ANSI_GREEN}{status_code} {status.phrase}{ANSI_RESET}"
-        return f"{ANSI_RED}{status_code} {status.phrase}{ANSI_RESET}"
+        return f"{status_code} {status.phrase}"
     except ValueError:
         return str(status_code)
-
-
-class ColoredFormatter(logging.Formatter):
-    """
-    Formateador personalizado para colorear los mensajes de log.
-
-    Este formateador añade prefijos coloreados a los mensajes según su nivel:
-    - INFO: Prefijo verde "INFO-LOG:"
-    - ERROR: Prefijo rojo "ERROR-LOG:"
-
-    """
-
-    def format(self, record: logging.LogRecord) -> str:
-        """
-        Formatea un registro de log añadiendo colores según su nivel.
-
-        Args:
-            record: Registro de logging a formatear
-
-        Returns:
-            str: Mensaje formateado con los colores apropiados
-        """
-        message = super().format(record)
-        if record.levelno == logging.ERROR:
-            return f"{ANSI_RED}ERROR-LOG{ANSI_RESET}: {message}"
-        if record.levelno == logging.INFO:
-            return f"{ANSI_GREEN}INFO-LOG{ANSI_RESET}: {message}"
-        return message
-
-
-# Configurar el handler con el formateador personalizado una sola vez.
-# Evita mensajes duplicados al recargar la aplicación o importar el módulo en tests.
-if not logger.handlers:
-    handler = logging.StreamHandler()
-    handler.setFormatter(ColoredFormatter())
-    logger.addHandler(handler)
 
 
 
@@ -200,9 +138,7 @@ class LoggingMiddleware(BaseHTTPMiddleware):
     - Tiempo de proceso
     - Detalles específicos de errores cuando ocurren
 
-    Los logs se colorean según el tipo de respuesta:
-    - Verde para respuestas exitosas (2xx)
-    - Rojo para errores (4xx, 5xx)
+    El formato y el destino final se deciden en la configuración centralizada.
     """
 
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
@@ -229,7 +165,6 @@ class LoggingMiddleware(BaseHTTPMiddleware):
         client_host = sanitize_log_value(request.client.host if request.client else "unknown")
         request_method = sanitize_log_value(request.method, max_length=32)
         request_path = sanitize_log_value(request.url.path)
-        current_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Hora actual
 
         try:
             # Procesar la petición
@@ -238,17 +173,16 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             # Las excepciones sin respuesta HTTP también deben quedar registradas.
             process_time = time.time() - start_time
             logger.exception(
-                f"CURRENT TIME: {current_time} | "
                 f"HOST: {client_host} | "
                 f"METHOD: {request_method} | "
                 f"PATH: {request_path} | "
-                f"STATUS: {ANSI_RED}500 Internal Server Error{ANSI_RESET} | "
-                f"{ANSI_RED}ERROR{ANSI_RESET}: Excepción no controlada | "
+                "STATUS: 500 Internal Server Error | "
+                "ERROR: Excepción no controlada | "
                 f"TIME: {process_time:.2f}s"
             )
             raise
 
-        # Obtener el estado HTTP formateado con colores
+        # Obtener el texto legible del estado HTTP
         status_text = get_status_text(response.status_code)
 
         # Si es una respuesta de error (4xx o 5xx), conserva el streaming original y
@@ -282,12 +216,11 @@ class LoggingMiddleware(BaseHTTPMiddleware):
                     process_time = time.time() - start_time
                     error_message = get_error_message(bytes(response_preview), truncated)
                     logger.error(
-                        f"CURRENT TIME: {current_time} | "
                         f"HOST: {client_host} | "
                         f"METHOD: {request_method} | "
                         f"PATH: {request_path} | "
                         f"STATUS: {status_text} | "
-                        f"{ANSI_RED}ERROR{ANSI_RESET}: {error_message} | "
+                        f"ERROR: {error_message} | "
                         f"TIME: {process_time:.2f}s"
                     )
 
@@ -295,13 +228,14 @@ class LoggingMiddleware(BaseHTTPMiddleware):
             return response
 
         process_time = time.time() - start_time
-        logger.info(
-            f"CURRENT TIME: {current_time} | "
-            f"HOST: {client_host} | "
-            f"METHOD: {request_method} | "
-            f"PATH: {request_path} | "
-            f"STATUS: {status_text} | "
-            f"TIME: {process_time:.2f}s"
-        )
+        is_successful_healthcheck = request_path in {"/health", "/livez"}
+        if settings.backend_log_healthchecks or not is_successful_healthcheck:
+            logger.info(
+                f"HOST: {client_host} | "
+                f"METHOD: {request_method} | "
+                f"PATH: {request_path} | "
+                f"STATUS: {status_text} | "
+                f"TIME: {process_time:.2f}s"
+            )
 
         return response

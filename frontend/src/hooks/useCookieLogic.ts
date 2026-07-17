@@ -16,6 +16,7 @@ import {
 import { initGA } from "../utils/gaUtils"; // Importa la función desde utils
 import { shouldReopenConsentModal } from "../utils/cookieConsentState";
 import { shouldPersistLocalePreference } from "../utils/localePreferenceSync";
+import { clientLogger } from "../logging/clientLogger";
 
 const COOKIE_CONSENT_VERSION = "v1";
 const COOKIE_CONSENT_ACCEPTED = `${COOKIE_CONSENT_VERSION}.accepted`;
@@ -323,7 +324,7 @@ export function useCookieLogic(): CookieLogic {
         setIsReviewingConsentPolicy(true);
       }
     } catch (error: unknown) {
-      console.error(
+      clientLogger.error(
         "No se pudo abrir la política de cookies:",
         error instanceof Error ? error.message : "Error de navegación desconocido"
       );
@@ -351,7 +352,7 @@ export function useCookieLogic(): CookieLogic {
         setIsReviewingConsentPolicy(true);
       }
     } catch (error: unknown) {
-      console.error(
+      clientLogger.error(
         "No se pudo abrir la política de privacidad:",
         error instanceof Error ? error.message : "Error de navegación desconocido"
       );

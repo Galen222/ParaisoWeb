@@ -71,7 +71,8 @@ test("la preferencia de idioma localiza un artículo aunque el slug pertenezca a
   );
 
   assert.match(redirect, /getBlogFallbackLocales/);
-  assert.match(redirect, /const locales = \[locale, \.\.\.getBlogFallbackLocales\(locale\)\]/);
+  assert.match(redirect, /const fallbackPosts: BlogPost\[\] = \[\]/);
+  assert.match(redirect, /selectUniqueBlogFallbackPost\(fallbackPosts\)/);
   assert.match(redirect, /error\.response\?\.status === 404/);
   assert.match(redirect, /findBlogPostBySlug\(normalizedSlug, locale, token\)/);
 });
@@ -83,7 +84,7 @@ test("el sitemap conserva las rutas estáticas si falla la fuente de artículos"
   );
 
   assert.match(sitemap, /let blogEntries: SitemapBlogEntry\[\] = \[\]/);
-  assert.match(sitemap, /blogEntries = await getSitemapBlogEntries\(\)/);
+  assert.match(sitemap, /blogEntries = await getSitemapBlogEntries\(frontendLogger\)/);
   assert.match(sitemap, /se publicarán las rutas estáticas/);
   assert.match(sitemap, /buildStaticFields\(siteUrl\)/);
   assert.match(sitemap, /blogEntriesAvailable[\s\S]*?s-maxage=60/);

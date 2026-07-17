@@ -73,6 +73,12 @@ class Settings(BaseSettings):
         CORS_ALLOWED_ORIGINS (str): Orígenes frontend autorizados, separados por comas.
         TRUSTED_PROXY_IPS (str): Proxies autorizados para aportar X-Forwarded-For.
         ENABLE_API_DOCS (bool): Habilita OpenAPI, Swagger UI y ReDoc de forma explícita.
+        APP_ENV (str): Entorno activo: development o production.
+        BACKEND_LOG_LEVEL (str | None): Nivel opcional; usa DEBUG en desarrollo e INFO en producción.
+        BACKEND_LOG_DIR (str): Directorio donde producción escribe backend.log.
+        BACKEND_LOG_MAX_BYTES (int): Tamaño máximo antes de rotar backend.log.
+        BACKEND_LOG_BACKUP_COUNT (int): Número de copias rotadas conservadas.
+        BACKEND_LOG_HEALTHCHECKS (bool | None): Control explícito del log de health checks correctos.
     """
     SMTP_SERVER: str
     SMTP_PORT: int = Field(ge=1, le=65535)
@@ -109,6 +115,12 @@ class Settings(BaseSettings):
     )
     TRUSTED_PROXY_IPS: str = "127.0.0.1,::1"
     ENABLE_API_DOCS: bool = False
+    APP_ENV: Literal["development", "production"] = "development"
+    BACKEND_LOG_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] | None = None
+    BACKEND_LOG_DIR: str = "logs"
+    BACKEND_LOG_MAX_BYTES: int = Field(default=10 * 1024 * 1024, gt=0)
+    BACKEND_LOG_BACKUP_COUNT: int = Field(default=10, gt=0)
+    BACKEND_LOG_HEALTHCHECKS: bool | None = None
 
     @field_validator(
         "DATABASE_STARTUP_TIMEOUT_SECONDS",
@@ -347,6 +359,20 @@ class Settings(BaseSettings):
                 normalized_values.append(normalized)
 
         return ",".join(normalized_values)
+
+    @property
+    def backend_log_level(self) -> str:
+        """Usa DEBUG en desarrollo e INFO en producción salvo configuración explícita."""
+        if self.BACKEND_LOG_LEVEL is not None:
+            return self.BACKEND_LOG_LEVEL
+        return "INFO" if self.APP_ENV == "production" else "DEBUG"
+
+    @property
+    def backend_log_healthchecks(self) -> bool:
+        """Registra health checks correctos por defecto solo durante el desarrollo."""
+        if self.BACKEND_LOG_HEALTHCHECKS is not None:
+            return self.BACKEND_LOG_HEALTHCHECKS
+        return self.APP_ENV != "production"
 
     @property
     def cors_allowed_origins(self) -> list[str]:

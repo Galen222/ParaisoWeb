@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { getBlogPostById } from "../services/blogService";
 import { normalizeBlogSlug } from "../utils/blogSlug";
 import { buildBlogPath } from "../utils/blogPath";
+import { clientLogger } from "../logging/clientLogger";
 
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
 
@@ -66,7 +67,7 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
     }
 
     if (!SUPPORTED_LOCALES.has(newIdioma)) {
-      console.error(`Cambio automático de idioma ignorado: locale no soportado "${newIdioma}".`);
+      clientLogger.error(`Cambio automático de idioma ignorado: locale no soportado "${newIdioma}".`);
       return;
     }
 
@@ -101,7 +102,7 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
           newBlogPost.idioma !== newIdioma ||
           normalizedNewSlug === null
         ) {
-          console.error("Cambio automático de idioma cancelado: la traducción recibida no es válida.");
+          clientLogger.error("Cambio automático de idioma cancelado: la traducción recibida no es válida.");
           return;
         }
 
@@ -114,12 +115,12 @@ export const useHandleLanguageChange = (blogDetails: BlogDetails | null) => {
         );
 
         if (isCurrentRequest() && !navigationCompleted) {
-          console.error("No se pudo completar la navegación al artículo traducido.");
+          clientLogger.error("No se pudo completar la navegación al artículo traducido.");
         }
       } catch (error: unknown) {
         // Una navegación posterior o el desmontaje cancelan intencionadamente la lectura.
         if (isCurrentRequest()) {
-          console.error("Error al cambiar automáticamente el idioma del artículo:", getErrorMessageForLog(error));
+          clientLogger.error("Error al cambiar automáticamente el idioma del artículo:", getErrorMessageForLog(error));
         }
       } finally {
         if (activeRequestControllerRef.current === controller) {

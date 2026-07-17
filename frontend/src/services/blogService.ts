@@ -11,6 +11,7 @@ import { READ_REQUEST_TIMEOUT_MS, requirePublicApiUrl } from "../config/api.conf
 import { normalizeBlogSlug } from "../utils/blogSlug";
 import { isSafePublicAssetPath } from "../utils/publicAssetPath";
 import { isSafePublicMultilineText, isSafePublicSingleLineText } from "../utils/publicText";
+import { clientLogger } from "../logging/clientLogger";
 
 /**
  * Interfaz para representar los datos de una publicación de blog.
@@ -162,7 +163,7 @@ export const getBlogPosts = async (
     );
     const discardedPosts = response.data.length - validPosts.length;
     if (discardedPosts > 0) {
-      console.error(`Se omitieron ${discardedPosts} artículos de blog con datos no válidos.`);
+      clientLogger.error(`Se omitieron ${discardedPosts} artículos de blog con datos no válidos.`);
     }
 
     // Una respuesta repetida no debe duplicar tarjetas, claves React ni rutas. Se
@@ -185,7 +186,7 @@ export const getBlogPosts = async (
     }
 
     if (duplicatePosts > 0) {
-      console.error(`Se omitieron ${duplicatePosts} artículos de blog con identificador o slug duplicado.`);
+      clientLogger.error(`Se omitieron ${duplicatePosts} artículos de blog con identificador o slug duplicado.`);
     }
 
     return uniquePosts;

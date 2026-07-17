@@ -29,12 +29,7 @@ from .file_service import FileService
 
 import logging
 
-# Colores ANSI para mantener estilo del middleware
-ANSI_GREEN = "\033[32m"
-ANSI_RED = "\033[31m"
-ANSI_RESET = "\033[0m"
-
-logger = logging.getLogger("email_service")
+logger = logging.getLogger(__name__)
 
 
 def mask_email_for_log(email: str) -> str:
@@ -84,23 +79,6 @@ def sanitize_attachment_filename(filename: Optional[str]) -> str:
     safe_extension = extension[:20]
     available_stem_length = max_length - len(safe_extension)
     return f"{stem[:available_stem_length]}{safe_extension}" or "adjunto"
-
-class ColoredFormatter(logging.Formatter):
-    def format(self, record):
-        message = super().format(record)
-        if record.levelno == logging.ERROR:
-            return f"{ANSI_RED}ERROR-LOG{ANSI_RESET}: {message}"
-        elif record.levelno == logging.INFO:
-            return f"{ANSI_GREEN}INFO-LOG{ANSI_RESET}: {message}"
-        return message
-
-logger.propagate = False
-logger.setLevel(logging.INFO)
-
-if not logger.handlers:
-    handler = logging.StreamHandler()
-    handler.setFormatter(ColoredFormatter())
-    logger.addHandler(handler)
 
 
 class EmailService:
@@ -213,9 +191,10 @@ class EmailService:
                 timeout=self.smtp_timeout,
             )
             logger.info(
-                f"{ANSI_GREEN}Correo enviado correctamente | "
-                f"motivo={reason} | remitente={mask_email_for_log(email)} | "
-                f"destinatario={msg['To']}{ANSI_RESET}"
+                "Correo enviado correctamente | motivo=%s | remitente=%s | destinatario=%s",
+                reason,
+                mask_email_for_log(email),
+                msg["To"],
             )
         except Exception:
             logger.exception(

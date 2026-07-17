@@ -115,16 +115,18 @@ const buildBlogFields = (
 export const getServerSideProps: GetServerSideProps<Record<string, never>> = async (
   context: GetServerSidePropsContext
 ) => {
+  const { frontendLogger } = await import("../server/frontendLogger");
+
   try {
     const siteUrl = getSiteUrl();
     let blogEntries: SitemapBlogEntry[] = [];
     let blogEntriesAvailable = true;
 
     try {
-      blogEntries = await getSitemapBlogEntries();
+      blogEntries = await getSitemapBlogEntries(frontendLogger);
     } catch (error: unknown) {
       blogEntriesAvailable = false;
-      console.error(
+      frontendLogger.error(
         "No se han podido añadir los artículos al sitemap; se publicarán las rutas estáticas:",
         error instanceof Error ? error.message : "error desconocido"
       );
@@ -143,7 +145,7 @@ export const getServerSideProps: GetServerSideProps<Record<string, never>> = asy
     );
     return getServerSideSitemapLegacy(context, uniqueFields);
   } catch (error) {
-    console.error(
+    frontendLogger.error(
       "No se ha podido generar el sitemap dinámico:",
       error instanceof Error ? error.message : "error desconocido"
     );

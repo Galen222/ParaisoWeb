@@ -6,6 +6,7 @@ import { useIntl } from "react-intl";
 import { slidesData } from "../utils/slidesData";
 import styles from "../styles/components/Carousel.module.css";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
+import { clientLogger } from "../logging/clientLogger";
 
 /**
  * Interface para definir las propiedades de cada diapositiva.
@@ -67,7 +68,7 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
   // Una clave desconocida no debe derribar la página completa con `undefined.map`.
   // Se registra únicamente la clave técnica y se conserva un contenedor vacío.
   if (!slides || slides.length === 0) {
-    console.error(`Carrusel no disponible: tipo desconocido "${carouselType}".`);
+    clientLogger.error(`Carrusel no disponible: tipo desconocido "${carouselType}".`);
     return <div className={styles.carouselContainer} />;
   }
 

@@ -10,6 +10,7 @@ import { isValidApiDateString } from "../utils/apiDate";
 import { READ_REQUEST_TIMEOUT_MS, requirePublicApiUrl } from "../config/api.config";
 import { isSafePublicAssetPath } from "../utils/publicAssetPath";
 import { isSafePublicMultilineText, isSafePublicSingleLineText } from "../utils/publicText";
+import { clientLogger } from "../logging/clientLogger";
 
 /**
  * Interfaz para representar los datos de un producto de charcutería.
@@ -98,7 +99,7 @@ export const getCharcuteriaProducts = async (
     );
     const discardedProducts = response.data.length - validProducts.length;
     if (discardedProducts > 0) {
-      console.error(`Se omitieron ${discardedProducts} productos de charcutería con datos no válidos.`);
+      clientLogger.error(`Se omitieron ${discardedProducts} productos de charcutería con datos no válidos.`);
     }
 
     // Evita tarjetas repetidas si un proxy o una consulta defectuosa duplica una fila.
@@ -124,12 +125,12 @@ export const getCharcuteriaProducts = async (
     }
 
     if (duplicateProducts > 0) {
-      console.error(`Se omitieron ${duplicateProducts} productos de charcutería duplicados.`);
+      clientLogger.error(`Se omitieron ${duplicateProducts} productos de charcutería duplicados.`);
     }
 
     return uniqueProducts;
   } catch (error) {
-    /* // console.error("Error recibiendo los productos de charcuteria:", error); */
+    /* // clientLogger.error("Error recibiendo los productos de charcuteria:", error); */
     throw error;
   }
 };

@@ -5,7 +5,13 @@ import { getBlogPostBySlug, getBlogPostById, BlogPost } from "../services/blogSe
 import { getTimedToken } from "../services/tokenService";
 import { normalizeBlogSlug } from "../utils/blogSlug";
 import { buildLocalizedBlogPath } from "../utils/blogPath";
-import { getBlogFallbackLocales, isSupportedBlogLocale } from "../utils/blogLocaleFallback";
+import type { AppLogger } from "../logging/appLogger";
+import { clientLogger } from "../logging/clientLogger";
+import {
+  getBlogFallbackLocales,
+  isSupportedBlogLocale,
+  selectUniqueBlogFallbackPost,
+} from "../utils/blogLocaleFallback";
 
 interface BlogDataResult {
   redirect?: { destination: string; permanent: boolean };
@@ -49,7 +55,8 @@ const getErrorMessageForLog = (error: unknown): string => {
 export async function loadBlogData(
   slug: string,
   locale: string,
-  routeSuffix = ""
+  routeSuffix = "",
+  logger: AppLogger = clientLogger
 ): Promise<BlogDataResult> {
   // Evita solicitar la API con parámetros que no pueden corresponder a una ruta válida.
   const normalizedSlug = normalizeBlogSlug(slug);
@@ -77,18 +84,23 @@ export async function loadBlogData(
     // artículo no existe con el locale actual, se localiza su noticia equivalente y
     // se redirige a la URL canónica traducida en vez de devolver un 404 falso.
     if (blogDetails === null) {
-      const fallbackLocales = getBlogFallbackLocales(locale);
+      const fallbackPosts: BlogPost[] = [];
 
-      for (const fallbackLocale of fallbackLocales) {
+      for (const fallbackLocale of getBlogFallbackLocales(locale)) {
         try {
-          blogDetails = await getBlogPostBySlug(normalizedSlug, token, fallbackLocale);
-          break;
+          fallbackPosts.push(
+            await getBlogPostBySlug(normalizedSlug, token, fallbackLocale)
+          );
         } catch (error: unknown) {
           if (!(axios.isAxiosError(error) && error.response?.status === 404)) {
             throw error;
           }
         }
       }
+
+      // El mismo slug puede pertenecer a noticias distintas en dos idiomas. Solo se
+      // traduce automáticamente cuando todas las coincidencias comparten identidad.
+      blogDetails = selectUniqueBlogFallbackPost(fallbackPosts);
     }
 
     if (blogDetails === null) {
@@ -108,7 +120,7 @@ export async function loadBlogData(
         !isValidTranslatedPost(translatedBlogPost, locale, blogDetails.id_noticia) ||
         normalizedTranslatedSlug === null
       ) {
-        console.error("La API devolvió una traducción de blog inválida para el idioma solicitado.");
+        logger.error("La API devolvió una traducción de blog inválida para el idioma solicitado.");
         return {
           blogDetails: null,
           error: null,
@@ -138,7 +150,7 @@ export async function loadBlogData(
       };
     }
 
-    console.error("Error al cargar los datos del blog:", getErrorMessageForLog(error));
+    logger.error("Error al cargar los datos del blog:", getErrorMessageForLog(error));
 
     return {
       blogDetails: null,

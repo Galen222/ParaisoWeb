@@ -12,6 +12,7 @@ import {
 } from "../utils/cookieUtils";
 import { normalizeBlogSlug } from "../utils/blogSlug";
 import { buildBlogPath } from "../utils/blogPath";
+import { clientLogger } from "../logging/clientLogger";
 
 const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
 
@@ -67,7 +68,7 @@ export function useLocaleChange(): LocaleChangeHandler {
     async (newLocale: string) => {
       // Ignora valores ajenos a los idiomas configurados para no generar rutas ni cookies inválidas.
       if (!SUPPORTED_LOCALES.has(newLocale)) {
-        console.error(`Cambio de idioma ignorado: locale no soportado "${newLocale}".`);
+        clientLogger.error(`Cambio de idioma ignorado: locale no soportado "${newLocale}".`);
         return;
       }
 
@@ -102,7 +103,7 @@ export function useLocaleChange(): LocaleChangeHandler {
           try {
             await router.replace(router.asPath, router.asPath, { locale: newLocale });
           } catch (error: unknown) {
-            console.error(
+            clientLogger.error(
               "No se pudo cancelar el cambio de idioma pendiente:",
               getErrorMessageForLog(error)
             );
@@ -138,7 +139,7 @@ export function useLocaleChange(): LocaleChangeHandler {
         // No solicita tokens ni artículos cuando Next.js todavía no dispone de un slug válido.
         const normalizedSlug = normalizeBlogSlug(slug);
         if (normalizedSlug === null) {
-          console.error("Cambio de idioma del blog ignorado: slug no disponible o inválido.");
+          clientLogger.error("Cambio de idioma del blog ignorado: slug no disponible o inválido.");
           if (activeRequestControllerRef.current === controller) {
             activeRequestControllerRef.current = null;
           }
@@ -161,7 +162,7 @@ export function useLocaleChange(): LocaleChangeHandler {
 
           // No consulta la traducción con un identificador vacío, decimal o negativo devuelto por la API.
           if (!Number.isInteger(currentBlogPost.id_noticia) || currentBlogPost.id_noticia <= 0) {
-            console.error("Cambio de idioma del blog cancelado: identificador de artículo inválido.");
+            clientLogger.error("Cambio de idioma del blog cancelado: identificador de artículo inválido.");
             newPath = `/blog${routeSuffix}`;
           } else {
             // Obtenemos el artículo en el nuevo idioma utilizando el ID del artículo actual
@@ -184,7 +185,7 @@ export function useLocaleChange(): LocaleChangeHandler {
               newPath = buildBlogPath(normalizedNewSlug, routeSuffix);
             } else {
               // Si la respuesta no corresponde a la traducción solicitada, redirige al blog principal.
-              console.error("Cambio de idioma del blog cancelado: la traducción recibida no es válida.");
+              clientLogger.error("Cambio de idioma del blog cancelado: la traducción recibida no es válida.");
               newPath = `/blog${routeSuffix}`;
             }
           }
@@ -192,7 +193,7 @@ export function useLocaleChange(): LocaleChangeHandler {
           // Una navegación posterior o el desmontaje cancelan de forma intencionada esta lectura.
           if (controller.signal.aborted || localeChangeSequence !== localeChangeSequenceRef.current) return;
 
-          console.error("Error al obtener la traducción del artículo:", getErrorMessageForLog(error));
+          clientLogger.error("Error al obtener la traducción del artículo:", getErrorMessageForLog(error));
           // En caso de error, podríamos redirigir al blog principal
           newPath = `/blog${routeSuffix}`;
         }
@@ -232,13 +233,13 @@ export function useLocaleChange(): LocaleChangeHandler {
               : previousLocalePreference;
           } else {
             restorePreviousLocalePreference();
-            console.error("El cambio de idioma fue cancelado antes de completar la navegación.");
+            clientLogger.error("El cambio de idioma fue cancelado antes de completar la navegación.");
           }
         }
       } catch (error: unknown) {
         if (!controller.signal.aborted && localeChangeSequence === localeChangeSequenceRef.current) {
           restorePreviousLocalePreference();
-          console.error("No se pudo completar el cambio de idioma:", getErrorMessageForLog(error));
+          clientLogger.error("No se pudo completar el cambio de idioma:", getErrorMessageForLog(error));
         }
       } finally {
         if (activeRequestControllerRef.current === controller) {

@@ -4,6 +4,7 @@ const MAX_EMAIL_BYTES = 254;
 const MAX_DOMAIN_BYTES = 253;
 const MAX_DOMAIN_LABEL_BYTES = 63;
 const IDNA_NORMALIZATION_SUFFIX = ".invalid";
+const IDNA_DOT_EQUIVALENTS_PATTERN = /[\u3002\uFF0E\uFF61]/g;
 const SPECIAL_USE_DOMAIN_SUFFIXES = new Set(["arpa", "invalid", "local", "localhost", "onion", "test"]);
 
 /**
@@ -56,14 +57,18 @@ export const isValidContactEmail = (value: string): boolean => {
   }
 
   const domain = email.slice(separatorIndex + 1);
-  if (!domain.includes(".")) {
+  // UTS #46 trata estos tres separadores como puntos ASCII. EmailStr aplica esa
+  // normalización IDNA, por lo que el navegador debe validar la misma dirección.
+  const normalizedDomain = domain.replace(IDNA_DOT_EQUIVALENTS_PATTERN, ".");
+  const normalizedEmail = `${email.slice(0, separatorIndex)}@${normalizedDomain}`;
+  if (!normalizedDomain.includes(".")) {
     return false;
   }
 
   // EmailStr admite TLD de un carácter y no aplica el límite histórico de 64 bytes
   // a la parte local, pero sí limita la dirección completa a 254 bytes.
   if (
-    !validator.isEmail(email, {
+    !validator.isEmail(normalizedEmail, {
       require_tld: false,
       ignore_max_length: true,
       blacklisted_chars: '"',
@@ -72,7 +77,7 @@ export const isValidContactEmail = (value: string): boolean => {
     return false;
   }
 
-  const asciiDomain = normalizeDomainToAscii(domain);
+  const asciiDomain = normalizeDomainToAscii(normalizedDomain);
   if (asciiDomain === null || asciiDomain.length > MAX_DOMAIN_BYTES) {
     return false;
   }

@@ -19,6 +19,7 @@ import { formatBlogDate } from "../../utils/blogDate";
 import { normalizeBlogSlug } from "../../utils/blogSlug";
 import { buildLocalizedBlogPath } from "../../utils/blogPath";
 import { getPublicSiteUrl } from "../../utils/publicSiteUrl";
+import { clientLogger } from "../../logging/clientLogger";
 
 // Mensajes de traducción
 import esMessages from "../../locales/es/common.json";
@@ -130,7 +131,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
       }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error && error.message.trim() ? error.message : "Error desconocido";
-      console.error("Error al volver al listado del blog:", errorMessage);
+      clientLogger.error("Error al volver al listado del blog:", errorMessage);
       isPushingBackRef.current = false;
       setIsPushingBack(false);
     }
@@ -270,6 +271,7 @@ BlogDetailsPage.pageTitleText = "blog";
  * @returns {Promise<GetServerSidePropsResult<BlogDetailsPageProps>>} Props o redirección.
  */
 export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = async (context): Promise<GetServerSidePropsResult<BlogDetailsPageProps>> => {
+  const { frontendLogger } = await import("../../server/frontendLogger");
   const slug = context.params?.slug;
   const locale = context.locale || "es";
 
@@ -291,7 +293,7 @@ export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = asyn
   }
 
   // Intentar redirigir basado en la cookie de idioma
-  const cookieRedirect = await redirectByCookieSlug(context);
+  const cookieRedirect = await redirectByCookieSlug(context, frontendLogger);
   if (cookieRedirect) {
     return {
       redirect: cookieRedirect.redirect, // Esto asegura que siempre devuelvas el formato correcto.
@@ -302,7 +304,8 @@ export const getServerSideProps: GetServerSideProps<BlogDetailsPageProps> = asyn
   const blogData = await loadBlogData(
     normalizedSlug,
     locale,
-    getQuerySuffix(context.resolvedUrl)
+    getQuerySuffix(context.resolvedUrl),
+    frontendLogger
   );
 
   if (blogData.notFound) {

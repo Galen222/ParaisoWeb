@@ -11,11 +11,16 @@ import {
   FormData as FormServiceData,
 } from "../services/formService";
 import styles from "../styles/components/Form.module.css";
-import { isContactFormComplete } from "../utils/contactFormValidation";
+import {
+  isContactFormComplete,
+  truncateContactMessage,
+  truncateContactName,
+} from "../utils/contactFormValidation";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 import { containsUnsupportedContactMessageControl } from "../utils/contactMessage";
 import { isValidContactEmail } from "../utils/contactEmailValidation";
 import { hasAllowedContactFileMetadata } from "../utils/contactFileValidation";
+import { clientLogger } from "../logging/clientLogger";
 
 export interface FormProps {
   onSubmit: () => void;
@@ -124,8 +129,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
    */
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const normalizedValue = value.normalize("NFC");
-    if (isValidNameInput(normalizedValue)) {
+    const normalizedValue = truncateContactName(value.normalize("NFC"));
+    // El backend elimina el espacio exterior antes de validar los caracteres del nombre.
+    // Validar el mismo núcleo permite pegar nombres con espacios accidentales sin perder letras.
+    if (isValidNameInput(normalizedValue.trim())) {
       setFormData((current) => ({ ...current, [name]: normalizedValue }));
     }
   };
@@ -152,8 +159,9 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
   const handleValidateMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    if (!containsUnsupportedContactMessageControl(value)) {
-      setFormData((current) => ({ ...current, [name]: value }));
+    const limitedValue = truncateContactMessage(value);
+    if (!containsUnsupportedContactMessageControl(limitedValue)) {
+      setFormData((current) => ({ ...current, [name]: limitedValue }));
     }
   };
 
@@ -227,7 +235,9 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     activeSubmitControllerRef.current = controller;
 
     try {
-      console.log("📤 Enviando formulario:", {
+      // Los metadatos del formulario se muestran en desarrollo mediante el logger
+      // cliente. En producción, los mensajes informativos propios quedan silenciados.
+      clientLogger.info("📤 Enviando formulario:", {
         reason: formData.reason,
         email: maskEmailForLog(formData.email),
         messageLength: formData.message.length,
@@ -256,7 +266,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
       onSubmit();
     } catch (error: unknown) {
       if (!isFormSubmissionCancelled(error) && isMountedRef.current) {
-        console.error("Error al enviar el formulario:", getErrorMessageForLog(error));
+        clientLogger.error("Error al enviar el formulario:", getErrorMessageForLog(error));
         showToast("contacto_Formulario_Error", 4000, "error");
       }
     } finally {
@@ -287,7 +297,6 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
           name="name"
           value={formData.name}
           onChange={handleValidateName}
-          maxLength={100}
           required
           className={`${styles.input} ${styles.nameInput}`}
         />
@@ -326,7 +335,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
       <div>
         <label htmlFor="message">{intl.formatMessage({ id: "contacto_Mensaje" })}</label>
-        <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} maxLength={5000} required></textarea>
+        <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
       </div>
 
       <div className={styles.archiveText}>

@@ -34,6 +34,9 @@ test("el correo de contacto comparte las fronteras reales de EmailStr", async ()
     `${"a".repeat(100)}@example.com`,
     "usuario@bücher.de",
     "用户@例子.广告",
+    "a@example。com",
+    "a@example．com",
+    "a@example｡com",
     "user@host.example.0xb",
   ];
   const invalidEmails = [

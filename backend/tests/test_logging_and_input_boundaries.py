@@ -106,7 +106,11 @@ class AttachmentSizeStatusTests(unittest.IsolatedAsyncioTestCase):
         with patch("backend.services.file_service.logger.info") as log_info:
             file_hash = await service.scan_file_content(upload)
 
-        messages = " ".join(str(call.args[0]) for call in log_info.call_args_list if call.args)
+        messages = " ".join(
+            str(call.args[0]) % tuple(call.args[1:]) if len(call.args) > 1 else str(call.args[0])
+            for call in log_info.call_args_list
+            if call.args
+        )
         self.assertNotIn(file_hash, messages)
         self.assertIn("Archivo limpio", messages)
         self.assertIn("bytes=17", messages)

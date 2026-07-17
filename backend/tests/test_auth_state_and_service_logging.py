@@ -3,7 +3,6 @@
 from backend.tests import _environment as _test_environment  # noqa: F401
 
 import importlib
-import logging
 import unittest
 from unittest.mock import patch
 
@@ -69,31 +68,15 @@ class EarlyAuthenticationStateTests(unittest.IsolatedAsyncioTestCase):
 
 
 class ServiceLoggerConfigurationTests(unittest.TestCase):
-    def _assert_reload_creates_local_handler(self, module_name: str) -> None:
-        module = importlib.import_module(module_name)
-        service_logger = module.logger
-        root_logger = logging.getLogger()
-        original_service_handlers = list(service_logger.handlers)
-        root_handler = logging.NullHandler()
+    def test_email_service_usa_la_configuracion_central(self) -> None:
+        module = importlib.import_module("backend.services.email_service")
+        self.assertTrue(module.logger.propagate)
+        self.assertEqual(module.logger.handlers, [])
 
-        try:
-            service_logger.handlers.clear()
-            root_logger.addHandler(root_handler)
-            reloaded = importlib.reload(module)
-            self.assertTrue(
-                reloaded.logger.handlers,
-                "Un logger con propagate=False necesita al menos un handler propio",
-            )
-        finally:
-            service_logger.handlers.clear()
-            service_logger.handlers.extend(original_service_handlers)
-            root_logger.removeHandler(root_handler)
-
-    def test_email_service_no_pierde_logs_si_root_tiene_handler(self) -> None:
-        self._assert_reload_creates_local_handler("backend.services.email_service")
-
-    def test_file_service_no_pierde_logs_si_root_tiene_handler(self) -> None:
-        self._assert_reload_creates_local_handler("backend.services.file_service")
+    def test_file_service_usa_la_configuracion_central(self) -> None:
+        module = importlib.import_module("backend.services.file_service")
+        self.assertTrue(module.logger.propagate)
+        self.assertEqual(module.logger.handlers, [])
 
 
 if __name__ == "__main__":

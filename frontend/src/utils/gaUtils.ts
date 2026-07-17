@@ -2,6 +2,7 @@
 
 import ReactGA from "react-ga4";
 import { normalizeGoogleAnalyticsId } from "./googleAnalyticsId";
+import { clientLogger } from "../logging/clientLogger";
 
 /**
  * Variable que indica si Google Analytics está desactivado.
@@ -40,7 +41,7 @@ export const initGA = (): boolean => {
   if (!analyticsId) {
     initializedAnalyticsId = null;
     gaDisabled = true;
-    console.error("Google Analytics no se ha iniciado: NEXT_PUBLIC_GOOGLE_ANALYTICS_ID no está definida.");
+    clientLogger.error("Google Analytics no se ha iniciado: NEXT_PUBLIC_GOOGLE_ANALYTICS_ID no está definida.");
     return false;
   }
 
@@ -61,7 +62,7 @@ export const initGA = (): boolean => {
     const errorMessage = error instanceof Error && error.message.trim() ? error.message : "Error desconocido";
     initializedAnalyticsId = null;
     setGADisabled(analyticsId, true);
-    console.error("Google Analytics no se ha podido iniciar:", errorMessage);
+    clientLogger.error("Google Analytics no se ha podido iniciar:", errorMessage);
     return false;
   }
 };
@@ -77,7 +78,7 @@ export const sendGAPageView = (page: string, title: string): void => {
     ReactGA.send({ hitType: "pageview", page, title });
   } catch (error: unknown) {
     const errorMessage = error instanceof Error && error.message.trim() ? error.message : "Error desconocido";
-    console.error("Google Analytics no pudo registrar la vista de página:", errorMessage);
+    clientLogger.error("Google Analytics no pudo registrar la vista de página:", errorMessage);
   }
 };
 
@@ -93,7 +94,7 @@ export const sendGAButtonClick = (usedButton: string): void => {
     });
   } catch (error: unknown) {
     const errorMessage = error instanceof Error && error.message.trim() ? error.message : "Error desconocido";
-    console.error("Google Analytics no pudo registrar el clic:", errorMessage);
+    clientLogger.error("Google Analytics no pudo registrar el clic:", errorMessage);
   }
 };
 
