@@ -30,7 +30,7 @@ const AnimatedTitle: React.FC<AnimatedTitleProps> = ({ pageTitleText, cookiesMod
 
   return (
     <div className={styles.animationContainer}>
-      <h1>
+      <div aria-hidden="true">
         {/* Verifica si el modal de cookies está cerrado. Si es verdadero, muestra el título animado */}
         {cookiesModalClosed ? (
           <span className={styles.animationTime}>
@@ -50,7 +50,7 @@ const AnimatedTitle: React.FC<AnimatedTitleProps> = ({ pageTitleText, cookiesMod
             <span className={styles.animationFont}>{intl.formatMessage({ id: `${pageTitleText}_Titulo_Texto2` })}</span>
           </span>
         )}
-      </h1>
+      </div>
     </div>
   );
 };

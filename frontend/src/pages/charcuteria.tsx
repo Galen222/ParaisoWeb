@@ -153,9 +153,9 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
       {/* Mensaje de error si ocurre un problema al obtener los productos*/}
       {error && (
         <div className={errorStyles.errorContainer}>
-          <h3 className={errorStyles.errorText}>{error}</h3>
+          <h1 className={errorStyles.errorText}>{error}</h1>
           <div className={errorStyles.imageContainer}>
-            <img src={errorImage} alt="Error" />
+            <img src={errorImage} alt="" />
           </div>
         </div>
       )}

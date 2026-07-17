@@ -16,8 +16,16 @@ export const buildCanonicalPageUrl = (
   const pathWithoutQuery = pathWithoutHash.split("?", 1)[0];
   const firstSegment = pathWithoutQuery.split("/").filter(Boolean)[0];
   const pathAlreadyHasLocale = Boolean(firstSegment && locales?.includes(firstSegment));
+  const hasDefaultLocalePrefix = Boolean(
+    defaultLocale && firstSegment === defaultLocale && locales?.includes(defaultLocale)
+  );
+  // El locale predeterminado no forma parte de la URL canónica aunque el visitante
+  // haya escrito explícitamente `/es` o `/es/...` en la barra del navegador.
+  const canonicalPath = hasDefaultLocalePrefix
+    ? pathWithoutQuery.slice(`/${defaultLocale}`.length) || "/"
+    : pathWithoutQuery;
   const shouldPrefixLocale = Boolean(locale && locale !== defaultLocale && !pathAlreadyHasLocale);
   const localePrefix = shouldPrefixLocale ? `/${locale}` : "";
 
-  return `${normalizedSiteUrl}${localePrefix}${pathWithoutQuery}`;
+  return `${normalizedSiteUrl}${localePrefix}${canonicalPath}`;
 };

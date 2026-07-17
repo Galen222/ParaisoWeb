@@ -254,9 +254,9 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
       ) : (
         <div className={errorStyles.errorContainer}>
           {/* Mensaje de error obtenido desde la internacionalización */}
-          <h3 className={errorStyles.errorText}>{intl.formatMessage({ id: "blog_Details_Error" })}</h3>
+          <h1 className={errorStyles.errorText}>{intl.formatMessage({ id: "blog_Details_Error" })}</h1>
           <div className={errorStyles.imageContainer}>
-            <img src={imageError} alt="Error" />
+            <img src={imageError} alt="" />
           </div>
         </div>
       )}

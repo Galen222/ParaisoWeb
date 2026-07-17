@@ -31,8 +31,15 @@ const useCurrentUrl = (): string => {
   );
 
   const getCurrentUrl = useCallback(
-    (): string => buildCanonicalPageUrl(siteUrl, window.location.pathname),
-    [siteUrl]
+    (): string =>
+      buildCanonicalPageUrl(
+        siteUrl,
+        window.location.pathname,
+        router.locale,
+        router.defaultLocale,
+        router.locales
+      ),
+    [router.defaultLocale, router.locale, router.locales, siteUrl]
   );
   const getServerUrl = useCallback(
     (): string =>

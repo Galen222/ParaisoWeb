@@ -77,7 +77,7 @@ const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }: ErrorPageProps): Re
       <p className="text-center">{message}</p>
       {/* Imagen ilustrativa del error */}
       <div className={styles.imageContainer}>
-        <img src={imageError} alt={`Error ${statusCode}`} />
+        <img src={imageError} alt="" />
       </div>
       </div>
     </>

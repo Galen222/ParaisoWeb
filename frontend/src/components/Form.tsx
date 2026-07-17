@@ -338,7 +338,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
         <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
       </div>
 
-      <div className={styles.archiveText}>
+      <div id="fileUploadDescription" className={styles.archiveText}>
         <span>{intl.formatMessage({ id: "contacto_SubirArchivo1" })}</span>
         <span className="fs-14p">{intl.formatMessage({ id: "contacto_SubirArchivo2" })}</span>
       </div>
@@ -353,6 +353,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
             accept=".jpg,.jpeg,.pdf,image/jpeg,application/pdf"
             className="d-none"
             onChange={handleFileChange}
+            aria-label={intl.formatMessage({ id: "contacto_BotonSubirArchivo" })}
+            aria-describedby="fileUploadDescription fileUploadName"
             aria-required={formData.reason === "factura" || formData.reason === "curriculum"}
           />
           <button
@@ -365,11 +367,21 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
               fileInputRef.current?.click();
             }}
             onAnimationEnd={() => setIsPushingFile(false)}
+            aria-controls="fileUpload"
+            aria-describedby="fileUploadDescription fileUploadName"
           >
             <span>{intl.formatMessage({ id: "contacto_BotonSubirArchivo" })}</span>
           </button>
         </div>
-        <div className={`text-center ${styles.fileNameBox}`}>{formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}</div>
+        <div
+          id="fileUploadName"
+          className={`text-center ${styles.fileNameBox}`}
+          role="status"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {formData.file ? formData.file.name : intl.formatMessage({ id: "contacto_Archivo" })}
+        </div>
       </div>
 
       <div className={styles.customCheckbox}>

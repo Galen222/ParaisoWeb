@@ -28,7 +28,7 @@ const Custom404Page: NextPage = () => {
       <h1 className="text-center">{message}</h1> {/* Muestra el mensaje de error */}
       {/* Imagen ilustrativa del error 404 */}
       <div className={styles.imageContainer}>
-        <img src={imageError} alt="Error 404" /> {/* Muestra la imagen de error 404 */}
+        <img src={imageError} alt="" /> {/* Muestra la imagen de error 404 */}
       </div>
       </div>
     </>
