@@ -11,7 +11,7 @@ import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/use
 import useScreenSize from "../hooks/useScreenSize";
 import { useToastMessage } from "../hooks/useToast";
 import { deleteCookies } from "../utils/cookieUtils";
-import { NextSeo, OrganizationJsonLd } from "next-seo";
+import { NextSeo } from "next-seo";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import styles from "../styles/pages/politica-cookies.module.css";
 import getSEOConfig from "../config/next-seo.config";
@@ -21,6 +21,7 @@ import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 import esMessages from "../locales/es/common.json";
 import enMessages from "../locales/en/common.json";
 import deMessages from "../locales/de/common.json";
+import { OrganizationJsonLd } from "../components/JsonLd";
 
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {

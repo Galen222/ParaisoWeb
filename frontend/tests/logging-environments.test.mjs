@@ -82,6 +82,7 @@ test("el servidor Next escribe y rota frontend.log en producción", async () => 
       {
         NODE_ENV: "production",
         FRONTEND_LOG_LEVEL: "debug",
+        FRONTEND_LOG_DIR: path.join(directory, "logs"),
         FRONTEND_LOG_MAX_BYTES: "180",
         FRONTEND_LOG_BACKUP_COUNT: "2",
       },

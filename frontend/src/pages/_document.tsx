@@ -13,13 +13,18 @@ const localeMap: Record<string, string> = {
  * Clase personalizada de documento para Next.js.
  * Configura el atributo `lang` en `<html>` basado en el prefijo de idioma.
  */
-class MyDocument extends Document<{ locale: string }> {
+interface MyDocumentProps extends DocumentInitialProps {
+  locale: string;
+  nonce?: string;
+}
+
+class MyDocument extends Document<MyDocumentProps> {
   /**
    * Método estático para obtener las propiedades iniciales del documento.
    * @param {DocumentContext} ctx - Contexto del documento de Next.js.
    * @returns {Promise<DocumentInitialProps & { locale: string }>} Propiedades iniciales del documento, incluyendo el idioma.
    */
-  static async getInitialProps(ctx: DocumentContext): Promise<DocumentInitialProps & { locale: string }> {
+  static async getInitialProps(ctx: DocumentContext): Promise<MyDocumentProps> {
     // Obtiene las propiedades iniciales del documento
     const initialProps = await Document.getInitialProps(ctx);
 
@@ -27,8 +32,11 @@ class MyDocument extends Document<{ locale: string }> {
     // Mapea el prefijo de idioma al código completo o usa 'es-ES' por defecto si no está en el mapa
     const formattedLocale = localeMap[currentLocale] || localeMap.es;
 
-    // Retorna las propiedades iniciales junto con el idioma
-    return { ...initialProps, locale: formattedLocale };
+    const nonceHeader = ctx.req?.headers["x-nonce"];
+    const nonce = Array.isArray(nonceHeader) ? nonceHeader[0] : nonceHeader;
+
+    // Retorna las propiedades iniciales junto con el idioma y el nonce de la petición.
+    return { ...initialProps, locale: formattedLocale, nonce };
   }
 
   /**
@@ -39,15 +47,17 @@ class MyDocument extends Document<{ locale: string }> {
     return (
       // Establece el atributo `lang` del elemento `<html>` basado en el idioma detectado
       <Html lang={this.props.locale}>
-        <Head>
+        <Head nonce={this.props.nonce}>
           {/* Meta Tags y Enlaces Globales */}
           <link rel="icon" href="/images/web/iconoLogo.ico" />
           <meta name="theme-color" content="#4a403a" />
+          {/* Google Maps reutiliza el primer nonce presente en un elemento style. */}
+          <style nonce={this.props.nonce}>{""}</style>
         </Head>
         <body>
           {/* Renderiza el contenido principal de la aplicación */}
           <Main />
-          <NextScript />
+          <NextScript nonce={this.props.nonce} />
         </body>
       </Html>
     );

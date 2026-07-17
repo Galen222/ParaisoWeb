@@ -1,6 +1,7 @@
 // utils/GoogleMapsLoader.ts
 
 import { Loader } from "@googlemaps/js-api-loader";
+import { getDocumentCspNonce } from "./cspNonce";
 
 let googleMapsLoader: Loader | null = null;
 
@@ -18,6 +19,7 @@ export const getGoogleMapsLoader = (apiKey: string, language: string): Loader =>
       apiKey,
       version: "weekly",
       language, // Idioma fijo al inicializar
+      nonce: getDocumentCspNonce(),
     });
   }
   return googleMapsLoader;

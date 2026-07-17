@@ -10,7 +10,7 @@ import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import { NextSeo, OrganizationJsonLd, LocalBusinessJsonLd } from "next-seo"; // Importa NextSeo para la gestión de SEO
+import { NextSeo } from "next-seo"; // Importa NextSeo para la gestión de SEO
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import { useMapLocale } from "../hooks/useMapLocale"; // Hook para obtener el locale del mapa
@@ -20,6 +20,7 @@ import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 import esMessages from "../locales/es/common.json";
 import enMessages from "../locales/en/common.json";
 import deMessages from "../locales/de/common.json";
+import { OrganizationJsonLd, LocalBusinessJsonLd } from "../components/JsonLd";
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {
   es: esMessages,

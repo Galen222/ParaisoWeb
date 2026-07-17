@@ -14,11 +14,12 @@ import "../styles/animateButton.css";
 import "../styles/scrollbar.css";
 import "../styles/globals.css";
 
-import type { AppProps } from "next/app";
+import NextApp, { type AppContext, type AppInitialProps, type AppProps } from "next/app";
 import { IntlProvider } from "react-intl";
 import { ToastContainer } from "react-toastify";
 import { CookieConsentProvider } from "../contexts/CookieContext";
 import { MenuProvider } from "../contexts/MenuContext";
+import { CspNonceProvider } from "../contexts/CspNonceContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Cookie from "../components/Cookie";
@@ -40,7 +41,11 @@ const messages: Record<string, Record<string, string>> = {
   de: deMessages,
 };
 
-export interface CustomAppProps extends AppProps {
+interface CustomPageProps extends Record<string, unknown> {
+  nonce?: string;
+}
+
+export interface CustomAppProps extends AppProps<CustomPageProps> {
   Component: AppProps["Component"] & { pageTitleText?: string };
 }
 
@@ -118,10 +123,21 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
   );
 }
 
-export default function App(props: CustomAppProps): React.JSX.Element {
+function App(props: CustomAppProps): React.JSX.Element {
   return (
-    <CookieConsentProvider>
-      <MainComponent {...props} />
-    </CookieConsentProvider>
+    <CspNonceProvider nonce={props.pageProps.nonce}>
+      <CookieConsentProvider>
+        <MainComponent {...props} />
+      </CookieConsentProvider>
+    </CspNonceProvider>
   );
 }
+
+App.getInitialProps = async (appContext: AppContext): Promise<AppInitialProps> => {
+  const appProps = await NextApp.getInitialProps(appContext);
+  const nonceHeader = appContext.ctx.req?.headers["x-nonce"];
+  const nonce = Array.isArray(nonceHeader) ? nonceHeader[0] : nonceHeader;
+  return { ...appProps, pageProps: { ...appProps.pageProps, nonce } };
+};
+
+export default App;

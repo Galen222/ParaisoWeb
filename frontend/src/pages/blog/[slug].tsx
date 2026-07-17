@@ -12,7 +12,7 @@ import { useVisitedPageTrackingGA } from "../../hooks/useTrackingGA";
 import { useHandleLanguageChange } from "../../hooks/useHandleLanguageChange";
 import errorStyles from "../../styles/pages/error.module.css";
 import styles from "../../styles/pages/slug.module.css";
-import { NextSeo, OrganizationJsonLd } from "next-seo";
+import { NextSeo } from "next-seo";
 import getSEOConfig from "../../config/next-seo.config";
 import useCurrentUrl from "../../hooks/useCurrentUrl";
 import { formatBlogDate } from "../../utils/blogDate";
@@ -32,6 +32,7 @@ import { BlogPost } from "../../services/blogService";
 // Funciones reutilizables
 import { redirectByCookieSlug } from "../../utils/redirectByCookieSlug";
 import { loadBlogData } from "../../services/blogLoader";
+import { OrganizationJsonLd } from "../../components/JsonLd";
 
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {

@@ -117,7 +117,7 @@ class Settings(BaseSettings):
     ENABLE_API_DOCS: bool = False
     APP_ENV: Literal["development", "production"] = "development"
     BACKEND_LOG_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] | None = None
-    BACKEND_LOG_DIR: str = "logs"
+    BACKEND_LOG_DIR: str = "../../logs"
     BACKEND_LOG_MAX_BYTES: int = Field(default=10 * 1024 * 1024, gt=0)
     BACKEND_LOG_BACKUP_COUNT: int = Field(default=10, gt=0)
     BACKEND_LOG_HEALTHCHECKS: bool | None = None

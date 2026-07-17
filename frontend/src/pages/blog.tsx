@@ -11,7 +11,7 @@ import { useFetchBlog } from "../hooks/useFetchBlog";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/blog.module.css";
 import { useIntl } from "react-intl";
-import { NextSeo, OrganizationJsonLd } from "next-seo";
+import { NextSeo } from "next-seo";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
@@ -23,6 +23,7 @@ import { buildBlogPath } from "../utils/blogPath";
 import esMessages from "../locales/es/common.json";
 import enMessages from "../locales/en/common.json";
 import deMessages from "../locales/de/common.json";
+import { OrganizationJsonLd } from "../components/JsonLd";
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {
   es: esMessages,

@@ -23,7 +23,10 @@ const LEVEL_PRIORITY: Record<LogLevel, number> = {
 const DEFAULT_MAX_BYTES = 10 * 1024 * 1024;
 const DEFAULT_BACKUP_COUNT = 10;
 const LOG_FILENAME = "frontend.log";
-const LOG_DIRECTORY = path.join(/* turbopackIgnore: true */ process.cwd(), "logs");
+const configuredLogDirectory = process.env.FRONTEND_LOG_DIR?.trim();
+const LOG_DIRECTORY = configuredLogDirectory
+  ? path.resolve(/* turbopackIgnore: true */ configuredLogDirectory)
+  : path.resolve(/* turbopackIgnore: true */ process.cwd(), "..", "logs");
 const LOG_PATH = path.join(LOG_DIRECTORY, LOG_FILENAME);
 let reportedWriteFailure = false;
 

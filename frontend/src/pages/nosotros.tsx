@@ -8,7 +8,7 @@ import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import styles from "../styles/pages/nosotros.module.css"; // Importa los estilos específicos para la página nosotros
-import { NextSeo, OrganizationJsonLd } from "next-seo"; // Importa NextSeo para la gestión de SEO
+import { NextSeo } from "next-seo"; // Importa NextSeo para la gestión de SEO
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import useCurrentUrl from "../hooks/useCurrentUrl";
@@ -17,6 +17,7 @@ import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 import esMessages from "../locales/es/common.json";
 import enMessages from "../locales/en/common.json";
 import deMessages from "../locales/de/common.json";
+import { OrganizationJsonLd } from "../components/JsonLd";
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {
   es: esMessages,

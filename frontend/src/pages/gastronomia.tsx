@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"; // Importa GetServerSidePropsResult
 import { useIntl } from "react-intl";
-import { NextSeo, OrganizationJsonLd } from "next-seo"; // Importa NextSeo para la gestión de SEO
+import { NextSeo } from "next-seo"; // Importa NextSeo para la gestión de SEO
 import Carousel from "../components/Carousel";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
@@ -18,6 +18,7 @@ import styles from "../styles/pages/gastronomia.module.css"; // Importa los esti
 import esMessages from "../locales/es/common.json";
 import enMessages from "../locales/en/common.json";
 import deMessages from "../locales/de/common.json";
+import { OrganizationJsonLd } from "../components/JsonLd";
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {
   es: esMessages,

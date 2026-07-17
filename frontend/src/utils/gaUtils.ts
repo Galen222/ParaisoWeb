@@ -3,6 +3,7 @@
 import ReactGA from "react-ga4";
 import { normalizeGoogleAnalyticsId } from "./googleAnalyticsId";
 import { clientLogger } from "../logging/clientLogger";
+import { getDocumentCspNonce } from "./cspNonce";
 
 /**
  * Variable que indica si Google Analytics está desactivado.
@@ -52,7 +53,7 @@ export const initGA = (): boolean => {
     // Restaurar el consentimiento puede ejecutar este método más de una vez. No se crea
     // otro tracker para el mismo identificador, evitando eventos duplicados.
     if (initializedAnalyticsId !== analyticsId) {
-      ReactGA.initialize(analyticsId);
+      ReactGA.initialize(analyticsId, { nonce: getDocumentCspNonce() });
       initializedAnalyticsId = analyticsId;
     }
 
