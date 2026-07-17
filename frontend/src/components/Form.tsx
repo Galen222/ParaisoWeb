@@ -14,6 +14,7 @@ import validator from "validator";
 import styles from "../styles/components/Form.module.css";
 import { isContactFormComplete } from "../utils/contactFormValidation";
 import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
+import { containsUnsupportedContactMessageControl } from "../utils/contactMessage";
 
 const ALLOWED_FILE_MIME_TYPES = new Set(["image/jpeg", "application/pdf"]);
 const GENERIC_FILE_MIME_TYPES = new Set(["", "application/octet-stream"]);
@@ -154,15 +155,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
   const handleValidateMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    const containsUnsupportedControl = Array.from(value).some((character) => {
-      if (character === "\t" || character === "\n" || character === "\r") {
-        return false;
-      }
-
-      return /[\p{C}\p{Zl}\p{Zp}]/u.test(character);
-    });
-
-    if (!containsUnsupportedControl) {
+    if (!containsUnsupportedContactMessageControl(value)) {
       setFormData((current) => ({ ...current, [name]: value }));
     }
   };

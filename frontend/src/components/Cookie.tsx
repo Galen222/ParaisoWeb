@@ -52,6 +52,7 @@ const Cookie: React.FC<CookieProps> = ({
   const intl = useIntl();
   const [isCustomizing, setIsCustomizing] = useState(false); // Estado para manejar si se están personalizando las cookies
   const dialogRef = useRef<HTMLDivElement>(null);
+  const firstCustomizationInputRef = useRef<HTMLInputElement>(null);
 
   // Obtiene y maneja el estado de consentimiento de cookies del contexto
   const {
@@ -124,6 +125,17 @@ const Cookie: React.FC<CookieProps> = ({
   const handleCustomize = () => {
     setIsCustomizing(true);
   };
+
+  /**
+   * Al sustituir el botón «Personalizar» por los interruptores, mueve el foco al primer
+   * control nuevo. Sin este paso el elemento activo desaparecía del DOM y el siguiente
+   * tabulador podía salir del diálogo modal.
+   */
+  useEffect(() => {
+    if (isCustomizing) {
+      firstCustomizationInputRef.current?.focus({ preventScroll: true });
+    }
+  }, [isCustomizing]);
 
   /**
    * Coloca el foco dentro del diálogo al abrirlo y lo devuelve al elemento anterior al cerrarse.
@@ -206,6 +218,7 @@ const Cookie: React.FC<CookieProps> = ({
           <div className={styles.switchContainer}>
             <div className={styles.switch}>
               <input
+                ref={firstCustomizationInputRef}
                 type="checkbox"
                 role="checkbox"
                 id="cookiePersonalization"

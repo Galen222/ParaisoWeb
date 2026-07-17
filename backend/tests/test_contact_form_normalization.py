@@ -2,6 +2,8 @@
 
 import unittest
 
+from pydantic import ValidationError
+
 from backend.models.schemas import ContactForm
 
 
@@ -16,6 +18,26 @@ class ContactFormNormalizationTests(unittest.TestCase):
 
         self.assertEqual(form.reason, "informacion")
         self.assertEqual(str(form.email), "maria@example.com")
+
+    def test_message_permite_emojis_compuestos_y_joiners_legitimos(self) -> None:
+        message = "Familia 👨‍👩‍👧 y texto con unión: می‌خواهم"
+        form = ContactForm(
+            name="Ana Pérez",
+            reason="informacion",
+            email="ana@example.com",
+            message=message,
+        )
+        self.assertEqual(form.message, message)
+
+    def test_message_sigue_rechazando_controles_peligrosos(self) -> None:
+        for message in ("texto\x00oculto", "texto\u202eoculto"):
+            with self.subTest(message=repr(message)), self.assertRaises(ValidationError):
+                ContactForm(
+                    name="Ana Pérez",
+                    reason="informacion",
+                    email="ana@example.com",
+                    message=message,
+                )
 
 
 if __name__ == "__main__":

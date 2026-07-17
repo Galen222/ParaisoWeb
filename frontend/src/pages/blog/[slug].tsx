@@ -144,17 +144,20 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
   const previewContent = blogDetails?.contenido
     ? buildSeoPreview(blogDetails.contenido, 150)
     : intl.formatMessage({ id: "blog_Details_SEO_Contenido_Preview" });
+  const baseSeoConfig = getSEOConfig(currentLocale, currentMessages);
 
   return (
     <>
       {/* Configuración de SEO */}
       <NextSeo
-        {...getSEOConfig(currentLocale, currentMessages)}
+        {...baseSeoConfig}
         title={previewTitle}
         description={previewContent}
+        canonical={error ? undefined : currentUrl}
         noindex={Boolean(error)}
         nofollow={Boolean(error)}
         openGraph={{
+          ...baseSeoConfig.openGraph,
           title: previewTitle,
           description: previewContent,
           url: error ? undefined : currentUrl,

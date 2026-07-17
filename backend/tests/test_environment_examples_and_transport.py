@@ -118,6 +118,51 @@ class EnvironmentExampleTests(unittest.TestCase):
         )
         self.assertEqual(configured.DATABASE_URL, "mysql+aiomysql://u:p@127.0.0.1/db")
 
+    def test_database_url_exige_servidor_y_usuario(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.test.local",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        for invalid_url in (
+            "mysql+aiomysql:///db",
+            "mysql+aiomysql://tests@/db",
+            "mysql+aiomysql://@127.0.0.1/db",
+        ):
+            with self.subTest(database_url=invalid_url), self.assertRaises(ValidationError):
+                Settings(**common, DATABASE_URL=invalid_url)
+
+    def test_database_url_rechaza_servidor_y_puerto_no_validos(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.test.local",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        for invalid_url in (
+            "mysql+aiomysql://tests:secret@host con espacios/db",
+            "mysql+aiomysql://tests:secret@-mysql.example.com/db",
+            "mysql+aiomysql://tests:secret@127.0.0.1:65536/db",
+            "mysql+aiomysql://tests:secret@127.0.0.1:abc/db",
+        ):
+            with self.subTest(database_url=invalid_url), self.assertRaises(ValidationError):
+                Settings(**common, DATABASE_URL=invalid_url)
+
+        configured = Settings(
+            **common,
+            DATABASE_URL="mysql+aiomysql://tests:secret@[::1]:3306/db",
+        )
+        self.assertEqual(configured.DATABASE_URL, "mysql+aiomysql://tests:secret@[::1]:3306/db")
+
     def test_secret_key_rechaza_valores_cortos_y_recorta_espacios(self) -> None:
         common = {
             "_env_file": None,

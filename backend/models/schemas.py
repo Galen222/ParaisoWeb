@@ -23,6 +23,7 @@ from ..core.blog_slug import normalize_blog_slug
 
 
 MAX_ASSET_DECODE_PASSES = 5
+ALLOWED_CONTACT_MESSAGE_FORMAT_CHARACTERS = {"\u200c", "\u200d"}
 
 
 def _is_safe_public_asset_path(value: object) -> bool:
@@ -214,6 +215,7 @@ class ContactForm(BaseModel):
                 or unicodedata.category(character) in {"Zl", "Zp"}
             )
             and character not in allowed_controls
+            and character not in ALLOWED_CONTACT_MESSAGE_FORMAT_CHARACTERS
             for character in v
         ):
             raise ValueError("El mensaje contiene caracteres de control no permitidos")

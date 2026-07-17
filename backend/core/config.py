@@ -200,6 +200,41 @@ class Settings(BaseSettings):
             raise ValueError("DATABASE_URL debe usar el driver asíncrono mysql+aiomysql")
         if not parsed.database:
             raise ValueError("DATABASE_URL debe incluir el nombre de la base de datos")
+        if not parsed.host or not parsed.username:
+            raise ValueError("DATABASE_URL debe incluir servidor y usuario")
+
+        try:
+            database_port = parsed.port
+        except ValueError as error:
+            raise ValueError("DATABASE_URL contiene un puerto no válido") from error
+        if database_port is not None and not 1 <= database_port <= 65535:
+            raise ValueError("DATABASE_URL contiene un puerto fuera del rango TCP")
+
+        database_host = parsed.host
+        try:
+            ip_address(database_host)
+        except ValueError:
+            candidate = database_host[:-1] if database_host.endswith(".") else database_host
+            try:
+                ascii_host = candidate.encode("idna").decode("ascii")
+            except UnicodeError as error:
+                raise ValueError("DATABASE_URL no contiene un servidor válido") from error
+
+            labels = ascii_host.split(".")
+            if (
+                len(ascii_host) > 253
+                or not labels
+                or any(
+                    not label
+                    or len(label) > 63
+                    or label.startswith("-")
+                    or label.endswith("-")
+                    or any(not (character.isalnum() or character == "-") for character in label)
+                    for label in labels
+                )
+            ):
+                raise ValueError("DATABASE_URL no contiene un servidor válido")
+
         if parsed.username == EXAMPLE_DATABASE_USERNAME or parsed.password == EXAMPLE_DATABASE_PASSWORD:
             raise ValueError("DATABASE_URL debe sustituir las credenciales del archivo .env.example")
 
