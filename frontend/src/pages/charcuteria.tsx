@@ -153,7 +153,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
       {/* Mensaje de error si ocurre un problema al obtener los productos*/}
       {error && (
         <div className={errorStyles.errorContainer}>
-          <h1 className={errorStyles.errorText}>{error}</h1>
+          <h1>{error}</h1>
           <div className={errorStyles.imageContainer}>
             <img src={errorImage} alt="" />
           </div>
@@ -161,7 +161,12 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
       )}
 
       {/* Loader mientrás se accede a los productos */}
-      {loadingProducts && <Loader className="BD" />}
+      {loadingProducts && (
+        <>
+          <h1 className="visually-hidden">{intl.formatMessage({ id: "charcuteria_Titulo" })}</h1>
+          <Loader className="BD" />
+        </>
+      )}
 
       {/* Contenido principal */}
       {!loadingProducts && !error && safeProducts && (

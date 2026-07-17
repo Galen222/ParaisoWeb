@@ -118,7 +118,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
       {/* Mensaje de error si ocurre un problema al obtener los productos*/}
       {error && (
         <div className={errorStyles.errorContainer}>
-          <h1 className={errorStyles.errorText}>{intl.formatMessage({ id: "blog_Error" })}</h1>
+          <h1>{intl.formatMessage({ id: "blog_Error" })}</h1>
           <div className={errorStyles.imageContainer}>
             <img src={imageError} alt="" />
           </div>
@@ -126,7 +126,12 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
       )}
 
       {/* Loader mientrás se accede a los artículos */}
-      {loadingBlog && <Loader className="BD" />}
+      {loadingBlog && (
+        <>
+          <h1 className="visually-hidden">{intl.formatMessage({ id: "blog_Titulo" })}</h1>
+          <Loader className="BD" />
+        </>
+      )}
 
       {/* Contenido principal */}
       {!loadingBlog && !error && safeBlogs && (

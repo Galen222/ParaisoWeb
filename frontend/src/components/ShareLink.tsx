@@ -25,7 +25,7 @@ const ShareLink: React.FC<ShareLinkProps> = ({ url, title }: ShareLinkProps): Re
   const intl = useIntl();
 
   // Prefijo para cada título
-  const fullTitle = `El Paraíso del Jamón - ${title}`;
+  const fullTitle = `El Paraíso Del Jamón - ${title}`;
   const messageWithLink = `${fullTitle}\n${intl.formatMessage({ id: "sharedLink_cuerpo" })}`;
   const getShareLabel = (messageId: string): string =>
     `${intl.formatMessage({ id: messageId })}: ${title}`;

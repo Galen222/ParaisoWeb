@@ -28,17 +28,17 @@
 }
 
 /* Animación para el primer elemento del cargador */
-.loader_element:nth-child(1) {
+.loader_element:nth-child(2) {
   animation: preloader 0.6s ease-in-out alternate infinite; /* Configura la animación */
 }
 
 /* Animación para el segundo elemento del cargador */
-.loader_element:nth-child(2) {
+.loader_element:nth-child(3) {
   animation: preloader 0.6s ease-in-out alternate 0.2s infinite; /* Retrasa la animación en 0.2 segundos */
 }
 
 /* Animación para el tercer elemento del cargador */
-.loader_element:nth-child(3) {
+.loader_element:nth-child(4) {
   animation: preloader 0.6s ease-in-out alternate 0.4s infinite; /* Retrasa la animación en 0.4 segundos */
 }
 
