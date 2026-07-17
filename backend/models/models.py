@@ -12,7 +12,7 @@ Este archivo incluye:
 """
 
 from sqlalchemy import Column, Integer, String, Text, DateTime, func, PrimaryKeyConstraint
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 
 # Creación de la clase base para los modelos
 Base = declarative_base()

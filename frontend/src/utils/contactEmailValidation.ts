@@ -5,6 +5,8 @@ const MAX_DOMAIN_BYTES = 253;
 const MAX_DOMAIN_LABEL_BYTES = 63;
 const IDNA_NORMALIZATION_SUFFIX = ".invalid";
 const IDNA_DOT_EQUIVALENTS_PATTERN = /[\u3002\uFF0E\uFF61]/g;
+// EmailStr rechaza caracteres Unicode de control/formato/uso privado y separadores.
+const UNSUPPORTED_EMAIL_CHARACTER_PATTERN = /[\p{C}\p{Z}]/u;
 const SPECIAL_USE_DOMAIN_SUFFIXES = new Set(["arpa", "invalid", "local", "localhost", "onion", "test"]);
 
 /**
@@ -42,7 +44,8 @@ export const isValidContactEmail = (value: string): boolean => {
   if (
     email.length === 0 ||
     new TextEncoder().encode(email).length > MAX_EMAIL_BYTES ||
-    email.includes('"')
+    email.includes('"') ||
+    UNSUPPORTED_EMAIL_CHARACTER_PATTERN.test(email)
   ) {
     return false;
   }

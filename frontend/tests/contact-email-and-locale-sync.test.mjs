@@ -38,6 +38,8 @@ test("el correo de contacto comparte las fronteras reales de EmailStr", async ()
     "a@example．com",
     "a@example｡com",
     "user@host.example.0xb",
+    "a\u034Fb@example.com",
+    "a\uFE0Fb@example.com",
   ];
   const invalidEmails = [
     '"a b"@example.com',
@@ -48,6 +50,12 @@ test("el correo de contacto comparte las fronteras reales de EmailStr", async ()
     "a@example.z9",
     "a@service.onion",
     `${"用".repeat(83)}@example.com`,
+    "a\u200b@example.com",
+    "a@exa\u200bmple.com",
+    "a\u2028@example.com",
+    "a\u2060@example.com",
+    "a\u202E@example.com",
+    "a\u2003b@example.com",
   ];
 
   validEmails.forEach((email) => assert.equal(isValidContactEmail(email), true, email));
@@ -102,4 +110,22 @@ test("la pestaña que acepta personalización guarda su locale antes de sincroni
   assert.match(source, /shouldPersistLocalePreference\(localePreferenceSnapshotRef\.current, currentSnapshot\)/);
   assert.match(source, /if \(AcceptCookiePersonalization\) \{[\s\S]*?saveLocalePreference\(router\.locale \|\| "es"\);[\s\S]*?setCookieConsentPersonalization\(true\);/);
   assert.match(source, /setAcceptCookiePersonalization\(true\);[\s\S]*?saveLocalePreference\(router\.locale \|\| "es"\);[\s\S]*?saveCookieConsentPreference\(COOKIE_CONSENT_ACCEPTED\);/);
+});
+
+test("Next redirige el prefijo español a la URL canónica sin prefijo", async () => {
+  const source = await readFile(new URL("../next.config.ts", import.meta.url), "utf8");
+
+  assert.match(source, /source: "\/es", destination: "\/", permanent: true, locale: false/);
+  assert.match(
+    source,
+    /source: "\/es\/:path\*", destination: "\/:path\*", permanent: true, locale: false/
+  );
+});
+
+test("las palabras clave SEO inglesas no mezclan texto español", async () => {
+  const source = await readFile(new URL("../src/locales/en/common.json", import.meta.url), "utf8");
+  const locale = JSON.parse(source);
+
+  assert.match(locale.seo_keywords, /(?:^|, )about us(?:,|$)/);
+  assert.doesNotMatch(locale.seo_keywords, /nosotros us/);
 });
