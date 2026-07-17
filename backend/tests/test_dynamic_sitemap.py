@@ -59,6 +59,25 @@ class SitemapServiceTests(unittest.IsolatedAsyncioTestCase):
             {"id_noticia", "idioma", "slug", "lastmod"},
         )
 
+    async def test_conserva_una_traduccion_francesa_valida(self) -> None:
+        db = AsyncMock()
+        db.execute.return_value = _ScalarResult(
+            [
+                _blog_row(
+                    idioma="fr",
+                    slug="jambon-iberique",
+                    titulo="Jambon ibérique",
+                    contenido="Contenu public en français",
+                )
+            ]
+        )
+
+        entries = await SitemapService(db).get_blog_entries()
+
+        self.assertEqual(len(entries), 1)
+        self.assertEqual(entries[0].idioma, "fr")
+        self.assertEqual(entries[0].slug, "jambon-iberique")
+
     async def test_omite_articulos_que_la_api_publica_tampoco_puede_servir(self) -> None:
         db = AsyncMock()
         db.execute.return_value = _ScalarResult(
@@ -67,7 +86,7 @@ class SitemapServiceTests(unittest.IsolatedAsyncioTestCase):
                 _blog_row(id_noticia=2, titulo="   "),
                 _blog_row(id_noticia=3, imagen_url="../privado.webp"),
                 _blog_row(id_noticia=4, fecha_publicacion=None, fecha_actualizacion=None),
-                _blog_row(id_noticia=5, idioma="fr"),
+                _blog_row(id_noticia=5, idioma="it"),
             ]
         )
 

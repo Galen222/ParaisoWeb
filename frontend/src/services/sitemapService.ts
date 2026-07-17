@@ -6,10 +6,10 @@ import type { AppLogger } from "../logging/appLogger";
 import { clientLogger } from "../logging/clientLogger";
 
 const SITEMAP_REQUEST_TIMEOUT_MS = 10000;
-const SUPPORTED_LANGUAGES = new Set(["es", "en", "de"]);
+const SUPPORTED_LANGUAGES = new Set(["es", "en", "de", "fr"]);
 const TIMED_TOKEN_PATTERN = /^[A-Za-z0-9_-]{43}=$/;
 
-export type SitemapLocale = "es" | "en" | "de";
+export type SitemapLocale = "es" | "en" | "de" | "fr";
 
 
 export interface SitemapBlogEntry {

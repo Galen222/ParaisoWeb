@@ -27,7 +27,7 @@ class Charcuteria(Base):
 
     Atributos:
         id_producto (int): Identificador único del producto.
-        idioma (str): Idioma del producto (e.g., 'es', 'en').
+        idioma (str): Idioma del producto (e.g., 'es', 'en', 'de', 'fr').
         nombre (str): Nombre del producto.
         empresa (str): Empresa que produce el producto.
         descripcion (str): Descripción detallada del producto.
@@ -38,7 +38,7 @@ class Charcuteria(Base):
     __tablename__ = TABLE_NAME_CHARCUTERIA
 
     id_producto = Column(Integer, index=True)       # Identificador único del producto
-    idioma = Column(String(5), nullable=False)      # Idioma del producto (e.g., 'es', 'en')
+    idioma = Column(String(5), nullable=False)      # Idioma del producto (e.g., 'es', 'en', 'de', 'fr')
     nombre = Column(String(100), nullable=False)    # Nombre del producto
     empresa = Column(String(200), nullable=True)    # Empresa del producto
     descripcion = Column(Text, nullable=False)      # Descripción detallada del producto
@@ -61,7 +61,7 @@ class Blog(Base):
 
     Atributos:
         id_noticia (int): Identificador único de la publicación.
-        idioma (str): Idioma de la publicación (e.g., 'es', 'en').
+        idioma (str): Idioma de la publicación (e.g., 'es', 'en', 'de', 'fr').
         slug (str): Slug único utilizado en URLs amigables.
         titulo (str): Título de la publicación.
         contenido (str): Contenido completo de la publicación.
@@ -74,7 +74,7 @@ class Blog(Base):
     __tablename__ = TABLE_NAME_BLOG
 
     id_noticia = Column(Integer, index=True, nullable=False)       # Identificador único de la noticia
-    idioma = Column(String(5), nullable=False)                    # Idioma de la noticia (e.g., 'es', 'en')
+    idioma = Column(String(5), nullable=False)                    # Idioma de la noticia (e.g., 'es', 'en', 'de', 'fr')
     slug = Column(String(150), nullable=False)                    # Slug único para la URL amigable
     titulo = Column(String(150), nullable=False)                  # Título de la noticia
     contenido = Column(Text, nullable=False)                      # Contenido completo de la noticia

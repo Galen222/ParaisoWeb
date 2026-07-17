@@ -8,7 +8,7 @@ import { normalizeBlogSlug } from "../utils/blogSlug";
 import { buildBlogPath } from "../utils/blogPath";
 import { clientLogger } from "../logging/clientLogger";
 
-const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+const SUPPORTED_LOCALES = new Set(["es", "en", "de", "fr"]);
 
 /** Devuelve un mensaje seguro y breve para depurar sin registrar el objeto de error completo. */
 const getErrorMessageForLog = (error: unknown): string => {

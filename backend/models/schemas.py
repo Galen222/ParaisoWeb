@@ -249,7 +249,7 @@ class SitemapBlogEntry(BaseModel):
     """Datos públicos mínimos de una publicación incluidos en el sitemap."""
 
     id_noticia: int = Field(gt=0)
-    idioma: Literal["es", "en", "de"]
+    idioma: Literal["es", "en", "de", "fr"]
     slug: str = Field(min_length=1, max_length=150)
     lastmod: datetime
 
@@ -267,7 +267,7 @@ class CharcuteriaBase(BaseModel):
         imagen_url (str): URL de la imagen del producto.
         categoria (str): Categoría del producto (ejemplo: 'Embutidos').
     """
-    idioma: Literal["es", "en", "de"]
+    idioma: Literal["es", "en", "de", "fr"]
     nombre: str
     empresa: Optional[str] = None
     descripcion: str
@@ -342,7 +342,7 @@ class BlogBase(BaseModel):
         imagen_url (str): URL de la imagen principal de la publicación.
         imagen_url_2 (Optional[str]): URL de una segunda imagen (opcional).
     """
-    idioma: Literal["es", "en", "de"]
+    idioma: Literal["es", "en", "de", "fr"]
     slug: str
     titulo: str
     contenido: str

@@ -18,12 +18,14 @@ import styles from "../styles/pages/gastronomia.module.css"; // Importa los esti
 import esMessages from "../locales/es/common.json";
 import enMessages from "../locales/en/common.json";
 import deMessages from "../locales/de/common.json";
+import frMessages from "../locales/fr/common.json";
 import { OrganizationJsonLd } from "../components/JsonLd";
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {
   es: esMessages,
   en: enMessages,
   de: deMessages,
+  fr: frMessages,
 };
 
 /**

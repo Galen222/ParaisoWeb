@@ -67,7 +67,7 @@ test("los botones de compartir tienen etiquetas accesibles traducidas", async ()
     assert.match(source, new RegExp(`aria-label=\\{getShareLabel\\("${key}"\\)\\}`));
   }
 
-  for (const locale of ["es", "en", "de"]) {
+  for (const locale of ["es", "en", "de", "fr"]) {
     const messages = JSON.parse(
       await readFile(
         new URL(`../src/locales/${locale}/common.json`, import.meta.url),

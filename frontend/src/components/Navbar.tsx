@@ -48,6 +48,7 @@ const IMAGE_CONSTANTS = {
     es: "/images/flags/es.png",
     en: "/images/flags/en.png",
     de: "/images/flags/de.png",
+    fr: "/images/flags/fr.png",
   },
 
   /**
@@ -57,6 +58,7 @@ const IMAGE_CONSTANTS = {
     es: "Español",
     en: "English",
     de: "Deutsch",
+    fr: "Français",
   },
 };
 

@@ -1,4 +1,4 @@
-export const SUPPORTED_BLOG_LOCALES = ["es", "en", "de"] as const;
+export const SUPPORTED_BLOG_LOCALES = ["es", "en", "de", "fr"] as const;
 
 /** Comprueba que el locale exista tanto en las rutas como en la API del blog. */
 export const isSupportedBlogLocale = (locale: string): boolean =>

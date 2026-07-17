@@ -7,6 +7,7 @@ const localeMap: Record<string, string> = {
   es: "es-ES", // Español
   en: "en-US", // Inglés
   de: "de-DE", // Alemán
+  fr: "fr-FR", // Francés
 };
 
 /**

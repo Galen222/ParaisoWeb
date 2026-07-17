@@ -5,15 +5,15 @@ import { useMemo } from "react";
 /**
  * Hook personalizado para formatear el locale al formato requerido por next-seo y HTML lang.
  *
- * @param {string} locale - Locale actual (e.g., 'en', 'de', 'es').
- * @returns {string} - Locale formateado (e.g., 'en-US', 'de-DE', 'es-ES').
+ * @param {string} locale - Locale actual (e.g., 'en', 'de', 'fr', 'es').
+ * @returns {string} - Locale formateado (e.g., 'en-US', 'de-DE', 'fr-FR', 'es-ES').
  */
 const useLocaleFormatted = (locale: string): string => {
   /**
    * Convierte el locale corto al formato completo requerido por SEO y HTML lang.
    *
-   * @param {string} locale - Locale actual (e.g., 'en', 'de', 'es').
-   * @returns {string} - Locale formateado (e.g., 'en-US', 'de-DE', 'es-ES').
+   * @param {string} locale - Locale actual (e.g., 'en', 'de', 'fr', 'es').
+   * @returns {string} - Locale formateado (e.g., 'en-US', 'de-DE', 'fr-FR', 'es-ES').
    */
   const formatLocale = (locale: string): string => {
     switch (locale) {
@@ -21,6 +21,8 @@ const useLocaleFormatted = (locale: string): string => {
         return "en-US"; // Inglés de Estados Unidos
       case "de":
         return "de-DE"; // Alemán de Alemania
+      case "fr":
+        return "fr-FR"; // Francés de Francia
       case "es":
       default:
         return "es-ES"; // Español de España

@@ -4,7 +4,7 @@ import { DefaultSeoProps } from "next-seo";
 import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 
 const DEFAULT_LOCALE = "es";
-const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+const SUPPORTED_LOCALES = new Set(["es", "en", "de", "fr"]);
 
 /** Normaliza la ruta actual eliminando query, hash y un posible prefijo de idioma. */
 const normalizeRoutePath = (currentPath: string): string => {
@@ -62,7 +62,7 @@ type MetaTag = HTML5MetaTag | RDFaMetaTag | HTTPEquivMetaTag;
 /**
  * Función para generar la configuración de SEO basada en el locale y los mensajes.
  *
- * @param {string} locale - Locale actual (e.g., 'es', 'en', 'de').
+ * @param {string} locale - Locale actual (e.g., 'es', 'en', 'de', 'fr').
  * @param {Record<string, string>} messages - Mensajes localizados.
  * @param {string} [currentPath] - Ruta actual para generar canonical y hreflang correctos.
  * @param {boolean} [includeLanguageAlternates=true] - Permite omitir alternates cuando las rutas traducidas usan slugs diferentes.
@@ -82,8 +82,8 @@ const getSEOConfig = (
   /**
    * Formatea el locale al formato requerido por Open Graph.
    *
-   * @param {string} locale - Locale corto (e.g., 'es', 'en', 'de').
-   * @returns {string} Locale formateado para Open Graph (e.g., 'es_ES', 'en_US', 'de_DE').
+   * @param {string} locale - Locale corto (e.g., 'es', 'en', 'de', 'fr').
+   * @returns {string} Locale formateado para Open Graph (e.g., 'es_ES', 'en_US', 'de_DE', 'fr_FR').
    */
   const formatLocale = (locale: string): string => {
     switch (locale) {
@@ -91,6 +91,8 @@ const getSEOConfig = (
         return "en_US";
       case "de":
         return "de_DE";
+      case "fr":
+        return "fr_FR";
       case "es":
       default:
         return "es_ES";
@@ -130,6 +132,7 @@ const getSEOConfig = (
               { lng: "es", region: "ES" },
               { lng: "en", region: "US" },
               { lng: "de", region: "DE" },
+              { lng: "fr", region: "FR" },
             ].map(({ lng, region }) => ({
               href: buildLocalizedUrl(normalizedSiteUrl, lng, routePath),
               hrefLang: `${lng}-${region}`,

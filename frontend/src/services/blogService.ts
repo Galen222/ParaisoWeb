@@ -34,7 +34,7 @@ export interface BlogPost {
  */
 const API_URL = process.env.NEXT_PUBLIC_API_BLOG_URL;
 
-const SUPPORTED_LANGUAGES = new Set(["es", "en", "de"]);
+const SUPPORTED_LANGUAGES = new Set(["es", "en", "de", "fr"]);
 
 interface ExpectedBlogIdentity {
   id?: number;
@@ -51,7 +51,7 @@ const isOptionalPublicAssetPath = (value: unknown): value is string | null | und
 /** Valida los idiomas que existen en las rutas y en la base de datos. */
 const requireSupportedLanguage = (idioma: string): string => {
   if (!SUPPORTED_LANGUAGES.has(idioma)) {
-    throw new Error(`El idioma "${idioma}" no es válido. Solo se permiten: es, en, de.`);
+    throw new Error(`El idioma "${idioma}" no es válido. Solo se permiten: es, en, de, fr.`);
   }
 
   return idioma;
@@ -240,7 +240,7 @@ export const getBlogPostById = async (
  *
  * @param {string} slug - El slug único de la publicación de blog.
  * @param {string} [token] - (Opcional) El token temporal para la autenticación.
- * @param {string} [idioma] - (Opcional) El idioma en el cual se desea obtener la publicación. Solo se aceptan "es", "en" o "de".
+ * @param {string} [idioma] - (Opcional) El idioma en el cual se desea obtener la publicación. Solo se aceptan "es", "en", "de" o "fr".
  * @returns {Promise<BlogPost>} - Una promesa que resuelve al objeto BlogPost correspondiente.
  * @throws {Error} - Si falla la solicitud o las entradas son inválidas.
  */

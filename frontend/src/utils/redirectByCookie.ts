@@ -4,7 +4,7 @@ import type { GetServerSidePropsContext } from "next";
 import { isSameRequestHost } from "./requestHost";
 
 const DEFAULT_LOCALE = "es";
-const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+const SUPPORTED_LOCALES = new Set(["es", "en", "de", "fr"]);
 
 /** Normaliza una ruta para poder comparar la página actual con el referer. */
 const normalizePath = (path: string): string => {

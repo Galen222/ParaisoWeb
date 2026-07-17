@@ -30,7 +30,7 @@ export interface CharcuteriaProduct {
  * URL base de la API de charcutería, obtenida desde una variable de entorno.
  */
 const API_URL = process.env.NEXT_PUBLIC_API_CHARCUTERIA_URL;
-const SUPPORTED_LANGUAGES = new Set(["es", "en", "de"]);
+const SUPPORTED_LANGUAGES = new Set(["es", "en", "de", "fr"]);
 
 /**
  * Obtiene la URL configurada sin hacer fallar la importación del módulo durante el build.
@@ -73,7 +73,7 @@ export const getCharcuteriaProducts = async (
   try {
     const apiUrl = getApiUrl();
     if (!SUPPORTED_LANGUAGES.has(idioma)) {
-      throw new Error(`El idioma "${idioma}" no es válido. Solo se permiten: es, en, de.`);
+      throw new Error(`El idioma "${idioma}" no es válido. Solo se permiten: es, en, de, fr.`);
     }
     // Realiza la solicitud GET y renueva una sola vez el token si caduca durante la petición.
     const response = await requestWithTimedToken(

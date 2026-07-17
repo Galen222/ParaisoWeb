@@ -44,7 +44,7 @@ test("la URL canónica elimina parámetros, fragmentos y evita duplicar el local
       "/blog/articulo?utm_source=newsletter#comentarios",
       "en",
       "es",
-      ["es", "en", "de"]
+      ["es", "en", "de", "fr"]
     ),
     "https://www.paraisodeljamon.com/en/blog/articulo"
   );
@@ -54,7 +54,7 @@ test("la URL canónica elimina parámetros, fragmentos y evita duplicar el local
       "/de/blog/artikel?ref=mail",
       "de",
       "es",
-      ["es", "en", "de"]
+      ["es", "en", "de", "fr"]
     ),
     "https://www.paraisodeljamon.com/de/blog/artikel"
   );
@@ -230,8 +230,8 @@ test("las imágenes Open Graph específicas usan URLs absolutas", async () => {
   }
 });
 
-test("las claves accesibles nuevas existen en los tres idiomas", async () => {
-  const locales = ["es", "en", "de"];
+test("las claves accesibles nuevas existen en los cuatro idiomas", async () => {
+  const locales = ["es", "en", "de", "fr"];
   const requiredKeys = [
     "charcuteria_MostrarDetalles",
     "charcuteria_OcultarDetalles",
@@ -391,7 +391,7 @@ test("las cabeceras de la tabla de cookies están traducidas y tienen alcance se
   assert.doesNotMatch(cookiePolicy, /<t[dh]>Finalidad<\/t[dh]>/);
   assert.doesNotMatch(cookiePolicy, /<t[dh]>Duración<\/t[dh]>/);
 
-  for (const locale of ["es", "en", "de"]) {
+  for (const locale of ["es", "en", "de", "fr"]) {
     const messages = JSON.parse(
       await readFile(new URL(`../src/locales/${locale}/common.json`, import.meta.url), "utf8")
     );
@@ -461,6 +461,7 @@ test("la política explica que rechazar cookies se recuerda durante un año", as
     es: ["se recordará durante un año", "retirar el consentimiento"],
     en: ["remembered for one year", "withdraw consent"],
     de: ["ein Jahr lang gespeichert", "Einwilligung widerrufen"],
+    fr: ["mémorisée pendant un an", "retirer votre consentement"],
   };
 
   for (const [locale, fragments] of Object.entries(expectedFragments)) {
@@ -479,8 +480,9 @@ test("un slug existente en otro idioma redirige a su traducción canónica", asy
     loadTypeScriptModule("../src/utils/blogLocaleFallback.ts"),
   ]);
 
-  assert.deepEqual(localeFallback.getBlogFallbackLocales("en"), ["es", "de"]);
-  assert.equal(localeFallback.isSupportedBlogLocale("fr"), false);
+  assert.deepEqual(localeFallback.getBlogFallbackLocales("en"), ["es", "de", "fr"]);
+  assert.equal(localeFallback.isSupportedBlogLocale("fr"), true);
+  assert.equal(localeFallback.isSupportedBlogLocale("it"), false);
   assert.match(blogLoader, /getBlogFallbackLocales\(locale\)/);
   assert.match(blogLoader, /error\.response\?\.status === 404/);
   assert.match(blogLoader, /getBlogPostById\(blogDetails\.id_noticia, locale, token\)/);

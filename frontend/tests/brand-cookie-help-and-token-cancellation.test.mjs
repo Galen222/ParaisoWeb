@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-const locales = ["es", "en", "de"];
+const locales = ["es", "en", "de", "fr"];
 
 test("la identidad de marca conserva El en SEO y datos estructurados", async () => {
   for (const locale of locales) {

@@ -13,7 +13,7 @@ import {
 import { requireConfiguredPublicSiteUrl } from "../utils/publicSiteUrl";
 
 const DEFAULT_LOCALE: SitemapLocale = "es";
-const SUPPORTED_LOCALES: readonly SitemapLocale[] = ["es", "en", "de"];
+const SUPPORTED_LOCALES: readonly SitemapLocale[] = ["es", "en", "de", "fr"];
 const STATIC_ROUTES = [
   "/",
   "/san-bernardo",

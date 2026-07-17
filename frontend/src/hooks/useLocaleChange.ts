@@ -14,7 +14,7 @@ import { normalizeBlogSlug } from "../utils/blogSlug";
 import { buildBlogPath } from "../utils/blogPath";
 import { clientLogger } from "../logging/clientLogger";
 
-const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+const SUPPORTED_LOCALES = new Set(["es", "en", "de", "fr"]);
 
 /** Devuelve un mensaje breve para depurar sin registrar respuestas, cabeceras ni tokens. */
 const getErrorMessageForLog = (error: unknown): string => {
@@ -62,7 +62,7 @@ export function useLocaleChange(): LocaleChangeHandler {
   /**
    * Cambia el idioma de la aplicación y guarda en cookies si se permite la personalización.
    *
-   * @param {string} newLocale - Nuevo idioma a establecer (por ejemplo, 'es', 'en', 'de').
+   * @param {string} newLocale - Nuevo idioma a establecer (por ejemplo, 'es', 'en', 'de', 'fr').
    */
   const handleLocaleChange = useCallback(
     async (newLocale: string) => {

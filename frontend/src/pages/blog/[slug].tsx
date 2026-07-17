@@ -25,6 +25,7 @@ import { clientLogger } from "../../logging/clientLogger";
 import esMessages from "../../locales/es/common.json";
 import enMessages from "../../locales/en/common.json";
 import deMessages from "../../locales/de/common.json";
+import frMessages from "../../locales/fr/common.json";
 
 // Servicios
 import { BlogPost } from "../../services/blogService";
@@ -39,12 +40,13 @@ const messages: Record<string, Record<string, string>> = {
   es: esMessages,
   en: enMessages,
   de: deMessages,
+  fr: frMessages,
 };
 
 // Base URL para las imágenes del blog
 const IMAGE_BASE_URL = "/images/blog/";
 
-const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+const SUPPORTED_LOCALES = new Set(["es", "en", "de", "fr"]);
 
 /** Conserva los parámetros de consulta al redirigir una variante no canónica del slug. */
 const getQuerySuffix = (resolvedUrl: string): string => {

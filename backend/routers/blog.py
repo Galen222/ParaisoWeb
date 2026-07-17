@@ -33,7 +33,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 # Idiomas disponibles en el frontend y almacenados en la base de datos.
-SupportedLanguage = Literal["es", "en", "de"]
+SupportedLanguage = Literal["es", "en", "de", "fr"]
 
 
 def _is_valid_blog_slug(slug: str) -> bool:

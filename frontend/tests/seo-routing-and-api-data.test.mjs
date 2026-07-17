@@ -211,7 +211,7 @@ test("los errores temporales del artículo no publican canonical ni og:url", asy
 test("las cuatro sucursales mantienen su identidad exacta en la interfaz", async () => {
   const [map, ...localeSources] = await Promise.all([
     readFile(new URL("../src/components/Map.tsx", import.meta.url), "utf8"),
-    ...["es", "en", "de"].map((locale) =>
+    ...["es", "en", "de", "fr"].map((locale) =>
       readFile(new URL(`../src/locales/${locale}/common.json`, import.meta.url), "utf8")
     ),
   ]);
@@ -229,6 +229,7 @@ test("la política de cookies enlaza a la ayuda oficial HTTPS de Safari", async 
     es: "https://support.apple.com/es-es/guide/safari/sfri11471/mac",
     en: "https://support.apple.com/en-us/guide/safari/sfri11471/mac",
     de: "https://support.apple.com/de-de/guide/safari/sfri11471/mac",
+    fr: "https://support.apple.com/fr-fr/guide/safari/sfri11471/mac",
   };
 
   for (const [locale, expectedUrl] of Object.entries(expectedUrls)) {

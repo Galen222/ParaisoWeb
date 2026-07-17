@@ -30,7 +30,7 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 # Idiomas disponibles en el frontend y almacenados en la base de datos.
-SupportedLanguage = Literal["es", "en", "de"]
+SupportedLanguage = Literal["es", "en", "de", "fr"]
 
 @router.get("/charcuteria", response_model=List[schemas.Charcuteria])
 async def get_charcuteria_products(

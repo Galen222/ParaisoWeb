@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/router";
 
-const allowedLocales = ["es", "en", "de"];
+const allowedLocales = ["es", "en", "de", "fr"];
 
 /**
  * Hook personalizado para gestionar el idioma de la API de Google Maps.

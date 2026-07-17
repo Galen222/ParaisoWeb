@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..models import models, schemas
 
 logger = logging.getLogger(__name__)
-SUPPORTED_LANGUAGES = {"es", "en", "de"}
+SUPPORTED_LANGUAGES = {"es", "en", "de", "fr"}
 class SitemapService:
     """Obtiene únicamente las publicaciones que también son accesibles públicamente."""
 

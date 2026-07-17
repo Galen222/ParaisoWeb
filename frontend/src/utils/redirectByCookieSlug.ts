@@ -12,7 +12,7 @@ import { buildLocalizedBlogPath } from "./blogPath";
 import { getBlogFallbackLocales, selectUniqueBlogFallbackPost } from "./blogLocaleFallback";
 
 const DEFAULT_LOCALE = "es";
-const SUPPORTED_LOCALES = new Set(["es", "en", "de"]);
+const SUPPORTED_LOCALES = new Set(["es", "en", "de", "fr"]);
 
 /** Obtiene el idioma de una ruta; las rutas sin prefijo corresponden al español por defecto. */
 const getLocaleFromPath = (pathname: string): string => {
