@@ -31,7 +31,7 @@ test("Next, Google Maps, Analytics y JSON-LD reutilizan el nonce", async () => {
   assert.match(documentSource, /<style nonce=\{this\.props\.nonce\}>/);
   assert.match(appSource, /NextApp\.getInitialProps/);
   assert.match(appSource, /<CspNonceProvider nonce=\{props\.pageProps\.nonce\}>/);
-  assert.match(mapsSource, /nonce: getDocumentCspNonce\(\)/);
+  assert.match(mapsSource, /setOptions\(\{[\s\S]*?key: apiKey[\s\S]*?language/);
   assert.match(analyticsSource, /ReactGA\.initialize\(analyticsId, \{ nonce: getDocumentCspNonce\(\) \}\)/);
   assert.match(jsonLdSource, /nonce=\{nonce\}/);
 });
