@@ -161,7 +161,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
           </div>
 
           {/* Paginador de los productos */}
-          {paginatedBlogs.length > 0 && (
+          {totalPages > 1 && (
             <Paginator
               currentPage={currentPage}
               totalPages={totalPages}

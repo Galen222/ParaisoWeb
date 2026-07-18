@@ -48,7 +48,7 @@ test("la URL canónica elimina el prefijo español sin crear rutas ambiguas", as
   );
   assert.equal(
     buildCanonicalPageUrl("https://www.paraisodeljamon.com", "/", "en", "es", locales),
-    "https://www.paraisodeljamon.com/en/"
+    "https://www.paraisodeljamon.com/en"
   );
 });
 

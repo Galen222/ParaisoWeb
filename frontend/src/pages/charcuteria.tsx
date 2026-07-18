@@ -227,7 +227,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
           </div>
 
           {/* Paginador de los productos */}
-          {paginatedProducts.length > 0 && (
+          {totalPages > 1 && (
             <Paginator
               currentPage={currentPage}
               totalPages={totalPages}

@@ -27,5 +27,11 @@ export const buildCanonicalPageUrl = (
   const shouldPrefixLocale = Boolean(locale && locale !== defaultLocale && !pathAlreadyHasLocale);
   const localePrefix = shouldPrefixLocale ? `/${locale}` : "";
 
-  return `${normalizedSiteUrl}${localePrefix}${canonicalPath}`;
+  // Evita que la portada de un locale no predeterminado cambie entre `/en/` en SSR
+  // y `/en` al hidratar en el navegador. Las demás rutas conservan su barra inicial.
+  const localizedPath = localePrefix && canonicalPath === "/"
+    ? localePrefix
+    : `${localePrefix}${canonicalPath}`;
+
+  return `${normalizedSiteUrl}${localizedPath}`;
 };
