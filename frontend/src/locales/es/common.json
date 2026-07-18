@@ -169,7 +169,7 @@
   "charcuteria_Titulo_Texto2": "Paraíso del Jamón",
   "charcuteria_Titulo": "Productos destacados de charcutería",
   "charcuteria_Texto": "No pierda la oportunidad de visitar nuestros locales para conocer el gran surtido de productos del que disponemos a la venta con los mejores precios.",
-  "charcuteria_Error": "No se han podido mostrar los productos de charcutería, por favor intentelo más tarde. Si el problema persiste puede ponerse en contacto con nosotros por medio de la sección Contacto.",
+  "charcuteria_Error": "No se han podido mostrar los productos de charcutería, por favor inténtelo más tarde. Si el problema persiste puede ponerse en contacto con nosotros por medio de la sección Contacto.",
   "charcuteria_SEO_Titulo": "El Paraíso Del Jamón - Charcutería: Calidad ibérica en tu mesa.",
   "charcuteria_SEO_Descripcion": "Descubre nuestra selección de productos destacados de charcutería en El Paraíso del Jamón. Embutidos ibéricos y productos de alta calidad que resaltan lo mejor de la gastronomía española.",
   "nosotros_Titulo_Texto1": "Conoce sobre",
@@ -638,5 +638,9 @@
   "paginador_Pagina": "Ir a la página {page}",
   "paginador_PaginaActual": "Página {page}, página actual",
   "paginador_PaginaSiguiente": "Ir a la página siguiente",
-  "paginador_UltimaPagina": "Ir a la última página"
+  "paginador_UltimaPagina": "Ir a la última página",
+  "contacto_EmailInvalido": "Introduce una dirección de correo electrónico válida.",
+  "contacto_ArchivoObligatorio": "Es obligatorio adjuntar un archivo para el motivo seleccionado.",
+  "blog_SinArticulos": "Actualmente no hay artículos disponibles.",
+  "charcuteria_SinProductos": "Actualmente no hay productos disponibles."
 }

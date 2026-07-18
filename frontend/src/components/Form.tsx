@@ -78,6 +78,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
   });
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
+  const hasEmailValidationError = formData.email.trim() !== "" && !isValidEmail;
+  const isFileRequired = formData.reason === "factura" || formData.reason === "curriculum";
 
   const { showToast } = useToastMessage();
   const trackButtonClick = useButtonClickTrackingGA();
@@ -329,8 +331,15 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
           onChange={handleValidateEmail}
           maxLength={254}
           required
-          className={isValidEmail ? styles.emailValid : styles.emailInvalid}
+          className={hasEmailValidationError ? styles.emailInvalid : styles.emailValid}
+          aria-invalid={hasEmailValidationError}
+          aria-describedby={hasEmailValidationError ? "emailValidationError" : undefined}
         />
+        {hasEmailValidationError && (
+          <span id="emailValidationError" className="visually-hidden" role="alert">
+            {intl.formatMessage({ id: "contacto_EmailInvalido" })}
+          </span>
+        )}
       </div>
 
       <div>
@@ -341,6 +350,11 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
       <div id="fileUploadDescription" className={styles.archiveText}>
         <span>{intl.formatMessage({ id: "contacto_SubirArchivo1" })}</span>
         <span className="fs-14p">{intl.formatMessage({ id: "contacto_SubirArchivo2" })}</span>
+        {isFileRequired && (
+          <span className="fs-14p" role="status">
+            {intl.formatMessage({ id: "contacto_ArchivoObligatorio" })}
+          </span>
+        )}
       </div>
 
       <div className={styles.fileUploadContainer}>

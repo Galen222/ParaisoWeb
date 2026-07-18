@@ -180,9 +180,14 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
           </div>
 
           {/* Contenido  */}
-          <div className={styles.content}>
-            {/* Mapeo de los productos de charcutería en tarjetas */}
-            {paginatedProducts.map((product) => (
+          {safeProducts.length === 0 ? (
+            <p className="text-center mt-25p" role="status">
+              {intl.formatMessage({ id: "charcuteria_SinProductos" })}
+            </p>
+          ) : (
+            <div className={styles.content}>
+              {/* Mapeo de los productos de charcutería en tarjetas */}
+              {paginatedProducts.map((product) => (
               <div className={styles.card} key={product.id_producto}>
                 <div
                   className={`${styles.cardInner} ${flippedCards[product.id_producto] ? styles.isFlipped : ""}`}
@@ -223,8 +228,9 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
 
           {/* Paginador de los productos */}
           {totalPages > 1 && (

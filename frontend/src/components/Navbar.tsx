@@ -76,6 +76,7 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
   const handleLocaleChange = useLocaleChange();
   const { mobileMenu, toggleMobileMenu, closeMobileMenu, restaurantsMenu, openRestaurantsMenu, closeRestaurantsMenu } = useMenu();
   const navbarMenuRef = useRef<HTMLElement>(null);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const restaurantsButtonRef = useRef<HTMLButtonElement>(null);
   const { isMobile } = useScreenSize();
   const { isSticky } = useStickyNav(navbarMenuRef, !isMobile);
@@ -119,9 +120,17 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
     }
   };
 
+  const handleMobileMenuKeyDown = (event: KeyboardEvent<HTMLElement>) => {
+    if (event.key === "Escape" && mobileMenu) {
+      event.preventDefault();
+      closeMobileMenu();
+      mobileMenuButtonRef.current?.focus();
+    }
+  };
+
   if (isMobile) {
     return (
-      <nav className={styles.navbar}>
+      <header className={styles.navbar} onKeyDown={handleMobileMenuKeyDown}>
         <div className={styles.navbarTop}>
           <div className={styles.imgLogoContainer}>
             <Link href="/" locale={router.locale} onClick={handleLinkClick}>
@@ -133,6 +142,7 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
           </div>
           <div className={styles.flagContainer}>
             <button
+              ref={mobileMenuButtonRef}
               type="button"
               className={`${styles.mobileMenuIcon} ${mobileMenu ? styles.colapseSpin : ""}`}
               onClick={toggleMobileMenu}
@@ -169,11 +179,12 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
             </div>
           </div>
         </div>
-        <div
+        <nav
           id="navbar-mobile-menu"
           className={`${styles.navbarMenu} ${mobileMenu ? styles.showMenu : ""}`}
           hidden={!mobileMenu}
           aria-hidden={!mobileMenu}
+          aria-label={intl.formatMessage({ id: "navbar_menu" })}
         >
           <div className={styles.links}>
             <Link href="/" locale={router.locale} onClick={handleLinkClick}>
@@ -212,11 +223,11 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
               {intl.formatMessage({ id: "navbar_contacto" })}
             </Link>
           </div>
-        </div>
+        </nav>
         <div className={styles.animatedTitleContainer}>
           <AnimatedTitle key={pageTitleText} pageTitleText={pageTitleText} cookiesModalClosed={cookiesModalClosed} />
         </div>
-      </nav>
+      </header>
     );
   }
 

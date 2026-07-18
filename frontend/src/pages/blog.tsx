@@ -145,20 +145,26 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
           </div>
 
           {/* Contenido  */}
-          <div className={styles.content}>
-            {paginatedBlogs.map((blog) => (
-              <Link className={styles.blogLink} href={buildBlogPath(blog.slug)} key={blog.id_noticia} passHref>
-                <div className={styles.blogCard}>
-                  <div className={styles.imageContainer}>
-                    <img src={`${IMAGE_BASE_URL}${blog.imagen_url}`} alt={blog.titulo} className={styles.blogImage} />
+          {safeBlogs.length === 0 ? (
+            <p className="text-center mt-25p" role="status">
+              {intl.formatMessage({ id: "blog_SinArticulos" })}
+            </p>
+          ) : (
+            <div className={styles.content}>
+              {paginatedBlogs.map((blog) => (
+                <Link className={styles.blogLink} href={buildBlogPath(blog.slug)} key={blog.id_noticia} passHref>
+                  <div className={styles.blogCard}>
+                    <div className={styles.imageContainer}>
+                      <img src={`${IMAGE_BASE_URL}${blog.imagen_url}`} alt={blog.titulo} className={styles.blogImage} />
+                    </div>
+                    <div className={styles.blogText}>
+                      <h3 aria-level={2}>{blog.titulo}</h3>
+                    </div>
                   </div>
-                  <div className={styles.blogText}>
-                    <h3 aria-level={2}>{blog.titulo}</h3>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
+                </Link>
+              ))}
+            </div>
+          )}
 
           {/* Paginador de los productos */}
           {totalPages > 1 && (

@@ -638,5 +638,9 @@
   "paginador_Pagina": "Zu Seite {page}",
   "paginador_PaginaActual": "Seite {page}, aktuelle Seite",
   "paginador_PaginaSiguiente": "Zur nächsten Seite",
-  "paginador_UltimaPagina": "Zur letzten Seite"
+  "paginador_UltimaPagina": "Zur letzten Seite",
+  "contacto_EmailInvalido": "Geben Sie eine gültige E-Mail-Adresse ein.",
+  "contacto_ArchivoObligatorio": "Für den ausgewählten Grund muss eine Datei angehängt werden.",
+  "blog_SinArticulos": "Derzeit sind keine Artikel verfügbar.",
+  "charcuteria_SinProductos": "Derzeit sind keine Produkte verfügbar."
 }
