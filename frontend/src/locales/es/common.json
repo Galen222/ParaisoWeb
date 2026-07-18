@@ -14,6 +14,7 @@
   "navbar_menu": "Menú de navegación",
   "carousel_Pausar": "Pausar carrusel",
   "carousel_Reanudar": "Reanudar carrusel",
+  "carousel_IrDiapositiva": "Ir a la diapositiva {slide}",
   "app_CookieAcceptAll": "Cookies aceptadas satisfactoriamente",
   "app_CookieAccept": "Cookies personalizadas satisfactoriamente",
   "app_CookieDenied": "Cookies rechazadas satisfactoriamente",

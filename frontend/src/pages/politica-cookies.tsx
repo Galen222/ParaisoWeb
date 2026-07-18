@@ -222,7 +222,6 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
         <h1 className="text-center">{intl.formatMessage({ id: "politicaCookies_Principal_Titulo" })}</h1>
       </div>
       <div className="mt-25p">
-        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "politicaCookies_Principal_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaCookies_Principal_Texto" })}</p>
       </div>
       <div className="mt-25p">

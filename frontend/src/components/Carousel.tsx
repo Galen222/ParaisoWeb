@@ -61,6 +61,11 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
     autoplaySpeed: 3000,
     pauseOnHover: true,
     pauseOnFocus: true,
+    customPaging: (index: number) => (
+      <span className="visually-hidden">
+        {intl.formatMessage({ id: "carousel_IrDiapositiva" }, { slide: index + 1 })}
+      </span>
+    ),
   };
 
   // Obtener las diapositivas correspondientes al tipo de carrusel

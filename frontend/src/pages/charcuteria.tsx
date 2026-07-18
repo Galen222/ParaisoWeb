@@ -8,7 +8,6 @@ import { useFetchCharcuteria } from "../hooks/useFetchCharcuteria";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import ScrollToTopButton from "../components/ScrollToTopButton";
-import useTouchDevice from "../hooks/useTouchDevice";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/charcuteria.module.css";
 import { NextSeo } from "next-seo";
@@ -60,9 +59,6 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
 
   // Hook para obtener los datos de charcutería y estados de carga
   const { data: products, loading: loadingProducts, error } = useFetchCharcuteria();
-
-  // Obtener información sobre la pantalla tactil
-  const isTouchDevice = useTouchDevice();
 
   // Estado para el control de flip en dispositivos con pantalla tactil. El locale
   // se guarda junto a las tarjetas para que una traducción nueva empiece siempre de frente.
@@ -202,15 +198,14 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
                     },
                     { product: product.nombre }
                   )}
-                  onClick={() => {
-                    // Habilita el flip al hacer clic solo en dispositivos tactiles;
-                    // en escritorio el ratón conserva el efecto hover existente.
-                    if (isTouchDevice) handleCardClick(String(product.id_producto));
-                  }}
+                  onClick={() => handleCardClick(String(product.id_producto))}
                   onKeyDown={(event) => handleCardKeyDown(event, String(product.id_producto))}
                 >
                   {/* Lado frontal de la tarjeta con imagen y nombre del producto */}
-                  <div className={styles.front}>
+                  <div
+                    className={styles.front}
+                    aria-hidden={Boolean(flippedCards[product.id_producto])}
+                  >
                     <img src={`${IMAGE_BASE_URL}${product.imagen_url}`} alt={product.nombre} className={styles.productImage} />
                     <div className={styles.textOverlay}>
                       <h3 aria-level={2} className={styles.frontProductName}>{product.nombre}</h3>
@@ -218,7 +213,10 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
                     </div>
                   </div>
                   {/* Lado posterior de la tarjeta con descripción del producto */}
-                  <div className={styles.back}>
+                  <div
+                    className={styles.back}
+                    aria-hidden={!Boolean(flippedCards[product.id_producto])}
+                  >
                     <div>
                       <h3 aria-level={2} className={styles.backProductName}>{product.nombre}</h3>
                       {product.categoria && <p className={styles.backCategory}>{product.categoria}</p>}

@@ -17,6 +17,7 @@ import getSEOConfig from "../../config/next-seo.config";
 import useCurrentUrl from "../../hooks/useCurrentUrl";
 import { formatBlogDate } from "../../utils/blogDate";
 import { normalizeBlogSlug } from "../../utils/blogSlug";
+import { stripMarkdownForSeo } from "../../utils/markdownText";
 import { buildLocalizedBlogPath } from "../../utils/blogPath";
 import { getPublicSiteUrl } from "../../utils/publicSiteUrl";
 import { clientLogger } from "../../logging/clientLogger";
@@ -145,8 +146,11 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
     ? `El Paraíso Del Jamón - ${buildSeoPreview(blogDetails.titulo, 50)}`
     : intl.formatMessage({ id: "blog_Details_SEO_Titulo_Preview" });
 
-  const previewContent = blogDetails?.contenido
-    ? buildSeoPreview(blogDetails.contenido, 150)
+  const plainSeoContent = blogDetails?.contenido
+    ? stripMarkdownForSeo(blogDetails.contenido)
+    : "";
+  const previewContent = plainSeoContent
+    ? buildSeoPreview(plainSeoContent, 150)
     : intl.formatMessage({ id: "blog_Details_SEO_Contenido_Preview" });
   const baseSeoConfig = getSEOConfig(currentLocale, currentMessages);
 
@@ -224,7 +228,18 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
               )}
               {/* Contenido del blog */}
               <div className={`mt-25p ${styles.blogText}`}>
-                <ReactMarkdown>{blogDetails.contenido}</ReactMarkdown>
+                <ReactMarkdown
+                  components={{
+                    // El título del artículo ya es el único h1 de la página. Un
+                    // encabezado Markdown de primer nivel debe empezar en h2.
+                    h1: ({ node, ...headingProps }) => {
+                      void node;
+                      return <h2 {...headingProps} />;
+                    },
+                  }}
+                >
+                  {blogDetails.contenido}
+                </ReactMarkdown>
               </div>
               {/* Imagen secundaria */}
               {blogDetails.imagen_url_2 && (

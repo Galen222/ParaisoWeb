@@ -105,6 +105,14 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
     }
   };
 
+  const handleRestaurantsMouseLeave = (event: React.MouseEvent<HTMLDivElement>) => {
+    // No oculta enlaces que todavía contienen el foco del teclado. El cierre se
+    // completa mediante `onBlur` cuando el usuario abandona realmente el grupo.
+    if (!event.currentTarget.contains(document.activeElement)) {
+      closeRestaurantsMenu();
+    }
+  };
+
   const handleRestaurantsBlur = (event: FocusEvent<HTMLDivElement>) => {
     // Mantiene el menú abierto al mover el foco entre el botón y sus enlaces.
     if (!event.currentTarget.contains(event.relatedTarget)) {
@@ -245,7 +253,7 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
           <div
             className={styles.linksDropdown}
             onMouseEnter={openRestaurantsMenu}
-            onMouseLeave={closeRestaurantsMenu}
+            onMouseLeave={handleRestaurantsMouseLeave}
             onBlur={handleRestaurantsBlur}
             onKeyDown={handleRestaurantsKeyDown}
           >
