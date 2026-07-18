@@ -8,6 +8,7 @@
 
 /* Estilos para las notificaciones Toastify */
 .Toastify__toast {
+  width: 100%; /* React-Toastify 11 fija el toast en 320 píxeles; se recupera el ancho personalizado del contenedor */
   background-color: var(--text_color); /* Fondo marrón oscuro para las notificaciones */
 }
 

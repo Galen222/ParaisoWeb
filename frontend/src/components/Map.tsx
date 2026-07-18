@@ -99,6 +99,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
   const mapInstanceRef = useRef<google.maps.Map | null>(null); // Referencia para la instancia del mapa
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null); // Referencia para el InfoWindow
   const markerRef = useRef<google.maps.marker.AdvancedMarkerElement | null>(null); // Referencia para evitar marcadores duplicados
+  const markerClickCleanupRef = useRef<(() => void) | null>(null); // Retira el listener DOM del marcador anterior
   const markerLoadSequenceRef = useRef(0); // Invalida cargas antiguas del marcador
   const isMountedRef = useRef(true); // Evita actualizar estado después del desmontaje
   const location = locations[locationKey]; // Ubicación seleccionada
@@ -131,6 +132,8 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
 
       // Retira el marcador anterior antes de crear el nuevo para no duplicar marcadores ni listeners
       if (markerRef.current) {
+        markerClickCleanupRef.current?.();
+        markerClickCleanupRef.current = null;
         google.maps.event.clearInstanceListeners(markerRef.current);
         markerRef.current.map = null;
       }
@@ -139,6 +142,7 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
         map: mapInstanceRef.current,
         position: { lat: location.lat, lng: location.lng },
         title: location.address_url,
+        gmpClickable: true,
       });
       markerRef.current = marker;
 
@@ -168,8 +172,8 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
         });
       }
 
-      // Agrega un evento al marcador para abrir el InfoWindow al hacer clic
-      marker.addListener("click", () => {
+      // Agrega el evento DOM recomendado para AdvancedMarkerElement.
+      const handleMarkerClick = (): void => {
         if (infoWindowRef.current && mapInstanceRef.current) {
           infoWindowRef.current.open({
             anchor: marker,
@@ -177,7 +181,11 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
             shouldFocus: false,
           });
         }
-      });
+      };
+      marker.addEventListener("gmp-click", handleMarkerClick);
+      markerClickCleanupRef.current = () => {
+        marker.removeEventListener("gmp-click", handleMarkerClick);
+      };
       if (isCurrentMarkerLoad()) {
         setMarkerLoadError(false);
       }
@@ -268,6 +276,8 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
       // Si el script no llegó a cargarse, `google` no existe. La limpieza debe ser
       // segura también en ese estado para no lanzar una excepción al navegar.
       if (markerRef.current && typeof google !== "undefined" && google.maps) {
+        markerClickCleanupRef.current?.();
+        markerClickCleanupRef.current = null;
         google.maps.event.clearInstanceListeners(markerRef.current);
         markerRef.current.map = null;
       }

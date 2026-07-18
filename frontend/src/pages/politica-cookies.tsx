@@ -23,6 +23,7 @@ import enMessages from "../locales/en/common.json";
 import deMessages from "../locales/de/common.json";
 import frMessages from "../locales/fr/common.json";
 import { OrganizationJsonLd } from "../components/JsonLd";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {
@@ -55,6 +56,7 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
   const siteUrl = getPublicSiteUrl();
   const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
   const currentMessages = messages[currentLocale] || messages["es"];
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   const { showToast } = useToastMessage(); // Utiliza el hook para mostrar las notificaciones
 
@@ -127,7 +129,10 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
    * Tabla de cookies para dispositivos móviles.
    */
   const mobileTable = (
-    <table className="table table-dark table-striped-columns rounded-3 overflow-hidden">
+    <table
+      className="table table-dark table-striped-columns rounded-3 overflow-hidden"
+      aria-labelledby="cookies-used-table-title"
+    >
       <tbody>
         {Array.from({ length: 4 }, (_, i) => (
           <React.Fragment key={i}>
@@ -156,7 +161,7 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
               <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Duracion${i + 1}` })}</td>
             </tr>
             {i < 3 && ( // Condición para no mostrar el separador en el último grupo
-              <tr className={styles.tableSeparator}>
+              <tr className={styles.tableSeparator} aria-hidden="true">
                 <td colSpan={2}></td>
               </tr>
             )}
@@ -170,7 +175,10 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
    * Tabla de cookies para dispositivos de escritorio.
    */
   const desktopTable = (
-    <table className="table table-dark table-striped-columns rounded-3 overflow-hidden">
+    <table
+      className="table table-dark table-striped-columns rounded-3 overflow-hidden"
+      aria-labelledby="cookies-used-table-title"
+    >
       <thead>
         <tr>
           <th scope="col">{intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraNombre" })}</th>
@@ -304,7 +312,7 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
         </ul>
       </div>
       <div className="mt-25p">
-        <h3 aria-level={2} className="mb-10p">
+        <h3 id="cookies-used-table-title" aria-level={2} className="mb-10p">
           {intl.formatMessage({
             id: "politicaCookies_Utilizadas_Titulo",
           })}
@@ -394,7 +402,8 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
       </div>
       <div className="text-center">
         <button
-          className={`btn btn-primary mx-auto ${styles.deleteButton} ${isPushingDelCookies ? "animate-push" : ""} `}
+          type="button"
+          className={`btn btn-primary mx-auto ${styles.deleteButton} ${!prefersReducedMotion && isPushingDelCookies ? "animate-push" : ""} `}
           disabled={isPushingDelCookies}
           aria-busy={isPushingDelCookies}
           onClick={handleDeleteCookies}

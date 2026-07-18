@@ -21,6 +21,7 @@ import { stripMarkdownForSeo } from "../../utils/markdownText";
 import { buildLocalizedBlogPath } from "../../utils/blogPath";
 import { getPublicSiteUrl } from "../../utils/publicSiteUrl";
 import { clientLogger } from "../../logging/clientLogger";
+import usePrefersReducedMotion from "../../hooks/usePrefersReducedMotion";
 
 // Mensajes de traducción
 import esMessages from "../../locales/es/common.json";
@@ -93,6 +94,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
   const currentLocale = intl.locale || "es"; // Idioma actual con fallback a "es"
   const currentMessages = messages[currentLocale] || messages["es"]; // Mensajes en el idioma actual
   const currentUrl = useCurrentUrl(); // URL actual
+  const prefersReducedMotion = usePrefersReducedMotion();
   const siteUrl = getPublicSiteUrl();
   const normalizedSiteUrl = siteUrl.replace(/\/+$/, "");
   const publicationDate = blogDetails ? formatBlogDate(blogDetails.fecha_publicacion, currentLocale) : "";
@@ -176,7 +178,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
                   alt: previewTitle,
                 },
               ]
-            : [],
+            : baseSeoConfig.openGraph?.images ?? [],
         }}
       />
       {/* JSON-LD para Organización */}
@@ -253,7 +255,8 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
               {/* Botón de Volver Atrás */}
               <div className="text-center mt-25p">
                 <button
-                  className={`btn btn-outline-secondary mx-auto ${styles.backButton} ${isPushingBack ? "animate-push" : ""}`}
+                  type="button"
+                  className={`btn btn-outline-secondary mx-auto ${styles.backButton} ${!prefersReducedMotion && isPushingBack ? "animate-push" : ""}`}
                   onClick={() => void handleBack()}
                   disabled={isPushingBack}
                   aria-busy={isPushingBack}
