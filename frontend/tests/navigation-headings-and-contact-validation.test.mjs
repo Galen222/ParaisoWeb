@@ -52,9 +52,10 @@ test("el nombre rechazado informa del error y bloquea el envío", async () => {
   const source = await readSource("../src/components/Form.tsx");
 
   assert.match(source, /const \[hasInvalidNameInput, setHasInvalidNameInput\] = useState\(false\)/);
-  assert.match(source, /setHasInvalidNameInput\(true\)/);
+  assert.match(source, /setFormData\(\(current\) => \(\{ \.\.\.current, \[name\]: normalizedValue \}\)\)/);
+  assert.match(source, /setHasInvalidNameInput\(!isValidNameInput\(normalizedValue\.trim\(\)\)\)/);
   assert.match(source, /aria-invalid=\{hasNameValidationError\}/);
-  assert.match(source, /id="nameValidationError"[\s\S]*?contacto_NombreInvalido/);
+  assert.match(source, /id="nameValidationError" className=\{styles\.validationError\}[\s\S]*?contacto_NombreInvalido/);
   assert.match(source, /!hasNameValidationError &&[\s\S]*?isContactFormComplete/);
 });
 
@@ -67,9 +68,10 @@ test("los controles no admitidos del mensaje se anuncian y bloquean el envío", 
     readSource("../src/locales/fr/common.json"),
   ]);
 
-  assert.match(source, /setHasInvalidMessageInput\(true\)/);
+  assert.match(source, /setFormData\(\(current\) => \(\{ \.\.\.current, \[name\]: limitedValue \}\)\)/);
+  assert.match(source, /setHasInvalidMessageInput\(containsUnsupportedContactMessageControl\(limitedValue\)\)/);
   assert.match(source, /aria-invalid=\{hasInvalidMessageInput\}/);
-  assert.match(source, /id="messageValidationError"[\s\S]*?contacto_MensajeCaracteresInvalidos/);
+  assert.match(source, /id="messageValidationError" className=\{styles\.validationError\}[\s\S]*?contacto_MensajeCaracteresInvalidos/);
   assert.match(source, /!hasInvalidMessageInput &&[\s\S]*?isContactFormComplete/);
 
   for (const localeSource of [es, en, de, fr]) {

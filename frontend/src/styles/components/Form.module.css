@@ -50,6 +50,16 @@
   color: var(--text_color); /* Aplica el color de texto definido en la variable CSS */
 }
 
+/* Explica visualmente por qué un valor conservado no puede enviarse todavía. */
+.validationError {
+  display: block;
+  margin: -4px 0 10px;
+  color: #b00020;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: left;
+}
+
 /* Estilo para el texto de archivo */
 .archiveText {
   font-weight: bold; /* Fuente en negrita */

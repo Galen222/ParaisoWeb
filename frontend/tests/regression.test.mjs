@@ -129,6 +129,14 @@ test("el referer interno debe coincidir también en protocolo y puerto", async (
       false
     );
 
+    process.env.NEXT_PUBLIC_SITE_URL = "https://www.paraisodeljamon.com:0";
+    assert.equal(
+      isSameRequestHost(new URL("https://www.paraisodeljamon.com:0/blog"), {
+        host: "www.paraisodeljamon.com:0",
+      }),
+      false
+    );
+
     delete process.env.NEXT_PUBLIC_SITE_URL;
     assert.equal(
       isSameRequestHost(new URL("http://localhost:3000/blog"), {
@@ -139,6 +147,12 @@ test("el referer interno debe coincidir también en protocolo y puerto", async (
     assert.equal(
       isSameRequestHost(new URL("http://localhost:4000/blog"), {
         host: "localhost:3000",
+      }),
+      false
+    );
+    assert.equal(
+      isSameRequestHost(new URL("http://localhost:0/blog"), {
+        host: "localhost:0",
       }),
       false
     );
@@ -162,8 +176,8 @@ test("los componentes corregidos conservan HTML válido y controles nativos", as
 
   assert.match(footer, /<span className=\{styles\.linksContainer\}>/);
   assert.doesNotMatch(footer, /<div className=\{styles\.linksContainer\}>/);
-  assert.match(footer, /getServerCurrentYear = getCurrentYear/);
-  assert.match(footer, /new Date\(\)\.getUTCFullYear\(\)/);
+  assert.match(footer, /getCurrentYear = \(\): string => new Date\(\)\.getFullYear\(\)/);
+  assert.match(footer, /getServerCurrentYear = \(\): string => new Date\(\)\.getUTCFullYear\(\)/);
   assert.doesNotMatch(
     footer,
     /Footer_Rights[^\n]*new Date\(\)/

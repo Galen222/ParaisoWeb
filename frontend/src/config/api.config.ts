@@ -26,6 +26,7 @@ export const requirePublicApiUrl = (value: string | undefined, variableName: str
     !["http:", "https:"].includes(parsedUrl.protocol) ||
     parsedUrl.username !== "" ||
     parsedUrl.password !== "" ||
+    parsedUrl.port === "0" ||
     parsedUrl.search !== "" ||
     parsedUrl.hash !== ""
   ) {

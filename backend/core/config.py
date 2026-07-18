@@ -350,6 +350,7 @@ class Settings(BaseSettings):
                 or parsed.hostname is None
                 or parsed.username is not None
                 or parsed.password is not None
+                or port == 0
                 or parsed.path not in {"", "/"}
                 or parsed.query
                 or parsed.fragment

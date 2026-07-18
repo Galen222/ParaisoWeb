@@ -54,9 +54,9 @@ test("solo el cuadrado del consentimiento activa la casilla", async () => {
 test("el footer incluye el año también en el renderizado del servidor", async () => {
   const footer = await readSource("../src/components/Footer.tsx");
 
-  assert.match(footer, /const getCurrentYear = \(\): string => new Date\(\)\.getUTCFullYear\(\)\.toString\(\)/);
-  assert.match(footer, /const getServerCurrentYear = getCurrentYear/);
-  assert.match(footer, /Date\.UTC\([\s\S]*?now\.getUTCDate\(\) \+ 1/);
+  assert.match(footer, /const getCurrentYear = \(\): string => new Date\(\)\.getFullYear\(\)\.toString\(\)/);
+  assert.match(footer, /const getServerCurrentYear = \(\): string => new Date\(\)\.getUTCFullYear\(\)\.toString\(\)/);
+  assert.match(footer, /new Date\([\s\S]*?now\.getDate\(\) \+ 1[\s\S]*?\)\.getTime\(\)/);
 });
 
 test("los textos españoles corregidos no conservan espacios ni erratas públicas", async () => {

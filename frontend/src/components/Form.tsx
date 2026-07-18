@@ -135,19 +135,15 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     hasInvalidNameInput || (formData.name !== "" && !hasNameLetter(formData.name));
 
   /**
-   * Valida y sanitiza el nombre permitiendo solo caracteres válidos
+   * Normaliza el nombre y conserva el valor rechazado para que el usuario pueda corregirlo.
    */
   const handleValidateName = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     const normalizedValue = truncateContactName(value.normalize("NFC"));
     // El backend elimina el espacio exterior antes de validar los caracteres del nombre.
     // Validar el mismo núcleo permite pegar nombres con espacios accidentales sin perder letras.
-    if (isValidNameInput(normalizedValue.trim())) {
-      setHasInvalidNameInput(false);
-      setFormData((current) => ({ ...current, [name]: normalizedValue }));
-    } else {
-      setHasInvalidNameInput(true);
-    }
+    setFormData((current) => ({ ...current, [name]: normalizedValue }));
+    setHasInvalidNameInput(!isValidNameInput(normalizedValue.trim()));
   };
 
   /**
@@ -173,12 +169,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
   const handleValidateMessage = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     const limitedValue = truncateContactMessage(value);
-    if (!containsUnsupportedContactMessageControl(limitedValue)) {
-      setHasInvalidMessageInput(false);
-      setFormData((current) => ({ ...current, [name]: limitedValue }));
-    } else {
-      setHasInvalidMessageInput(true);
-    }
+    setFormData((current) => ({ ...current, [name]: limitedValue }));
+    setHasInvalidMessageInput(containsUnsupportedContactMessageControl(limitedValue));
   };
 
   /**
@@ -329,7 +321,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
           aria-describedby={hasNameValidationError ? "nameValidationError" : undefined}
         />
         {hasNameValidationError && (
-          <span id="nameValidationError" className="visually-hidden" role="alert">
+          <span id="nameValidationError" className={styles.validationError} role="alert">
             {intl.formatMessage({ id: "contacto_NombreInvalido" })}
           </span>
         )}
@@ -385,7 +377,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
           aria-describedby={hasInvalidMessageInput ? "messageValidationError" : undefined}
         ></textarea>
         {hasInvalidMessageInput && (
-          <span id="messageValidationError" className="visually-hidden" role="alert">
+          <span id="messageValidationError" className={styles.validationError} role="alert">
             {intl.formatMessage({ id: "contacto_MensajeCaracteresInvalidos" })}
           </span>
         )}

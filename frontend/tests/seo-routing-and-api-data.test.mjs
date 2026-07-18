@@ -30,7 +30,20 @@ test("NEXT_PUBLIC_SITE_URL solo admite un origen HTTP(S) canónico", async () =>
   assert.throws(() => normalizePublicSiteUrl("https://usuario:clave@example.com"));
   assert.throws(() => normalizePublicSiteUrl("https://example.com/base"));
   assert.throws(() => normalizePublicSiteUrl("https://example.com?utm_source=test"));
+  assert.throws(() => normalizePublicSiteUrl("https://example.com:0"));
   assert.throws(() => normalizePublicSiteUrl("javascript:alert(1)"));
+});
+
+test("las URLs públicas de API rechazan el puerto TCP cero", async () => {
+  const { requirePublicApiUrl } = await loadTypeScriptModule(
+    "../src/config/api.config.ts"
+  );
+
+  assert.equal(
+    requirePublicApiUrl("https://api.example.com:8443/base/", "API_URL"),
+    "https://api.example.com:8443/base"
+  );
+  assert.throws(() => requirePublicApiUrl("https://api.example.com:0/base", "API_URL"));
 });
 
 test("las rutas de imágenes procedentes de la API no pueden escapar de su carpeta pública", async () => {

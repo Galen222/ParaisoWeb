@@ -33,6 +33,8 @@ test("el correo de contacto comparte las fronteras reales de EmailStr", async ()
     "x@y.z",
     `${"a".repeat(100)}@example.com`,
     "usuario@bücher.de",
+    "usuario@ｅxample.com",
+    "usuario@０.com",
     "用户@例子.广告",
     "a@example。com",
     "a@example．com",

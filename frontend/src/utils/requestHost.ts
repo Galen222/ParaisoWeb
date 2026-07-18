@@ -18,6 +18,7 @@ const getCanonicalOrigin = (): CanonicalOriginResult => {
       !["http:", "https:"].includes(parsedUrl.protocol) ||
       Boolean(parsedUrl.username) ||
       Boolean(parsedUrl.password) ||
+      parsedUrl.port === "0" ||
       (parsedUrl.pathname !== "/" && parsedUrl.pathname !== "") ||
       Boolean(parsedUrl.search) ||
       Boolean(parsedUrl.hash);
@@ -44,6 +45,7 @@ const getDirectRequestHost = (headers: IncomingHttpHeaders): string | null => {
     if (
       parsedUrl.username ||
       parsedUrl.password ||
+      parsedUrl.port === "0" ||
       parsedUrl.pathname !== "/" ||
       parsedUrl.search ||
       parsedUrl.hash

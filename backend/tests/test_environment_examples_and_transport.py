@@ -338,6 +338,7 @@ class EnvironmentExampleTests(unittest.TestCase):
         for invalid_origin in (
             "https://example.com:abc",
             "https://example.com:70000",
+            "https://example.com:0",
             "https://exa_mple.com",
         ):
             with self.subTest(origin=invalid_origin), self.assertRaises(ValidationError):
