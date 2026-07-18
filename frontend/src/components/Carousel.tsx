@@ -95,7 +95,6 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
           type="button"
           className={styles.autoplayButton}
           onClick={handleAutoplayToggle}
-          aria-pressed={isPaused}
         >
           {intl.formatMessage({ id: isPaused ? "carousel_Reanudar" : "carousel_Pausar" })}
         </button>

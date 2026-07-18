@@ -20,6 +20,7 @@ import enMessages from "../locales/en/common.json";
 import deMessages from "../locales/de/common.json";
 import frMessages from "../locales/fr/common.json";
 import { OrganizationJsonLd } from "../components/JsonLd";
+import usePrefersReducedMotion from "../hooks/usePrefersReducedMotion";
 // Mapea los locales a sus respectivos mensajes
 const messages: Record<string, Record<string, string>> = {
   es: esMessages,
@@ -46,6 +47,7 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
   const currentMessages = messages[currentLocale] || messages["es"];
 
   const { downloadFile, isDownloading } = useDownloadFile(); // Hook para manejar la descarga de archivos
+  const prefersReducedMotion = usePrefersReducedMotion();
   const [isPushingDownloadMenuFile, setIsPushingDownloadMenuFile] = useState(false); // Estado para la animación del botón de descarga
 
   // Realiza el seguimiento de la visita a la página y de los click en botón de descarga
@@ -63,7 +65,9 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
     }
 
     trackButtonClick("Descargar Carta");
-    setIsPushingDownloadMenuFile(true); // Activar la animación de push
+    if (!prefersReducedMotion) {
+      setIsPushingDownloadMenuFile(true); // Activar la animación de push solo cuando el usuario permite movimiento
+    }
     await downloadFile(
       "/files/cartaparaiso.pdf", // Ruta del archivo a descargar
       "cartaparaiso.pdf", // Nombre del archivo descargado
@@ -133,7 +137,8 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto1" })}</p>
         <div className="text-center">
           <button
-            className={`btn btn-primary mx-auto ${styles.downloadMenuButton} ${isPushingDownloadMenuFile ? "animate-push" : ""}`}
+            type="button"
+            className={`btn btn-primary mx-auto ${styles.downloadMenuButton} ${!prefersReducedMotion && isPushingDownloadMenuFile ? "animate-push" : ""}`}
             onClick={handleDownloadMenu}
             disabled={isDownloading}
             aria-busy={isDownloading}

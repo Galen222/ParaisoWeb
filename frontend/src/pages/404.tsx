@@ -17,11 +17,18 @@ const Custom404Page: NextPage = () => {
   useVisitedPageTrackingGA(`error_${statusCode}`);
 
   const message = intl.formatMessage({ id: "error_Error404" });
+  const seoTitle = `${statusCode} - ${message}`;
   const imageError = "/images/web/404.png"; // Ruta de la imagen de error 404
 
   return (
     <>
-      <NextSeo noindex nofollow />
+      <NextSeo
+        title={seoTitle}
+        description={message}
+        noindex
+        nofollow
+        openGraph={{ title: seoTitle, description: message }}
+      />
       <div className="pageContainer">
       {/* Título que muestra el código de estado HTTP */}
       {/* Mensaje de error internacionalizado */}

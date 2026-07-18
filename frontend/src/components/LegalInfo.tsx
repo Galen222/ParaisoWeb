@@ -25,36 +25,34 @@ const LegalInfo: React.FC = (): React.JSX.Element => {
   return (
     <div className="table-responsive">
       <table className="table table-dark table-striped-columns mw-600p mt-25p mx-auto text-center mb-40p rounded-3 overflow-hidden">
-        <thead>
-          <tr>
-            {/* Encabezado de la tabla que muestra el título en el idioma actual */}
-            <th colSpan={2}>{intl.formatMessage({ id: "contacto_Tabla_Titulo" })}</th>
-          </tr>
-        </thead>
+        {/* Título accesible de la tabla en el idioma actual */}
+        <caption className="caption-top bg-dark text-center text-white fw-bold">
+          {intl.formatMessage({ id: "contacto_Tabla_Titulo" })}
+        </caption>
         <tbody className="table-group-divider">
           {/* Filas de la tabla que muestran información legal de la empresa */}
           <tr>
-            <td>{intl.formatMessage({ id: "contacto_Tabla_Celda1_1" })}</td>
+            <th scope="row" className="fw-normal">{intl.formatMessage({ id: "contacto_Tabla_Celda1_1" })}</th>
             <td>PACAVA S.A.</td> {/* Nombre de la empresa */}
           </tr>
           <tr>
-            <td>{intl.formatMessage({ id: "contacto_Tabla_Celda2_1" })}</td>
+            <th scope="row" className="fw-normal">{intl.formatMessage({ id: "contacto_Tabla_Celda2_1" })}</th>
             <td>{intl.formatMessage({ id: "contacto_Tabla_Celda2_2" })}</td> {/* Dirección */}
           </tr>
           <tr>
-            <td>{intl.formatMessage({ id: "contacto_Tabla_Celda3_1" })}</td>
+            <th scope="row" className="fw-normal">{intl.formatMessage({ id: "contacto_Tabla_Celda3_1" })}</th>
             <td>{intl.formatMessage({ id: "contacto_Tabla_Celda3_2" })}</td> {/* Teléfono de contacto */}
           </tr>
           <tr>
-            <td>{intl.formatMessage({ id: "contacto_Tabla_Celda4_1" })}</td>
+            <th scope="row" className="fw-normal">{intl.formatMessage({ id: "contacto_Tabla_Celda4_1" })}</th>
             <td>PACAVA S.A.</td> {/* Nombre de la empresa nuevamente */}
           </tr>
           <tr>
-            <td>{intl.formatMessage({ id: "contacto_Tabla_Celda5_1" })}</td>
+            <th scope="row" className="fw-normal">{intl.formatMessage({ id: "contacto_Tabla_Celda5_1" })}</th>
             <td>{intl.formatMessage({ id: "contacto_Tabla_Celda5_2" })}</td> {/* Dirección de correo electrónico */}
           </tr>
           <tr>
-            <td>{intl.formatMessage({ id: "contacto_Tabla_Celda6_1" })}</td>
+            <th scope="row" className="fw-normal">{intl.formatMessage({ id: "contacto_Tabla_Celda6_1" })}</th>
             <td>
               {/* Mensaje con enlace a la política de privacidad */}
               {intl.formatMessage({ id: "contacto_Tabla_Celda6_2" })}

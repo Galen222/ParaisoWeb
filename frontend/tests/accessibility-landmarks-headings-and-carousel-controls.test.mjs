@@ -78,7 +78,8 @@ test("el carrusel automático permite pausar y reanudar el movimiento", async ()
   assert.match(carousel, /autoplay: !prefersReducedMotion && !isPaused/);
   assert.match(carousel, /sliderRef\.current\?\.slickPause\(\)/);
   assert.match(carousel, /sliderRef\.current\?\.slickPlay\(\)/);
-  assert.match(carousel, /aria-pressed=\{isPaused\}/);
+  assert.match(carousel, /id: isPaused \? "carousel_Reanudar" : "carousel_Pausar"/);
+  assert.doesNotMatch(carousel, /aria-pressed=\{isPaused\}/);
   assert.match(sliderTypes, /slickPause\(\): void/);
   assert.match(sliderTypes, /slickPlay\(\): void/);
   assert.match(carouselCss, /\.autoplayButton/);

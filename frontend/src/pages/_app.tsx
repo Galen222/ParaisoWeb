@@ -114,11 +114,13 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
                 onPrivacyPolicyLinkClick={handlePrivacyPolicyLinkClick}
               />
             )}
-            <Navbar cookiesModalClosed={cookiesModalClosed} pageTitleText={pageTitleText} />
-            <main>
-              <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} mapLocale={mapLocale} />
-            </main>
-            <Footer />
+            <div aria-hidden={showCookieModal ? true : undefined} inert={showCookieModal}>
+              <Navbar cookiesModalClosed={cookiesModalClosed} pageTitleText={pageTitleText} />
+              <main>
+                <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} mapLocale={mapLocale} />
+              </main>
+              <Footer />
+            </div>
             <ToastContainer />
           </React.StrictMode>
         </MenuProvider>

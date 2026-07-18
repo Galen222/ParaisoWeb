@@ -146,7 +146,7 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
             </Link>
           </div>
           <div className={styles.textLogoContainer}>
-            <span className={styles.textLogo}>PARAISO DEL JAMON</span>
+            <span className={styles.textLogo}>EL PARAÍSO DEL JAMÓN</span>
           </div>
           <div className={styles.flagContainer}>
             <button
@@ -315,7 +315,7 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
             </Link>
           </div>
           <div className={styles.textLogoContainer}>
-            <span className={styles.textLogo}>PARAISO DEL JAMON</span>
+            <span className={styles.textLogo}>EL PARAÍSO DEL JAMÓN</span>
           </div>
           <div className={styles.flagContainer}>
             <div className={styles.flags}>

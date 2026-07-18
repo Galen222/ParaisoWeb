@@ -406,8 +406,11 @@ test("las páginas de error y el error temporal del blog no son indexables", asy
     readFile(new URL("../src/pages/blog/[slug].tsx", import.meta.url), "utf8"),
   ]);
 
-  assert.match(errorPage, /<NextSeo noindex nofollow \/>/);
-  assert.match(notFoundPage, /<NextSeo noindex nofollow \/>/);
+  for (const source of [errorPage, notFoundPage]) {
+    assert.match(source, /<NextSeo[\s\S]*?noindex[\s\S]*?nofollow/);
+    assert.match(source, /title=\{seoTitle\}/);
+    assert.match(source, /description=\{message\}/);
+  }
   assert.match(blogDetail, /noindex=\{Boolean\(error\)\}/);
   assert.match(blogDetail, /nofollow=\{Boolean\(error\)\}/);
 });

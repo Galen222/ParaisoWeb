@@ -65,11 +65,18 @@ const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }: ErrorPageProps): Re
       break;
   }
 
+  const seoTitle = message.startsWith(`${statusCode} - `) ? message : `${statusCode} - ${message}`;
   const imageError = "/images/web/error.png"; // Ruta de la imagen de error
 
   return (
     <>
-      <NextSeo noindex nofollow />
+      <NextSeo
+        title={seoTitle}
+        description={message}
+        noindex
+        nofollow
+        openGraph={{ title: seoTitle, description: message }}
+      />
       <div className="pageContainer">
       {/* Título que muestra el código de estado HTTP */}
       <h1>{statusCode}</h1>
