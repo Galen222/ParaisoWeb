@@ -1,4 +1,6 @@
 .env
+.env.prod
+.env.dev
 __pycache__/
 backend/core/__pycache__/
 backend/routers/__pycache__/
