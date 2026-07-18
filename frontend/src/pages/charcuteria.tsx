@@ -43,6 +43,11 @@ export type CharcuteriaPageComponent = NextPage & { pageTitleText?: string };
 const IMAGE_BASE_URL = "/images/charcuteria/";
 const errorImage = "/images/web/error.png";
 
+/** Mantiene el hover automático limitado a los dispositivos que realmente lo soportan. */
+const supportsCardHover = (): boolean =>
+  typeof window !== "undefined" &&
+  window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
 /**
  * Componente de la página de Charcutería.
  * Muestra una lista paginada de productos de charcutería con imágenes y descripciones.
@@ -68,6 +73,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
   }>({ locale: currentLocale, cards: {} });
   const flippedCards =
     flippedCardState.locale === currentLocale ? flippedCardState.cards : {};
+  const [hoveredCardId, setHoveredCardId] = useState<string | null>(null);
 
   // Función para manejar el click o la activación por teclado
   const handleCardClick = (productId: string) => {
@@ -124,10 +130,12 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "charcuteria_SEO_Titulo" })}
         description={intl.formatMessage({ id: "charcuteria_SEO_Descripcion" })}
+        noindex={Boolean(error)}
+        nofollow={Boolean(error)}
         openGraph={{
           title: intl.formatMessage({ id: "charcuteria_SEO_Titulo" }),
           description: intl.formatMessage({ id: "charcuteria_SEO_Descripcion" }),
-          url: currentUrl,
+          url: error ? undefined : currentUrl,
         }}
       />
 
@@ -148,7 +156,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
 
       {/* Mensaje de error si ocurre un problema al obtener los productos*/}
       {error && (
-        <div className={errorStyles.errorContainer}>
+        <div className={errorStyles.errorContainer} role="alert">
           <h1>{error}</h1>
           <div className={errorStyles.imageContainer}>
             <img src={errorImage} alt="" />
@@ -183,50 +191,64 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
           ) : (
             <div className={styles.content}>
               {/* Mapeo de los productos de charcutería en tarjetas */}
-              {paginatedProducts.map((product) => (
-              <div className={styles.card} key={product.id_producto}>
-                <div
-                  className={`${styles.cardInner} ${flippedCards[product.id_producto] ? styles.isFlipped : ""}`}
-                  role="button"
-                  tabIndex={0}
-                  aria-pressed={Boolean(flippedCards[product.id_producto])}
-                  aria-label={intl.formatMessage(
-                    {
-                      id: flippedCards[product.id_producto]
-                        ? "charcuteria_OcultarDetalles"
-                        : "charcuteria_MostrarDetalles",
-                    },
-                    { product: product.nombre }
-                  )}
-                  onClick={() => handleCardClick(String(product.id_producto))}
-                  onKeyDown={(event) => handleCardKeyDown(event, String(product.id_producto))}
-                >
-                  {/* Lado frontal de la tarjeta con imagen y nombre del producto */}
+              {paginatedProducts.map((product) => {
+                const productId = String(product.id_producto);
+                const isCardFlipped = Boolean(flippedCards[productId]) || hoveredCardId === productId;
+
+                return (
                   <div
-                    className={styles.front}
-                    aria-hidden={Boolean(flippedCards[product.id_producto])}
+                    className={styles.card}
+                    key={product.id_producto}
+                    onMouseEnter={() => {
+                      if (supportsCardHover()) {
+                        setHoveredCardId(productId);
+                      }
+                    }}
+                    onMouseLeave={() => setHoveredCardId((currentId) => currentId === productId ? null : currentId)}
                   >
-                    <img src={`${IMAGE_BASE_URL}${product.imagen_url}`} alt={product.nombre} className={styles.productImage} />
-                    <div className={styles.textOverlay}>
-                      <h3 aria-level={2} className={styles.frontProductName}>{product.nombre}</h3>
-                      {product.categoria && <p className={styles.frontCategory}>{product.categoria}</p>}
+                    <div
+                      className={`${styles.cardInner} ${isCardFlipped ? styles.isFlipped : ""}`}
+                      role="button"
+                      tabIndex={0}
+                      aria-expanded={isCardFlipped}
+                      aria-label={intl.formatMessage(
+                        {
+                          id: isCardFlipped
+                            ? "charcuteria_OcultarDetalles"
+                            : "charcuteria_MostrarDetalles",
+                        },
+                        { product: product.nombre }
+                      )}
+                      onClick={() => handleCardClick(productId)}
+                      onKeyDown={(event) => handleCardKeyDown(event, productId)}
+                    >
+                      {/* Lado frontal de la tarjeta con imagen y nombre del producto */}
+                      <div
+                        className={styles.front}
+                        aria-hidden={isCardFlipped}
+                      >
+                        <img src={`${IMAGE_BASE_URL}${product.imagen_url}`} alt={product.nombre} className={styles.productImage} />
+                        <div className={styles.textOverlay}>
+                          <h3 aria-level={2} className={styles.frontProductName}>{product.nombre}</h3>
+                          {product.categoria && <p className={styles.frontCategory}>{product.categoria}</p>}
+                        </div>
+                      </div>
+                      {/* Lado posterior de la tarjeta con descripción del producto */}
+                      <div
+                        className={styles.back}
+                        aria-hidden={!isCardFlipped}
+                      >
+                        <div>
+                          <h3 aria-level={2} className={styles.backProductName}>{product.nombre}</h3>
+                          {product.categoria && <p className={styles.backCategory}>{product.categoria}</p>}
+                          <p className={styles.descripcion}>{product.descripcion}</p>
+                          {product.empresa && <p className={styles.empresa}>{product.empresa}</p>}
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  {/* Lado posterior de la tarjeta con descripción del producto */}
-                  <div
-                    className={styles.back}
-                    aria-hidden={!Boolean(flippedCards[product.id_producto])}
-                  >
-                    <div>
-                      <h3 aria-level={2} className={styles.backProductName}>{product.nombre}</h3>
-                      {product.categoria && <p className={styles.backCategory}>{product.categoria}</p>}
-                      <p className={styles.descripcion}>{product.descripcion}</p>
-                      {product.empresa && <p className={styles.empresa}>{product.empresa}</p>}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              ))}
+                );
+              })}
             </div>
           )}
 

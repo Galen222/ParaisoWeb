@@ -93,10 +93,12 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "blog_SEO_Titulo" })}
         description={intl.formatMessage({ id: "blog_SEO_Descripcion" })}
+        noindex={Boolean(error)}
+        nofollow={Boolean(error)}
         openGraph={{
           title: intl.formatMessage({ id: "blog_SEO_Titulo" }),
           description: intl.formatMessage({ id: "blog_SEO_Descripcion" }),
-          url: currentUrl,
+          url: error ? undefined : currentUrl,
         }}
       />
 
@@ -117,7 +119,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
 
       {/* Mensaje de error si ocurre un problema al obtener los productos*/}
       {error && (
-        <div className={errorStyles.errorContainer}>
+        <div className={errorStyles.errorContainer} role="alert">
           <h1>{intl.formatMessage({ id: "blog_Error" })}</h1>
           <div className={errorStyles.imageContainer}>
             <img src={imageError} alt="" />

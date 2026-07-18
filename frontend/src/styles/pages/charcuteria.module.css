@@ -317,9 +317,5 @@
   transform: rotateY(180deg);
 }
 
-/* Gira la tarjeta al pasar el cursor por encima en dispositivos con puntero fino y soporte de hover */
-@media (hover: hover) and (pointer: fine) {
-  .card:hover .cardInner {
-    transform: rotateY(180deg);
-  }
-}
+/* El hover se refleja mediante estado React para mantener sincronizadas la cara visible
+ * y la información expuesta a tecnologías de asistencia. */

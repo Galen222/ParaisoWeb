@@ -287,18 +287,22 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
 
   // Renderiza un mensaje de error si ocurrió algún problema al cargar el mapa
   if (loadError) {
-    return <div>{intl.formatMessage({ id: "Map_Error_Texto" })}</div>;
+    return <div role="alert">{intl.formatMessage({ id: "Map_Error_Texto" })}</div>;
   }
 
   // Renderiza un mensaje de carga mientras el mapa se está cargando
   if (!isLoaded) {
-    return <div>{intl.formatMessage({ id: "Map_Loading_Texto" })}</div>;
+    return (
+      <div role="status" aria-live="polite" aria-atomic="true">
+        {intl.formatMessage({ id: "Map_Loading_Texto" })}
+      </div>
+    );
   }
 
   // Renderiza el contenedor del mapa una vez que se ha cargado
   return (
     <div>
-      {markerLoadError && <div>{intl.formatMessage({ id: "Map_Error_Texto" })}</div>}
+      {markerLoadError && <div role="alert">{intl.formatMessage({ id: "Map_Error_Texto" })}</div>}
       <div
         ref={mapRef}
         className={styles.mapContainer}

@@ -133,6 +133,7 @@ export const Paginator: React.FC<PaginatorProps> = ({
             key={`page-${pageEntry}`}
             className={`${styles.paginatorButton} ${pageEntry === currentPage ? styles.active : ""}`}
             onClick={() => onPageChange(pageEntry)}
+            disabled={pageEntry === currentPage}
             aria-current={pageEntry === currentPage ? "page" : undefined}
             aria-label={intl.formatMessage(
               { id: pageEntry === currentPage ? "paginador_PaginaActual" : "paginador_Pagina" },

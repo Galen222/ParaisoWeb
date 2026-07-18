@@ -30,6 +30,7 @@ const ScrollToTopButton: React.FC = (): React.JSX.Element | null => {
   return (
     <div className={styles.scrollToTopContainer}>
       <button
+        type="button"
         onClick={scrollToTop}
         className={`
           ${styles.scrollToTop} 

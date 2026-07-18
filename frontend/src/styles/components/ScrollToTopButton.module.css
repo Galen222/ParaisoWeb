@@ -84,6 +84,12 @@
 }
 
 /* Media queries para ajustes responsivos */
+@media (prefers-reduced-motion: reduce) {
+  .scrollToTop {
+    transition: none;
+  }
+}
+
 @media (max-width: 768px) {
   .scrollToTopContainer {
     margin-top: 30px; /* Espaciado superior reducido en pantallas más pequeñas */

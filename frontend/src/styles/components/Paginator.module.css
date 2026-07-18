@@ -52,6 +52,11 @@
   border-color: rgba(175, 36, 36, 0.904);
 }
 
+.paginatorButton.active:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
 .paginatorEllipsis {
   width: 40px;
   height: 40px;

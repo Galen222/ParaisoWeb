@@ -3,6 +3,7 @@
 import React from "react";
 import { useIntl } from "react-intl";
 import Styles from "../styles/components/ShareLink.module.css";
+import { buildFacebookHashtag } from "../utils/shareHashtag";
 import {
   FacebookShareButton,
   TwitterShareButton,
@@ -40,7 +41,7 @@ const ShareLink: React.FC<ShareLinkProps> = ({ url, title }: ShareLinkProps): Re
       {/* Facebook: Se mantiene igual, pero el título se incluye al generar el hashtag */}
       <FacebookShareButton
         url={url}
-        hashtag={`#${title.replace(/\s+/g, "")}`}
+        hashtag={buildFacebookHashtag(title)}
         aria-label={getShareLabel("sharedLink_CompartirFacebook")}
       >
         <FacebookIcon size={32} round={true} className={Styles.icon} />

@@ -23,15 +23,15 @@ const loadTypeScriptModule = async (relativePath) => {
 test("las tarjetas de charcutería responden al clic con cualquier puntero", async () => {
   const source = await readSource("../src/pages/charcuteria.tsx");
 
-  assert.match(source, /onClick=\{\(\) => handleCardClick\(String\(product\.id_producto\)\)\}/);
+  assert.match(source, /onClick=\{\(\) => handleCardClick\(productId\)\}/);
   assert.doesNotMatch(source, /useTouchDevice|isTouchDevice/);
 });
 
 test("la cara oculta de cada tarjeta queda fuera del árbol accesible", async () => {
   const source = await readSource("../src/pages/charcuteria.tsx");
 
-  assert.match(source, /className=\{styles\.front\}[\s\S]*?aria-hidden=\{Boolean\(flippedCards\[product\.id_producto\]\)\}/);
-  assert.match(source, /className=\{styles\.back\}[\s\S]*?aria-hidden=\{!Boolean\(flippedCards\[product\.id_producto\]\)\}/);
+  assert.match(source, /className=\{styles\.front\}[\s\S]*?aria-hidden=\{isCardFlipped\}/);
+  assert.match(source, /className=\{styles\.back\}[\s\S]*?aria-hidden=\{!isCardFlipped\}/);
 });
 
 test("el menú de restaurantes no se oculta mientras conserva el foco", async () => {

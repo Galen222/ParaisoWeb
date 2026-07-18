@@ -204,11 +204,12 @@ test("los menús, tarjetas y paginador son utilizables con teclado", async () =>
 
   assert.match(charcuteria, /role="button"/);
   assert.match(charcuteria, /tabIndex=\{0\}/);
-  assert.match(charcuteria, /aria-pressed=/);
+  assert.match(charcuteria, /aria-expanded=\{isCardFlipped\}/);
   assert.match(charcuteria, /handleCardKeyDown/);
 
   assert.match(paginator, /<nav className=\{styles\.paginator\}/);
   assert.match(paginator, /aria-current=\{pageEntry === currentPage \? "page" : undefined\}/);
+  assert.match(paginator, /disabled=\{pageEntry === currentPage\}/);
   assert.match(paginator, /className=\{styles\.paginatorEllipsis\}/);
   assert.doesNotMatch(paginator, /disabled=\{typeof pageNum !== "number"\}/);
 });
