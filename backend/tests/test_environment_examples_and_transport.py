@@ -365,6 +365,37 @@ class EnvironmentExampleTests(unittest.TestCase):
         )
         self.assertEqual(settings.TRUSTED_PROXY_IPS, "127.0.0.1,::1")
 
+    def test_reCAPTCHA_rechaza_hosts_invalidos_y_normaliza_dns_e_ip(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.test.local",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        for invalid_hosts in (
+            "example.com:443",
+            "-example.com",
+            "example..com",
+            "*.example.com",
+            "exa_mple.com",
+        ):
+            with self.subTest(hosts=invalid_hosts), self.assertRaises(ValidationError):
+                Settings(**common, RECAPTCHA_ALLOWED_HOSTNAMES=invalid_hosts)
+
+        configured = Settings(
+            **common,
+            RECAPTCHA_ALLOWED_HOSTNAMES="BÜCHER.EXAMPLE.,::ffff:127.0.0.1,127.0.0.1",
+        )
+        self.assertEqual(
+            configured.RECAPTCHA_ALLOWED_HOSTNAMES,
+            "xn--bcher-kva.example,127.0.0.1",
+        )
+
 
 class SmtpTransportTests(unittest.IsolatedAsyncioTestCase):
     async def test_tls_implicito_no_intenta_starttls(self) -> None:

@@ -17,7 +17,7 @@ test("TypeScript 6 conserva los tipos globales usados por Next y Google Maps", a
   assert.deepEqual(tsconfig.compilerOptions.types, ["node", "google.maps"]);
 });
 
-test("ESLint registra React Hooks y permite los lanzadores CommonJS de Plesk", async () => {
+test("ESLint registra React Hooks y permite los módulos CommonJS de Plesk", async () => {
   const [packageSource, eslintSource] = await Promise.all([
     readFile(new URL("../package.json", import.meta.url), "utf8"),
     readFile(new URL("../eslint.config.mjs", import.meta.url), "utf8"),
@@ -28,5 +28,8 @@ test("ESLint registra React Hooks y permite los lanzadores CommonJS de Plesk", a
   assert.match(packageJson.devDependencies["eslint-plugin-react-hooks"], /^\^7\.1\.1$/);
   assert.match(eslintSource, /import reactHooks from "eslint-plugin-react-hooks";/);
   assert.match(eslintSource, /plugins:\s*\{\s*"react-hooks": reactHooks,?\s*\}/);
-  assert.match(eslintSource, /files:\s*\["app\.js", "server\.cjs"\][\s\S]*?"@typescript-eslint\/no-require-imports": "off"/);
+  assert.match(
+    eslintSource,
+    /files:\s*\["app\.js", "server\.cjs", "serverLogger\.cjs"\][\s\S]*?"@typescript-eslint\/no-require-imports": "off"/,
+  );
 });

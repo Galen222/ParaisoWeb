@@ -1,6 +1,7 @@
 "use strict";
 
 const { createServer } = require("node:http");
+const { frontendServerLogger } = require("./serverLogger.cjs");
 
 /**
  * Devuelve la URL española canónica solo cuando la petición original contiene
@@ -45,7 +46,7 @@ function resolvePort(value) {
  * Crea el listener HTTP y transforma tanto errores síncronos como promesas
  * rechazadas de Next.js en una respuesta 500 controlada.
  */
-function createRequestListener(handle) {
+function createRequestListener(handle, logger = frontendServerLogger) {
   return (request, response) => {
     const redirectTarget = buildSpanishCanonicalRedirect(request.url);
     if (redirectTarget !== null) {
@@ -59,7 +60,7 @@ function createRequestListener(handle) {
     Promise.resolve()
       .then(() => handle(request, response))
       .catch((error) => {
-        console.error(error);
+        logger.error(error);
         if (!response.headersSent) {
           response.statusCode = 500;
           response.setHeader("Content-Type", "text/plain; charset=utf-8");
@@ -90,7 +91,7 @@ function listenServer(server, port, hostname) {
   });
 }
 
-async function startServer() {
+async function startServer(logger = frontendServerLogger) {
   process.env.NODE_ENV ||= "production";
 
   const next = require("next");
@@ -101,15 +102,15 @@ async function startServer() {
 
   await app.prepare();
 
-  const server = createServer(createRequestListener(handle));
+  const server = createServer(createRequestListener(handle, logger));
   await listenServer(server, port, hostname);
-  console.log(`> Ready on http://${hostname}:${port}`);
+  logger.info(`> Ready on http://${hostname}:${port}`);
   return server;
 }
 
 if (require.main === module) {
   startServer().catch((error) => {
-    console.error(error);
+    frontendServerLogger.error(error);
     process.exitCode = 1;
   });
 }

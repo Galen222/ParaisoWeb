@@ -40,6 +40,39 @@ def has_ambiguous_forwarding_headers(
     return True
 
 
+def has_invalid_forwarding_headers(
+    request: Request,
+    logger: logging.Logger | None = None,
+) -> bool:
+    """Detecta valores de proxy que no son listas válidas de direcciones IP."""
+    invalid_names: list[str] = []
+
+    forwarded_for_values = _raw_header_values(request, b"x-forwarded-for")
+    if len(forwarded_for_values) == 1:
+        forwarded_for = forwarded_for_values[0].decode("latin-1").strip()
+        candidates = [candidate.strip() for candidate in forwarded_for.split(",")]
+        if not forwarded_for or any(
+            not candidate or normalize_forwarded_ip(candidate) is None for candidate in candidates
+        ):
+            invalid_names.append("x-forwarded-for")
+
+    real_ip_values = _raw_header_values(request, b"x-real-ip")
+    if len(real_ip_values) == 1:
+        real_ip = real_ip_values[0].decode("latin-1").strip()
+        if not real_ip or normalize_forwarded_ip(real_ip) is None:
+            invalid_names.append("x-real-ip")
+
+    if not invalid_names:
+        return False
+
+    if logger is not None:
+        logger.warning(
+            "Cabeceras de proxy con direcciones no válidas: %s",
+            ", ".join(invalid_names),
+        )
+    return True
+
+
 def _single_forwarding_header(request: Request, name: bytes) -> str:
     """Devuelve una cabecera de proxy solo cuando aparece exactamente una vez."""
     values = _raw_header_values(request, name)

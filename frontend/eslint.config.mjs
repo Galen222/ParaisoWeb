@@ -27,9 +27,9 @@ export default defineConfig([
   },
 
   {
-    files: ["app.js", "server.cjs"],
+    files: ["app.js", "server.cjs", "serverLogger.cjs"],
     rules: {
-      // Ambos archivos son CommonJS porque Plesk y el servidor personalizado los cargan con Node.js.
+      // Estos archivos son CommonJS porque Plesk y el servidor personalizado los cargan con Node.js.
       "@typescript-eslint/no-require-imports": "off",
     },
   },

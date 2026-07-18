@@ -18,25 +18,32 @@ export const loadRecaptcha = (locale: string): Promise<ReCaptchaV2Api> => {
   }
 
   recaptchaLoadPromise = new Promise<ReCaptchaV2Api>((resolve, reject) => {
-    const finishLoading = (): void => {
+    const discardFailedScript = (script: HTMLScriptElement): void => {
+      if (script.id === RECAPTCHA_SCRIPT_ID && script.parentNode) {
+        script.remove();
+      }
+      recaptchaLoadPromise = null;
+    };
+
+    const finishLoading = (script: HTMLScriptElement): void => {
       const api = window.grecaptcha;
       if (!api) {
-        recaptchaLoadPromise = null;
+        discardFailedScript(script);
         reject(new Error("La API de reCAPTCHA no quedó disponible"));
         return;
       }
       api.ready(() => resolve(api));
     };
 
-    const failLoading = (): void => {
-      recaptchaLoadPromise = null;
+    const failLoading = (script: HTMLScriptElement): void => {
+      discardFailedScript(script);
       reject(new Error("No se pudo cargar la API de reCAPTCHA"));
     };
 
     const existingScript = document.getElementById(RECAPTCHA_SCRIPT_ID) as HTMLScriptElement | null;
     if (existingScript) {
-      existingScript.addEventListener("load", finishLoading, { once: true });
-      existingScript.addEventListener("error", failLoading, { once: true });
+      existingScript.addEventListener("load", () => finishLoading(existingScript), { once: true });
+      existingScript.addEventListener("error", () => failLoading(existingScript), { once: true });
       return;
     }
 
@@ -49,8 +56,8 @@ export const loadRecaptcha = (locale: string): Promise<ReCaptchaV2Api> => {
     if (nonce) {
       script.nonce = nonce;
     }
-    script.addEventListener("load", finishLoading, { once: true });
-    script.addEventListener("error", failLoading, { once: true });
+    script.addEventListener("load", () => finishLoading(script), { once: true });
+    script.addEventListener("error", () => failLoading(script), { once: true });
     document.head.appendChild(script);
   });
 

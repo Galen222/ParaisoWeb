@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
+import vm from "node:vm";
+import ts from "typescript";
 
 const readSource = (relativePath) =>
   readFile(new URL(relativePath, import.meta.url), "utf8");
@@ -39,6 +41,80 @@ test("reCAPTCHA se carga una sola vez con nonce CSP y conserva el idioma inicial
   assert.match(loader, /render=explicit&hl=/);
   assert.match(proxy, /script-src[^;]*https:\/\/www\.google\.com[^;]*https:\/\/www\.gstatic\.com/);
   assert.match(proxy, /frame-src[^;]*https:\/\/\*\.google\.com/);
+});
+
+test("un script reCAPTCHA fallido se elimina y permite volver a cargarlo", async () => {
+  const source = (await readSource("../src/utils/recaptchaLoader.ts")).replace(
+    'import { getDocumentCspNonce } from "./cspNonce";',
+    'const getDocumentCspNonce = () => "nonce-de-prueba";',
+  );
+  const { outputText } = ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2022,
+    },
+  });
+  const loadedModule = { exports: {} };
+  const wrapper = vm.runInThisContext(
+    `(function (module, exports) { ${outputText}\n })`,
+  );
+  wrapper(loadedModule, loadedModule.exports);
+
+  const scripts = [];
+  const previousWindow = globalThis.window;
+  const previousDocument = globalThis.document;
+  const browserWindow = {};
+  const browserDocument = {
+    getElementById(id) {
+      return scripts.find((script) => script.id === id && script.parentNode) ?? null;
+    },
+    createElement() {
+      const listeners = {};
+      return {
+        id: "",
+        src: "",
+        async: false,
+        defer: false,
+        nonce: "",
+        parentNode: null,
+        listeners,
+        addEventListener(name, callback) {
+          listeners[name] = callback;
+        },
+        remove() {
+          this.parentNode = null;
+        },
+      };
+    },
+    head: {
+      appendChild(script) {
+        script.parentNode = this;
+        scripts.push(script);
+      },
+    },
+  };
+
+  globalThis.window = browserWindow;
+  globalThis.document = browserDocument;
+  try {
+    const firstLoad = loadedModule.exports.loadRecaptcha("es");
+    const firstRejection = assert.rejects(firstLoad, /No se pudo cargar/);
+    scripts[0].listeners.error();
+    await firstRejection;
+    assert.equal(browserDocument.getElementById("google-recaptcha-v2-script"), null);
+
+    const secondLoad = loadedModule.exports.loadRecaptcha("es");
+    assert.equal(scripts.length, 2);
+    const api = { ready: (callback) => callback() };
+    browserWindow.grecaptcha = api;
+    scripts[1].listeners.load();
+    assert.equal(await secondLoad, api);
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+    if (previousDocument === undefined) delete globalThis.document;
+    else globalThis.document = previousDocument;
+  }
 });
 
 test("los ejemplos de entorno documentan destinos en español y las claves CAPTCHA separadas", async () => {

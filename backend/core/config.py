@@ -146,16 +146,51 @@ class Settings(BaseSettings):
     @field_validator("RECAPTCHA_ALLOWED_HOSTNAMES")
     @classmethod
     def validate_recaptcha_allowed_hostnames(cls, value: str) -> str:
-        """Normaliza hosts de reCAPTCHA y rechaza URLs, rutas o entradas vacías."""
+        """Normaliza IP y DNS de reCAPTCHA y rechaza puertos, rutas o hosts inválidos."""
         normalized_hosts: list[str] = []
         for raw_host in value.split(","):
-            host = raw_host.strip().lower().rstrip(".")
+            host = raw_host.strip().rstrip(".")
             if not host:
                 continue
             if "://" in host or "/" in host or any(character.isspace() for character in host):
                 raise ValueError("RECAPTCHA_ALLOWED_HOSTNAMES solo admite nombres de host")
-            if host not in normalized_hosts:
-                normalized_hosts.append(host)
+
+            try:
+                parsed_ip = ip_address(host)
+                if isinstance(parsed_ip, IPv6Address) and parsed_ip.ipv4_mapped is not None:
+                    normalized_host = str(parsed_ip.ipv4_mapped)
+                else:
+                    normalized_host = str(parsed_ip)
+            except ValueError:
+                try:
+                    normalized_host = host.encode("idna").decode("ascii").lower()
+                except UnicodeError as error:
+                    raise ValueError(
+                        "RECAPTCHA_ALLOWED_HOSTNAMES contiene un host no válido"
+                    ) from error
+
+                labels = normalized_host.split(".")
+                if (
+                    len(normalized_host) > 253
+                    or not labels
+                    or any(
+                        not label
+                        or len(label) > 63
+                        or label.startswith("-")
+                        or label.endswith("-")
+                        or any(
+                            not (character.isalnum() or character == "-")
+                            for character in label
+                        )
+                        for label in labels
+                    )
+                ):
+                    raise ValueError(
+                        "RECAPTCHA_ALLOWED_HOSTNAMES contiene un host no válido"
+                    )
+
+            if normalized_host not in normalized_hosts:
+                normalized_hosts.append(normalized_host)
 
         if not normalized_hosts:
             raise ValueError("RECAPTCHA_ALLOWED_HOSTNAMES debe contener al menos un host")

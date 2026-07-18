@@ -3,9 +3,10 @@
 process.env.NODE_ENV = "production";
 
 const { startServer } = require("./server.cjs");
+const { frontendServerLogger } = require("./serverLogger.cjs");
 
-startServer().catch((error) => {
+startServer(frontendServerLogger).catch((error) => {
   // Solo se usa para errores críticos que impidan arrancar Next.js.
-  console.error("No se pudo iniciar Next.js:", error);
+  frontendServerLogger.error("No se pudo iniciar Next.js:", error);
   process.exitCode = 1;
 });

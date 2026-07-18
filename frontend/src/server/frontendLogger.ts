@@ -32,11 +32,12 @@ const LOG_PATH = path.join(LOG_DIRECTORY, LOG_FILENAME);
 let reportedWriteFailure = false;
 
 const parsePositiveInteger = (value: string | undefined, fallback: number): number => {
-  if (!value) {
+  const normalized = value?.trim();
+  if (!normalized || !/^\d+$/.test(normalized)) {
     return fallback;
   }
 
-  const parsed = Number.parseInt(value, 10);
+  const parsed = Number(normalized);
   return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : fallback;
 };
 
@@ -46,7 +47,7 @@ const configuredTarget = (): LogTarget => {
 };
 
 const configuredLevel = (): LogLevel => {
-  const candidate = process.env.FRONTEND_LOG_LEVEL?.toLowerCase();
+  const candidate = process.env.FRONTEND_LOG_LEVEL?.trim().toLowerCase();
   return candidate && candidate in LEVEL_PRIORITY ? (candidate as LogLevel) : "info";
 };
 
@@ -87,10 +88,6 @@ const rotateLogFile = (logPath: string, maxBytes: number, backupCount: number, i
 };
 
 const writeFileLog = (level: LogLevel, values: unknown[]): void => {
-  if (LEVEL_PRIORITY[level] < LEVEL_PRIORITY[configuredLevel()]) {
-    return;
-  }
-
   const line = `${new Date().toISOString()} | ${level.toUpperCase()} | ${values.map(formatValue).join(" ")}\n`;
   const maxBytes = parsePositiveInteger(process.env.FRONTEND_LOG_MAX_BYTES, DEFAULT_MAX_BYTES);
   const backupCount = parsePositiveInteger(
@@ -115,6 +112,10 @@ const writeFileLog = (level: LogLevel, values: unknown[]): void => {
 };
 
 const writeLog = (level: LogLevel, values: unknown[]): void => {
+  if (LEVEL_PRIORITY[level] < LEVEL_PRIORITY[configuredLevel()]) {
+    return;
+  }
+
   if (configuredTarget() === "consola") {
     const method = level === "warn" ? console.warn : level === "error" ? console.error : level === "debug" ? console.debug : console.info;
     method(...values);

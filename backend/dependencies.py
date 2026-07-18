@@ -25,6 +25,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from .core.auth_utils import verify_timed_token
 from .core.client_ip import (
     has_ambiguous_forwarding_headers,
+    has_invalid_forwarding_headers,
     normalize_host,
     resolve_client_host,
 )
@@ -107,6 +108,15 @@ async def verify_local_request(request: Request) -> None:
     # Plesk, Uvicorn y Starlette. En un endpoint exclusivamente local se rechaza la
     # ambigüedad en vez de escoger una representación potencialmente insegura.
     if has_ambiguous_forwarding_headers(request, logger):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Endpoint disponible únicamente desde el servidor local",
+        )
+
+    # Un proxy confiable con una cabecera presente pero malformada no demuestra que
+    # el cliente final sea loopback. Se rechaza antes de que el resolvedor ignore el
+    # valor inválido y termine devolviendo por descarte la IP local del propio proxy.
+    if has_invalid_forwarding_headers(request, logger):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Endpoint disponible únicamente desde el servidor local",

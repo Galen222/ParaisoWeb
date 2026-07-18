@@ -76,6 +76,21 @@ class ForwardingHeaderAmbiguityTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(raised.exception.status_code, 403)
 
+    async def test_sitemap_rechaza_direcciones_proxy_malformadas(self) -> None:
+        for header_name, header_value in (
+            (b"x-forwarded-for", b"203.0.113.10, no-es-una-ip"),
+            (b"x-forwarded-for", b"203.0.113.10,,127.0.0.1"),
+            (b"x-real-ip", b"localhost"),
+            (b"x-real-ip", b"   "),
+        ):
+            with self.subTest(header=header_name.decode("ascii"), value=header_value):
+                request = self._request([(header_name, header_value)])
+
+                with self.assertRaises(HTTPException) as raised:
+                    await verify_local_request(request)
+
+                self.assertEqual(raised.exception.status_code, 403)
+
 
 class ContactMessageSeparatorTests(unittest.TestCase):
     def test_rechaza_separadores_unicode_de_linea_y_parrafo(self) -> None:

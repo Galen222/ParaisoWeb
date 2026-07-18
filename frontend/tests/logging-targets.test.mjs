@@ -137,6 +137,96 @@ test("el servidor Next usa consola aunque NODE_ENV sea production cuando así se
   );
 });
 
+test("el destino consola respeta el nivel mínimo configurado", async () => {
+  await withEnvironment(
+    { FRONTEND_LOG_TARGET: "consola", FRONTEND_LOG_LEVEL: "error" },
+    async () => {
+      const calls = { debug: 0, info: 0, warn: 0, error: 0 };
+      const originals = {
+        debug: console.debug,
+        info: console.info,
+        warn: console.warn,
+        error: console.error,
+      };
+
+      console.debug = () => { calls.debug += 1; };
+      console.info = () => { calls.info += 1; };
+      console.warn = () => { calls.warn += 1; };
+      console.error = () => { calls.error += 1; };
+
+      try {
+        const { frontendLogger } = await loadTypeScriptModule("../src/server/frontendLogger.ts");
+        frontendLogger.debug("debug");
+        frontendLogger.info("info");
+        frontendLogger.warn("warn");
+        frontendLogger.error("error");
+      } finally {
+        Object.assign(console, originals);
+      }
+
+      assert.deepEqual(calls, { debug: 0, info: 0, warn: 0, error: 1 });
+    }
+  );
+});
+
+test("los límites de rotación rechazan valores parcialmente numéricos", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "paraisoweb-front-log-config-"));
+
+  try {
+    await withEnvironment(
+      {
+        FRONTEND_LOG_TARGET: "archivo",
+        FRONTEND_LOG_LEVEL: "info",
+        FRONTEND_LOG_DIR: path.join(directory, "logs"),
+        FRONTEND_LOG_MAX_BYTES: "180bytes",
+        FRONTEND_LOG_BACKUP_COUNT: "2copias",
+      },
+      async () => {
+        const { frontendLogger } = await loadTypeScriptModule("../src/server/frontendLogger.ts");
+        for (let index = 0; index < 8; index += 1) {
+          frontendLogger.info(`entrada-${index}-${"x".repeat(50)}`);
+        }
+      }
+    );
+
+    assert.deepEqual(await readdir(path.join(directory, "logs")), ["frontend.log"]);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
+test("el proceso que arranca Next también obedece el destino de log", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "paraisoweb-next-runtime-log-"));
+
+  try {
+    await withEnvironment(
+      {
+        FRONTEND_LOG_TARGET: "archivo",
+        FRONTEND_LOG_LEVEL: "info",
+        FRONTEND_LOG_DIR: path.join(directory, "logs"),
+      },
+      async () => {
+        const { frontendServerLogger } = require("../serverLogger.cjs");
+        frontendServerLogger.info("servidor preparado");
+        frontendServerLogger.error("fallo de arranque controlado");
+      }
+    );
+
+    const contents = await readFile(path.join(directory, "logs", "frontend.log"), "utf8");
+    assert.match(contents, /INFO \| servidor preparado/);
+    assert.match(contents, /ERROR \| fallo de arranque controlado/);
+
+    const [server, app] = await Promise.all([
+      readSource(new URL("../server.cjs", import.meta.url), "utf8"),
+      readSource(new URL("../app.js", import.meta.url), "utf8"),
+    ]);
+    assert.doesNotMatch(server, /console\.(?:log|error)\(/);
+    assert.doesNotMatch(app, /console\.(?:log|error)\(/);
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test("las rutas SSR usan el logger de servidor sin enviarlo al navegador", async () => {
   const [blogPage, sitemapPage, clientLogger, serverLogger] = await Promise.all([
     readSource(new URL("../src/pages/blog/[slug].tsx", import.meta.url), "utf8"),
