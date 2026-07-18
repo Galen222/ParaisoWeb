@@ -11,7 +11,7 @@ const buildContentSecurityPolicy = (nonce: string): string => {
 
   return `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${developmentScriptSources} https://maps.googleapis.com https://maps.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com;
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${developmentScriptSources} https://maps.googleapis.com https://maps.gstatic.com https://www.google.com https://www.gstatic.com https://www.googletagmanager.com https://www.google-analytics.com;
     script-src-attr 'none';
     style-src-elem 'self' 'nonce-${nonce}' https://fonts.googleapis.com https://maps.googleapis.com https://maps.gstatic.com;
     style-src-attr 'unsafe-inline';

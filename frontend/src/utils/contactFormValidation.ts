@@ -48,7 +48,8 @@ export const isContactFormComplete = (
   data: ContactFormCompletenessData,
   hasValidName: boolean,
   isValidEmail: boolean,
-  isPrivacyChecked: boolean
+  isPrivacyChecked: boolean,
+  isCaptchaVerified: boolean
 ): boolean =>
   hasValidName &&
   data.email.trim() !== "" &&
@@ -56,4 +57,5 @@ export const isContactFormComplete = (
   data.reason !== "" &&
   isValidEmail &&
   isPrivacyChecked &&
+  isCaptchaVerified &&
   ((data.reason !== "factura" && data.reason !== "curriculum") || data.file != null);

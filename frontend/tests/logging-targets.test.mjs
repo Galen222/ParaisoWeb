@@ -45,7 +45,7 @@ const withEnvironment = async (values, callback) => {
   }
 };
 
-test("el navegador oculta info en producción pero conserva advertencias y errores", async () => {
+test("el logger cliente conserva su filtrado de mensajes en producción", async () => {
   await withEnvironment({ NODE_ENV: "production" }, async () => {
     const calls = { debug: 0, info: 0, warn: 0, error: 0 };
     const originals = {
@@ -74,13 +74,14 @@ test("el navegador oculta info en producción pero conserva advertencias y error
   });
 });
 
-test("el servidor Next escribe y rota frontend.log en producción", async () => {
+test("el servidor Next escribe y rota frontend.log cuando el destino es archivo", async () => {
   const directory = await mkdtemp(path.join(tmpdir(), "paraisoweb-front-logs-"));
 
   try {
     await withEnvironment(
       {
-        NODE_ENV: "production",
+        NODE_ENV: "development",
+        FRONTEND_LOG_TARGET: "archivo",
         FRONTEND_LOG_LEVEL: "debug",
         FRONTEND_LOG_DIR: path.join(directory, "logs"),
         FRONTEND_LOG_MAX_BYTES: "180",
@@ -116,6 +117,24 @@ test("el servidor Next escribe y rota frontend.log en producción", async () => 
   } finally {
     await rm(directory, { recursive: true, force: true });
   }
+});
+
+test("el servidor Next usa consola aunque NODE_ENV sea production cuando así se configura", async () => {
+  await withEnvironment(
+    { NODE_ENV: "production", FRONTEND_LOG_TARGET: "consola" },
+    async () => {
+      let calls = 0;
+      const originalInfo = console.info;
+      console.info = () => { calls += 1; };
+      try {
+        const { frontendLogger } = await loadTypeScriptModule("../src/server/frontendLogger.ts");
+        frontendLogger.info("salida por consola");
+      } finally {
+        console.info = originalInfo;
+      }
+      assert.equal(calls, 1);
+    }
+  );
 });
 
 test("las rutas SSR usan el logger de servidor sin enviarlo al navegador", async () => {

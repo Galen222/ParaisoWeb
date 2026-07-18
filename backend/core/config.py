@@ -74,11 +74,15 @@ class Settings(BaseSettings):
         TRUSTED_PROXY_IPS (str): Proxies autorizados para aportar X-Forwarded-For.
         ENABLE_API_DOCS (bool): Habilita OpenAPI, Swagger UI y ReDoc de forma explícita.
         APP_ENV (str): Entorno activo: development o production.
+        BACKEND_LOG_TARGET (str): Destino del log: consola o archivo, independiente del entorno.
         BACKEND_LOG_LEVEL (str | None): Nivel opcional; usa DEBUG en desarrollo e INFO en producción.
-        BACKEND_LOG_DIR (str): Directorio donde producción escribe backend.log.
+        BACKEND_LOG_DIR (str): Directorio donde el destino archivo escribe backend.log.
         BACKEND_LOG_MAX_BYTES (int): Tamaño máximo antes de rotar backend.log.
         BACKEND_LOG_BACKUP_COUNT (int): Número de copias rotadas conservadas.
         BACKEND_LOG_HEALTHCHECKS (bool | None): Control explícito del log de health checks correctos.
+        RECAPTCHA_SECRET_KEY (str): Clave privada utilizada para verificar el CAPTCHA.
+        RECAPTCHA_ALLOWED_HOSTNAMES (str): Hosts válidos devueltos por reCAPTCHA.
+        RECAPTCHA_TIMEOUT_SECONDS (float): Tiempo máximo de verificación con Google.
     """
     SMTP_SERVER: str
     SMTP_PORT: int = Field(ge=1, le=65535)
@@ -116,16 +120,21 @@ class Settings(BaseSettings):
     TRUSTED_PROXY_IPS: str = "127.0.0.1,::1"
     ENABLE_API_DOCS: bool = False
     APP_ENV: Literal["development", "production"] = "development"
+    BACKEND_LOG_TARGET: Literal["consola", "archivo"] = "consola"
     BACKEND_LOG_LEVEL: Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"] | None = None
     BACKEND_LOG_DIR: str = "../../logs"
     BACKEND_LOG_MAX_BYTES: int = Field(default=10 * 1024 * 1024, gt=0)
     BACKEND_LOG_BACKUP_COUNT: int = Field(default=10, gt=0)
     BACKEND_LOG_HEALTHCHECKS: bool | None = None
+    RECAPTCHA_SECRET_KEY: str = ""
+    RECAPTCHA_ALLOWED_HOSTNAMES: str = "localhost,127.0.0.1,paraisodeljamon.com,www.paraisodeljamon.com"
+    RECAPTCHA_TIMEOUT_SECONDS: float = Field(default=5.0, gt=0)
 
     @field_validator(
         "DATABASE_STARTUP_TIMEOUT_SECONDS",
         "SMTP_TIMEOUT_SECONDS",
         "HEALTHCHECK_DATABASE_TIMEOUT_SECONDS",
+        "RECAPTCHA_TIMEOUT_SECONDS",
     )
     @classmethod
     def validate_finite_timeout(cls, value: float) -> float:
@@ -133,6 +142,24 @@ class Settings(BaseSettings):
         if not math.isfinite(value):
             raise ValueError("Los tiempos máximos deben ser números finitos")
         return value
+
+    @field_validator("RECAPTCHA_ALLOWED_HOSTNAMES")
+    @classmethod
+    def validate_recaptcha_allowed_hostnames(cls, value: str) -> str:
+        """Normaliza hosts de reCAPTCHA y rechaza URLs, rutas o entradas vacías."""
+        normalized_hosts: list[str] = []
+        for raw_host in value.split(","):
+            host = raw_host.strip().lower().rstrip(".")
+            if not host:
+                continue
+            if "://" in host or "/" in host or any(character.isspace() for character in host):
+                raise ValueError("RECAPTCHA_ALLOWED_HOSTNAMES solo admite nombres de host")
+            if host not in normalized_hosts:
+                normalized_hosts.append(host)
+
+        if not normalized_hosts:
+            raise ValueError("RECAPTCHA_ALLOWED_HOSTNAMES debe contener al menos un host")
+        return ",".join(normalized_hosts)
 
     @field_validator("SMTP_SERVER")
     @classmethod
@@ -373,6 +400,11 @@ class Settings(BaseSettings):
         if self.BACKEND_LOG_HEALTHCHECKS is not None:
             return self.BACKEND_LOG_HEALTHCHECKS
         return self.APP_ENV != "production"
+
+    @property
+    def recaptcha_allowed_hostnames(self) -> set[str]:
+        """Devuelve los hosts autorizados para la respuesta de reCAPTCHA."""
+        return {host for host in self.RECAPTCHA_ALLOWED_HOSTNAMES.split(",") if host}
 
     @property
     def cors_allowed_origins(self) -> list[str]:

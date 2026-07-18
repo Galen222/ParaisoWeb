@@ -2,6 +2,7 @@
 
 import { IntlShape } from "react-intl";
 import { disableGA } from "../utils/gaUtils";
+import { LOCALE_COOKIE_NAME } from "./localeCookie";
 
 /** Nombre de la cookie necesaria que conserva la elección de consentimiento. */
 export const COOKIE_CONSENT_NAME = "_cookie_consent";
@@ -62,7 +63,7 @@ export const revokeCookieCategories = ({
   }
 
   if (personalization) {
-    expireCookie("NEXT_LOCALE");
+    expireCookie(LOCALE_COOKIE_NAME);
   }
 
   if (analysis) {
@@ -124,12 +125,12 @@ export const clearCookieConsentPreference = (): void => {
 
 /** Guarda el idioma elegido durante un año. */
 export const saveLocalePreference = (locale: string): void => {
-  setClientCookie("NEXT_LOCALE", locale, 31536000);
+  setClientCookie(LOCALE_COOKIE_NAME, locale, 31536000);
 };
 
 /** Elimina el idioma guardado cuando una navegación no llega a completarse. */
 export const clearLocalePreference = (): void => {
-  expireCookie("NEXT_LOCALE");
+  expireCookie(LOCALE_COOKIE_NAME);
 };
 
 /**
@@ -205,7 +206,7 @@ export const deleteCookies = async (
       const [cookieName] = cookie.split("=");
 
       // Borra la cookie de personalización aunque el estado de React se haya quedado desincronizado.
-      if (cookieName === "NEXT_LOCALE") {
+      if (cookieName === LOCALE_COOKIE_NAME) {
         expireCookie(cookieName);
       }
 

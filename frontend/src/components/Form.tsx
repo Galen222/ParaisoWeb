@@ -21,6 +21,7 @@ import { containsUnsupportedContactMessageControl } from "../utils/contactMessag
 import { isValidContactEmail } from "../utils/contactEmailValidation";
 import { hasAllowedContactFileMetadata } from "../utils/contactFileValidation";
 import { clientLogger } from "../logging/clientLogger";
+import Captcha from "./Captcha";
 
 export interface FormProps {
   onSubmit: () => void;
@@ -74,12 +75,14 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     reason: "",
     email: "",
     message: "",
+    captchaToken: "",
     file: null,
   });
   const [isValidEmail, setIsValidEmail] = useState(false);
   const [hasInvalidNameInput, setHasInvalidNameInput] = useState(false);
   const [hasInvalidMessageInput, setHasInvalidMessageInput] = useState(false);
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
+  const [captchaResetSignal, setCaptchaResetSignal] = useState(0);
   const hasEmailValidationError = formData.email.trim() !== "" && !isValidEmail;
   const isFileRequired = formData.reason === "factura" || formData.reason === "curriculum";
 
@@ -226,7 +229,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
       formData,
       hasNameLetter(formData.name),
       isValidEmail,
-      isPrivacyChecked
+      isPrivacyChecked,
+      formData.captchaToken !== ""
     );
 
   /**
@@ -271,6 +275,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
         reason: "",
         email: "",
         message: "",
+        captchaToken: "",
         file: null,
       });
       setIsValidEmail(false);
@@ -287,6 +292,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
         showToast("contacto_Formulario_Error", 4000, "error");
       }
     } finally {
+      if (isMountedRef.current) {
+        setFormData((current) => ({ ...current, captchaToken: "" }));
+        setCaptchaResetSignal((current) => current + 1);
+      }
       if (activeSubmitControllerRef.current === controller) {
         activeSubmitControllerRef.current = null;
         isSubmittingRef.current = false;
@@ -452,15 +461,22 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
             )}
           </label>
           <span id="privacyCheckText" className={styles.checkText}>
-            <label htmlFor="privacyCheck" className={styles.privacyConsentLabel}>
+            <span className={styles.privacyConsentText}>
               {intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}
-            </label>
+            </span>
             <Link href="/politica-privacidad" className={styles.link}>
               <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
             </Link>
           </span>
         </div>
       </div>
+
+      <Captcha
+        resetSignal={captchaResetSignal}
+        onTokenChange={(token) => {
+          setFormData((current) => ({ ...current, captchaToken: token ?? "" }));
+        }}
+      />
 
       <button
         type="submit"

@@ -16,6 +16,7 @@ export interface FormData {
   reason: string; // Razón del contacto.
   email: string; // Dirección de correo electrónico del remitente.
   message: string; // Mensaje enviado en el formulario.
+  captchaToken: string; // Token de reCAPTCHA verificado por el backend.
   file?: File | null; // Archivo adjunto (opcional).
 }
 
@@ -74,6 +75,7 @@ export const submitForm = async (data: FormData, signal?: AbortSignal): Promise<
   formData.append("reason", data.reason);
   formData.append("email", data.email);
   formData.append("message", data.message);
+  formData.append("captcha_token", data.captchaToken);
   if (data.file) {
     formData.append("file", data.file);
   }

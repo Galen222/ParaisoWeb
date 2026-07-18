@@ -30,6 +30,7 @@ class TimeoutConfigurationTests(unittest.TestCase):
             "DATABASE_STARTUP_TIMEOUT_SECONDS",
             "SMTP_TIMEOUT_SECONDS",
             "HEALTHCHECK_DATABASE_TIMEOUT_SECONDS",
+            "RECAPTCHA_TIMEOUT_SECONDS",
         ):
             with self.subTest(field=field_name), self.assertRaises(ValidationError):
                 Settings(**self.common_settings(), **{field_name: float("inf")})
@@ -40,11 +41,13 @@ class TimeoutConfigurationTests(unittest.TestCase):
             DATABASE_STARTUP_TIMEOUT_SECONDS=3.5,
             SMTP_TIMEOUT_SECONDS=7.25,
             HEALTHCHECK_DATABASE_TIMEOUT_SECONDS=1.5,
+            RECAPTCHA_TIMEOUT_SECONDS=4.0,
         )
 
         self.assertEqual(configured.DATABASE_STARTUP_TIMEOUT_SECONDS, 3.5)
         self.assertEqual(configured.SMTP_TIMEOUT_SECONDS, 7.25)
         self.assertEqual(configured.HEALTHCHECK_DATABASE_TIMEOUT_SECONDS, 1.5)
+        self.assertEqual(configured.RECAPTCHA_TIMEOUT_SECONDS, 4.0)
 
 
 if __name__ == "__main__":

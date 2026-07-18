@@ -1,4 +1,4 @@
-"""Configuración centralizada de logs para desarrollo y producción."""
+"""Configuración centralizada del destino y formato de los logs."""
 
 from __future__ import annotations
 
@@ -11,7 +11,7 @@ from typing import Protocol
 class LoggingSettings(Protocol):
     """Atributos de configuración necesarios para inicializar logging."""
 
-    APP_ENV: str
+    BACKEND_LOG_TARGET: str
     BACKEND_LOG_DIR: str
     BACKEND_LOG_MAX_BYTES: int
     BACKEND_LOG_BACKUP_COUNT: int
@@ -20,7 +20,7 @@ class LoggingSettings(Protocol):
     def backend_log_level(self) -> str: ...
 
 
-class DevelopmentFormatter(logging.Formatter):
+class ConsoleFormatter(logging.Formatter):
     """Añade color por nivel únicamente a la salida interactiva de desarrollo."""
 
     COLORS = {
@@ -47,11 +47,11 @@ def _resolve_log_directory(configured_directory: str) -> Path:
 
 
 def configure_logging(settings: LoggingSettings) -> None:
-    """Configura consola en desarrollo y ``backend.log`` rotado en producción."""
-    is_production = settings.APP_ENV == "production"
+    """Configura consola o ``backend.log`` según ``BACKEND_LOG_TARGET``."""
+    writes_to_file = settings.BACKEND_LOG_TARGET == "archivo"
     handlers: dict[str, dict[str, object]]
 
-    if is_production:
+    if writes_to_file:
         log_directory = _resolve_log_directory(settings.BACKEND_LOG_DIR)
         log_directory.mkdir(parents=True, exist_ok=True)
         handlers = {
@@ -69,7 +69,7 @@ def configure_logging(settings: LoggingSettings) -> None:
         handlers = {
             "application": {
                 "class": "logging.StreamHandler",
-                "formatter": "development",
+                "formatter": "console",
                 "stream": "ext://sys.stdout",
             }
         }
@@ -79,8 +79,8 @@ def configure_logging(settings: LoggingSettings) -> None:
             "version": 1,
             "disable_existing_loggers": False,
             "formatters": {
-                "development": {
-                    "()": DevelopmentFormatter,
+                "console": {
+                    "()": ConsoleFormatter,
                     "format": "%(asctime)s | %(levelname)s | %(name)s | %(message)s",
                     "datefmt": "%Y-%m-%d %H:%M:%S",
                 },

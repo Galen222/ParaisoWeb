@@ -2,6 +2,7 @@
 
 import type { GetServerSidePropsContext } from "next";
 import { isSameRequestHost } from "./requestHost";
+import { LOCALE_COOKIE_NAME } from "./localeCookie";
 
 const DEFAULT_LOCALE = "es";
 const SUPPORTED_LOCALES = new Set(["es", "en", "de", "fr"]);
@@ -47,7 +48,7 @@ const buildLocalizedDestination = (locale: string, basePath: string): string => 
 
 export function redirectByCookie(context: GetServerSidePropsContext, basePath: string) {
   const { req, locale } = context;
-  const localeCookie = req.cookies.NEXT_LOCALE;
+  const localeCookie = req.cookies[LOCALE_COOKIE_NAME];
 
   // Verifica si el `referer` procede de la misma página en otro idioma.
   const referer = req.headers.referer || "";

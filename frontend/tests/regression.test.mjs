@@ -71,12 +71,13 @@ test("el formulario no se considera completo sin privacidad o adjunto obligatori
     file: null,
   };
 
-  assert.equal(isContactFormComplete(base, true, true, false), false);
+  assert.equal(isContactFormComplete(base, true, true, false, true), false);
+  assert.equal(isContactFormComplete(base, true, true, true, false), false);
   assert.equal(
-    isContactFormComplete({ ...base, reason: "factura" }, true, true, true),
+    isContactFormComplete({ ...base, reason: "factura" }, true, true, true, true),
     false
   );
-  assert.equal(isContactFormComplete(base, true, true, true), true);
+  assert.equal(isContactFormComplete(base, true, true, true, true), true);
 });
 
 test("el consentimiento vuelve a solicitarse solo al salir de las políticas sin decisión", async () => {
@@ -546,7 +547,7 @@ test("el cambio rápido de idioma restaura la preferencia estable anterior", asy
   assert.match(localeChangeHook, /stableLocalePreferenceRef/);
   assert.match(
     localeChangeHook,
-    /if \(activeRequestControllerRef\.current === null\)[\s\S]*?getCookieValue\("NEXT_LOCALE"\)/
+    /if \(activeRequestControllerRef\.current === null\)[\s\S]*?getCookieValue\(LOCALE_COOKIE_NAME\)/
   );
   assert.match(
     localeChangeHook,
@@ -554,7 +555,7 @@ test("el cambio rápido de idioma restaura la preferencia estable anterior", asy
   );
   assert.doesNotMatch(
     localeChangeHook,
-    /const previousLocalePreference = getCookieValue\("NEXT_LOCALE"\)/
+    /const previousLocalePreference = getCookieValue\(LOCALE_COOKIE_NAME\)/
   );
 });
 

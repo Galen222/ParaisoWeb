@@ -37,18 +37,16 @@ test("el input oculto no hereda el ancho ni el padding de los campos visibles", 
   assert.doesNotMatch(styles, /\.hiddenCheckbox \{[\s\S]*?width: 0;/);
 });
 
-test("el texto del consentimiento activa la casilla sin envolver el enlace legal", async () => {
+test("solo el cuadrado del consentimiento activa la casilla", async () => {
   const form = await readSource("../src/components/Form.tsx");
 
   assert.match(
     form,
-    /<label htmlFor="privacyCheck" className=\{styles\.privacyConsentLabel\}>[\s\S]*?contacto_PoliticaPrivacidad_1[\s\S]*?<\/label>/
+    /<label className=\{styles\.checkboxControl\} htmlFor="privacyCheck">[\s\S]*?<input[\s\S]*?id="privacyCheck"/
   );
+  assert.match(form, /<span className=\{styles\.privacyConsentText\}>[\s\S]*?contacto_PoliticaPrivacidad_1[\s\S]*?<\/span>/);
   assert.match(form, /<Link href="\/politica-privacidad" className=\{styles\.link\}>/);
-  const labelStart = form.indexOf('<label htmlFor="privacyCheck" className={styles.privacyConsentLabel}>');
-  const labelEnd = form.indexOf("</label>", labelStart);
-  const policyLinkStart = form.indexOf('<Link href="/politica-privacidad"', labelStart);
-  assert.ok(labelStart >= 0 && labelEnd > labelStart && policyLinkStart > labelEnd);
+  assert.doesNotMatch(form, /<label htmlFor="privacyCheck" className=\{styles\.privacyConsent/);
   assert.match(form, /aria-required="true"[\s\S]*?aria-labelledby="privacyCheckText"/);
   assert.doesNotMatch(form, /className=\{styles\.hiddenCheckbox\}\s+required/);
 });

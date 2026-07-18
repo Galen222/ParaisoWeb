@@ -182,13 +182,41 @@
   line-height: 1.4; /* Mantiene un eje vertical estable también cuando el texto ocupa dos líneas */
 }
 
-/* La parte textual vuelve a activar la casilla sin envolver el enlace legal. */
-.form .privacyConsentLabel {
+/* El texto describe el consentimiento, pero solo el cuadrado puede cambiar la casilla. */
+.privacyConsentText {
   display: inline;
-  margin: 0;
+}
+
+/* Mantiene el CAPTCHA debajo del consentimiento y evita desbordes en pantallas estrechas. */
+.captchaContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 78px;
+  margin-top: 15px;
+  overflow: hidden;
+}
+
+.captchaWidget {
+  width: 304px;
+  min-height: 78px;
+}
+
+.captchaError {
+  margin-top: 8px;
+  color: #b00020;
   font-weight: bold;
-  text-align: inherit;
-  cursor: pointer;
+  text-align: center;
+}
+
+/* Evita que el widget de 304 píxeles se corte en móviles muy estrechos. */
+@media (max-width: 360px) {
+  .captchaWidget {
+    transform: scale(0.85);
+    transform-origin: top center;
+    margin-bottom: -12px;
+  }
 }
 
 /* Estilos responsivos para dispositivos tipo tablet */

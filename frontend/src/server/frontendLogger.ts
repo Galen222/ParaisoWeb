@@ -12,6 +12,7 @@ import { inspect } from "node:util";
 import type { AppLogger } from "../logging/appLogger";
 
 type LogLevel = "debug" | "info" | "warn" | "error";
+type LogTarget = "consola" | "archivo";
 
 const LEVEL_PRIORITY: Record<LogLevel, number> = {
   debug: 10,
@@ -37,6 +38,11 @@ const parsePositiveInteger = (value: string | undefined, fallback: number): numb
 
   const parsed = Number.parseInt(value, 10);
   return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : fallback;
+};
+
+const configuredTarget = (): LogTarget => {
+  const candidate = process.env.FRONTEND_LOG_TARGET?.trim().toLowerCase();
+  return candidate === "archivo" ? "archivo" : "consola";
 };
 
 const configuredLevel = (): LogLevel => {
@@ -80,7 +86,7 @@ const rotateLogFile = (logPath: string, maxBytes: number, backupCount: number, i
   renameSync(/* turbopackIgnore: true */ logPath, `${logPath}.1`);
 };
 
-const writeProductionLog = (level: LogLevel, values: unknown[]): void => {
+const writeFileLog = (level: LogLevel, values: unknown[]): void => {
   if (LEVEL_PRIORITY[level] < LEVEL_PRIORITY[configuredLevel()]) {
     return;
   }
@@ -109,13 +115,13 @@ const writeProductionLog = (level: LogLevel, values: unknown[]): void => {
 };
 
 const writeLog = (level: LogLevel, values: unknown[]): void => {
-  if (process.env.NODE_ENV !== "production") {
+  if (configuredTarget() === "consola") {
     const method = level === "warn" ? console.warn : level === "error" ? console.error : level === "debug" ? console.debug : console.info;
     method(...values);
     return;
   }
 
-  writeProductionLog(level, values);
+  writeFileLog(level, values);
 };
 
 /** Logger exclusivo del proceso servidor de Next.js. No debe importarse desde componentes cliente. */

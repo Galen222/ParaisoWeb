@@ -16,9 +16,12 @@ Dependencias:
 
 import logging
 
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends
+from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, Request
 from ..dependencies import verify_token
 from ..services.contacto_service import ContactoService
+from ..services.captcha_service import CaptchaService
+from ..core.client_ip import resolve_client_host
+from ..core.config import settings
 
 # Inicializa el router para el formulario de contacto
 router = APIRouter()
@@ -26,11 +29,13 @@ logger = logging.getLogger(__name__)
 
 @router.post("/contacto")
 async def contacto(
+    request: Request,
     token_verification: None = Depends(verify_token),  # Verifica el token temporal
     name: str = Form(...),
     reason: str = Form(...),
     email: str = Form(...),
     message: str = Form(...),
+    captcha_token: str = Form(...),
     file: UploadFile = File(None)
 ):
     """
@@ -40,24 +45,29 @@ async def contacto(
     nombre, la razón del contacto, el mensaje y un archivo adjunto opcional.
 
     Args:
+        request (Request): Solicitud utilizada para resolver la IP real de forma segura.
         token_verification (None): Verificación del token proporcionado.
         name (str): Nombre del remitente.
         reason (str): Razón del contacto (por ejemplo, "Información", "Error").
         email (str): Correo electrónico que será validado por el esquema del formulario.
         message (str): Mensaje enviado por el remitente.
+        captcha_token (str): Token reCAPTCHA que debe verificarse una sola vez.
         file (UploadFile, optional): Archivo adjunto enviado con el formulario.
 
     Raises:
         HTTPException:
             - 401: Si no se proporciona token.
+            - 400: Si la verificación CAPTCHA no es válida.
             - 403: Si el token proporcionado es inválido.
-            - 503: Si el servicio de correo no está disponible temporalmente.
+            - 503: Si CAPTCHA o correo no están disponibles temporalmente.
             - 500: Si ocurre un error interno durante el procesamiento del formulario.
 
     Returns:
         dict: Mensaje de confirmación indicando que el formulario fue enviado correctamente.
     """
     try:
+        client_ip = resolve_client_host(request, settings.trusted_proxy_ips, logger)
+        await CaptchaService().verify(captcha_token, client_ip)
         contacto_service = ContactoService()
         await contacto_service.process_contact_form(
             name=name,

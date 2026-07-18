@@ -10,6 +10,7 @@ import {
   getCookieValue,
   saveLocalePreference,
 } from "../utils/cookieUtils";
+import { LOCALE_COOKIE_NAME } from "../utils/localeCookie";
 import { normalizeBlogSlug } from "../utils/blogSlug";
 import { buildBlogPath } from "../utils/blogPath";
 import { clientLogger } from "../logging/clientLogger";
@@ -116,7 +117,7 @@ export function useLocaleChange(): LocaleChangeHandler {
       // Una segunda pulsación rápida no debe tomar como referencia la cookie provisional
       // escrita por la primera navegación todavía pendiente.
       if (activeRequestControllerRef.current === null) {
-        const savedLocalePreference = getCookieValue("NEXT_LOCALE");
+        const savedLocalePreference = getCookieValue(LOCALE_COOKIE_NAME);
         stableLocalePreferenceRef.current =
           savedLocalePreference && SUPPORTED_LOCALES.has(savedLocalePreference)
             ? savedLocalePreference

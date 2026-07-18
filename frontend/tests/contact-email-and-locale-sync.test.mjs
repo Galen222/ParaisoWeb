@@ -120,7 +120,7 @@ test("la configuración no crea redirecciones propias sobre las rutas españolas
   assert.match(source, /defaultLocale: "es"/);
 });
 
-test("la preferencia de idioma usa la cookie oficial que entiende Next", async () => {
+test("la preferencia de idioma usa el nombre público _locale", async () => {
   const files = await Promise.all([
     readFile(new URL("../src/utils/cookieUtils.ts", import.meta.url), "utf8"),
     readFile(new URL("../src/utils/redirectByCookie.ts", import.meta.url), "utf8"),
@@ -129,8 +129,8 @@ test("la preferencia de idioma usa la cookie oficial que entiende Next", async (
   ]);
   const combinedSource = files.join("\n");
 
-  assert.match(combinedSource, /NEXT_LOCALE/);
-  assert.doesNotMatch(combinedSource, /["']_locale["']/);
+  assert.match(combinedSource, /LOCALE_COOKIE_NAME/);
+  assert.doesNotMatch(combinedSource, /NEXT_LOCALE/);
 });
 
 test("el formulario no renderiza una clase CSS inexistente en los campos de contacto", async () => {
