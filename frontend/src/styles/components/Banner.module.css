@@ -77,6 +77,12 @@
   text-shadow: 1px 1px 2px var(--text_color), -1px -1px 2px var(--text_color), 1px -1px 2px var(--text_color), -1px 1px 2px var(--text_color); /* Sombra del texto para mejor legibilidad */
 }
 
+/* Los textos promocionales no son títulos de sección, pero conservan el aspecto anterior. */
+.text,
+.highlightText {
+  margin: 0;
+}
+
 /* Sección de botones dentro de los contenedores */
 .buttonsSection {
   flex: 1; /* Ocupa igual proporción del espacio disponible */

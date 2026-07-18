@@ -77,6 +77,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     file: null,
   });
   const [isValidEmail, setIsValidEmail] = useState(false);
+  const [hasInvalidNameInput, setHasInvalidNameInput] = useState(false);
+  const [hasInvalidMessageInput, setHasInvalidMessageInput] = useState(false);
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
   const hasEmailValidationError = formData.email.trim() !== "" && !isValidEmail;
   const isFileRequired = formData.reason === "factura" || formData.reason === "curriculum";
@@ -126,6 +128,9 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
   const hasNameLetter = (value: string): boolean =>
     Array.from(value).some((character) => !/^[ '’ʼ-]$/u.test(character) && /\p{L}/u.test(character));
 
+  const hasNameValidationError =
+    hasInvalidNameInput || (formData.name !== "" && !hasNameLetter(formData.name));
+
   /**
    * Valida y sanitiza el nombre permitiendo solo caracteres válidos
    */
@@ -135,7 +140,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     // El backend elimina el espacio exterior antes de validar los caracteres del nombre.
     // Validar el mismo núcleo permite pegar nombres con espacios accidentales sin perder letras.
     if (isValidNameInput(normalizedValue.trim())) {
+      setHasInvalidNameInput(false);
       setFormData((current) => ({ ...current, [name]: normalizedValue }));
+    } else {
+      setHasInvalidNameInput(true);
     }
   };
 
@@ -163,7 +171,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     const { name, value } = e.target;
     const limitedValue = truncateContactMessage(value);
     if (!containsUnsupportedContactMessageControl(limitedValue)) {
+      setHasInvalidMessageInput(false);
       setFormData((current) => ({ ...current, [name]: limitedValue }));
+    } else {
+      setHasInvalidMessageInput(true);
     }
   };
 
@@ -209,6 +220,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
    * Verifica si el formulario está completo y válido.
    */
   const isFormComplete = (): boolean =>
+    !hasNameValidationError &&
+    !hasInvalidMessageInput &&
     isContactFormComplete(
       formData,
       hasNameLetter(formData.name),
@@ -261,6 +274,8 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
         file: null,
       });
       setIsValidEmail(false);
+      setHasInvalidNameInput(false);
+      setHasInvalidMessageInput(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
@@ -301,7 +316,14 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
           onChange={handleValidateName}
           required
           className={styles.nameInput}
+          aria-invalid={hasNameValidationError}
+          aria-describedby={hasNameValidationError ? "nameValidationError" : undefined}
         />
+        {hasNameValidationError && (
+          <span id="nameValidationError" className="visually-hidden" role="alert">
+            {intl.formatMessage({ id: "contacto_NombreInvalido" })}
+          </span>
+        )}
       </div>
 
       <div>
@@ -344,7 +366,20 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
 
       <div>
         <label htmlFor="message">{intl.formatMessage({ id: "contacto_Mensaje" })}</label>
-        <textarea id="message" name="message" value={formData.message} onChange={handleValidateMessage} required></textarea>
+        <textarea
+          id="message"
+          name="message"
+          value={formData.message}
+          onChange={handleValidateMessage}
+          required
+          aria-invalid={hasInvalidMessageInput}
+          aria-describedby={hasInvalidMessageInput ? "messageValidationError" : undefined}
+        ></textarea>
+        {hasInvalidMessageInput && (
+          <span id="messageValidationError" className="visually-hidden" role="alert">
+            {intl.formatMessage({ id: "contacto_MensajeCaracteresInvalidos" })}
+          </span>
+        )}
       </div>
 
       <div id="fileUploadDescription" className={styles.archiveText}>

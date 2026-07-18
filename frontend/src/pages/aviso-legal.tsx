@@ -83,7 +83,6 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
         <h1 className="text-center">{intl.formatMessage({ id: "avisoLegal_Principal_Titulo" })}</h1>
       </div>
       <div className="mt-25p">
-        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "avisoLegal_Principal_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Principal_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Principal_Texto2" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "avisoLegal_Principal_Texto3" })}</p>

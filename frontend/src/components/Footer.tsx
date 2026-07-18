@@ -65,18 +65,40 @@ const Footer: React.FC = (): React.JSX.Element => {
     closeMobileMenu();
   };
 
+  /** Identifica el enlace legal que corresponde a la página actual. */
+  const getCurrentPageAria = (href: string): "page" | undefined =>
+    router.pathname === href ? "page" : undefined;
+
   // Estructura JSX que contiene los enlaces de navegación a páginas de avisos legales y políticas
   const links = (
     <span className={styles.linksContainer}>
-      <Link href="/aviso-legal" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
+      <Link
+        href="/aviso-legal"
+        locale={router.locale}
+        className={styles.link}
+        onClick={handleLinkClick}
+        aria-current={getCurrentPageAria("/aviso-legal")}
+      >
         {intl.formatMessage({ id: "Footer_AvisoLegal" })}
       </Link>
       <span className={styles.separator}> | </span>
-      <Link href="/politica-privacidad" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
+      <Link
+        href="/politica-privacidad"
+        locale={router.locale}
+        className={styles.link}
+        onClick={handleLinkClick}
+        aria-current={getCurrentPageAria("/politica-privacidad")}
+      >
         {intl.formatMessage({ id: "Footer_PoliticaPrivacidad" })}
       </Link>
       <span className={styles.separator}> | </span>
-      <Link href="/politica-cookies" locale={router.locale} className={styles.link} onClick={handleLinkClick}>
+      <Link
+        href="/politica-cookies"
+        locale={router.locale}
+        className={styles.link}
+        onClick={handleLinkClick}
+        aria-current={getCurrentPageAria("/politica-cookies")}
+      >
         {intl.formatMessage({ id: "Footer_PoliticaCookies" })}
       </Link>
     </span>

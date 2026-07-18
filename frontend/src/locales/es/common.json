@@ -640,7 +640,9 @@
   "paginador_PaginaActual": "Página {page}, página actual",
   "paginador_PaginaSiguiente": "Ir a la página siguiente",
   "paginador_UltimaPagina": "Ir a la última página",
+  "contacto_NombreInvalido": "Introduce un nombre que contenga al menos una letra y no incluya caracteres no permitidos.",
   "contacto_EmailInvalido": "Introduce una dirección de correo electrónico válida.",
+  "contacto_MensajeCaracteresInvalidos": "El mensaje contiene caracteres de control no permitidos.",
   "contacto_ArchivoObligatorio": "Es obligatorio adjuntar un archivo para el motivo seleccionado.",
   "blog_SinArticulos": "Actualmente no hay artículos disponibles.",
   "charcuteria_SinProductos": "Actualmente no hay productos disponibles."

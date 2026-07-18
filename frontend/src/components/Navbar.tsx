@@ -82,6 +82,10 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
   const { isSticky } = useStickyNav(navbarMenuRef, !isMobile);
   const previousIsMobileRef = useRef(isMobile);
 
+  /** Marca únicamente el enlace que representa la página actual. */
+  const getCurrentPageAria = (href: string): "page" | undefined =>
+    router.pathname === href ? "page" : undefined;
+
   const handleLinkClick = () => {
     closeMobileMenu();
     closeRestaurantsMenu();
@@ -195,39 +199,39 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
           aria-label={intl.formatMessage({ id: "navbar_menu" })}
         >
           <div className={styles.links}>
-            <Link href="/" locale={router.locale} onClick={handleLinkClick}>
+            <Link href="/" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/")}>
               {intl.formatMessage({ id: "navbar_inicio" })}
             </Link>
             <div className={`${styles.dropdown} ${styles.show}`}>
-              <Link href="/san-bernardo" locale={router.locale} onClick={handleLinkClick}>
+              <Link href="/san-bernardo" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/san-bernardo")}>
                 San Bernardo
               </Link>
-              <Link href="/bravo-murillo" locale={router.locale} onClick={handleLinkClick}>
+              <Link href="/bravo-murillo" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/bravo-murillo")}>
                 Bravo Murillo
               </Link>
-              <Link href="/reina-victoria" locale={router.locale} onClick={handleLinkClick}>
+              <Link href="/reina-victoria" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/reina-victoria")}>
                 Reina Victoria
               </Link>
-              <Link href="/arenal" locale={router.locale} onClick={handleLinkClick}>
+              <Link href="/arenal" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/arenal")}>
                 Arenal
               </Link>
             </div>
-            <Link href="/reservas" locale={router.locale} onClick={handleLinkClick}>
+            <Link href="/reservas" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/reservas")}>
               {intl.formatMessage({ id: "navbar_reservas" })}
             </Link>
-            <Link href="/gastronomia" locale={router.locale} onClick={handleLinkClick}>
+            <Link href="/gastronomia" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/gastronomia")}>
               {intl.formatMessage({ id: "navbar_gastronomia" })}
             </Link>
-            <Link href="/charcuteria" locale={router.locale} onClick={handleLinkClick}>
+            <Link href="/charcuteria" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/charcuteria")}>
               {intl.formatMessage({ id: "navbar_charcuteria" })}
             </Link>
-            <Link href="/nosotros" locale={router.locale} onClick={handleLinkClick}>
+            <Link href="/nosotros" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/nosotros")}>
               {intl.formatMessage({ id: "navbar_nosotros" })}
             </Link>
-            <Link href="/blog" locale={router.locale} onClick={handleLinkClick}>
+            <Link href="/blog" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/blog")}>
               {intl.formatMessage({ id: "navbar_blog" })}
             </Link>
-            <Link href="/contacto" locale={router.locale} onClick={handleLinkClick}>
+            <Link href="/contacto" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/contacto")}>
               {intl.formatMessage({ id: "navbar_contacto" })}
             </Link>
           </div>
@@ -247,7 +251,7 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
         aria-label={intl.formatMessage({ id: "navbar_menu" })}
       >
         <div className={styles.links}>
-          <Link href="/" locale={router.locale} onClick={handleLinkClick}>
+          <Link href="/" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/")}>
             {intl.formatMessage({ id: "navbar_inicio" })}
           </Link>
           <div
@@ -273,36 +277,36 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
               hidden={!restaurantsMenu}
               aria-hidden={!restaurantsMenu}
             >
-              <Link href="/san-bernardo" locale={router.locale} onClick={handleLinkClick}>
+              <Link href="/san-bernardo" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/san-bernardo")}>
                 San Bernardo
               </Link>
-              <Link href="/bravo-murillo" locale={router.locale} onClick={handleLinkClick}>
+              <Link href="/bravo-murillo" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/bravo-murillo")}>
                 Bravo Murillo
               </Link>
-              <Link href="/reina-victoria" locale={router.locale} onClick={handleLinkClick}>
+              <Link href="/reina-victoria" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/reina-victoria")}>
                 Reina Victoria
               </Link>
-              <Link href="/arenal" locale={router.locale} onClick={handleLinkClick}>
+              <Link href="/arenal" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/arenal")}>
                 Arenal
               </Link>
             </div>
           </div>
-          <Link href="/reservas" locale={router.locale} onClick={handleLinkClick}>
+          <Link href="/reservas" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/reservas")}>
             {intl.formatMessage({ id: "navbar_reservas" })}
           </Link>
-          <Link href="/gastronomia" locale={router.locale} onClick={handleLinkClick}>
+          <Link href="/gastronomia" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/gastronomia")}>
             {intl.formatMessage({ id: "navbar_gastronomia" })}
           </Link>
-          <Link href="/charcuteria" locale={router.locale} onClick={handleLinkClick}>
+          <Link href="/charcuteria" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/charcuteria")}>
             {intl.formatMessage({ id: "navbar_charcuteria" })}
           </Link>
-          <Link href="/nosotros" locale={router.locale} onClick={handleLinkClick}>
+          <Link href="/nosotros" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/nosotros")}>
             {intl.formatMessage({ id: "navbar_nosotros" })}
           </Link>
-          <Link href="/blog" locale={router.locale} onClick={handleLinkClick}>
+          <Link href="/blog" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/blog")}>
             {intl.formatMessage({ id: "navbar_blog" })}
           </Link>
-          <Link href="/contacto" locale={router.locale} onClick={handleLinkClick}>
+          <Link href="/contacto" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/contacto")}>
             {intl.formatMessage({ id: "navbar_contacto" })}
           </Link>
         </div>

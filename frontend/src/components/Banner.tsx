@@ -49,10 +49,10 @@ const Banner: React.FC<BannerProps> = ({ bannerType }: BannerProps): React.JSX.E
   return (
     <div className={containerClasses}>
       <div className={frameContentClasses}>
-        {/* Sección de texto que incluye el título y el texto destacado */}
+        {/* Sección de texto que incluye el mensaje principal y el texto destacado */}
         <div className={styles.textSection}>
-          <h2 className={styles.text}>{content.text}</h2>
-          <h3 className={styles.highlightText}>{content.highlightText}</h3>
+          <p className={styles.text}>{content.text}</p>
+          <p className={styles.highlightText}>{content.highlightText}</p>
         </div>
         {/* Sección de botones que enlaza a las páginas relacionadas */}
         <div className={buttonsClasses}>

@@ -640,7 +640,9 @@
   "paginador_PaginaActual": "Page {page}, current page",
   "paginador_PaginaSiguiente": "Go to the next page",
   "paginador_UltimaPagina": "Go to the last page",
+  "contacto_NombreInvalido": "Enter a name containing at least one letter and no unsupported characters.",
   "contacto_EmailInvalido": "Enter a valid email address.",
+  "contacto_MensajeCaracteresInvalidos": "The message contains unsupported control characters.",
   "contacto_ArchivoObligatorio": "A file must be attached for the selected reason.",
   "blog_SinArticulos": "There are currently no articles available.",
   "charcuteria_SinProductos": "There are currently no products available."

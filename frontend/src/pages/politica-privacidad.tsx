@@ -88,7 +88,6 @@ const PoliticaPrivacidadPage: NextPage & { pageTitleText?: string } = (): React.
       </div>
       {/* Sección principal de la política de privacidad */}
       <div className="mt-25p">
-        <h3 aria-level={2} className="mb-10p">{intl.formatMessage({ id: "politicaPrivacidad_Principal_Titulo" })}</h3>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Principal_Texto1" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Principal_Texto2" })}</p>
         <p className="ti-20p">{intl.formatMessage({ id: "politicaPrivacidad_Principal_Texto3" })}</p>
