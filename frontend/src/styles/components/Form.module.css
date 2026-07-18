@@ -126,28 +126,48 @@
 }
 
 /* Checkbox oculto para accesibilidad */
-.hiddenCheckbox {
+.form .hiddenCheckbox {
   position: absolute; /* Posicionamiento absoluto para ocultar el checkbox */
   opacity: 0; /* Hace el checkbox completamente transparente */
-  width: 0; /* Ancho de 0 para ocultarlo */
-  height: 0; /* Altura de 0 para ocultarlo */
-  margin: 0; /* Elimina márgenes */
+  width: 1px; /* Conserva un área mínima para que siga siendo enfocable */
+  height: 1px; /* Conserva un área mínima para que siga siendo enfocable */
+  margin: -1px; /* Retira el píxel del flujo visual */
   padding: 0; /* Elimina padding */
-  border: none; /* Elimina el borde */
+  overflow: hidden; /* Oculta el área mínima del control */
+  clip: rect(0 0 0 0); /* Compatibilidad con navegadores anteriores */
+  clip-path: inset(50%); /* Oculta visualmente sin retirarlo del árbol accesible */
+  white-space: nowrap; /* Evita que el control oculto genere una caja mayor */
+  border: 0; /* Elimina el borde */
 }
 
 /* Control visual para el checkbox personalizado */
-.checkboxControl {
-  width: 18px; /* Ancho de 18 píxeles */
-  height: 18px; /* Altura de 18 píxeles */
+.form .checkboxControl {
+  width: 22px; /* Mantiene los 18 píxeles interiores más el borde original */
+  height: 22px; /* Mantiene los 18 píxeles interiores más el borde original */
+  flex: 0 0 22px; /* Evita que el texto comprima o estire el cuadrado */
   margin-right: 5px; /* Márgen derecho de 5 píxeles */
+  margin-top: 0; /* Evita los márgenes generales aplicados a las etiquetas */
+  margin-bottom: 0; /* Evita los márgenes generales aplicados a las etiquetas */
+  padding: 0; /* Evita el padding general aplicado a los controles del formulario */
   background-color: white; /* Color de fondo blanco */
   border: 2px solid black; /* Borde negro de 2 píxeles */
-  display: flex; /* Utiliza flexbox para centrar el contenido */
+  box-sizing: border-box; /* Incluye el borde dentro de los 22 píxeles */
+  display: inline-flex; /* Utiliza flexbox para centrar el contenido */
   justify-content: center; /* Centra el contenido horizontalmente */
   align-items: center; /* Centra el contenido verticalmente */
+  align-self: center; /* Centra el cuadrado respecto al bloque de texto */
+  line-height: 0; /* Evita que la línea base desplace verticalmente el SVG */
   cursor: pointer; /* Cambia el cursor al pasar sobre el control */
   position: relative; /* Posicionamiento relativo para elementos internos */
+  font-weight: normal; /* Evita heredar la negrita general de las etiquetas */
+  text-align: center; /* Evita heredar la alineación general de las etiquetas */
+}
+
+.checkboxControl svg {
+  display: block; /* Elimina el espacio de línea base de los SVG inline */
+  flex: 0 0 16px; /* Mantiene la V centrada y sin deformaciones */
+  width: 16px;
+  height: 16px;
 }
 
 .checkboxControl:focus-within {
@@ -159,7 +179,16 @@
 .checkText {
   font-weight: bold; /* Fuente en negrita */
   margin: 0; /* Elimina márgenes */
-  transform: translateY(-2px); /* Ajusta la posición vertical del texto */
+  line-height: 1.4; /* Mantiene un eje vertical estable también cuando el texto ocupa dos líneas */
+}
+
+/* La parte textual vuelve a activar la casilla sin envolver el enlace legal. */
+.form .privacyConsentLabel {
+  display: inline;
+  margin: 0;
+  font-weight: bold;
+  text-align: inherit;
+  cursor: pointer;
 }
 
 /* Estilos responsivos para dispositivos tipo tablet */
@@ -199,8 +228,5 @@
 
 /* Ajustes adicionales para dispositivos móviles */
 @media (max-width: 768px) {
-  /* Ajusta la posición vertical del texto de la casilla en móvil */
-  .checkText {
-    transform: translateY(-3px); /* Ajusta la posición vertical del texto */
-  }
+  /* Flexbox mantiene centrados el control y el texto también cuando este se parte en móvil. */
 }

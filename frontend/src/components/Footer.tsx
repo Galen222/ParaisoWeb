@@ -18,15 +18,15 @@ const subscribeToCurrentYear = (onStoreChange: () => void): (() => void) => {
 
   const scheduleNextMidnight = (): void => {
     const now = new Date();
-    const nextMidnight = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + 1
+    const nextMidnight = Date.UTC(
+      now.getUTCFullYear(),
+      now.getUTCMonth(),
+      now.getUTCDate() + 1
     );
     timeoutId = window.setTimeout(() => {
       onStoreChange();
       scheduleNextMidnight();
-    }, Math.max(1, nextMidnight.getTime() - now.getTime() + 1000));
+    }, Math.max(1, nextMidnight - now.getTime() + 1000));
   };
 
   scheduleNextMidnight();
@@ -37,8 +37,9 @@ const subscribeToCurrentYear = (onStoreChange: () => void): (() => void) => {
   };
 };
 
-const getCurrentYear = (): string => new Date().getFullYear().toString();
-const getServerCurrentYear = (): string => "";
+// UTC produce el mismo año en el servidor y en el primer render del navegador.
+const getCurrentYear = (): string => new Date().getUTCFullYear().toString();
+const getServerCurrentYear = getCurrentYear;
 
 const Footer: React.FC = (): React.JSX.Element => {
   // Hook para manejar la internacionalización y los mensajes traducidos
@@ -47,10 +48,9 @@ const Footer: React.FC = (): React.JSX.Element => {
   const router = useRouter();
   // Función del contexto de menú para cerrar el menú móvil
   const { closeMobileMenu } = useMenu();
-  // El servidor y el primer render del navegador deben producir el mismo texto.
-  // El año local se completa después del montaje para no provocar una diferencia
-  // de hidratación cuando la petición cruza el cambio de año o usa otra zona horaria.
-  // La suscripción se invalida cada medianoche para que una pestaña abierta durante
+  // El servidor y el primer render del navegador producen el mismo año UTC, por lo
+  // que el aviso legal nunca queda vacío y tampoco provoca diferencias de hidratación.
+  // La suscripción se invalida cada medianoche UTC para que una pestaña abierta durante
   // Nochevieja muestre el año nuevo sin obligar al usuario a recargar la página.
   const currentYear = useSyncExternalStore(
     subscribeToCurrentYear,

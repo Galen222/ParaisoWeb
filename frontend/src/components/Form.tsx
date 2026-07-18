@@ -442,7 +442,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
               checked={isPrivacyChecked}
               onChange={handlePrivacyCheck}
               className={styles.hiddenCheckbox}
-              required
+              aria-required="true"
               aria-labelledby="privacyCheckText"
             />
             {isPrivacyChecked && (
@@ -452,7 +452,9 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
             )}
           </label>
           <span id="privacyCheckText" className={styles.checkText}>
-            <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}</span>
+            <label htmlFor="privacyCheck" className={styles.privacyConsentLabel}>
+              {intl.formatMessage({ id: "contacto_PoliticaPrivacidad_1" })}
+            </label>
             <Link href="/politica-privacidad" className={styles.link}>
               <span>{intl.formatMessage({ id: "contacto_PoliticaPrivacidad_2" })}</span>
             </Link>

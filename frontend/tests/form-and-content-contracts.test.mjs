@@ -13,16 +13,18 @@ test("el formulario valida el correo con el mismo recorte exterior que el backen
   assert.match(source, /setFormData\(\(current\) => \(\{ \.\.\.current, email: value \}\)\)/);
 });
 
-test("el footer invalida el año cada medianoche sin romper la hidratación", async () => {
+test("el footer renderiza el año desde SSR y lo invalida cada medianoche UTC", async () => {
   const source = await readFile(
     new URL("../src/components/Footer.tsx", import.meta.url),
     "utf8"
   );
 
   assert.match(source, /const subscribeToCurrentYear = \(onStoreChange/);
-  assert.match(source, /now\.getDate\(\) \+ 1/);
+  assert.match(source, /Date\.UTC\(/);
+  assert.match(source, /now\.getUTCDate\(\) \+ 1/);
   assert.match(source, /onStoreChange\(\)/);
-  assert.match(source, /const getServerCurrentYear = \(\): string => ""/);
+  assert.match(source, /new Date\(\)\.getUTCFullYear\(\)/);
+  assert.match(source, /const getServerCurrentYear = getCurrentYear/);
   assert.match(source, /window\.clearTimeout\(timeoutId\)/);
 });
 

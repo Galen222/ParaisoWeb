@@ -161,10 +161,11 @@ test("los componentes corregidos conservan HTML válido y controles nativos", as
 
   assert.match(footer, /<span className=\{styles\.linksContainer\}>/);
   assert.doesNotMatch(footer, /<div className=\{styles\.linksContainer\}>/);
-  assert.match(footer, /getServerCurrentYear = \(\): string => ""/);
+  assert.match(footer, /getServerCurrentYear = getCurrentYear/);
+  assert.match(footer, /new Date\(\)\.getUTCFullYear\(\)/);
   assert.doesNotMatch(
     footer,
-    /Footer_Rights[^\n]*new Date\(\)\.getFullYear\(\)/
+    /Footer_Rights[^\n]*new Date\(\)/
   );
 
   assert.doesNotMatch(animatedTitle, /<h1>[\s\S]*?<div/);
