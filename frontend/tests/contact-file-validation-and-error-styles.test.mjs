@@ -68,3 +68,14 @@ test("las páginas de error usan un padding CSS válido", async () => {
   assert.match(source, /\.errorContainer\s*\{[\s\S]*?padding:\s*20px;/);
   assert.doesNotMatch(source, /padding:\s*auto;/);
 });
+
+test("el selector rechaza nombres de adjunto con rutas o controles invisibles", async () => {
+  const { hasAllowedContactFileMetadata } = await loadTypeScriptModule(
+    "../src/utils/contactFileValidation.ts"
+  );
+
+  assert.equal(hasAllowedContactFileMetadata("factura\u202Efdp.pdf", "application/pdf"), false);
+  assert.equal(hasAllowedContactFileMetadata("carpeta/factura.pdf", "application/pdf"), false);
+  assert.equal(hasAllowedContactFileMetadata(" factura.pdf", "application/pdf"), false);
+  assert.equal(hasAllowedContactFileMetadata("factura.pdf", "application/pdf"), true);
+});

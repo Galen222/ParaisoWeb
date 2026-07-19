@@ -14,13 +14,13 @@
     "test:backend": "cd .. && python -m backend.tests.run_all_tests"
   },
   "dependencies": {
-    "@googlemaps/js-api-loader": "2.1.1",
+    "@googlemaps/js-api-loader": "^2.1.1",
     "animate.css": "^4.1.1",
     "axios": "^1.18.1",
     "bootstrap": "^5.3.8",
     "file-saver": "^2.0.5",
     "next": "^16.2.10",
-    "next-seo": "7.2.0",
+    "next-seo": "^7.2.0",
     "next-sitemap": "^4.2.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

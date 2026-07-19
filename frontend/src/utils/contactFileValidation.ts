@@ -1,4 +1,5 @@
 const GENERIC_FILE_MIME_TYPES = new Set(["", "application/octet-stream"]);
+const UNSAFE_FILENAME_CHARACTERS = /[\/\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/u;
 const ALLOWED_FILE_EXTENSIONS_BY_MIME_TYPE: Readonly<Record<string, ReadonlySet<string>>> = {
   "image/jpeg": new Set([".jpg", ".jpeg"]),
   "application/pdf": new Set([".pdf"]),
@@ -27,6 +28,10 @@ export const hasAllowedContactFileMetadata = (
   fileName: string,
   mimeType: string
 ): boolean => {
+  if (fileName === "" || fileName.trim() !== fileName || UNSAFE_FILENAME_CHARACTERS.test(fileName)) {
+    return false;
+  }
+
   const fileExtension = getFileExtension(fileName);
   if (!ALLOWED_FILE_EXTENSIONS.has(fileExtension)) {
     return false;

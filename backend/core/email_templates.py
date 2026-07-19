@@ -43,7 +43,7 @@ def contacto_email_template(name: str, email: str, reason: str, message: str) ->
     name = html.escape(name)
     email = html.escape(email)
     reason = html.escape(reason)
-    message = html.escape(message).replace('\n', '<br>')
+    message = html.escape(message).replace('\r\n', '\n').replace('\r', '\n').replace('\n', '<br>')
 
     return f"""
     <!DOCTYPE html>

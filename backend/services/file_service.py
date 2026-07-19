@@ -20,6 +20,7 @@ Dependencias:
 import filetype
 import os
 import hashlib
+import unicodedata
 from typing import Dict, Optional, Set, Union
 from fastapi import UploadFile, HTTPException
 import logging
@@ -73,6 +74,17 @@ def has_valid_pdf_signature(header: bytes) -> bool:
 
         marker_index += 1
 
+
+
+def has_safe_attachment_filename(filename: Optional[str]) -> bool:
+    """Rechaza nombres engañosos antes de validarlos o mostrarlos en el correo."""
+    if not filename or filename.strip() != filename or "/" in filename or "\\" in filename:
+        return False
+    return not any(
+        unicodedata.category(character).startswith("C")
+        or unicodedata.category(character) in {"Zl", "Zp"}
+        for character in filename
+    )
 
 def file_log_context(file: UploadFile) -> str:
     """Describe el adjunto para logs sin registrar su nombre original ni controles."""
@@ -135,6 +147,9 @@ class FileService:
         """
         logger.info("Validando tipo MIME y extensión | %s", file_log_context(file))
         try:
+            if not has_safe_attachment_filename(file.filename):
+                raise HTTPException(status_code=400, detail="Nombre de archivo no válido")
+
             # Leer los primeros 8 KB para determinar el tipo
             first_chunk = await file.read(8192)
             await file.seek(0)  # Regresar el puntero del archivo al inicio
