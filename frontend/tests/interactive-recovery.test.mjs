@@ -37,3 +37,18 @@ test("las tarjetas de charcutería limpian el hover al paginar o cambiar de idio
   assert.match(page, /\}, \[currentLocale, currentPage\]\);/);
   assert.match(page, /cancelled = true/);
 });
+
+
+test("el CAPTCHA recrea un widget dañado al restablecerlo después del envío", async () => {
+  const captcha = await readSource("../src/components/Captcha.tsx");
+  const resetEffect = captcha.match(
+    /useEffect\(\(\) => \{[\s\S]*?const widgetId = widgetIdRef\.current;[\s\S]*?\}, \[resetSignal\]\);/,
+  )?.[0] ?? "";
+
+  assert.match(resetEffect, /try \{[\s\S]*?window\.grecaptcha\.reset\(widgetId\)/);
+  assert.match(resetEffect, /catch \{/);
+  assert.match(resetEffect, /widgetIdRef\.current = null/);
+  assert.match(resetEffect, /containerRef\.current\?\.replaceChildren\(\)/);
+  assert.match(resetEffect, /setLoadAttempt\(\(currentAttempt\) => currentAttempt \+ 1\)/);
+  assert.match(captcha, /const initialLocaleRef = useRef\(intl\.locale\)/);
+});

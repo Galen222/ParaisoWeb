@@ -31,13 +31,13 @@ test("la navegación móvil se cierra con Escape y devuelve el foco al botón", 
   assert.match(navbar, /ref=\{mobileMenuButtonRef\}/);
 });
 
-test("el correo se valida localmente y expone el error sin estados de red", async () => {
+test("el correo se valida localmente y expone también los valores compuestos solo por espacios", async () => {
   const [form, ...locales] = await Promise.all([
     readSource("../src/components/Form.tsx"),
     ...["es", "en", "de", "fr"].map(readLocale),
   ]);
 
-  assert.match(form, /formData\.email\.trim\(\) !== "" && !isValidEmail/);
+  assert.match(form, /formData\.email !== "" && !isValidEmail/);
   assert.match(form, /isValidContactEmail\(formData\.email\)/);
   assert.match(form, /aria-invalid=\{hasEmailValidationError\}/);
   assert.match(form, /id="emailValidationError"[\s\S]*?role="alert"/);

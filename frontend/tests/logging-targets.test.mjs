@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, readdir, rm } from "node:fs/promises";
+import { mkdtemp, readFile, readdir, rm, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { createRequire } from "node:module";
@@ -287,4 +287,40 @@ test("las rutas SSR usan el logger de servidor sin enviarlo al navegador", async
   assert.match(sitemapPage, /getSitemapBlogEntries\(frontendLogger\)/);
   assert.doesNotMatch(clientLogger, /node:fs|appendFile|frontend\.log/);
   assert.match(serverLogger, /const LOG_FILENAME = "frontend\.log"/);
+});
+
+
+test("una sola entrada sobredimensionada respeta el límite de los logs frontend", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "paraisoweb-bounded-front-log-"));
+  const maxBytes = 160;
+
+  try {
+    for (const [loggerType, loadLogger] of [
+      ["typescript", async () => (await loadTypeScriptModule("../src/server/frontendLogger.ts")).frontendLogger],
+      ["commonjs", async () => require("../serverLogger.cjs").frontendServerLogger],
+    ]) {
+      const logDirectory = path.join(directory, loggerType);
+      await withEnvironment(
+        {
+          FRONTEND_LOG_TARGET: "archivo",
+          FRONTEND_LOG_LEVEL: "info",
+          FRONTEND_LOG_DIR: logDirectory,
+          FRONTEND_LOG_MAX_BYTES: String(maxBytes),
+          FRONTEND_LOG_BACKUP_COUNT: "2",
+        },
+        async () => {
+          const logger = await loadLogger();
+          logger.error(`entrada-${"🙂".repeat(5_000)}`);
+        },
+      );
+
+      const logPath = path.join(logDirectory, "frontend.log");
+      const [metadata, contents] = await Promise.all([stat(logPath), readFile(logPath, "utf8")]);
+      assert.ok(metadata.size <= maxBytes, `${loggerType} escribió ${metadata.size} bytes`);
+      assert.doesNotMatch(contents, /�/);
+      assert.equal(contents.split("\n").length, 2);
+    }
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
 });

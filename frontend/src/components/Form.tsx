@@ -83,7 +83,7 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
   const [captchaResetSignal, setCaptchaResetSignal] = useState(0);
   const isValidEmail = isValidContactEmail(formData.email);
-  const hasEmailValidationError = formData.email.trim() !== "" && !isValidEmail;
+  const hasEmailValidationError = formData.email !== "" && !isValidEmail;
   const isFileRequired = formData.reason === "factura" || formData.reason === "curriculum";
 
   const { showToast } = useToastMessage();

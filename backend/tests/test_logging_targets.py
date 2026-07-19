@@ -47,6 +47,31 @@ class LoggingTargetTests(unittest.TestCase):
             combined = "\n".join(path.read_text(encoding="utf-8") for path in log_files)
             self.assertNotIn("\x1b[", combined)
 
+
+    def test_una_entrada_sobredimensionada_respeta_el_limite_del_archivo(self) -> None:
+        with TemporaryDirectory() as directory:
+            max_bytes = 180
+            file_settings = SimpleNamespace(
+                APP_ENV="production",
+                BACKEND_LOG_TARGET="archivo",
+                BACKEND_LOG_DIR=directory,
+                BACKEND_LOG_MAX_BYTES=max_bytes,
+                BACKEND_LOG_BACKUP_COUNT=2,
+                backend_log_level="INFO",
+            )
+            configure_logging(file_settings)
+
+            root_logger = logging.getLogger()
+            root_logger.error("entrada-%s", "🙂" * 5000)
+            handler = root_logger.handlers[0]
+            handler.flush()
+
+            log_path = Path(directory) / "backend.log"
+            contents = log_path.read_text(encoding="utf-8")
+            self.assertLessEqual(log_path.stat().st_size, max_bytes)
+            self.assertNotIn("�", contents)
+            self.assertTrue(contents.endswith("\n"))
+
     def test_consola_no_crea_filehandler_aunque_el_entorno_sea_produccion(self) -> None:
         console_settings = SimpleNamespace(
             APP_ENV="production",

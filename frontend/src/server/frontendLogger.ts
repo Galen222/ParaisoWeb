@@ -55,6 +55,40 @@ const configuredLevel = (): LogLevel => {
 const sanitizeLogValue = (value: string): string =>
   value.replace(LOG_CONTROL_CHARACTERS, " ").replace(/\s+/g, " ").trim();
 
+/** Recorta por puntos de código para no partir una secuencia UTF-8 ni escribir �. */
+const truncateUtf8 = (value: string, maxBytes: number): string => {
+  if (maxBytes <= 0) {
+    return "";
+  }
+  if (Buffer.byteLength(value, "utf8") <= maxBytes) {
+    return value;
+  }
+
+  const suffix = "…";
+  const suffixBytes = Buffer.byteLength(suffix, "utf8");
+  const contentBudget = Math.max(0, maxBytes - suffixBytes);
+  let truncated = "";
+  let usedBytes = 0;
+
+  for (const character of value) {
+    const characterBytes = Buffer.byteLength(character, "utf8");
+    if (usedBytes + characterBytes > contentBudget) {
+      break;
+    }
+    truncated += character;
+    usedBytes += characterBytes;
+  }
+
+  return suffixBytes <= maxBytes ? `${truncated}${suffix}` : truncated;
+};
+
+const buildBoundedLogLine = (level: LogLevel, values: unknown[], maxBytes: number): string => {
+  const lineBody = `${new Date().toISOString()} | ${level.toUpperCase()} | ${values.map(formatValue).join(" ")}`;
+  // appendFileSync escribe un salto de línea de un byte. Incluso una sola entrada
+  // sobredimensionada debe respetar el límite configurado del archivo.
+  return `${truncateUtf8(lineBody, Math.max(0, maxBytes - 1))}\n`;
+};
+
 const formatValue = (value: unknown): string => {
   let formattedValue: string;
   if (typeof value === "string") {
@@ -96,8 +130,8 @@ const rotateLogFile = (logPath: string, maxBytes: number, backupCount: number, i
 };
 
 const writeFileLog = (level: LogLevel, values: unknown[]): void => {
-  const line = `${new Date().toISOString()} | ${level.toUpperCase()} | ${values.map(formatValue).join(" ")}\n`;
   const maxBytes = parsePositiveInteger(process.env.FRONTEND_LOG_MAX_BYTES, DEFAULT_MAX_BYTES);
+  const line = buildBoundedLogLine(level, values, maxBytes);
   const backupCount = parsePositiveInteger(
     process.env.FRONTEND_LOG_BACKUP_COUNT,
     DEFAULT_BACKUP_COUNT

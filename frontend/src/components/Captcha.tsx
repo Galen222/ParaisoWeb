@@ -103,10 +103,30 @@ const Captcha: React.FC<CaptchaProps> = ({ onTokenChange, resetSignal }): React.
 
   useEffect(() => {
     const widgetId = widgetIdRef.current;
-    if (widgetId !== null && window.grecaptcha) {
-      window.grecaptcha.reset(widgetId);
-      onTokenChangeRef.current(null);
+    if (widgetId === null || !window.grecaptcha) {
+      return;
     }
+
+    let cancelled = false;
+    onTokenChangeRef.current(null);
+    try {
+      window.grecaptcha.reset(widgetId);
+    } catch {
+      // Un widget retirado o dañado no debe convertir el reseteo posterior al envío
+      // en una excepción no controlada. Se recrea con el mismo idioma inicial.
+      widgetIdRef.current = null;
+      containerRef.current?.replaceChildren();
+      queueMicrotask(() => {
+        if (!cancelled) {
+          setHasLoadError(false);
+          setLoadAttempt((currentAttempt) => currentAttempt + 1);
+        }
+      });
+    }
+
+    return () => {
+      cancelled = true;
+    };
   }, [resetSignal]);
 
   return (

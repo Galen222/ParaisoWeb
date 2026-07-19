@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import logging
 import logging.config
+import os
 from pathlib import Path
 from typing import Protocol
 
@@ -18,6 +19,44 @@ class LoggingSettings(Protocol):
 
     @property
     def backend_log_level(self) -> str: ...
+
+
+def _truncate_utf8(value: str, max_bytes: int) -> str:
+    """Recorta sin dividir puntos de código ni producir UTF-8 inválido."""
+    if max_bytes <= 0:
+        return ""
+    if len(value.encode("utf-8")) <= max_bytes:
+        return value
+
+    suffix = "…"
+    suffix_bytes = len(suffix.encode("utf-8"))
+    content_budget = max(0, max_bytes - suffix_bytes)
+    output: list[str] = []
+    used_bytes = 0
+
+    for character in value:
+        character_bytes = len(character.encode("utf-8"))
+        if used_bytes + character_bytes > content_budget:
+            break
+        output.append(character)
+        used_bytes += character_bytes
+
+    if suffix_bytes <= max_bytes:
+        output.append(suffix)
+    return "".join(output)
+
+
+class BoundedFileFormatter(logging.Formatter):
+    """Impide que una sola entrada supere el tamaño máximo del archivo."""
+
+    def __init__(self, *args: object, max_bytes: int, **kwargs: object) -> None:
+        super().__init__(*args, **kwargs)
+        self.max_bytes = max_bytes
+
+    def format(self, record: logging.LogRecord) -> str:
+        formatted = super().format(record)
+        terminator_bytes = len(os.linesep.encode("utf-8"))
+        return _truncate_utf8(formatted, max(0, self.max_bytes - terminator_bytes))
 
 
 class ConsoleFormatter(logging.Formatter):
@@ -85,8 +124,10 @@ def configure_logging(settings: LoggingSettings) -> None:
                     "datefmt": "%Y-%m-%d %H:%M:%S",
                 },
                 "file": {
+                    "()": BoundedFileFormatter,
                     "format": "%(asctime)s | %(levelname)s | %(name)s | %(message)s",
                     "datefmt": "%Y-%m-%dT%H:%M:%S%z",
+                    "max_bytes": settings.BACKEND_LOG_MAX_BYTES,
                 },
             },
             "handlers": handlers,
