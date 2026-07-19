@@ -9,7 +9,7 @@ import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Función de redirección basada en cookies
 import styles from "../styles/pages/politica-privacidad.module.css";
-import { NextSeo } from "next-seo";
+import SeoHead from "../components/SeoHead";
 import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
 import { getPublicSiteUrl } from "../utils/publicSiteUrl";
@@ -58,7 +58,7 @@ const PoliticaPrivacidadPage: NextPage & { pageTitleText?: string } = (): React.
   return (
     <div className="pageContainer">
       {/* Configuración de SEO específica de la página */}
-      <NextSeo
+      <SeoHead
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "politica-privacidad_SEO_Titulo" })}
         description={intl.formatMessage({ id: "politica-privacidad_SEO_Descripcion" })}

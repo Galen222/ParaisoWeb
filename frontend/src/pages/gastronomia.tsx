@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"; // Importa GetServerSidePropsResult
 import { useIntl } from "react-intl";
-import { NextSeo } from "next-seo"; // Importa NextSeo para la gestión de SEO
+import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
 import Carousel from "../components/Carousel";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
@@ -98,7 +98,7 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
   return (
     <div className="pageContainer">
       {/* Configuración de SEO específica de la página */}
-      <NextSeo
+      <SeoHead
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "gastronomia_SEO_Titulo" })}
         description={intl.formatMessage({ id: "gastronomia_SEO_Descripcion" })}

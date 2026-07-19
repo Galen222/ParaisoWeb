@@ -10,7 +10,7 @@ import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import { NextSeo } from "next-seo"; // Importa NextSeo para la gestión de SEO
+import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import { useMapLocale } from "../hooks/useMapLocale"; // Hook para obtener el locale del mapa
@@ -69,7 +69,7 @@ const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): React.JSX.El
   return (
     <div className="pageContainer">
       {/* Configuración de SEO específica de la página */}
-      <NextSeo
+      <SeoHead
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "bravo-murillo_SEO_Titulo" })}
         description={intl.formatMessage({ id: "bravo-murillo_SEO_Descripcion" })}

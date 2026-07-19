@@ -1,6 +1,6 @@
 // config/next-seo.config.ts
 
-import { DefaultSeoProps } from "next-seo";
+import type { DefaultSeoProps } from "next-seo/pages";
 import { getPublicSiteUrl } from "../utils/publicSiteUrl";
 
 const DEFAULT_LOCALE = "es";

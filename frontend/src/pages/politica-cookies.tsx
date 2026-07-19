@@ -11,7 +11,7 @@ import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/use
 import useScreenSize from "../hooks/useScreenSize";
 import { useToastMessage } from "../hooks/useToast";
 import { deleteCookies } from "../utils/cookieUtils";
-import { NextSeo } from "next-seo";
+import SeoHead from "../components/SeoHead";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import styles from "../styles/pages/politica-cookies.module.css";
 import getSEOConfig from "../config/next-seo.config";
@@ -202,7 +202,7 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
   return (
     <div className="pageContainer">
       {/* Configuración de SEO específica de la página */}
-      <NextSeo
+      <SeoHead
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "politica-cookies_SEO_Titulo" })}
         description={intl.formatMessage({ id: "politica-cookies_SEO_Descripcion" })}

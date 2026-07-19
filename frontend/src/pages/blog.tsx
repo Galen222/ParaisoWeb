@@ -11,7 +11,7 @@ import { useFetchBlog } from "../hooks/useFetchBlog";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/blog.module.css";
 import { useIntl } from "react-intl";
-import { NextSeo } from "next-seo";
+import SeoHead from "../components/SeoHead";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
@@ -89,7 +89,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
   return (
     <>
       {/* Configuración de SEO específica de la página */}
-      <NextSeo
+      <SeoHead
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "blog_SEO_Titulo" })}
         description={intl.formatMessage({ id: "blog_SEO_Descripcion" })}

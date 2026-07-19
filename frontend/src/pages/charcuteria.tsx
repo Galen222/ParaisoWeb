@@ -10,7 +10,7 @@ import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/charcuteria.module.css";
-import { NextSeo } from "next-seo";
+import SeoHead from "../components/SeoHead";
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import useCurrentUrl from "../hooks/useCurrentUrl";
@@ -141,7 +141,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
   return (
     <>
       {/* Configuración de SEO específica de la página */}
-      <NextSeo
+      <SeoHead
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "charcuteria_SEO_Titulo" })}
         description={intl.formatMessage({ id: "charcuteria_SEO_Descripcion" })}

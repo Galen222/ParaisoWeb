@@ -10,7 +10,7 @@ import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { redirectByCookie } from "../utils/redirectByCookie";
-import { NextSeo } from "next-seo";
+import SeoHead from "../components/SeoHead";
 import getSEOConfig from "../config/next-seo.config";
 import useCurrentUrl from "../hooks/useCurrentUrl";
 import { getPublicSiteUrl } from "../utils/publicSiteUrl";
@@ -60,7 +60,7 @@ const ContactoPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elemen
   return (
     <div className="pageContainer">
       {/* Configuración de SEO específica de la página */}
-      <NextSeo
+      <SeoHead
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "contacto_SEO_Titulo" })}
         description={intl.formatMessage({ id: "contacto_SEO_Descripcion" })}

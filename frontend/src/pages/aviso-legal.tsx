@@ -8,7 +8,7 @@ import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
-import { NextSeo } from "next-seo"; // Importa NextSeo para la gestión de SEO
+import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import styles from "../styles/pages/aviso-legal.module.css";
 import getSEOConfig from "../config/next-seo.config";
@@ -55,7 +55,7 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
   return (
     <div className="pageContainer">
       {/* Configuración de SEO específica de la página */}
-      <NextSeo
+      <SeoHead
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "aviso-legal_SEO_Titulo" })}
         description={intl.formatMessage({ id: "aviso-legal_SEO_Descripcion" })}

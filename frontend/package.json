@@ -20,7 +20,7 @@
     "bootstrap": "^5.3.8",
     "file-saver": "^2.0.5",
     "next": "^16.2.10",
-    "next-seo": "6.8.0",
+    "next-seo": "7.2.0",
     "next-sitemap": "^4.2.3",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",

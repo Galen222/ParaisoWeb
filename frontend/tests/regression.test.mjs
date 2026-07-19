@@ -425,7 +425,7 @@ test("las páginas de error y el error temporal del blog no son indexables", asy
   ]);
 
   for (const source of [errorPage, notFoundPage]) {
-    assert.match(source, /<NextSeo[\s\S]*?noindex[\s\S]*?nofollow/);
+    assert.match(source, /<SeoHead[\s\S]*?noindex[\s\S]*?nofollow/);
     assert.match(source, /title=\{seoTitle\}/);
     assert.match(source, /description=\{message\}/);
   }

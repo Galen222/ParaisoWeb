@@ -2,7 +2,7 @@
 
 import React from "react";
 import type { NextPage, NextPageContext } from "next";
-import { NextSeo } from "next-seo";
+import SeoHead from "../components/SeoHead";
 import { useIntl } from "react-intl"; // Hook para internacionalización
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking"; // Hook personalizado para seguimiento de visitas
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA"; // Hook personalizado para seguimiento con Google Analytics
@@ -70,7 +70,7 @@ const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }: ErrorPageProps): Re
 
   return (
     <>
-      <NextSeo
+      <SeoHead
         title={seoTitle}
         description={message}
         noindex

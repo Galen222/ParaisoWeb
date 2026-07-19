@@ -8,7 +8,7 @@ import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import styles from "../styles/pages/nosotros.module.css"; // Importa los estilos específicos para la página nosotros
-import { NextSeo } from "next-seo"; // Importa NextSeo para la gestión de SEO
+import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import useCurrentUrl from "../hooks/useCurrentUrl";
@@ -62,7 +62,7 @@ const NosotrosPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elemen
   return (
     <div className="pageContainer">
       {/* Configuración de SEO específica de la página */}
-      <NextSeo
+      <SeoHead
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "nosotros_SEO_Titulo" })}
         description={intl.formatMessage({ id: "nosotros_SEO_Descripcion" })}

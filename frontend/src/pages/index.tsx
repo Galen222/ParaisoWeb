@@ -8,7 +8,7 @@ import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import ScrollToTopButton from "../components/ScrollToTopButton";
-import { NextSeo } from "next-seo";
+import SeoHead from "../components/SeoHead";
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import useCurrentUrl from "../hooks/useCurrentUrl";
@@ -50,7 +50,7 @@ const Home: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
   return (
     <div className="pageContainer">
       {/* Configuración de SEO específica de la página */}
-      <NextSeo
+      <SeoHead
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "inicio_SEO_Titulo" })}
         description={intl.formatMessage({ id: "inicio_SEO_Descripcion" })}

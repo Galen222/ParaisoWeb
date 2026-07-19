@@ -7,7 +7,7 @@ import ScrollToTopButton from "../components/ScrollToTopButton"; // Botón para 
 import { useIntl } from "react-intl"; // Hook de internacionalización
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking"; // Hook de seguimiento de visitas
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA"; // Hook de seguimiento de visitas para Google Analytics
-import { NextSeo } from "next-seo"; // Componente para la configuración de SEO
+import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import useCurrentUrl from "../hooks/useCurrentUrl";
@@ -53,7 +53,7 @@ const ReservasPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elemen
     <div className="pageContainer">
       {/* Configuración de SEO específica de la página */}
       {/* Configuración de SEO específica de la página */}
-      <NextSeo
+      <SeoHead
         {...getSEOConfig(currentLocale, currentMessages)}
         title={intl.formatMessage({ id: "reservas_SEO_Titulo" })}
         description={intl.formatMessage({ id: "reservas_SEO_Descripcion" })}

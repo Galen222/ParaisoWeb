@@ -25,7 +25,7 @@ import Footer from "../components/Footer";
 import Cookie from "../components/Cookie";
 import { useCookieLogic } from "../hooks/useCookieLogic";
 import { useMapLocale } from "../hooks/useMapLocale";
-import { DefaultSeo } from "next-seo";
+import { generateDefaultSeo } from "next-seo/pages";
 import getSEOConfig from "../config/next-seo.config";
 import useLocaleFormatted from "../hooks/useLocaleFormatted";
 
@@ -100,9 +100,9 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
         <title>El Paraíso Del Jamón</title>
         <meta name="description" content="El Paraíso Del Jamón" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        {generateDefaultSeo(getSEOConfig(appLocale, currentMessages, seoPath, includeLanguageAlternates))}
       </Head>
       <IntlProvider locale={appLocale} messages={currentMessages}>
-        <DefaultSeo {...getSEOConfig(appLocale, currentMessages, seoPath, includeLanguageAlternates)} />
         <MenuProvider>
           <React.StrictMode>
             {showCookieModal && (

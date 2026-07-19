@@ -1,10 +1,51 @@
 import React from "react";
 import Head from "next/head";
-import type { LocalBusinessJsonLdProps, OrganizationJsonLdProps } from "next-seo";
-
 import { useCspNonce } from "../contexts/CspNonceContext";
 
 type JsonObject = Record<string, unknown>;
+
+type PostalAddressInput = string | JsonObject;
+
+interface JsonLdBaseProps {
+  scriptId?: string;
+  keyOverride?: string;
+}
+
+interface OrganizationJsonLdProps extends JsonLdBaseProps {
+  type?: string;
+  id?: string;
+  name: string;
+  logo?: string;
+  url: string;
+  legalName?: string;
+  sameAs?: string[];
+  address?: PostalAddressInput | PostalAddressInput[];
+  contactPoints?: JsonObject[];
+  contactPoint?: JsonObject[];
+}
+
+interface LocalBusinessJsonLdProps extends JsonLdBaseProps {
+  type: string;
+  id: string;
+  name: string;
+  description: string;
+  url?: string;
+  telephone?: string;
+  address: PostalAddressInput | PostalAddressInput[];
+  geo?: JsonObject;
+  images?: string[];
+  rating?: JsonObject;
+  review?: JsonObject | JsonObject[];
+  priceRange?: string;
+  servesCuisine?: string | string[];
+  sameAs?: string[];
+  branchCode?: string;
+  parentOrganization?: JsonObject;
+  openingHours?: JsonObject | JsonObject[];
+  action?: JsonObject;
+  areaServed?: JsonObject[];
+  makesOffer?: JsonObject[];
+}
 
 const compactObject = (entries: Array<[string, unknown]>): JsonObject =>
   Object.fromEntries(entries.filter(([, value]) => value !== undefined));
@@ -228,13 +269,8 @@ export const OrganizationJsonLd = ({
   contactPoint,
   scriptId,
   keyOverride,
-  useAppDir: _useAppDir,
-  dataArray: _dataArray,
   ...rest
 }: OrganizationJsonLdProps): React.JSX.Element => {
-  void _useAppDir;
-  void _dataArray;
-
   const data = compactObject([
     ["@context", "https://schema.org"],
     ["@type", type],
@@ -255,6 +291,7 @@ export const OrganizationJsonLd = ({
 /** JSON-LD de negocio local compatible con una CSP estricta basada en nonce. */
 export const LocalBusinessJsonLd = ({
   type = "LocalBusiness",
+  id,
   address,
   geo,
   images,
@@ -266,16 +303,12 @@ export const LocalBusinessJsonLd = ({
   makesOffer,
   scriptId,
   keyOverride,
-  useAppDir: _useAppDir,
-  dataArray: _dataArray,
   ...rest
 }: LocalBusinessJsonLdProps): React.JSX.Element => {
-  void _useAppDir;
-  void _dataArray;
-
   const data = compactObject([
     ["@context", "https://schema.org"],
     ["@type", type],
+    ["@id", id],
     ...Object.entries(rest),
     ["image", images],
     ["address", normalizeAddress(address)],

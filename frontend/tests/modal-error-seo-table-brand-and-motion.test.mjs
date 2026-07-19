@@ -19,7 +19,7 @@ test("las páginas de error publican metadatos localizados y no indexables", asy
   ]);
 
   for (const source of [notFound, errorPage]) {
-    assert.match(source, /<NextSeo[\s\S]*?title=\{seoTitle\}[\s\S]*?description=\{message\}[\s\S]*?noindex[\s\S]*?nofollow/);
+    assert.match(source, /<SeoHead[\s\S]*?title=\{seoTitle\}[\s\S]*?description=\{message\}[\s\S]*?noindex[\s\S]*?nofollow/);
     assert.match(source, /openGraph=\{\{ title: seoTitle, description: message \}\}/);
   }
 });

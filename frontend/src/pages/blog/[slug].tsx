@@ -12,7 +12,7 @@ import { useVisitedPageTrackingGA } from "../../hooks/useTrackingGA";
 import { useHandleLanguageChange } from "../../hooks/useHandleLanguageChange";
 import errorStyles from "../../styles/pages/error.module.css";
 import styles from "../../styles/pages/slug.module.css";
-import { NextSeo } from "next-seo";
+import SeoHead from "../../components/SeoHead";
 import getSEOConfig from "../../config/next-seo.config";
 import useCurrentUrl from "../../hooks/useCurrentUrl";
 import { formatBlogDate } from "../../utils/blogDate";
@@ -159,7 +159,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
   return (
     <>
       {/* Configuración de SEO */}
-      <NextSeo
+      <SeoHead
         {...baseSeoConfig}
         title={previewTitle}
         description={previewContent}

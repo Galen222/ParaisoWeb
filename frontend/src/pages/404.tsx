@@ -2,7 +2,7 @@
 
 import React from "react";
 import type { NextPage } from "next";
-import { NextSeo } from "next-seo";
+import SeoHead from "../components/SeoHead";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
@@ -22,7 +22,7 @@ const Custom404Page: NextPage = () => {
 
   return (
     <>
-      <NextSeo
+      <SeoHead
         title={seoTitle}
         description={message}
         noindex
