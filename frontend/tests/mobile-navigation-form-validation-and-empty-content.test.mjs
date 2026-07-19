@@ -31,16 +31,17 @@ test("la navegación móvil se cierra con Escape y devuelve el foco al botón", 
   assert.match(navbar, /ref=\{mobileMenuButtonRef\}/);
 });
 
-test("el correo inválido expone el error sin marcar como inválido el campo vacío", async () => {
+test("el correo se valida localmente y expone el error sin estados de red", async () => {
   const [form, ...locales] = await Promise.all([
     readSource("../src/components/Form.tsx"),
     ...["es", "en", "de", "fr"].map(readLocale),
   ]);
 
-  assert.match(form, /const hasEmailValidationError = formData\.email\.trim\(\) !== "" && !isValidEmail/);
+  assert.match(form, /formData\.email\.trim\(\) !== "" && !isValidEmail/);
+  assert.match(form, /isValidContactEmail\(formData\.email\)/);
   assert.match(form, /aria-invalid=\{hasEmailValidationError\}/);
-  assert.match(form, /aria-describedby=\{hasEmailValidationError \? "emailValidationError" : undefined\}/);
   assert.match(form, /id="emailValidationError"[\s\S]*?role="alert"/);
+  assert.doesNotMatch(form, /aria-busy|emailValidationPending|EmailValidando|EmailValidacionNoDisponible/);
 
   for (const locale of locales) {
     assert.equal(typeof locale.contacto_EmailInvalido, "string");

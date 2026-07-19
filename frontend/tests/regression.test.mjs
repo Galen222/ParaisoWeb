@@ -195,13 +195,14 @@ test("los componentes corregidos conservan HTML válido y controles nativos", as
 });
 
 
-test("el formulario preserva el email escrito y usa actualizaciones de estado no obsoletas", async () => {
+test("el formulario preserva exactamente el email escrito y usa actualizaciones de estado no obsoletas", async () => {
   const [form, menuContext] = await Promise.all([
     readFile(new URL("../src/components/Form.tsx", import.meta.url), "utf8"),
     readFile(new URL("../src/contexts/MenuContext.tsx", import.meta.url), "utf8"),
   ]);
 
-  assert.match(form, /const value = e\.target\.value\.normalize\("NFC"\)/);
+  assert.match(form, /const value = e\.target\.value;/);
+  assert.doesNotMatch(form, /e\.target\.value\.normalize/);
   assert.match(form, /email: value/);
   assert.doesNotMatch(form, /sanitizedValue/);
   assert.match(menuContext, /setMobileMenu\(\(isOpen\) => !isOpen\)/);
@@ -444,15 +445,17 @@ test("la firma PDF puede aparecer dentro de los primeros 1024 bytes", async () =
 });
 
 
-test("el formulario usa la misma validación de correo que el backend sin restricciones extra de guiones", async () => {
-  const form = await readFile(
-    new URL("../src/components/Form.tsx", import.meta.url),
-    "utf8"
-  );
+test("el formulario usa validación local literal sin comprobación remota previa", async () => {
+  const [form, validationService] = await Promise.all([
+    readFile(new URL("../src/components/Form.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../src/utils/contactEmailValidation.ts", import.meta.url), "utf8"),
+  ]);
 
-  assert.doesNotMatch(form, /validateEmailPart/);
-  assert.doesNotMatch(form, /\[\.\-\]\{2,\}/);
-  assert.match(form, /setIsValidEmail\(isValidContactEmail\(value\)\)/);
+  assert.doesNotMatch(form, /type="email"|validateContactEmailWithBackend|validar-email/);
+  assert.match(form, /isValidContactEmail\(formData\.email\)/);
+  assert.match(validationService, /MAX_EMAIL_LENGTH = 254/);
+  assert.match(validationService, /DOMAIN_CHARACTER_PATTERN/);
+  assert.doesNotMatch(validationService, /axios|validator\.isEmail|NEXT_PUBLIC_API_CONTACTO_URL/);
 });
 
 test("la configuración SEO no genera una segunda directiva robots contradictoria", async () => {

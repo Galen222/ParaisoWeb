@@ -12,7 +12,7 @@ Este archivo incluye:
 - Esquemas para la tabla 'blog'.
 """
 
-from pydantic import BaseModel, EmailStr, Field, field_validator
+from pydantic import BaseModel, Field, field_validator
 from typing import Literal, Optional
 from datetime import datetime
 from urllib.parse import unquote
@@ -112,20 +112,124 @@ def _require_non_blank(value: object, field_name: str) -> object:
     return _require_safe_public_text(value, field_name)
 
 
+CONTACT_EMAIL_MAX_LENGTH = 254
+CONTACT_EMAIL_MAX_LOCAL_PART_LENGTH = 64
+CONTACT_EMAIL_MAX_DOMAIN_LENGTH = 253
+CONTACT_EMAIL_MAX_DOMAIN_LABEL_LENGTH = 63
+CONTACT_EMAIL_MIN_TOP_LEVEL_DOMAIN_LENGTH = 2
+CONTACT_EMAIL_LOCAL_PATTERN = re.compile(r"^[A-Za-z0-9!#$%&'*+/=?^_`{|}~.-]+$")
+
+
+def _is_domain_initial_character(character: str) -> bool:
+    """Una etiqueta de dominio debe comenzar por una letra o un número."""
+    return unicodedata.category(character)[0] in {"L", "N"}
+
+
+def _is_domain_character(character: str) -> bool:
+    """Admite letras, números y marcas Unicode dentro de una etiqueta."""
+    return unicodedata.category(character)[0] in {"L", "N", "M"}
+
+
+def _is_domain_letter(character: str) -> bool:
+    """Identifica letras Unicode para comprobar el sufijo final."""
+    return unicodedata.category(character)[0] == "L"
+
+
+def _is_domain_mark(character: str) -> bool:
+    """Identifica marcas combinantes Unicode."""
+    return unicodedata.category(character)[0] == "M"
+
+
+def validate_contact_email(value: object) -> str:
+    """
+    Valida y devuelve exactamente el correo recibido.
+
+    No recorta espacios, no cambia mayúsculas/minúsculas, no normaliza Unicode y
+    no transforma el dominio a punycode. Estas reglas equivalen a las aplicadas
+    localmente por el frontend antes de enviar el formulario.
+    """
+    if not isinstance(value, str):
+        raise ValueError("La dirección de correo debe ser texto")
+
+    if not value or len(value) > CONTACT_EMAIL_MAX_LENGTH:
+        raise ValueError("La dirección de correo es demasiado larga")
+
+    if value.count("@") != 1:
+        raise ValueError("Debe indicarse una dirección de correo simple")
+
+    local_part, domain = value.split("@", 1)
+    if (
+        not local_part
+        or not domain
+        or len(local_part) > CONTACT_EMAIL_MAX_LOCAL_PART_LENGTH
+        or len(domain) > CONTACT_EMAIL_MAX_DOMAIN_LENGTH
+        or CONTACT_EMAIL_LOCAL_PATTERN.fullmatch(local_part) is None
+        or local_part.startswith(".")
+        or local_part.endswith(".")
+        or ".." in local_part
+    ):
+        raise ValueError("La parte local del correo no es válida")
+
+    labels = domain.split(".")
+    if len(labels) < 2:
+        raise ValueError("El dominio del correo debe incluir un sufijo")
+
+    for label in labels:
+        if not label or len(label) > CONTACT_EMAIL_MAX_DOMAIN_LABEL_LENGTH:
+            raise ValueError("El dominio del correo no es válido")
+
+        if not _is_domain_initial_character(label[0]):
+            raise ValueError("El dominio del correo no es válido")
+
+        if label.endswith("-"):
+            raise ValueError("El dominio del correo no es válido")
+
+        previous_was_hyphen = False
+        for character in label:
+            if character == "-":
+                previous_was_hyphen = True
+                continue
+
+            if not _is_domain_character(character):
+                raise ValueError("El dominio del correo no es válido")
+            if previous_was_hyphen and _is_domain_mark(character):
+                raise ValueError("El dominio del correo no es válido")
+            previous_was_hyphen = False
+
+    top_level_domain = labels[-1]
+    if (
+        len(top_level_domain) < CONTACT_EMAIL_MIN_TOP_LEVEL_DOMAIN_LENGTH
+        or not any(_is_domain_letter(character) for character in top_level_domain)
+    ):
+        raise ValueError("El sufijo del dominio no es válido")
+
+    return value
+
+class ContactEmail(BaseModel):
+    """Dirección validada por las reglas literales del formulario."""
+
+    email: str = Field(max_length=254)
+
+    @field_validator("email", mode="before")
+    @classmethod
+    def validate_contact_email(cls, value: object) -> str:
+        """Aplica las mismas reglas literales que usa el navegador."""
+        return validate_contact_email(value)
+
+
 # Esquema para el Formulario de Contacto
-class ContactForm(BaseModel):
+class ContactForm(ContactEmail):
     """
     Esquema para validar los datos del formulario de contacto.
 
     Atributos:
         name (str): Nombre del remitente.
         reason (str): Motivo del contacto.
-        email (EmailStr): Correo electrónico validado del remitente.
+        email (str): Correo electrónico validado sin modificar el valor recibido.
         message (str): Mensaje enviado en el formulario.
     """
     name: str = Field(min_length=1, max_length=100)
     reason: str = Field(min_length=1, max_length=20)
-    email: EmailStr = Field(max_length=254)
     message: str = Field(min_length=1, max_length=5000)
 
     @field_validator('name', mode='before')
@@ -133,12 +237,6 @@ class ContactForm(BaseModel):
     def strip_name(cls, v: str) -> str:
         """Elimina espacios exteriores y normaliza Unicode antes de validar el nombre."""
         return unicodedata.normalize("NFC", v.strip()) if isinstance(v, str) else v
-
-    @field_validator('email', mode='before')
-    @classmethod
-    def strip_email(cls, v: str) -> str:
-        """Elimina espacios exteriores antes de aplicar la validación EmailStr."""
-        return v.strip() if isinstance(v, str) else v
 
     @field_validator('reason', mode='before')
     @classmethod

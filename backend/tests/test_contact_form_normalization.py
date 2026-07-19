@@ -8,16 +8,25 @@ from backend.models.schemas import ContactForm
 
 
 class ContactFormNormalizationTests(unittest.TestCase):
-    def test_email_and_reason_strip_outer_whitespace(self) -> None:
+    def test_reason_strip_outer_whitespace_without_changing_email(self) -> None:
         form = ContactForm(
             name="María Pérez",
             reason="  informacion  ",
-            email="  maria@example.com  ",
+            email="maria@example.com",
             message="Consulta válida",
         )
 
         self.assertEqual(form.reason, "informacion")
-        self.assertEqual(str(form.email), "maria@example.com")
+        self.assertEqual(form.email, "maria@example.com")
+
+    def test_email_rejects_outer_whitespace_instead_of_trimming_it(self) -> None:
+        with self.assertRaises(ValidationError):
+            ContactForm(
+                name="María Pérez",
+                reason="informacion",
+                email="  maria@example.com  ",
+                message="Consulta válida",
+            )
 
     def test_message_permite_emojis_compuestos_y_joiners_legitimos(self) -> None:
         message = "Familia 👨‍👩‍👧 y texto con unión: می‌خواهم"

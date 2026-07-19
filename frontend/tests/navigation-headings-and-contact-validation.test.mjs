@@ -35,7 +35,7 @@ test("la navegación principal identifica la página actual en móvil y escritor
   const source = await readSource("../src/components/Navbar.tsx");
 
   assert.match(source, /const getCurrentPageAria = \(href: string\): "page" \| undefined =>/);
-  assert.match(source, /router\.pathname === href \? "page" : undefined/);
+  assert.match(source, /router\.pathname === href \|\|[\s\S]*?href === "\/blog" && router\.pathname\.startsWith\("\/blog\/"\)/);
   assert.equal((source.match(/aria-current=\{getCurrentPageAria\("\/contacto"\)\}/g) ?? []).length, 2);
   assert.equal((source.match(/aria-current=\{getCurrentPageAria\("\/san-bernardo"\)\}/g) ?? []).length, 2);
 });

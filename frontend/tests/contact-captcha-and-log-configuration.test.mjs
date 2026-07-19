@@ -117,14 +117,19 @@ test("un script reCAPTCHA fallido se elimina y permite volver a cargarlo", async
   }
 });
 
-test("los ejemplos de entorno documentan destinos en español y las claves CAPTCHA separadas", async () => {
+test("los ejemplos de entorno documentan todos los valores predefinidos", async () => {
   const [frontendEnv, backendEnv] = await Promise.all([
     readSource("../.env.example"),
     readSource("../../backend/.env.example"),
   ]);
 
-  assert.match(frontendEnv, /^FRONTEND_LOG_TARGET=archivo$/m);
-  assert.match(backendEnv, /^BACKEND_LOG_TARGET=archivo$/m);
+  assert.match(frontendEnv, /Valores admitidos: consola \| archivo\.[\s\S]*?FRONTEND_LOG_TARGET=archivo/);
+  assert.match(frontendEnv, /Valores admitidos: debug \| info \| warn \| error\.[\s\S]*?FRONTEND_LOG_LEVEL=info/);
+  assert.match(backendEnv, /Valores admitidos: starttls \| tls \| none\.[\s\S]*?SMTP_TLS_MODE=starttls/);
+  assert.match(backendEnv, /Valores admitidos: development \| production\.[\s\S]*?APP_ENV=production/);
+  assert.match(backendEnv, /Valores admitidos: consola \| archivo\.[\s\S]*?BACKEND_LOG_TARGET=archivo/);
+  assert.match(backendEnv, /Valores admitidos: DEBUG \| INFO \| WARNING \| ERROR \| CRITICAL\.[\s\S]*?BACKEND_LOG_LEVEL=INFO/);
+  assert.equal((backendEnv.match(/Valores admitidos: true \| false\./g) || []).length, 3);
   assert.match(frontendEnv, /^NEXT_PUBLIC_RECAPTCHA_SITE_KEY=/m);
   assert.match(backendEnv, /^RECAPTCHA_SECRET_KEY=/m);
   assert.doesNotMatch(frontendEnv, /^RECAPTCHA_SECRET_KEY=/m);

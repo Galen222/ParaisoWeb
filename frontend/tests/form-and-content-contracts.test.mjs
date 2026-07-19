@@ -2,15 +2,16 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
-test("el formulario valida el correo con el mismo recorte exterior que el backend", async () => {
+test("el formulario conserva el correo escrito y lo valida localmente", async () => {
   const source = await readFile(
     new URL("../src/components/Form.tsx", import.meta.url),
     "utf8"
   );
 
-  assert.match(source, /isValidContactEmail\(value\)/);
+  assert.match(source, /isValidContactEmail\(formData\.email\)/);
   assert.match(source, /<form[\s\S]*?noValidate/);
   assert.match(source, /setFormData\(\(current\) => \(\{ \.\.\.current, email: value \}\)\)/);
+  assert.doesNotMatch(source, /validateContactEmailWithBackend|validar-email|emailValidationStatus/);
 });
 
 test("el footer cambia de año a medianoche local sin perder el snapshot SSR", async () => {

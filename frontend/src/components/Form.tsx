@@ -78,11 +78,11 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     captchaToken: "",
     file: null,
   });
-  const [isValidEmail, setIsValidEmail] = useState(false);
   const [hasInvalidNameInput, setHasInvalidNameInput] = useState(false);
   const [hasInvalidMessageInput, setHasInvalidMessageInput] = useState(false);
   const [isPrivacyChecked, setIsPrivacyChecked] = useState(false);
   const [captchaResetSignal, setCaptchaResetSignal] = useState(0);
+  const isValidEmail = isValidContactEmail(formData.email);
   const hasEmailValidationError = formData.email.trim() !== "" && !isValidEmail;
   const isFileRequired = formData.reason === "factura" || formData.reason === "curriculum";
 
@@ -152,13 +152,9 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
    * equivocada en otra dirección válida y enviar el mensaje a un destinatario distinto.
    */
   const handleValidateEmail = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.normalize("NFC");
+    const value = e.target.value;
 
     setFormData((current) => ({ ...current, email: value }));
-    // El backend elimina únicamente espacios exteriores antes de validar. Aplicar
-    // el mismo criterio permite pegar una dirección con espacios accidentales sin
-    // modificarla mientras se escribe ni discrepar con la respuesta del servidor.
-    setIsValidEmail(isValidContactEmail(value));
   };
 
   const handleSelect = (e: ChangeEvent<HTMLSelectElement>) => {
@@ -270,7 +266,6 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
         captchaToken: "",
         file: null,
       });
-      setIsValidEmail(false);
       setHasInvalidNameInput(false);
       setHasInvalidMessageInput(false);
       if (fileInputRef.current) {
@@ -346,13 +341,15 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
       <div>
         <label htmlFor="email">{intl.formatMessage({ id: "contacto_Email" })}</label>
         <input
-          type="email"
+          type="text"
+          inputMode="email"
           autoComplete="email"
+          autoCapitalize="none"
+          spellCheck={false}
           id="email"
           name="email"
           value={formData.email}
           onChange={handleValidateEmail}
-          maxLength={254}
           required
           className={hasEmailValidationError ? styles.emailInvalid : styles.emailValid}
           aria-invalid={hasEmailValidationError}

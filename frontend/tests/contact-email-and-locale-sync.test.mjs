@@ -7,7 +7,7 @@ import ts from "typescript";
 
 const require = createRequire(import.meta.url);
 
-const loadTypeScriptModule = async (relativePath) => {
+const loadTypeScriptModule = async (relativePath, moduleMocks = {}) => {
   const source = await readFile(new URL(relativePath, import.meta.url), "utf8");
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: {
@@ -18,61 +18,108 @@ const loadTypeScriptModule = async (relativePath) => {
   });
   const loadedModule = { exports: {} };
   const wrapper = vm.runInThisContext(`(function (require, module, exports) { ${outputText}\n })`);
-  wrapper(require, loadedModule, loadedModule.exports);
+  wrapper(
+    (id) => Object.hasOwn(moduleMocks, id) ? moduleMocks[id] : require(id),
+    loadedModule,
+    loadedModule.exports
+  );
   return loadedModule.exports;
 };
 
-test("el correo de contacto comparte las fronteras reales de EmailStr", async () => {
-  const { isValidContactEmail } = await loadTypeScriptModule(
+const VALID_CONTACT_EMAILS = [
+  "usuario@example.com",
+  "A.B+C@example-domain.es",
+  "o'hara@example.com",
+  "usuario@xn--bcher-kva.de",
+  "usuario@bücher.de",
+  "usuario@例子.公司",
+  "usuario@παράδειγμα.δοκιμή",
+  "usuario@bu\u0308cher.de",
+  "usuario@123.example",
+  "usuario@example.c3",
+];
+
+const INVALID_CONTACT_EMAILS = [
+  "",
+  " usuario@example.com",
+  "usuario@example.com ",
+  "usuario @example.com",
+  "usuario@example .com",
+  "Nombre <correo@example.com>",
+  '"Nombre" <correo@example.com>',
+  "usuario",
+  "@example.com",
+  "usuario@",
+  "usuario@@example.com",
+  "用户@example.com",
+  '"usuario"@example.com',
+  ".usuario@example.com",
+  "usuario.@example.com",
+  "usu..ario@example.com",
+  "usuario@localhost",
+  "usuario@.example.com",
+  "usuario@example..com",
+  "usuario@-example.com",
+  "usuario@example-.com",
+  "usuario@exam_ple.com",
+  "usuario@😀.com",
+  "usuario@\u0308example.com",
+  "usuario@example-\u0308.com",
+  "usuario@example.c",
+  "usuario@example.1",
+  "usuario@example。com",
+  `${"a".repeat(65)}@example.com`,
+  `usuario@${"a".repeat(64)}.com`,
+];
+
+test("el frontend aplica reglas literales de correo sin servicios ni contratos externos", async () => {
+  const source = await readFile(
+    new URL("../src/utils/contactEmailValidation.ts", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(source, /MAX_EMAIL_LENGTH = 254/);
+  assert.match(source, /MAX_LOCAL_PART_LENGTH = 64/);
+  assert.match(source, /MAX_DOMAIN_LABEL_LENGTH = 63/);
+  assert.match(source, /\\p\{L\}\\p\{N\}\\p\{M\}/);
+  assert.match(source, /validateContactEmail/);
+  assert.match(source, /isValidContactEmail/);
+  assert.doesNotMatch(
+    source,
+    /contactEmailContract|axios|NEXT_PUBLIC_API_CONTACTO_URL|validar-email|validator\.isEmail|toASCII|normalize\(/
+  );
+
+  const validationModule = await loadTypeScriptModule(
     "../src/utils/contactEmailValidation.ts"
   );
 
-  const validEmails = [
-    "plain@example.com",
-    " x@example.com ",
-    "x@y.z",
-    `${"a".repeat(100)}@example.com`,
-    "usuario@bücher.de",
-    "usuario@ｅxample.com",
-    "usuario@０.com",
-    "用户@例子.广告",
-    "a@example。com",
-    "a@example．com",
-    "a@example｡com",
-    "user@host.example.0xb",
-    "a\u034Fb@example.com",
-    "a\uFE0Fb@example.com",
-  ];
-  const invalidEmails = [
-    '"a b"@example.com',
-    '"@example.com',
-    "a@ab--cd.com",
-    "a@xn--ab-cde.com",
-    "a@localhost",
-    "a@example.z9",
-    "a@service.onion",
-    `${"用".repeat(83)}@example.com`,
-    "a\u200b@example.com",
-    "a@exa\u200bmple.com",
-    "a\u2028@example.com",
-    "a\u2060@example.com",
-    "a\u202E@example.com",
-    "a\u2003b@example.com",
-  ];
+  for (const email of VALID_CONTACT_EMAILS) {
+    assert.equal(
+      validationModule.validateContactEmail(email),
+      email,
+      `Debe aceptar y conservar ${JSON.stringify(email)}`
+    );
+  }
 
-  validEmails.forEach((email) => assert.equal(isValidContactEmail(email), true, email));
-  invalidEmails.forEach((email) => assert.equal(isValidContactEmail(email), false, email));
+  for (const email of INVALID_CONTACT_EMAILS) {
+    assert.equal(
+      validationModule.validateContactEmail(email),
+      null,
+      `Debe rechazar ${JSON.stringify(email)}`
+    );
+  }
 });
 
-test("el formulario utiliza el validador alineado con el backend", async () => {
+test("el formulario valida el correo sin realizar una petición adicional", async () => {
   const source = await readFile(
     new URL("../src/components/Form.tsx", import.meta.url),
     "utf8"
   );
 
-  assert.match(source, /import \{ isValidContactEmail \} from "\.\.\/utils\/contactEmailValidation"/);
-  assert.match(source, /setIsValidEmail\(isValidContactEmail\(value\)\)/);
-  assert.doesNotMatch(source, /validator\.isEmail/);
+  assert.match(source, /isValidContactEmail\(formData\.email\)/);
+  assert.match(source, /type="text"[\s\S]*?inputMode="email"/);
+  assert.doesNotMatch(source, /validateContactEmailWithBackend|emailValidationStatus|aria-busy|validar-email/);
+  assert.doesNotMatch(source, /type="email"|validator\.isEmail/);
 });
 
 test("restaurar personalización desde otra pestaña no reemplaza su idioma", async () => {

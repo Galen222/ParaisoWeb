@@ -1,108 +1,107 @@
-import validator from "validator";
+const MAX_EMAIL_LENGTH = 254;
+const MAX_LOCAL_PART_LENGTH = 64;
+const MAX_DOMAIN_LENGTH = 253;
+const MAX_DOMAIN_LABEL_LENGTH = 63;
+const MIN_TOP_LEVEL_DOMAIN_LENGTH = 2;
 
-const MAX_EMAIL_BYTES = 254;
-const MAX_DOMAIN_BYTES = 253;
-const MAX_DOMAIN_LABEL_BYTES = 63;
-const IDNA_NORMALIZATION_SUFFIX = ".invalid";
-const IDNA_DOT_EQUIVALENTS_PATTERN = /[\u3002\uFF0E\uFF61]/g;
-// EmailStr rechaza caracteres Unicode de control/formato/uso privado y separadores.
-const UNSUPPORTED_EMAIL_CHARACTER_PATTERN = /[\p{C}\p{Z}]/u;
-const SPECIAL_USE_DOMAIN_SUFFIXES = new Set(["arpa", "invalid", "local", "localhost", "onion", "test"]);
+const LOCAL_PART_PATTERN = /^[A-Za-z0-9!#$%&'*+/=?^_`{|}~.-]+$/;
+const DOMAIN_INITIAL_CHARACTER_PATTERN = /^[\p{L}\p{N}]$/u;
+const DOMAIN_CHARACTER_PATTERN = /^[\p{L}\p{N}\p{M}]$/u;
+const DOMAIN_LETTER_PATTERN = /^\p{L}$/u;
+const DOMAIN_MARK_PATTERN = /^\p{M}$/u;
 
 /**
- * Convierte el dominio a su representación ASCII aplicando la misma normalización IDNA
- * que usa el navegador. El sufijo temporal evita que WHATWG URL interprete como IPv4
- * dominios válidos cuyo último label tiene aspecto hexadecimal, por ejemplo `0xb`.
+ * Valida literalmente el correo escrito por el usuario.
+ *
+ * No recorta espacios, no cambia mayúsculas/minúsculas, no normaliza Unicode y
+ * no transforma el dominio a punycode. El backend aplica las mismas reglas en
+ * Python antes de procesar el formulario.
+ *
+ * Reglas del formulario:
+ * - una única dirección simple con exactamente un carácter `@`;
+ * - parte local ASCII de tipo dot-atom, con un máximo de 64 caracteres;
+ * - dominio con letras Unicode, números, marcas combinantes y guiones;
+ * - al menos dos etiquetas y un sufijo final de dos caracteres con alguna letra;
+ * - máximos de 63 caracteres por etiqueta, 253 para el dominio y 254 en total.
  */
-const normalizeDomainToAscii = (domain: string): string | null => {
-  try {
-    const normalizedHost = new URL(`http://${domain}${IDNA_NORMALIZATION_SUFFIX}`).hostname.toLowerCase();
-    if (!normalizedHost.endsWith(IDNA_NORMALIZATION_SUFFIX)) {
+export const validateContactEmail = (value: string): string | null => {
+  const valueCharacters = Array.from(value);
+  if (valueCharacters.length === 0 || valueCharacters.length > MAX_EMAIL_LENGTH) {
+    return null;
+  }
+
+  const separatorIndex = value.indexOf("@");
+  if (
+    separatorIndex <= 0 ||
+    separatorIndex !== value.lastIndexOf("@") ||
+    separatorIndex === value.length - 1
+  ) {
+    return null;
+  }
+
+  const localPart = value.slice(0, separatorIndex);
+  const domain = value.slice(separatorIndex + 1);
+  const localCharacters = Array.from(localPart);
+  const domainCharacters = Array.from(domain);
+
+  if (
+    localCharacters.length > MAX_LOCAL_PART_LENGTH ||
+    domainCharacters.length > MAX_DOMAIN_LENGTH ||
+    !LOCAL_PART_PATTERN.test(localPart) ||
+    localPart.startsWith(".") ||
+    localPart.endsWith(".") ||
+    localPart.includes("..")
+  ) {
+    return null;
+  }
+
+  const labels = domain.split(".");
+  if (labels.length < 2) {
+    return null;
+  }
+
+  for (const label of labels) {
+    const labelCharacters = Array.from(label);
+    if (labelCharacters.length === 0 || labelCharacters.length > MAX_DOMAIN_LABEL_LENGTH) {
       return null;
     }
 
-    return normalizedHost.slice(0, -IDNA_NORMALIZATION_SUFFIX.length);
-  } catch {
+    if (!DOMAIN_INITIAL_CHARACTER_PATTERN.test(labelCharacters[0])) {
+      return null;
+    }
+
+    if (labelCharacters[labelCharacters.length - 1] === "-") {
+      return null;
+    }
+
+    let previousWasHyphen = false;
+    for (const character of labelCharacters) {
+      if (character === "-") {
+        previousWasHyphen = true;
+        continue;
+      }
+
+      if (!DOMAIN_CHARACTER_PATTERN.test(character)) {
+        return null;
+      }
+      if (previousWasHyphen && DOMAIN_MARK_PATTERN.test(character)) {
+        return null;
+      }
+      previousWasHyphen = false;
+    }
+  }
+
+  const topLevelDomain = Array.from(labels[labels.length - 1]);
+  if (
+    topLevelDomain.length < MIN_TOP_LEVEL_DOMAIN_LENGTH ||
+    !topLevelDomain.some((character) => DOMAIN_LETTER_PATTERN.test(character))
+  ) {
     return null;
   }
+
+  return value;
 };
 
-/** Comprueba si el dominio pertenece a un sufijo reservado que el backend tampoco admite. */
-const isSpecialUseDomain = (asciiDomain: string): boolean =>
-  Array.from(SPECIAL_USE_DOMAIN_SUFFIXES).some(
-    (suffix) => asciiDomain === suffix || asciiDomain.endsWith(`.${suffix}`)
-  );
-
-/**
- * Valida el correo del formulario con las mismas fronteras que Pydantic `EmailStr`.
- * `validator` cubre el átomo local y la sintaxis básica; las comprobaciones adicionales
- * alinean IDNA, longitud UTF-8, TLD y dominios reservados con la validación del backend.
- */
-export const isValidContactEmail = (value: string): boolean => {
-  const email = value.trim();
-
-  if (
-    email.length === 0 ||
-    email.includes('"') ||
-    UNSUPPORTED_EMAIL_CHARACTER_PATTERN.test(email)
-  ) {
-    return false;
-  }
-
-  const separatorIndex = email.lastIndexOf("@");
-  if (
-    separatorIndex <= 0 ||
-    separatorIndex !== email.indexOf("@") ||
-    separatorIndex === email.length - 1
-  ) {
-    return false;
-  }
-
-  const domain = email.slice(separatorIndex + 1);
-  // UTS #46 trata estos tres separadores como puntos ASCII. EmailStr aplica esa
-  // normalización IDNA, por lo que el navegador debe validar la misma dirección.
-  const normalizedDomain = domain.replace(IDNA_DOT_EQUIVALENTS_PATTERN, ".");
-  if (!normalizedDomain.includes(".")) {
-    return false;
-  }
-
-  // EmailStr aplica IDNA antes de validar la sintaxis del dominio. Hacerlo también
-  // aquí permite caracteres de compatibilidad válidos, como letras de ancho completo.
-  const asciiDomain = normalizeDomainToAscii(normalizedDomain);
-  if (asciiDomain === null || asciiDomain.length > MAX_DOMAIN_BYTES) {
-    return false;
-  }
-
-  const normalizedEmail = `${email.slice(0, separatorIndex)}@${asciiDomain}`;
-  // EmailStr admite TLD de un carácter y no aplica el límite histórico de 64 bytes
-  // a la parte local, pero sí limita la dirección normalizada completa a 254 bytes.
-  if (
-    new TextEncoder().encode(normalizedEmail).length > MAX_EMAIL_BYTES ||
-    !validator.isEmail(normalizedEmail, {
-      require_tld: false,
-      ignore_max_length: true,
-      blacklisted_chars: '"',
-    })
-  ) {
-    return false;
-  }
-
-  const labels = asciiDomain.split(".");
-  if (
-    labels.length < 2 ||
-    labels.some((label) => label.length === 0 || label.length > MAX_DOMAIN_LABEL_BYTES)
-  ) {
-    return false;
-  }
-
-  const topLevelDomain = labels[labels.length - 1];
-  if (!topLevelDomain || !/[a-z]$/i.test(topLevelDomain) || isSpecialUseDomain(asciiDomain)) {
-    return false;
-  }
-
-  // RFC 5890 reserva el patrón de dos caracteres seguidos de `--` exclusivamente
-  // para etiquetas Punycode que empiecen por `xn--`.
-  return labels.every(
-    (label) => !(label.length >= 4 && label.slice(2, 4) === "--" && !label.startsWith("xn--"))
-  );
-};
+/** Indica si el correo literal cumple las reglas del formulario. */
+export const isValidContactEmail = (value: string): boolean =>
+  validateContactEmail(value) !== null;

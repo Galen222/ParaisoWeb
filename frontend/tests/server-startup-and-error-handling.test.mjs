@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { createServer } from "node:http";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { createRequire } from "node:module";
 
@@ -79,4 +80,43 @@ test("un error síncrono del manejador devuelve 500 sin escapar del listener", a
   assert.equal(response.writableEnded, true);
   assert.equal(loggedErrors.length, 1);
   assert.equal(loggedErrors[0][0], expectedError);
+});
+
+test("el arranque de producción fuerza NODE_ENV antes de cargar Next.js", async () => {
+  const source = await readFile(new URL("../server.cjs", import.meta.url), "utf8");
+  const environmentAssignmentIndex = source.indexOf('process.env.NODE_ENV = "production";');
+  const nextImportIndex = source.indexOf('const next = require("next");');
+
+  assert.ok(environmentAssignmentIndex >= 0);
+  assert.ok(nextImportIndex > environmentAssignmentIndex);
+  assert.doesNotMatch(source, /process\.env\.NODE_ENV\s*\|\|=/);
+});
+
+test("un fallo después de enviar cabeceras corta la respuesta sin corromper su contenido", async () => {
+  const expectedError = new Error("fallo después de iniciar la respuesta");
+  const response = {
+    headersSent: true,
+    writableEnded: false,
+    endCalls: 0,
+    destroyedWith: null,
+    end() {
+      this.endCalls += 1;
+      this.writableEnded = true;
+    },
+    destroy(error) {
+      this.destroyedWith = error;
+      this.writableEnded = true;
+    },
+  };
+  const loggedErrors = [];
+  const logger = { error: (error) => loggedErrors.push(error) };
+  const listener = createRequestListener(() => Promise.reject(expectedError), logger);
+
+  listener({ url: "/blog" }, response);
+  await new Promise((resolve) => setImmediate(resolve));
+
+  assert.equal(response.endCalls, 0);
+  assert.equal(response.destroyedWith, expectedError);
+  assert.equal(response.writableEnded, true);
+  assert.deepEqual(loggedErrors, [expectedError]);
 });

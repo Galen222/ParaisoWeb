@@ -61,10 +61,18 @@ function createRequestListener(handle, logger = frontendServerLogger) {
       .then(() => handle(request, response))
       .catch((error) => {
         logger.error(error);
-        if (!response.headersSent) {
-          response.statusCode = 500;
-          response.setHeader("Content-Type", "text/plain; charset=utf-8");
+        if (response.headersSent) {
+          // Una respuesta que ya empezó no puede convertirse de forma fiable en
+          // un 500. Se corta la conexión para no adjuntar texto de error a HTML
+          // parcial y devolver accidentalmente una página corrupta con estado 200.
+          if (!response.writableEnded) {
+            response.destroy(error instanceof Error ? error : undefined);
+          }
+          return;
         }
+
+        response.statusCode = 500;
+        response.setHeader("Content-Type", "text/plain; charset=utf-8");
         if (!response.writableEnded) response.end("Internal Server Error");
       });
   };
@@ -92,7 +100,7 @@ function listenServer(server, port, hostname) {
 }
 
 async function startServer(logger = frontendServerLogger) {
-  process.env.NODE_ENV ||= "production";
+  process.env.NODE_ENV = "production";
 
   const next = require("next");
   const port = resolvePort(process.env.PORT);

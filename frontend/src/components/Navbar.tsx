@@ -82,9 +82,13 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
   const { isSticky } = useStickyNav(navbarMenuRef, !isMobile);
   const previousIsMobileRef = useRef(isMobile);
 
-  /** Marca únicamente el enlace que representa la página actual. */
-  const getCurrentPageAria = (href: string): "page" | undefined =>
-    router.pathname === href ? "page" : undefined;
+  /** Marca el enlace que representa la página actual, incluidas las entradas del blog. */
+  const getCurrentPageAria = (href: string): "page" | undefined => {
+    const isCurrentPage =
+      router.pathname === href ||
+      (href === "/blog" && router.pathname.startsWith("/blog/"));
+    return isCurrentPage ? "page" : undefined;
+  };
 
   const handleLinkClick = () => {
     closeMobileMenu();
