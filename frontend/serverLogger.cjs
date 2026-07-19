@@ -20,6 +20,7 @@ const LEVEL_PRIORITY = {
 const DEFAULT_MAX_BYTES = 10 * 1024 * 1024;
 const DEFAULT_BACKUP_COUNT = 10;
 const LOG_FILENAME = "frontend.log";
+const LOG_CONTROL_CHARACTERS = /[\u0000-\u001f\u007f-\u009f\u2028\u2029]+/g;
 let reportedWriteFailure = false;
 
 function parsePositiveInteger(value, fallback) {
@@ -48,16 +49,26 @@ function configuredLogPath() {
   return { directory, logPath: path.join(directory, LOG_FILENAME) };
 }
 
-function formatValue(value) {
-  if (typeof value === "string") return value;
-  if (value instanceof Error) return value.stack || `${value.name}: ${value.message}`;
+function sanitizeLogValue(value) {
+  return value.replace(LOG_CONTROL_CHARACTERS, " ").replace(/\s+/g, " ").trim();
+}
 
-  return inspect(value, {
-    breakLength: Number.POSITIVE_INFINITY,
-    compact: true,
-    depth: 5,
-    maxArrayLength: 50,
-  });
+function formatValue(value) {
+  let formattedValue;
+  if (typeof value === "string") formattedValue = value;
+  else if (value instanceof Error) formattedValue = value.stack || `${value.name}: ${value.message}`;
+  else {
+    formattedValue = inspect(value, {
+      breakLength: Number.POSITIVE_INFINITY,
+      compact: true,
+      depth: 5,
+      maxArrayLength: 50,
+    });
+  }
+
+  // Cada llamada debe ocupar una sola línea para que datos externos no puedan
+  // falsificar entradas adicionales ni romper el formato del archivo.
+  return sanitizeLogValue(formattedValue);
 }
 
 function rotateLogFile(logPath, maxBytes, backupCount, incomingBytes) {

@@ -158,12 +158,9 @@ def create_app() -> FastAPI:
             "database": "available" if database_available else "unavailable",
         }
 
-    # FastAPI parsea formularios y archivos antes de ejecutar dependencias de ruta.
-    # Esta barrera valida todos los endpoints protegidos y, en contacto, rechaza el
-    # token antes de que Starlette lea o escriba el cuerpo multipart.
-    app.add_middleware(ContactTokenGuardMiddleware)
-
     # Rechaza cuerpos excesivos antes de que el parser multipart procese el adjunto.
+    # Se registra antes que la barrera de token porque Starlette ejecuta los middlewares
+    # en orden inverso al alta: así la autenticación sigue siendo la primera comprobación.
     app.add_middleware(
         RequestSizeLimitMiddleware,
         rules=[
@@ -174,6 +171,11 @@ def create_app() -> FastAPI:
             )
         ],
     )
+
+    # FastAPI parsea formularios y archivos antes de ejecutar dependencias de ruta.
+    # Esta barrera valida todos los endpoints protegidos y, en contacto, rechaza el
+    # token antes de validar el encuadre o leer el cuerpo multipart.
+    app.add_middleware(ContactTokenGuardMiddleware)
 
     # Impide que respuestas autenticadas o con datos de la API queden almacenadas
     # en navegadores, proxies o CDN. El sitemap público de Next.js mantiene su propia caché.

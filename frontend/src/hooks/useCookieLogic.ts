@@ -89,6 +89,7 @@ export function useCookieLogic(): CookieLogic {
 
   // Recuerda que el modal se cerró solo para consultar una política, no por una decisión.
   const [isReviewingConsentPolicy, setIsReviewingConsentPolicy] = useState(false);
+  const isReviewingConsentPolicyRef = useRef(false);
 
   // Hook de Next.js para acceder al enrutador
   const router = useRouter();
@@ -209,7 +210,7 @@ export function useCookieLogic(): CookieLogic {
     const synchronizeConsent = () => {
       // Mientras se consulta una política desde el modal, una ausencia de preferencia
       // debe seguir esperando a que el usuario abandone la página legal.
-      if (isReviewingConsentPolicy && !getCookieValue(COOKIE_CONSENT_NAME)) {
+      if (isReviewingConsentPolicyRef.current && !getCookieValue(COOKIE_CONSENT_NAME)) {
         return;
       }
       restoreSavedConsent();
@@ -234,7 +235,7 @@ export function useCookieLogic(): CookieLogic {
       window.removeEventListener("focus", synchronizeConsent);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [isReviewingConsentPolicy, restoreSavedConsent]);
+  }, [restoreSavedConsent]);
 
   /**
    * Efecto para guardar cambios reales de idioma si ya se había aceptado la personalización.
@@ -260,6 +261,7 @@ export function useCookieLogic(): CookieLogic {
    */
   useEffect(() => {
     const handleConsentCleared = () => {
+      isReviewingConsentPolicyRef.current = false;
       setIsReviewingConsentPolicy(false);
       setShowCookieModal(true);
       setCookiesModalClosed(false);
@@ -286,6 +288,7 @@ export function useCookieLogic(): CookieLogic {
     const reopenModalTimeout = window.setTimeout(() => {
       setShowCookieModal(true);
       setCookiesModalClosed(false);
+      isReviewingConsentPolicyRef.current = false;
       setIsReviewingConsentPolicy(false);
     }, 0);
 
@@ -314,10 +317,15 @@ export function useCookieLogic(): CookieLogic {
   const handleCookiesPolicyLinkClick = async () => {
     setShowCookieModal(false);
     setCookiesModalClosed(true);
+    // El ref protege la sincronización por foco o visibilidad desde el mismo instante
+    // del clic, sin activar todavía el efecto que reabre el modal fuera de páginas legales.
+    isReviewingConsentPolicyRef.current = true;
 
     try {
       const navigationCompleted = await router.push("/politica-cookies");
       if (!navigationCompleted) {
+        isReviewingConsentPolicyRef.current = false;
+        setIsReviewingConsentPolicy(false);
         setShowCookieModal(true);
         setCookiesModalClosed(false);
       } else {
@@ -328,6 +336,8 @@ export function useCookieLogic(): CookieLogic {
         "No se pudo abrir la política de cookies:",
         error instanceof Error ? error.message : "Error de navegación desconocido"
       );
+      isReviewingConsentPolicyRef.current = false;
+      setIsReviewingConsentPolicy(false);
       setShowCookieModal(true);
       setCookiesModalClosed(false);
     }
@@ -342,10 +352,14 @@ export function useCookieLogic(): CookieLogic {
   const handlePrivacyPolicyLinkClick = async () => {
     setShowCookieModal(false);
     setCookiesModalClosed(true);
+    // Evita que un evento de foco o visibilidad restaure el modal mientras se resuelve la ruta.
+    isReviewingConsentPolicyRef.current = true;
 
     try {
       const navigationCompleted = await router.push("/politica-privacidad");
       if (!navigationCompleted) {
+        isReviewingConsentPolicyRef.current = false;
+        setIsReviewingConsentPolicy(false);
         setShowCookieModal(true);
         setCookiesModalClosed(false);
       } else {
@@ -356,6 +370,8 @@ export function useCookieLogic(): CookieLogic {
         "No se pudo abrir la política de privacidad:",
         error instanceof Error ? error.message : "Error de navegación desconocido"
       );
+      isReviewingConsentPolicyRef.current = false;
+      setIsReviewingConsentPolicy(false);
       setShowCookieModal(true);
       setCookiesModalClosed(false);
     }
@@ -369,6 +385,7 @@ export function useCookieLogic(): CookieLogic {
    * - Cierra el modal de cookies.
    */
   const handleAcceptCookies = () => {
+    isReviewingConsentPolicyRef.current = false;
     setIsReviewingConsentPolicy(false);
     // Retira de inmediato las cookies de las categorías que el usuario acaba de desactivar.
     revokeCookieCategories({
@@ -416,6 +433,7 @@ export function useCookieLogic(): CookieLogic {
    * - Cierra el modal de cookies.
    */
   const handleDeclineAllCookies = () => {
+    isReviewingConsentPolicyRef.current = false;
     setIsReviewingConsentPolicy(false);
     // Rechazar no solo cambia el estado: también retira las cookies opcionales ya creadas.
     revokeCookieCategories({ analysis: true, googleAnalytics: true, personalization: true });
@@ -433,6 +451,7 @@ export function useCookieLogic(): CookieLogic {
    * - Cierra el modal de cookies.
    */
   const handleAcceptAllCookies = () => {
+    isReviewingConsentPolicyRef.current = false;
     setIsReviewingConsentPolicy(false);
     setAcceptCookieAnalysis(true);
     setCookieConsentAnalysis(true);

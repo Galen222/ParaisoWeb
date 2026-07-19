@@ -24,6 +24,7 @@ const LEVEL_PRIORITY: Record<LogLevel, number> = {
 const DEFAULT_MAX_BYTES = 10 * 1024 * 1024;
 const DEFAULT_BACKUP_COUNT = 10;
 const LOG_FILENAME = "frontend.log";
+const LOG_CONTROL_CHARACTERS = /[\u0000-\u001f\u007f-\u009f\u2028\u2029]+/g;
 const configuredLogDirectory = process.env.FRONTEND_LOG_DIR?.trim();
 const LOG_DIRECTORY = configuredLogDirectory
   ? path.resolve(/* turbopackIgnore: true */ configuredLogDirectory)
@@ -51,20 +52,27 @@ const configuredLevel = (): LogLevel => {
   return candidate && candidate in LEVEL_PRIORITY ? (candidate as LogLevel) : "info";
 };
 
+const sanitizeLogValue = (value: string): string =>
+  value.replace(LOG_CONTROL_CHARACTERS, " ").replace(/\s+/g, " ").trim();
+
 const formatValue = (value: unknown): string => {
+  let formattedValue: string;
   if (typeof value === "string") {
-    return value;
-  }
-  if (value instanceof Error) {
-    return value.stack || `${value.name}: ${value.message}`;
+    formattedValue = value;
+  } else if (value instanceof Error) {
+    formattedValue = value.stack || `${value.name}: ${value.message}`;
+  } else {
+    formattedValue = inspect(value, {
+      breakLength: Number.POSITIVE_INFINITY,
+      compact: true,
+      depth: 5,
+      maxArrayLength: 50,
+    });
   }
 
-  return inspect(value, {
-    breakLength: Number.POSITIVE_INFINITY,
-    compact: true,
-    depth: 5,
-    maxArrayLength: 50,
-  });
+  // Cada llamada debe ocupar una sola línea para que datos externos no puedan
+  // falsificar entradas adicionales ni romper el formato del archivo.
+  return sanitizeLogValue(formattedValue);
 };
 
 const rotateLogFile = (logPath: string, maxBytes: number, backupCount: number, incomingBytes: number): void => {

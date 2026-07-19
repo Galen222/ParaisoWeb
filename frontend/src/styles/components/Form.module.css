@@ -214,10 +214,18 @@
 }
 
 .captchaError {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
   margin-top: 8px;
   color: #b00020;
   font-weight: bold;
   text-align: center;
+}
+
+.captchaRetryButton {
+  font-weight: normal;
 }
 
 /* Evita que el widget de 304 píxeles se corte en móviles muy estrechos. */

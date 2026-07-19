@@ -1,6 +1,6 @@
 // pages/charcuteria.tsx
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { useIntl } from "react-intl";
 import Loader from "../components/Loader";
@@ -118,6 +118,21 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
     itemsPerPage: 6,
     initialPage: 1,
   });
+
+  useEffect(() => {
+    // Al cambiar de página o idioma, la tarjeta anterior puede desmontarse sin emitir
+    // mouseleave. Se limpia en una microtarea para que no reaparezca girada al volver.
+    let cancelled = false;
+    queueMicrotask(() => {
+      if (!cancelled) {
+        setHoveredCardId(null);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [currentLocale, currentPage]);
 
   // Seguimiento de la visita a la página "charcuteria" para análisis interno y Google Analytics
   useVisitedPageTracking("charcuteria");

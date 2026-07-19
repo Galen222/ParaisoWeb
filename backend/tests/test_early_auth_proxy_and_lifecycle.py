@@ -6,6 +6,7 @@ import unittest
 from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI, HTTPException, Request
+from fastapi.testclient import TestClient
 
 from backend import main
 from backend.dependencies import verify_local_request
@@ -53,6 +54,18 @@ class ContactTokenGuardTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(inner_called)
         self.assertFalse(receive_called)
         self.assertEqual(sent[0]["status"], 401)
+
+    def test_contacto_sin_token_se_rechaza_antes_de_validar_content_length(self) -> None:
+        app = main.create_app()
+        client = TestClient(app)
+
+        response = client.post(
+            "/api/contacto",
+            headers={"Content-Length": str(main.settings.CONTACT_MAX_REQUEST_BYTES + 1)},
+        )
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.json(), {"detail": "Token no proporcionado"})
 
     async def test_contacto_con_cabeceras_de_token_duplicadas_no_lee_el_cuerpo(self) -> None:
         receive_called = False

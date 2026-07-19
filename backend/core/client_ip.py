@@ -114,10 +114,13 @@ def resolve_client_host(
     if direct_host not in trusted_hosts:
         return direct_host
 
-    # Las cabeceras repetidas son ambiguas: proxies y servidores ASGI pueden conservarlas,
-    # concatenarlas o escoger una de ellas. Para el rate limit se falla de forma segura
-    # usando el peer directo; los endpoints exclusivamente locales las rechazan aparte.
-    if has_ambiguous_forwarding_headers(request, logger):
+    # Las cabeceras repetidas o malformadas son ambiguas: proxies y servidores ASGI pueden
+    # conservarlas, concatenarlas o interpretarlas de forma distinta. Para el rate limit se
+    # falla de forma segura usando el peer directo; los endpoints locales las rechazan aparte.
+    if has_ambiguous_forwarding_headers(request, logger) or has_invalid_forwarding_headers(
+        request,
+        logger,
+    ):
         return direct_host
 
     forwarded_for = _single_forwarding_header(request, b"x-forwarded-for")
@@ -128,12 +131,7 @@ def resolve_client_host(
     for candidate in reversed(forwarded_chain):
         normalized_candidate = normalize_forwarded_ip(candidate)
         if normalized_candidate is None:
-            if logger is not None:
-                logger.warning(
-                    "Entrada inválida de X-Forwarded-For ignorada desde proxy confiable"
-                )
-            continue
-
+            return direct_host
         if normalized_candidate not in trusted_hosts:
             return normalized_candidate
 

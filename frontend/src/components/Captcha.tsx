@@ -19,6 +19,7 @@ const Captcha: React.FC<CaptchaProps> = ({ onTokenChange, resetSignal }): React.
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY?.trim() ?? "";
   const hasUsableSiteKey = siteKey !== "" && siteKey !== "cambiar_por_clave_publica_de_recaptcha";
   const [hasLoadError, setHasLoadError] = useState(!hasUsableSiteKey);
+  const [loadAttempt, setLoadAttempt] = useState(0);
 
   useEffect(() => {
     onTokenChangeRef.current = onTokenChange;
@@ -73,7 +74,32 @@ const Captcha: React.FC<CaptchaProps> = ({ onTokenChange, resetSignal }): React.
     return () => {
       active = false;
     };
-  }, [hasUsableSiteKey, siteKey]);
+  }, [hasUsableSiteKey, loadAttempt, siteKey]);
+
+  const handleRetry = (): void => {
+    if (!hasUsableSiteKey) {
+      return;
+    }
+
+    setHasLoadError(false);
+    onTokenChangeRef.current(null);
+
+    const widgetId = widgetIdRef.current;
+    if (widgetId !== null && window.grecaptcha) {
+      try {
+        // Un error del widget ya renderizado se recupera reiniciándolo.
+        window.grecaptcha.reset(widgetId);
+        return;
+      } catch {
+        // Si la instancia quedó dañada, se elimina el contenido antes de renderizar
+        // otra para no acumular iframes ni conservar un identificador inutilizable.
+      }
+    }
+
+    widgetIdRef.current = null;
+    containerRef.current?.replaceChildren();
+    setLoadAttempt((currentAttempt) => currentAttempt + 1);
+  };
 
   useEffect(() => {
     const widgetId = widgetIdRef.current;
@@ -87,9 +113,18 @@ const Captcha: React.FC<CaptchaProps> = ({ onTokenChange, resetSignal }): React.
     <div className={styles.captchaContainer}>
       <div ref={containerRef} className={styles.captchaWidget} />
       {hasLoadError && (
-        <span className={styles.captchaError} role="alert">
-          {intl.formatMessage({ id: "contacto_CaptchaError" })}
-        </span>
+        <div className={styles.captchaError} role="alert">
+          <span>{intl.formatMessage({ id: "contacto_CaptchaError" })}</span>
+          {hasUsableSiteKey && (
+            <button
+              type="button"
+              className={`btn btn-outline-secondary ${styles.captchaRetryButton}`}
+              onClick={handleRetry}
+            >
+              {intl.formatMessage({ id: "contacto_CaptchaReintentar" })}
+            </button>
+          )}
+        </div>
       )}
     </div>
   );

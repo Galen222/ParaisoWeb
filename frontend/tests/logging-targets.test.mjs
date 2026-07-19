@@ -227,6 +227,52 @@ test("el proceso que arranca Next también obedece el destino de log", async () 
   }
 });
 
+test("los loggers de archivo neutralizan saltos de línea y caracteres de control", async () => {
+  const directory = await mkdtemp(path.join(tmpdir(), "paraisoweb-log-integrity-"));
+
+  try {
+    await withEnvironment(
+      {
+        FRONTEND_LOG_TARGET: "archivo",
+        FRONTEND_LOG_LEVEL: "info",
+        FRONTEND_LOG_DIR: path.join(directory, "typescript"),
+      },
+      async () => {
+        const { frontendLogger } = await loadTypeScriptModule("../src/server/frontendLogger.ts");
+        frontendLogger.info("entrada válida\n2026-01-01T00:00:00.000Z | ERROR | entrada falsa");
+        frontendLogger.error(new Error("fallo\r\ncontrolado\u2028sin separar"));
+      }
+    );
+
+    await withEnvironment(
+      {
+        FRONTEND_LOG_TARGET: "archivo",
+        FRONTEND_LOG_LEVEL: "info",
+        FRONTEND_LOG_DIR: path.join(directory, "commonjs"),
+      },
+      async () => {
+        const { frontendServerLogger } = require("../serverLogger.cjs");
+        frontendServerLogger.info("inicio\tservidor", { detail: "dato\nexterno" });
+        frontendServerLogger.error("fallo\u2029controlado");
+      }
+    );
+
+    for (const loggerDirectory of ["typescript", "commonjs"]) {
+      const contents = await readFile(
+        path.join(directory, loggerDirectory, "frontend.log"),
+        "utf8"
+      );
+      const lines = contents.trimEnd().split("\n");
+
+      assert.equal(lines.length, 2);
+      assert.ok(lines.every((line) => /^\d{4}-\d{2}-\d{2}T[^|]+ \| (?:INFO|ERROR) \| /.test(line)));
+      assert.doesNotMatch(contents, /[\r\u0000-\u0009\u000b-\u001f\u007f-\u009f\u2028\u2029]/);
+    }
+  } finally {
+    await rm(directory, { recursive: true, force: true });
+  }
+});
+
 test("las rutas SSR usan el logger de servidor sin enviarlo al navegador", async () => {
   const [blogPage, sitemapPage, clientLogger, serverLogger] = await Promise.all([
     readSource(new URL("../src/pages/blog/[slug].tsx", import.meta.url), "utf8"),
