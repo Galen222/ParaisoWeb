@@ -22,8 +22,11 @@ class CaptchaService:
 
     async def verify(self, token: str, client_ip: str | None = None) -> None:
         """Rechaza tokens ausentes, inválidos, reutilizados o emitidos para otro host."""
+        if not isinstance(token, str) or len(token) > MAX_RECAPTCHA_TOKEN_LENGTH:
+            raise HTTPException(status_code=400, detail="Verificación CAPTCHA no válida")
+
         normalized_token = token.strip()
-        if not normalized_token or len(normalized_token) > MAX_RECAPTCHA_TOKEN_LENGTH:
+        if not normalized_token:
             raise HTTPException(status_code=400, detail="Verificación CAPTCHA no válida")
 
         secret_key = settings.RECAPTCHA_SECRET_KEY.strip()

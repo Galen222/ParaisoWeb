@@ -62,7 +62,7 @@ test("el nombre rechazado informa del error y bloquea el envío", async () => {
   assert.match(source, /!hasNameValidationError &&[\s\S]*?isContactFormComplete/);
 });
 
-test("los controles no admitidos del mensaje se anuncian y bloquean el envío", async () => {
+test("los mensajes invisibles o con controles se anuncian y bloquean el envío", async () => {
   const [source, es, en, de, fr] = await Promise.all([
     readSource("../src/components/Form.tsx"),
     readSource("../src/locales/es/common.json"),
@@ -72,7 +72,10 @@ test("los controles no admitidos del mensaje se anuncian y bloquean el envío", 
   ]);
 
   assert.match(source, /setFormData\(\(current\) => \(\{ \.\.\.current, \[name\]: limitedValue \}\)\)/);
-  assert.match(source, /setHasInvalidMessageInput\(containsUnsupportedContactMessageControl\(limitedValue\)\)/);
+  assert.match(
+    source,
+    /setHasInvalidMessageInput\([\s\S]*?containsUnsupportedContactMessageControl\(limitedValue\)[\s\S]*?!hasVisibleContactMessageCharacter\(limitedValue\)[\s\S]*?\)/
+  );
   assert.match(source, /aria-invalid=\{hasInvalidMessageInput\}/);
   assert.match(source, /id="messageValidationError" className=\{styles\.validationError\}[\s\S]*?contacto_MensajeCaracteresInvalidos/);
   assert.match(source, /!hasInvalidMessageInput &&[\s\S]*?isContactFormComplete/);

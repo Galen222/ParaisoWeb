@@ -314,7 +314,7 @@ class ContactForm(ContactEmail):
     @classmethod
     def validate_message(cls, v: str) -> str:
         """Rechaza mensajes vacíos o con controles invisibles incompatibles con el correo."""
-        if not v.strip():
+        if not v.strip() or not _has_visible_public_character(v):
             raise ValueError("El mensaje no puede estar vacío")
 
         # Se conservan tabuladores y saltos de línea normales. Otros caracteres Unicode

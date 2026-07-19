@@ -82,7 +82,7 @@ def has_safe_attachment_filename(filename: Optional[str]) -> bool:
         return False
     return not any(
         unicodedata.category(character).startswith("C")
-        or unicodedata.category(character) in {"Zl", "Zp"}
+        or (character != " " and unicodedata.category(character).startswith("Z"))
         for character in filename
     )
 

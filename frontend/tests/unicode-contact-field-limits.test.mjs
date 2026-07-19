@@ -64,3 +64,17 @@ test("el nombre rechaza controles y separadores invisibles aunque estén en los 
 
   assert.equal(containsUnsupportedContactNameCharacter("  Ana María  "), false);
 });
+
+
+test("el mensaje exige contenido visible aunque permita uniones Unicode", async () => {
+  const { hasVisibleContactMessageCharacter } = await loadTypeScriptModule(
+    "../src/utils/contactFormValidation.ts"
+  );
+
+  for (const value of ["\u200D", "\u200C", " \u200D\u200C "]) {
+    assert.equal(hasVisibleContactMessageCharacter(value), false, JSON.stringify(value));
+  }
+
+  assert.equal(hasVisibleContactMessageCharacter("👨‍👩‍👧‍👦"), true);
+  assert.equal(hasVisibleContactMessageCharacter("¿?"), true);
+});

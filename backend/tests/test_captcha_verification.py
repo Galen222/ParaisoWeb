@@ -66,9 +66,9 @@ class CaptchaVerificationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(context.exception.status_code, 400)
         self.assertEqual(context.exception.detail, "Verificación CAPTCHA no válida")
 
-    async def test_token_vacio_o_excesivo_se_rechaza_sin_consultar_google(self) -> None:
+    async def test_token_vacio_o_con_longitud_bruta_excesiva_se_rechaza_sin_consultar_google(self) -> None:
         with patch("backend.services.captcha_service.requests.post") as post:
-            for token in ("", "   ", "x" * 4097):
+            for token in ("", "   ", "x" * 4097, f"token-valido{' ' * 4090}"):
                 with self.subTest(token_length=len(token)), self.assertRaises(HTTPException) as context:
                     await CaptchaService().verify(token)
                 self.assertEqual(context.exception.status_code, 400)

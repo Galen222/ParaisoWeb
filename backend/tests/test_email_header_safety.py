@@ -27,6 +27,13 @@ class AttachmentFilenameSafetyTests(unittest.TestCase):
         self.assertNotIn("\u2028", sanitized)
         self.assertNotIn("\u2029", sanitized)
 
+    def test_elimina_separadores_de_espacio_unicode_sin_borrar_el_espacio_normal(self) -> None:
+        filename = "factura\u00a0julio\u2007 final.pdf"
+
+        sanitized = sanitize_attachment_filename(filename)
+
+        self.assertEqual(sanitized, "facturajulio final.pdf")
+
     def test_normaliza_unicode_y_conserva_un_nombre_legitimo(self) -> None:
         filename = "Jose\u0301-curriculum.pdf"
 

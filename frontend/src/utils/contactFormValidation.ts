@@ -43,6 +43,13 @@ export const containsUnsupportedContactNameCharacter = (value: string): boolean 
     character !== " " && /[\p{C}\p{Z}]/u.test(character)
   );
 
+/**
+ * Exige algún carácter visible. ZWNJ y ZWJ son válidos dentro de escrituras o
+ * emojis compuestos, pero no deben convertir por sí solos un mensaje vacío en válido.
+ */
+export const hasVisibleContactMessageCharacter = (value: string): boolean =>
+  Array.from(value).some((character) => /[\p{L}\p{N}\p{P}\p{S}]/u.test(character));
+
 interface ContactFormCompletenessData {
   reason: string;
   email: string;
@@ -63,7 +70,7 @@ export const isContactFormComplete = (
 ): boolean =>
   hasValidName &&
   data.email.trim() !== "" &&
-  data.message.trim() !== "" &&
+  hasVisibleContactMessageCharacter(data.message) &&
   data.reason !== "" &&
   isValidEmail &&
   isPrivacyChecked &&

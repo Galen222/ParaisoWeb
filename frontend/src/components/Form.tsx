@@ -13,6 +13,7 @@ import {
 import styles from "../styles/components/Form.module.css";
 import {
   containsUnsupportedContactNameCharacter,
+  hasVisibleContactMessageCharacter,
   isContactFormComplete,
   truncateContactMessage,
   truncateContactName,
@@ -170,7 +171,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     const { name, value } = e.target;
     const limitedValue = truncateContactMessage(value);
     setFormData((current) => ({ ...current, [name]: limitedValue }));
-    setHasInvalidMessageInput(containsUnsupportedContactMessageControl(limitedValue));
+    setHasInvalidMessageInput(
+      containsUnsupportedContactMessageControl(limitedValue) ||
+        (limitedValue !== "" && !hasVisibleContactMessageCharacter(limitedValue))
+    );
   };
 
   /**

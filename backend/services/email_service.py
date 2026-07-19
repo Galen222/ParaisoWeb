@@ -67,7 +67,7 @@ def sanitize_attachment_filename(filename: Optional[str]) -> str:
         character
         for character in normalized_basename
         if not unicodedata.category(character).startswith("C")
-        and unicodedata.category(character) not in {"Zl", "Zp"}
+        and (character == " " or not unicodedata.category(character).startswith("Z"))
     ).strip(" .")
     if not sanitized:
         return "adjunto"

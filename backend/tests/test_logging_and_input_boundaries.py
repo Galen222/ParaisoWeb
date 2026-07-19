@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient
 from backend.middleware.logging import get_error_message, sanitize_log_value
 from backend.models.schemas import ContactForm
 from backend.routers import blog
-from backend.services.file_service import FileService
+from backend.services.file_service import FileService, has_safe_attachment_filename
 
 
 class LoggingPrivacyTests(unittest.TestCase):
@@ -80,6 +80,34 @@ class ContactNameValidationTests(unittest.TestCase):
             message="Mensaje de prueba",
         )
         self.assertEqual(normalized.name, "Ana María")
+
+
+class ContactMessageValidationTests(unittest.TestCase):
+    def test_exige_contenido_visible_aunque_permita_uniones_unicode(self) -> None:
+        for value in ("\u200d", "\u200c", " \u200d\u200c "):
+            with self.subTest(value=repr(value)), self.assertRaises(ValueError):
+                ContactForm(
+                    name="Ana Pérez",
+                    reason="informacion",
+                    email="ana@example.com",
+                    message=value,
+                )
+
+        composed_emoji = ContactForm(
+            name="Ana Pérez",
+            reason="informacion",
+            email="ana@example.com",
+            message="👨‍👩‍👧‍👦",
+        )
+        self.assertEqual(composed_emoji.message, "👨‍👩‍👧‍👦")
+
+
+class AttachmentFilenameValidationTests(unittest.TestCase):
+    def test_rechaza_separadores_unicode_engañosos_y_conserva_espacios_normales(self) -> None:
+        self.assertFalse(has_safe_attachment_filename("factura\u00a0julio.pdf"))
+        self.assertFalse(has_safe_attachment_filename("factura\u2007julio.pdf"))
+        self.assertTrue(has_safe_attachment_filename("factura julio.pdf"))
+
 
 
 class AttachmentHeaderValidationTests(unittest.IsolatedAsyncioTestCase):
