@@ -16,6 +16,7 @@ Dependencias:
 """
 
 import math
+import unicodedata
 from ipaddress import IPv6Address, ip_address
 from pathlib import Path
 from typing import Literal
@@ -335,6 +336,11 @@ class Settings(BaseSettings):
 
         normalized_origins: list[str] = []
         for origin in raw_origins:
+            if any(
+                character.isspace() or unicodedata.category(character).startswith("C")
+                for character in origin
+            ):
+                raise ValueError(f"Origen CORS no válido: {origin}")
             if origin == "*":
                 raise ValueError("CORS_ALLOWED_ORIGINS no puede usar '*' con credenciales")
 

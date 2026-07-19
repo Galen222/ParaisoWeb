@@ -32,7 +32,11 @@ def _is_safe_public_asset_path(value: object) -> bool:
         return False
     if value.startswith("/") or "\\" in value or any(character in value for character in "?#"):
         return False
-    if any(unicodedata.category(character) in {"Cc", "Cf", "Zl", "Zp"} for character in value):
+    if any(
+        unicodedata.category(character).startswith("C")
+        or unicodedata.category(character) in {"Zl", "Zp"}
+        for character in value
+    ):
         return False
 
     for segment in value.split("/"):
@@ -59,7 +63,8 @@ def _is_safe_public_asset_path(value: object) -> bool:
             or "\\" in decoded_segment
             or any(character in decoded_segment for character in "?#")
             or any(
-                unicodedata.category(character) in {"Cc", "Cf", "Zl", "Zp"}
+                unicodedata.category(character).startswith("C")
+                or unicodedata.category(character) in {"Zl", "Zp"}
                 for character in decoded_segment
             )
         ):
@@ -100,8 +105,11 @@ def _require_safe_public_text(
     for character in value:
         category = unicodedata.category(character)
         if (
-            (category == "Cc" and character not in allowed_controls)
-            or (category == "Cf" and character not in ALLOWED_PUBLIC_FORMAT_CHARACTERS)
+            (
+                category.startswith("C")
+                and character not in allowed_controls
+                and character not in ALLOWED_PUBLIC_FORMAT_CHARACTERS
+            )
             or category in {"Zl", "Zp"}
             or character in BIDI_CONTROL_CHARACTERS
         ):

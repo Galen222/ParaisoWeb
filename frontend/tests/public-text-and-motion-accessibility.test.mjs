@@ -37,6 +37,19 @@ test("los textos públicos rechazan controles peligrosos sin bloquear formato no
   );
 });
 
+test("los textos públicos rechazan caracteres Unicode sin representación estable", async () => {
+  const { isSafePublicMultilineText, isSafePublicSingleLineText } =
+    await loadTypeScriptModule("../src/utils/publicText.ts");
+
+  for (const character of ["\uD800", "\uE000", "\u0378"]) {
+    assert.equal(isSafePublicSingleLineText(`Título${character}oculto`), false);
+    assert.equal(isSafePublicMultilineText(`Texto${character}oculto`), false);
+  }
+
+  assert.equal(isSafePublicSingleLineText("Idioma فارسی‌ معتبر"), true);
+  assert.equal(isSafePublicMultilineText("Familia 👨‍👩‍👧‍👦"), true);
+});
+
 test("blog y charcutería usan el mismo contrato de texto seguro", async () => {
   const [blogService, charcuteriaService] = await Promise.all([
     readFile(new URL("../src/services/blogService.ts", import.meta.url), "utf8"),

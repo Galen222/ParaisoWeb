@@ -20,8 +20,7 @@ const hasUnsupportedControl = (value: string, multiline: boolean): boolean =>
     }
 
     return (
-      /\p{Cc}/u.test(character) ||
-      (/\p{Cf}/u.test(character) && !ALLOWED_FORMAT_CHARACTERS.has(character)) ||
+      (/\p{C}/u.test(character) && !ALLOWED_FORMAT_CHARACTERS.has(character)) ||
       /[\p{Zl}\p{Zp}]/u.test(character) ||
       BIDI_CONTROL_PATTERN.test(character)
     );

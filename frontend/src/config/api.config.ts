@@ -4,6 +4,8 @@ export const READ_REQUEST_TIMEOUT_MS = 15000;
 export const CONTACT_REQUEST_TIMEOUT_MS = 120000;
 export const DOWNLOAD_REQUEST_TIMEOUT_MS = 30000;
 
+const RAW_URL_CONTROL_PATTERN = /[\u0000-\u001F\u007F]/u;
+
 /**
  * Valida una URL pública usada también durante SSR y elimina barras finales.
  * Las rutas relativas funcionan en el navegador, pero fallan en getServerSideProps,
@@ -13,6 +15,11 @@ export const requirePublicApiUrl = (value: string | undefined, variableName: str
   const trimmedValue = value?.trim();
   if (!trimmedValue) {
     throw new Error(`La variable de entorno ${variableName} no está definida.`);
+  }
+  if (RAW_URL_CONTROL_PATTERN.test(trimmedValue)) {
+    throw new Error(
+      `La variable de entorno ${variableName} contiene caracteres de control no permitidos.`
+    );
   }
 
   let parsedUrl: URL;

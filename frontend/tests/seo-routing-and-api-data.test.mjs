@@ -65,6 +65,46 @@ test("las rutas de imágenes procedentes de la API no pueden escapar de su carpe
   assert.equal(isSafePublicAssetPath("/imagen.png"), false);
 });
 
+test("las rutas públicas rechazan caracteres Unicode sin representación estable", async () => {
+  const { isSafePublicAssetPath } = await loadTypeScriptModule(
+    "../src/utils/publicAssetPath.ts"
+  );
+
+  for (const character of ["\uD800", "\uE000", "\u0378"]) {
+    assert.equal(isSafePublicAssetPath(`imagenes/foto${character}.png`), false);
+  }
+
+  assert.equal(isSafePublicAssetPath("imagenes/foto%EE%80%80.png"), false);
+  assert.equal(isSafePublicAssetPath("imagenes/foto%CD%B8.png"), false);
+  assert.equal(isSafePublicAssetPath("imagenes/foto-familia-👨‍👩‍👧‍👦.png"), false);
+  assert.equal(isSafePublicAssetPath("imagenes/foto-niñez.png"), true);
+});
+
+test("las URLs configuradas rechazan controles que el parser eliminaría", async () => {
+  const [{ normalizePublicSiteUrl }, { requirePublicApiUrl }] = await Promise.all([
+    loadTypeScriptModule("../src/utils/publicSiteUrl.ts"),
+    loadTypeScriptModule("../src/config/api.config.ts"),
+  ]);
+
+  for (const value of [
+    "https://exa\tmple.com",
+    "https://example.com\n.evil.test",
+    "https://example.com/base\r/oculta",
+  ]) {
+    assert.throws(() => normalizePublicSiteUrl(value));
+    assert.throws(() => requirePublicApiUrl(value, "API_URL"));
+  }
+
+  assert.equal(
+    normalizePublicSiteUrl("  https://www.paraisodeljamon.com/  "),
+    "https://www.paraisodeljamon.com"
+  );
+  assert.equal(
+    requirePublicApiUrl("  https://api.example.com/base/  ", "API_URL"),
+    "https://api.example.com/base"
+  );
+});
+
 test("las redirecciones de slugs traducidos conservan la consulta original", async () => {
   const [page, loader] = await Promise.all([
     readFile(new URL("../src/pages/blog/[slug].tsx", import.meta.url), "utf8"),

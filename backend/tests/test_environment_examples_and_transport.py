@@ -345,6 +345,33 @@ class EnvironmentExampleTests(unittest.TestCase):
                 Settings(**common, CORS_ALLOWED_ORIGINS=invalid_origin)
 
 
+    def test_cors_rechaza_controles_que_el_parser_eliminaria(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.test.local",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        for invalid_origin in (
+            "https://exa\tmple.com",
+            "https://example.com\n.evil.test",
+            "https://example.com\r.evil.test",
+        ):
+            with self.subTest(origin=repr(invalid_origin)), self.assertRaises(
+                ValidationError
+            ):
+                Settings(**common, CORS_ALLOWED_ORIGINS=invalid_origin)
+
+        settings = Settings(
+            **common, CORS_ALLOWED_ORIGINS="  https://example.com/  "
+        )
+        self.assertEqual(settings.cors_allowed_origins, ["https://example.com"])
+
     def test_trusted_proxy_ips_rechaza_hosts_y_normaliza_ipv4_mapeada(self) -> None:
         common = {
             "_env_file": None,

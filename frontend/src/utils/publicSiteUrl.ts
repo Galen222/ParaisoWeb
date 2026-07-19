@@ -1,4 +1,5 @@
 const DEFAULT_PUBLIC_SITE_URL = "https://www.paraisodeljamon.com";
+const RAW_URL_CONTROL_PATTERN = /[\u0000-\u001F\u007F]/u;
 
 /** Valida y normaliza el origen público usado en canonical, Open Graph y JSON-LD. */
 export const normalizePublicSiteUrl = (
@@ -8,6 +9,9 @@ export const normalizePublicSiteUrl = (
   const configuredUrl = value.trim();
   if (!configuredUrl) {
     throw new Error(`La variable ${variableName} no está definida.`);
+  }
+  if (RAW_URL_CONTROL_PATTERN.test(configuredUrl)) {
+    throw new Error(`${variableName} contiene caracteres de control no permitidos.`);
   }
 
   let parsedUrl: URL;

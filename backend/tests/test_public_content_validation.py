@@ -99,6 +99,45 @@ class PublicContentValidationTests(unittest.IsolatedAsyncioTestCase):
                 )
 
 
+    def test_rutas_publicas_rechazan_unicode_sin_representacion_estable(self) -> None:
+        for character in ("\ud800", "\ue000", "\u0378"):
+            with self.subTest(character=repr(character)):
+                self.assertFalse(
+                    _is_safe_public_asset_path(f"carpeta/imagen{character}.png")
+                )
+
+        for character in ("\ue000", "\u0378"):
+            with self.subTest(encoded_character=repr(character)):
+                self.assertFalse(
+                    _is_safe_public_asset_path(
+                        f"carpeta/imagen{quote(character, safe='')}.png"
+                    )
+                )
+
+        self.assertTrue(_is_safe_public_asset_path("carpeta/imagen-niñez.png"))
+
+    def test_textos_publicos_rechazan_unicode_sin_representacion_estable(self) -> None:
+        for field_name, unsafe_value in (
+            ("titulo", "Título\ud800oculto"),
+            ("autor", "Autor\ue000oculto"),
+            ("contenido", "Contenido\u0378oculto"),
+        ):
+            with self.subTest(field=field_name), self.assertRaises(ValidationError):
+                BlogSchema.model_validate(_blog(1, **{field_name: unsafe_value}))
+
+        for field_name, unsafe_value in (
+            ("nombre", "Producto\ud800oculto"),
+            ("categoria", "Categoría\ue000oculta"),
+            ("descripcion", "Descripción\u0378oculta"),
+        ):
+            with self.subTest(field=field_name), self.assertRaises(ValidationError):
+                CharcuteriaSchema.model_validate(_product(1, **{field_name: unsafe_value}))
+
+        valid_post = BlogSchema.model_validate(
+            _blog(1, titulo="Idioma فارسی‌ معتبر", contenido="Familia 👨‍👩‍👧‍👦")
+        )
+        self.assertEqual(valid_post.titulo, "Idioma فارسی‌ معتبر")
+
     def test_blog_rechaza_controles_e_identificadores_bidi_en_textos_publicos(self) -> None:
         for field_name, unsafe_value in (
             ("titulo", "\u202eTítulo invertido"),
