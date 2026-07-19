@@ -64,17 +64,29 @@ class ContactNameValidationTests(unittest.TestCase):
 
 
 class AttachmentHeaderValidationTests(unittest.IsolatedAsyncioTestCase):
-    async def test_pdf_con_comentario_inicial_se_acepta_y_rebobina(self) -> None:
+    async def test_pdf_con_comentario_inicial_valido_se_acepta_y_rebobina(self) -> None:
         service = FileService()
         upload = UploadFile(
-            file=BytesIO(b"comentario previo\n%PDF-1.7\ncontenido"),
+            file=BytesIO(b"% comentario previo\n%PDF-1.7\ncontenido"),
             filename="documento.pdf",
         )
 
         mime_type = await service.validate_file_headers(upload)
 
         self.assertEqual(mime_type, "application/pdf")
-        self.assertEqual(await upload.read(5), b"comen")
+        self.assertEqual(await upload.read(5), b"% com")
+
+    async def test_pdf_con_contenido_arbitrario_antes_de_la_cabecera_se_rechaza(self) -> None:
+        service = FileService()
+        upload = UploadFile(
+            file=BytesIO(b"contenido ejecutable\n%PDF-1.7\ncontenido"),
+            filename="documento.pdf",
+        )
+
+        with self.assertRaises(HTTPException) as raised:
+            await service.validate_file_headers(upload)
+
+        self.assertEqual(raised.exception.status_code, 400)
 
 
 class AttachmentSizeStatusTests(unittest.IsolatedAsyncioTestCase):

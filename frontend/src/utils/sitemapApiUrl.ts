@@ -17,7 +17,7 @@ export const requireLoopbackSitemapApiUrl = (
   normalizedUrl: string,
   variableName = "SITEMAP_API_URL"
 ): string => {
-  const hostname = new URL(normalizedUrl).hostname.toLowerCase();
+  const hostname = new URL(normalizedUrl).hostname.toLowerCase().replace(/\.$/, "");
 
   if (
     hostname !== "localhost" &&

@@ -99,15 +99,24 @@ class FileService:
             kind = filetype.guess(first_chunk)
             if kind is not None:
                 mime_type = kind.mime
-            elif b"%PDF-" in first_chunk[:1024]:
-                mime_type = "application/pdf"
             else:
-                logger.error("No se pudo determinar el tipo de archivo | %s", file_log_context(file))
-                raise HTTPException(
-                    status_code=400,
-                    detail="No se pudo determinar el tipo de archivo"
+                pdf_marker_index = first_chunk[:1024].find(b"%PDF-")
+                pdf_prefix = first_chunk[:pdf_marker_index] if pdf_marker_index >= 0 else b""
+                # ISO 32000 permite espacios en blanco y líneas de comentario antes de
+                # la cabecera PDF. Aceptar cualquier prefijo permitía disfrazar otro
+                # formato o contenido ejecutable delante de una firma válida.
+                has_valid_pdf_prefix = all(
+                    not line.strip() or line.lstrip().startswith(b"%")
+                    for line in pdf_prefix.splitlines()
                 )
-
+                if pdf_marker_index >= 0 and has_valid_pdf_prefix:
+                    mime_type = "application/pdf"
+                else:
+                    logger.error("No se pudo determinar el tipo de archivo | %s", file_log_context(file))
+                    raise HTTPException(
+                        status_code=400,
+                        detail="No se pudo determinar el tipo de archivo"
+                    )
             if mime_type not in self.ALLOWED_MIME_TYPES:
                 logger.error("Tipo de archivo no permitido: %s | %s", mime_type, file_log_context(file))
                 raise HTTPException(

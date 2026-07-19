@@ -536,6 +536,10 @@ test("el endpoint interno del sitemap solo acepta direcciones loopback", async (
     requireLoopbackSitemapApiUrl("http://[::1]:8000/api/sitemap/blog"),
     "http://[::1]:8000/api/sitemap/blog"
   );
+  assert.equal(
+    requireLoopbackSitemapApiUrl("http://localhost.:8000/api/sitemap/blog"),
+    "http://localhost.:8000/api/sitemap/blog"
+  );
   assert.throws(
     () => requireLoopbackSitemapApiUrl("https://api.example.com/api/sitemap/blog"),
     /loopback local/
