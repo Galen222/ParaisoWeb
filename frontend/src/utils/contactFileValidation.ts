@@ -1,5 +1,5 @@
 const GENERIC_FILE_MIME_TYPES = new Set(["", "application/octet-stream"]);
-const UNSAFE_FILENAME_CHARACTERS = /[\/\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/u;
+const UNSAFE_FILENAME_CHARACTERS = /[\/\\\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/u;
 const ALLOWED_FILE_EXTENSIONS_BY_MIME_TYPE: Readonly<Record<string, ReadonlySet<string>>> = {
   "image/jpeg": new Set([".jpg", ".jpeg"]),
   "application/pdf": new Set([".pdf"]),
@@ -13,9 +13,16 @@ const ALLOWED_FILE_EXTENSIONS = new Set(
 /** Obtiene la extensión final normalizada de un nombre de archivo. */
 const getFileExtension = (fileName: string): string => {
   const extensionSeparatorIndex = fileName.lastIndexOf(".");
-  return extensionSeparatorIndex >= 0
-    ? fileName.slice(extensionSeparatorIndex).toLowerCase()
-    : "";
+  const fileStem = fileName.slice(0, extensionSeparatorIndex);
+
+  // Python `splitext`, usado por el backend, no considera `.pdf` ni `..pdf`
+  // nombres con extensión. Rechazarlos aquí evita subir un archivo que la API
+  // descartará después de solicitar CAPTCHA y token.
+  if (extensionSeparatorIndex < 1 || !/[^.]/u.test(fileStem)) {
+    return "";
+  }
+
+  return fileName.slice(extensionSeparatorIndex).toLowerCase();
 };
 
 /**

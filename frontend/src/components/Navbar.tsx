@@ -95,6 +95,20 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
     closeRestaurantsMenu();
   };
 
+  // Una navegación iniciada por el historial, código externo o cualquier enlace que no
+  // pertenezca a esta barra también debe cerrar los menús persistentes del contexto.
+  useEffect(() => {
+    const handleRouteChangeStart = (): void => {
+      closeMobileMenu();
+      closeRestaurantsMenu();
+    };
+
+    router.events.on("routeChangeStart", handleRouteChangeStart);
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChangeStart);
+    };
+  }, [router.events, closeMobileMenu, closeRestaurantsMenu]);
+
   // Al pasar de móvil a escritorio, cierra los menús para que no reaparezcan
   // con un estado antiguo al volver a reducir el ancho de la ventana.
   useEffect(() => {

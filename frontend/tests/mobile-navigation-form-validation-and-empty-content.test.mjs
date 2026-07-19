@@ -31,6 +31,14 @@ test("la navegación móvil se cierra con Escape y devuelve el foco al botón", 
   assert.match(navbar, /ref=\{mobileMenuButtonRef\}/);
 });
 
+test("los menús persistentes se cierran también ante navegaciones externas a la barra", async () => {
+  const navbar = await readSource("../src/components/Navbar.tsx");
+
+  assert.match(navbar, /router\.events\.on\("routeChangeStart", handleRouteChangeStart\)/);
+  assert.match(navbar, /handleRouteChangeStart[\s\S]*?closeMobileMenu\(\);[\s\S]*?closeRestaurantsMenu\(\)/);
+  assert.match(navbar, /router\.events\.off\("routeChangeStart", handleRouteChangeStart\)/);
+});
+
 test("el correo se valida localmente y expone también los valores compuestos solo por espacios", async () => {
   const [form, ...locales] = await Promise.all([
     readSource("../src/components/Form.tsx"),

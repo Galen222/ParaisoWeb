@@ -42,6 +42,16 @@ test("el adjunto exige correspondencia entre MIME concreto y extensión", async 
   assert.equal(hasAllowedContactFileMetadata("archivo.png", "image/jpeg"), false);
 });
 
+test("el selector exige un nombre real antes de la extensión del adjunto", async () => {
+  const { hasAllowedContactFileMetadata } = await loadTypeScriptModule(
+    "../src/utils/contactFileValidation.ts"
+  );
+
+  assert.equal(hasAllowedContactFileMetadata(".pdf", "application/pdf"), false);
+  assert.equal(hasAllowedContactFileMetadata("..pdf", "application/pdf"), false);
+  assert.equal(hasAllowedContactFileMetadata(".factura.pdf", "application/pdf"), true);
+});
+
 test("el formulario usa el contrato de metadatos antes de subir el archivo", async () => {
   const source = await readFile(
     new URL("../src/components/Form.tsx", import.meta.url),
@@ -76,6 +86,7 @@ test("el selector rechaza nombres de adjunto con rutas o controles invisibles", 
 
   assert.equal(hasAllowedContactFileMetadata("factura\u202Efdp.pdf", "application/pdf"), false);
   assert.equal(hasAllowedContactFileMetadata("carpeta/factura.pdf", "application/pdf"), false);
+  assert.equal(hasAllowedContactFileMetadata("carpeta\\factura.pdf", "application/pdf"), false);
   assert.equal(hasAllowedContactFileMetadata(" factura.pdf", "application/pdf"), false);
   assert.equal(hasAllowedContactFileMetadata("factura.pdf", "application/pdf"), true);
 });
