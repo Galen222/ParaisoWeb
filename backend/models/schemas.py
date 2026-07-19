@@ -238,8 +238,19 @@ class ContactForm(ContactEmail):
     @field_validator('name', mode='before')
     @classmethod
     def strip_name(cls, v: str) -> str:
-        """Elimina espacios exteriores y normaliza Unicode antes de validar el nombre."""
-        return unicodedata.normalize("NFC", v.strip()) if isinstance(v, str) else v
+        """Normaliza el nombre y elimina únicamente espacios normales exteriores."""
+        if not isinstance(v, str):
+            return v
+
+        normalized_value = unicodedata.normalize("NFC", v)
+        if any(
+            character != " "
+            and unicodedata.category(character)[0] in {"C", "Z"}
+            for character in normalized_value
+        ):
+            raise ValueError("El nombre contiene caracteres de control no permitidos")
+
+        return normalized_value.strip(" ")
 
     @field_validator('reason', mode='before')
     @classmethod

@@ -130,6 +130,30 @@ class FileService:
         b'.exe\x00', b'.dll\x00'
     }
 
+    @classmethod
+    def validate_file_metadata(cls, file: UploadFile) -> None:
+        """Rechaza metadatos imposibles sin leer ni procesar el contenido del adjunto."""
+        if not has_safe_attachment_filename(file.filename):
+            raise HTTPException(status_code=400, detail="Nombre de archivo no válido")
+
+        allowed_extensions = {
+            extension
+            for extensions in cls.ALLOWED_MIME_TYPES.values()
+            for extension in extensions
+        }
+        file_extension = os.path.splitext(file.filename or "")[1].lower()
+        if file_extension not in allowed_extensions:
+            raise HTTPException(status_code=400, detail="Extensión de archivo no permitida")
+
+        if file.size == 0:
+            raise HTTPException(status_code=400, detail="El archivo está vacío")
+
+        if file.size is not None and file.size > cls.MAX_FILE_SIZE:
+            raise HTTPException(
+                status_code=413,
+                detail=f"El archivo excede el tamaño máximo permitido de {cls.MAX_FILE_SIZE / 1024 / 1024}MB",
+            )
+
     async def validate_file_headers(self, file: UploadFile) -> str:
         """
         Valida las cabeceras del archivo para determinar su tipo MIME real.
@@ -147,8 +171,7 @@ class FileService:
         """
         logger.info("Validando tipo MIME y extensión | %s", file_log_context(file))
         try:
-            if not has_safe_attachment_filename(file.filename):
-                raise HTTPException(status_code=400, detail="Nombre de archivo no válido")
+            self.validate_file_metadata(file)
 
             # Leer los primeros 8 KB para determinar el tipo
             first_chunk = await file.read(8192)

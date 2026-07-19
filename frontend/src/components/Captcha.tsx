@@ -103,17 +103,14 @@ const Captcha: React.FC<CaptchaProps> = ({ onTokenChange, resetSignal }): React.
 
   useEffect(() => {
     const widgetId = widgetIdRef.current;
-    if (widgetId === null || !window.grecaptcha) {
+    if (widgetId === null) {
       return;
     }
 
     let cancelled = false;
-    onTokenChangeRef.current(null);
-    try {
-      window.grecaptcha.reset(widgetId);
-    } catch {
-      // Un widget retirado o dañado no debe convertir el reseteo posterior al envío
-      // en una excepción no controlada. Se recrea con el mismo idioma inicial.
+    const recreateWidget = (): void => {
+      // Un widget retirado o una API global dañada no deben dejar el formulario
+      // sin CAPTCHA después del envío. Se recrea con el mismo idioma inicial.
       widgetIdRef.current = null;
       containerRef.current?.replaceChildren();
       queueMicrotask(() => {
@@ -122,6 +119,17 @@ const Captcha: React.FC<CaptchaProps> = ({ onTokenChange, resetSignal }): React.
           setLoadAttempt((currentAttempt) => currentAttempt + 1);
         }
       });
+    };
+
+    onTokenChangeRef.current(null);
+    if (typeof window.grecaptcha?.reset !== "function") {
+      recreateWidget();
+    } else {
+      try {
+        window.grecaptcha.reset(widgetId);
+      } catch {
+        recreateWidget();
+      }
     }
 
     return () => {

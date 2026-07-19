@@ -3,13 +3,15 @@
 from backend.tests import _environment as _test_environment  # noqa: F401
 
 import unittest
+from io import BytesIO
 from unittest.mock import AsyncMock, Mock, patch
 
-from fastapi import HTTPException, Request
+from fastapi import HTTPException, Request, UploadFile
 import requests
 
 from backend.routers import contacto as contacto_router
 from backend.services.captcha_service import CaptchaService, RECAPTCHA_VERIFY_URL
+from backend.services.file_service import FileService
 
 
 class CaptchaVerificationTests(unittest.IsolatedAsyncioTestCase):
@@ -180,6 +182,56 @@ class ContactCaptchaIntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(context.exception.status_code, 400)
         verify.assert_not_awaited()
         process.assert_not_awaited()
+
+    async def test_metadatos_imposibles_del_adjunto_se_rechazan_antes_del_captcha(self) -> None:
+        request = Request(
+            {
+                "type": "http",
+                "method": "POST",
+                "path": "/contacto",
+                "headers": [],
+                "client": ("203.0.113.25", 43210),
+            }
+        )
+        cases = (
+            (UploadFile(file=BytesIO(b"%PDF-1.7\n"), size=9, filename="carpeta/factura.pdf"), 400),
+            (UploadFile(file=BytesIO(b"texto"), size=5, filename="documento.txt"), 400),
+            (UploadFile(file=BytesIO(b""), size=0, filename="documento.pdf"), 400),
+            (
+                UploadFile(
+                    file=BytesIO(b"%PDF-1.7\n"),
+                    size=FileService.MAX_FILE_SIZE + 1,
+                    filename="documento.pdf",
+                ),
+                413,
+            ),
+        )
+
+        for upload, expected_status in cases:
+            with self.subTest(filename=upload.filename, size=upload.size):
+                with (
+                    patch.object(contacto_router.CaptchaService, "verify", new=AsyncMock()) as verify,
+                    patch.object(
+                        contacto_router.ContactoService,
+                        "process_contact_form",
+                        new=AsyncMock(),
+                    ) as process,
+                    self.assertRaises(HTTPException) as context,
+                ):
+                    await contacto_router.contacto(
+                        request=request,
+                        token_verification=None,
+                        name="Ana Pérez",
+                        reason="informacion",
+                        email="ana@example.com",
+                        message="Consulta válida",
+                        captcha_token="captcha-valido",
+                        file=upload,
+                    )
+
+                self.assertEqual(context.exception.status_code, expected_status)
+                verify.assert_not_awaited()
+                process.assert_not_awaited()
 
     async def test_adjunto_obligatorio_ausente_se_rechaza_antes_del_captcha(self) -> None:
         request = Request(

@@ -51,3 +51,16 @@ test("el formulario no delega los límites Unicode en maxLength", async () => {
   assert.doesNotMatch(source, /maxLength=\{100\}/);
   assert.doesNotMatch(source, /maxLength=\{5000\}/);
 });
+
+
+test("el nombre rechaza controles y separadores invisibles aunque estén en los extremos", async () => {
+  const { containsUnsupportedContactNameCharacter } = await loadTypeScriptModule(
+    "../src/utils/contactFormValidation.ts"
+  );
+
+  for (const value of ["\tAna", "Ana\n", "\u0085Ana", "\u00A0Ana", "\uFEFFAna"]) {
+    assert.equal(containsUnsupportedContactNameCharacter(value), true, JSON.stringify(value));
+  }
+
+  assert.equal(containsUnsupportedContactNameCharacter("  Ana María  "), false);
+});

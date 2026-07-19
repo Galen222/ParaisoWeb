@@ -34,11 +34,14 @@ export const truncateContactMessage = (value: string): string =>
   truncateByUnicodeCharacters(value, MAX_CONTACT_MESSAGE_CHARACTERS);
 
 /**
- * Detecta el BOM Unicode que JavaScript considera espacio exterior, pero el backend
- * conserva y rechaza como carácter no permitido dentro del nombre.
+ * Rechaza controles y separadores Unicode distintos del espacio normal antes de
+ * recortar los extremos. De otro modo tabuladores, saltos o espacios invisibles
+ * podrían desaparecer silenciosamente y convertir una entrada inválida en otra válida.
  */
 export const containsUnsupportedContactNameCharacter = (value: string): boolean =>
-  value.includes("\uFEFF");
+  Array.from(value).some((character) =>
+    character !== " " && /[\p{C}\p{Z}]/u.test(character)
+  );
 
 interface ContactFormCompletenessData {
   reason: string;

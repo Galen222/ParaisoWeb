@@ -63,6 +63,25 @@ class ContactNameValidationTests(unittest.TestCase):
         self.assertEqual(modifier.name, "DʼAngelo")
 
 
+    def test_rechaza_controles_y_separadores_invisibles_en_los_extremos(self) -> None:
+        for value in ("\tAna", "Ana\n", "\u0085Ana", "\u00a0Ana", "\ufeffAna"):
+            with self.subTest(value=repr(value)), self.assertRaises(ValueError):
+                ContactForm(
+                    name=value,
+                    reason="informacion",
+                    email="ana@example.com",
+                    message="Mensaje de prueba",
+                )
+
+        normalized = ContactForm(
+            name="  Ana María  ",
+            reason="informacion",
+            email="ana@example.com",
+            message="Mensaje de prueba",
+        )
+        self.assertEqual(normalized.name, "Ana María")
+
+
 class AttachmentHeaderValidationTests(unittest.IsolatedAsyncioTestCase):
     async def test_pdf_con_comentario_inicial_valido_se_acepta_y_rebobina(self) -> None:
         service = FileService()

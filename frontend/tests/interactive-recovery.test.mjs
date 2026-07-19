@@ -45,8 +45,10 @@ test("el CAPTCHA recrea un widget dañado al restablecerlo después del envío",
     /useEffect\(\(\) => \{[\s\S]*?const widgetId = widgetIdRef\.current;[\s\S]*?\}, \[resetSignal\]\);/,
   )?.[0] ?? "";
 
+  assert.match(resetEffect, /typeof window\.grecaptcha\?\.reset !== "function"/);
   assert.match(resetEffect, /try \{[\s\S]*?window\.grecaptcha\.reset\(widgetId\)/);
   assert.match(resetEffect, /catch \{/);
+  assert.match(resetEffect, /recreateWidget\(\)/);
   assert.match(resetEffect, /widgetIdRef\.current = null/);
   assert.match(resetEffect, /containerRef\.current\?\.replaceChildren\(\)/);
   assert.match(resetEffect, /setLoadAttempt\(\(currentAttempt\) => currentAttempt \+ 1\)/);

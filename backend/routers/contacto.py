@@ -21,6 +21,7 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, R
 from ..dependencies import verify_token
 from ..services.contacto_service import ContactoService
 from ..services.captcha_service import CaptchaService
+from ..services.file_service import FileService
 from ..models.schemas import ContactForm
 from ..core.client_ip import resolve_client_host
 from ..core.config import settings
@@ -97,6 +98,12 @@ async def contacto(
                 status_code=400,
                 detail="Error: Se requiere adjuntar un archivo debido al motivo seleccionado",
             )
+
+        # El nombre, la extensión y el tamaño conocido no requieren leer bytes del
+        # adjunto. Rechazarlos aquí evita consumir un CAPTCHA de un solo uso para una
+        # petición que necesariamente fallaría después.
+        if file is not None:
+            FileService.validate_file_metadata(file)
 
         client_ip = resolve_client_host(request, settings.trusted_proxy_ips, logger)
         await CaptchaService().verify(captcha_token, client_ip)
