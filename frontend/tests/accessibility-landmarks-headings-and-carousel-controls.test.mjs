@@ -83,6 +83,11 @@ test("el carrusel automático permite pausar y reanudar el movimiento", async ()
   assert.match(sliderTypes, /slickPause\(\): void/);
   assert.match(sliderTypes, /slickPlay\(\): void/);
   assert.match(carouselCss, /\.autoplayButton/);
+  assert.match(carousel, /aria-label=\{intl\.formatMessage/);
+  assert.match(carousel, /<svg aria-hidden="true"/);
+  assert.match(carouselCss, /width: 28px;/);
+  assert.match(carouselCss, /height: 28px;/);
+  assert.match(carouselCss, /padding: 6px;/);
 
   for (const localeFile of localeFiles) {
     assert.match(localeFile, /"carousel_Pausar":/);

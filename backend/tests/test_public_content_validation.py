@@ -1,6 +1,7 @@
 """Pruebas de tolerancia a filas públicas dañadas en blog y charcutería."""
 
 from datetime import datetime, timezone
+from urllib.parse import quote
 import unittest
 
 from pydantic import ValidationError
@@ -86,6 +87,16 @@ class PublicContentValidationTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(_is_safe_public_asset_path("foto%3Fversion.png"))
         self.assertFalse(_is_safe_public_asset_path("foto%2523ancla.png"))
         self.assertTrue(_is_safe_public_asset_path("carpeta/imagen-normal.png"))
+
+    def test_rutas_publicas_rechazan_separadores_unicode_directos_y_codificados(self) -> None:
+        for separator in ("\u2028", "\u2029"):
+            with self.subTest(separator=repr(separator)):
+                self.assertFalse(_is_safe_public_asset_path(f"carpeta/imagen{separator}.png"))
+                self.assertFalse(
+                    _is_safe_public_asset_path(
+                        f"carpeta/imagen{quote(separator, safe='')}.png"
+                    )
+                )
 
 
     def test_blog_rechaza_controles_e_identificadores_bidi_en_textos_publicos(self) -> None:

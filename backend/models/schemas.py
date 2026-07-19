@@ -32,7 +32,7 @@ def _is_safe_public_asset_path(value: object) -> bool:
         return False
     if value.startswith("/") or "\\" in value or any(character in value for character in "?#"):
         return False
-    if any(unicodedata.category(character) in {"Cc", "Cf"} for character in value):
+    if any(unicodedata.category(character) in {"Cc", "Cf", "Zl", "Zp"} for character in value):
         return False
 
     for segment in value.split("/"):
@@ -58,7 +58,10 @@ def _is_safe_public_asset_path(value: object) -> bool:
             or "/" in decoded_segment
             or "\\" in decoded_segment
             or any(character in decoded_segment for character in "?#")
-            or any(unicodedata.category(character) in {"Cc", "Cf"} for character in decoded_segment)
+            or any(
+                unicodedata.category(character) in {"Cc", "Cf", "Zl", "Zp"}
+                for character in decoded_segment
+            )
         ):
             return False
 

@@ -18,6 +18,15 @@ class AttachmentFilenameSafetyTests(unittest.TestCase):
         self.assertNotIn("\u200b", sanitized)
         self.assertNotIn("\n", sanitized)
 
+    def test_elimina_separadores_unicode_del_nombre_del_adjunto(self) -> None:
+        filename = "factura\u2028julio\u2029.pdf"
+
+        sanitized = sanitize_attachment_filename(filename)
+
+        self.assertEqual(sanitized, "facturajulio.pdf")
+        self.assertNotIn("\u2028", sanitized)
+        self.assertNotIn("\u2029", sanitized)
+
     def test_normaliza_unicode_y_conserva_un_nombre_legitimo(self) -> None:
         filename = "Jose\u0301-curriculum.pdf"
 

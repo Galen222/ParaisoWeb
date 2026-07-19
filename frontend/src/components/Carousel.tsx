@@ -95,8 +95,18 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
           type="button"
           className={styles.autoplayButton}
           onClick={handleAutoplayToggle}
+          aria-label={intl.formatMessage({ id: isPaused ? "carousel_Reanudar" : "carousel_Pausar" })}
+          title={intl.formatMessage({ id: isPaused ? "carousel_Reanudar" : "carousel_Pausar" })}
         >
-          {intl.formatMessage({ id: isPaused ? "carousel_Reanudar" : "carousel_Pausar" })}
+          {isPaused ? (
+            <svg aria-hidden="true" viewBox="0 0 16 16" focusable="false">
+              <path d="M4 2.5v11l9-5.5-9-5.5Z" fill="currentColor" />
+            </svg>
+          ) : (
+            <svg aria-hidden="true" viewBox="0 0 16 16" focusable="false">
+              <path d="M3.5 2.5h3v11h-3zm6 0h3v11h-3z" fill="currentColor" />
+            </svg>
+          )}
         </button>
       )}
       <Slider ref={sliderRef} {...settings}>

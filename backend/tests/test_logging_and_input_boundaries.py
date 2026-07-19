@@ -88,6 +88,18 @@ class AttachmentHeaderValidationTests(unittest.IsolatedAsyncioTestCase):
 
         self.assertEqual(raised.exception.status_code, 400)
 
+    async def test_pdf_con_cabecera_dentro_de_un_comentario_se_rechaza(self) -> None:
+        service = FileService()
+        upload = UploadFile(
+            file=BytesIO(b"% comentario que contiene %PDF-1.7\ncontenido"),
+            filename="documento.pdf",
+        )
+
+        with self.assertRaises(HTTPException) as raised:
+            await service.validate_file_headers(upload)
+
+        self.assertEqual(raised.exception.status_code, 400)
+
 
 class AttachmentSizeStatusTests(unittest.IsolatedAsyncioTestCase):
     async def test_archivo_sobredimensionado_devuelve_413_si_el_tamano_es_conocido(self) -> None:

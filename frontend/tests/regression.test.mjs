@@ -433,13 +433,16 @@ test("las páginas de error y el error temporal del blog no son indexables", asy
   assert.match(blogDetail, /nofollow=\{Boolean\(error\)\}/);
 });
 
-test("la firma PDF puede aparecer dentro de los primeros 1024 bytes", async () => {
+test("la firma PDF solo admite espacio y comentarios completos antes de la cabecera", async () => {
   const { hasPdfSignature } = await loadTypeScriptModule(
     "../src/utils/pdfSignature.ts"
   );
 
   assert.equal(await hasPdfSignature(new Blob(["%PDF-1.7"])), true);
-  assert.equal(await hasPdfSignature(new Blob(["comentario previo\n%PDF-1.7"])), true);
+  assert.equal(await hasPdfSignature(new Blob(["  \n% comentario previo\n%PDF-1.7"])), true);
+  assert.equal(await hasPdfSignature(new Blob(["comentario arbitrario\n%PDF-1.7"])), false);
+  assert.equal(await hasPdfSignature(new Blob(["% comentario %PDF-1.7"])), false);
+  assert.equal(await hasPdfSignature(new Blob(["% marcador falso %PDF-1.4\n%PDF-1.7"])), true);
   assert.equal(await hasPdfSignature(new Blob(["x".repeat(1020), "%PDF-1.7"])), false);
   assert.equal(await hasPdfSignature(new Blob(["contenido HTML"])), false);
 });

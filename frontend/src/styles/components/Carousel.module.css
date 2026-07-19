@@ -13,21 +13,31 @@
 /* Control visible para detener o reanudar el movimiento automático */
 .autoplayButton {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 6px;
+  right: 6px;
   z-index: 2;
-  border: 2px solid white;
-  border-radius: 6px;
-  padding: 8px 12px;
+  width: 28px;
+  height: 28px;
+  border: 1px solid white;
+  border-radius: 4px;
+  padding: 6px;
   background-color: rgba(74, 64, 58, 0.85);
   color: white;
-  font: inherit;
-  line-height: 1.2;
+  line-height: 1;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.autoplayButton svg {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .autoplayButton:focus-visible {
-  outline: 3px solid #000;
+  outline: 2px solid #000;
   outline-offset: 2px;
 }
 

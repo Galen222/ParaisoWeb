@@ -100,16 +100,34 @@ class FileService:
             if kind is not None:
                 mime_type = kind.mime
             else:
-                pdf_marker_index = first_chunk[:1024].find(b"%PDF-")
-                pdf_prefix = first_chunk[:pdf_marker_index] if pdf_marker_index >= 0 else b""
-                # ISO 32000 permite espacios en blanco y líneas de comentario antes de
-                # la cabecera PDF. Aceptar cualquier prefijo permitía disfrazar otro
-                # formato o contenido ejecutable delante de una firma válida.
-                has_valid_pdf_prefix = all(
-                    not line.strip() or line.lstrip().startswith(b"%")
-                    for line in pdf_prefix.splitlines()
-                )
-                if pdf_marker_index >= 0 and has_valid_pdf_prefix:
+                header = first_chunk[:1024]
+                pdf_marker_index = 0
+                has_valid_pdf_header = False
+
+                while True:
+                    pdf_marker_index = header.find(b"%PDF-", pdf_marker_index)
+                    if pdf_marker_index < 0:
+                        break
+
+                    pdf_prefix = header[:pdf_marker_index]
+                    lines = pdf_prefix.splitlines(keepends=True)
+                    has_allowed_prefix_lines = all(
+                        not line.rstrip(b"\r\n").strip()
+                        or line.rstrip(b"\r\n").lstrip().startswith(b"%")
+                        for line in lines
+                    )
+                    last_line = pdf_prefix.splitlines()[-1] if pdf_prefix.splitlines() else b""
+                    marker_is_inside_comment = last_line.lstrip().startswith(b"%") and not (
+                        pdf_prefix.endswith(b"\n") or pdf_prefix.endswith(b"\r")
+                    )
+
+                    if has_allowed_prefix_lines and not marker_is_inside_comment:
+                        has_valid_pdf_header = True
+                        break
+
+                    pdf_marker_index += 1
+
+                if has_valid_pdf_header:
                     mime_type = "application/pdf"
                 else:
                     logger.error("No se pudo determinar el tipo de archivo | %s", file_log_context(file))
