@@ -146,6 +146,77 @@ class ContactCaptchaIntegrationTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result, {"message": "Formulario enviado correctamente"})
         self.assertEqual(events, ["captcha", "correo"])
 
+    async def test_datos_invalidos_se_rechazan_antes_de_consumir_el_captcha(self) -> None:
+        request = Request(
+            {
+                "type": "http",
+                "method": "POST",
+                "path": "/contacto",
+                "headers": [],
+                "client": ("203.0.113.25", 43210),
+            }
+        )
+
+        with (
+            patch.object(contacto_router.CaptchaService, "verify", new=AsyncMock()) as verify,
+            patch.object(
+                contacto_router.ContactoService,
+                "process_contact_form",
+                new=AsyncMock(),
+            ) as process,
+            self.assertRaises(HTTPException) as context,
+        ):
+            await contacto_router.contacto(
+                request=request,
+                token_verification=None,
+                name="   ",
+                reason="informacion",
+                email="ana@example.com",
+                message="Consulta válida",
+                captcha_token="captcha-valido",
+                file=None,
+            )
+
+        self.assertEqual(context.exception.status_code, 400)
+        verify.assert_not_awaited()
+        process.assert_not_awaited()
+
+    async def test_adjunto_obligatorio_ausente_se_rechaza_antes_del_captcha(self) -> None:
+        request = Request(
+            {
+                "type": "http",
+                "method": "POST",
+                "path": "/contacto",
+                "headers": [],
+                "client": ("203.0.113.25", 43210),
+            }
+        )
+
+        with (
+            patch.object(contacto_router.CaptchaService, "verify", new=AsyncMock()) as verify,
+            patch.object(
+                contacto_router.ContactoService,
+                "process_contact_form",
+                new=AsyncMock(),
+            ) as process,
+            self.assertRaises(HTTPException) as context,
+        ):
+            await contacto_router.contacto(
+                request=request,
+                token_verification=None,
+                name="Ana Pérez",
+                reason=" factura ",
+                email="ana@example.com",
+                message="Necesito una copia",
+                captcha_token="captcha-valido",
+                file=None,
+            )
+
+        self.assertEqual(context.exception.status_code, 400)
+        self.assertIn("adjuntar un archivo", context.exception.detail)
+        verify.assert_not_awaited()
+        process.assert_not_awaited()
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -1,5 +1,5 @@
 const GENERIC_FILE_MIME_TYPES = new Set(["", "application/octet-stream"]);
-const UNSAFE_FILENAME_CHARACTERS = /[\/\\\p{Cc}\p{Cf}\p{Zl}\p{Zp}]/u;
+const UNSAFE_FILENAME_CHARACTERS = /[\/\\\p{C}\p{Zl}\p{Zp}]/u;
 const ALLOWED_FILE_EXTENSIONS_BY_MIME_TYPE: Readonly<Record<string, ReadonlySet<string>>> = {
   "image/jpeg": new Set([".jpg", ".jpeg"]),
   "application/pdf": new Set([".pdf"]),

@@ -4,13 +4,19 @@ const RECAPTCHA_SCRIPT_ID = "google-recaptcha-v2-script";
 const RECAPTCHA_LOAD_TIMEOUT_MS = 15_000;
 let recaptchaLoadPromise: Promise<ReCaptchaV2Api> | null = null;
 
+/** Comprueba que el objeto global expone la API completa necesaria para el widget v2. */
+const isUsableRecaptchaApi = (api: ReCaptchaV2Api | undefined): api is ReCaptchaV2Api =>
+  typeof api?.ready === "function" &&
+  typeof api.render === "function" &&
+  typeof api.reset === "function";
+
 /** Carga una sola vez la API de reCAPTCHA usando el nonce CSP del documento. */
 export const loadRecaptcha = (locale: string): Promise<ReCaptchaV2Api> => {
   if (typeof window === "undefined" || typeof document === "undefined") {
     return Promise.reject(new Error("reCAPTCHA solo puede cargarse en el navegador"));
   }
 
-  if (window.grecaptcha) {
+  if (isUsableRecaptchaApi(window.grecaptcha)) {
     return Promise.resolve(window.grecaptcha);
   }
 
@@ -54,7 +60,7 @@ export const loadRecaptcha = (locale: string): Promise<ReCaptchaV2Api> => {
         return;
       }
       const api = window.grecaptcha;
-      if (!api) {
+      if (!isUsableRecaptchaApi(api)) {
         rejectLoading("La API de reCAPTCHA no quedó disponible");
         return;
       }

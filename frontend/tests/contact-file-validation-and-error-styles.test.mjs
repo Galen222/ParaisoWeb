@@ -85,6 +85,9 @@ test("el selector rechaza nombres de adjunto con rutas o controles invisibles", 
   );
 
   assert.equal(hasAllowedContactFileMetadata("factura\u202Efdp.pdf", "application/pdf"), false);
+  assert.equal(hasAllowedContactFileMetadata("factura\uE000.pdf", "application/pdf"), false);
+  assert.equal(hasAllowedContactFileMetadata("factura\u0378.pdf", "application/pdf"), false);
+  assert.equal(hasAllowedContactFileMetadata("factura\uD800.pdf", "application/pdf"), false);
   assert.equal(hasAllowedContactFileMetadata("carpeta/factura.pdf", "application/pdf"), false);
   assert.equal(hasAllowedContactFileMetadata("carpeta\\factura.pdf", "application/pdf"), false);
   assert.equal(hasAllowedContactFileMetadata(" factura.pdf", "application/pdf"), false);

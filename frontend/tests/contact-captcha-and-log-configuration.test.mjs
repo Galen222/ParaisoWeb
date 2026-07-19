@@ -108,10 +108,88 @@ test("un script reCAPTCHA fallido se elimina y permite volver a cargarlo", async
 
     const secondLoad = loadedModule.exports.loadRecaptcha("es");
     assert.equal(scripts.length, 2);
-    const api = { ready: (callback) => callback() };
+    const api = { ready: (callback) => callback(), render: () => 1, reset: () => {} };
     browserWindow.grecaptcha = api;
     scripts[1].listeners.load();
     assert.equal(await secondLoad, api);
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+    if (previousDocument === undefined) delete globalThis.document;
+    else globalThis.document = previousDocument;
+  }
+});
+
+
+test("un objeto global reCAPTCHA incompleto no bloquea la recuperación del widget", async () => {
+  const source = (await readSource("../src/utils/recaptchaLoader.ts")).replace(
+    'import { getDocumentCspNonce } from "./cspNonce";',
+    'const getDocumentCspNonce = () => "nonce-de-prueba";',
+  );
+  const { outputText } = ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2022,
+    },
+  });
+  const loadedModule = { exports: {} };
+  const wrapper = vm.runInThisContext(
+    `(function (module, exports) { ${outputText}\n })`,
+  );
+  wrapper(loadedModule, loadedModule.exports);
+
+  const scripts = [];
+  const previousWindow = globalThis.window;
+  const previousDocument = globalThis.document;
+  const browserWindow = { grecaptcha: { ready: () => {} } };
+  const browserDocument = {
+    getElementById(id) {
+      return scripts.find((script) => script.id === id && script.parentNode) ?? null;
+    },
+    createElement() {
+      const listeners = {};
+      return {
+        id: "",
+        src: "",
+        async: false,
+        defer: false,
+        nonce: "",
+        parentNode: null,
+        listeners,
+        addEventListener(name, callback) {
+          listeners[name] = callback;
+        },
+        removeEventListener(name, callback) {
+          if (listeners[name] === callback) delete listeners[name];
+        },
+        remove() {
+          this.parentNode = null;
+        },
+      };
+    },
+    head: {
+      appendChild(script) {
+        script.parentNode = this;
+        scripts.push(script);
+      },
+    },
+  };
+
+  globalThis.window = browserWindow;
+  globalThis.document = browserDocument;
+  try {
+    const loading = loadedModule.exports.loadRecaptcha("es");
+    assert.equal(scripts.length, 1);
+
+    const completeApi = {
+      ready: (callback) => callback(),
+      render: () => 1,
+      reset: () => {},
+    };
+    browserWindow.grecaptcha = completeApi;
+    scripts[0].listeners.load();
+
+    assert.equal(await loading, completeApi);
   } finally {
     if (previousWindow === undefined) delete globalThis.window;
     else globalThis.window = previousWindow;
@@ -187,7 +265,7 @@ test("una carga reCAPTCHA bloqueada expira, limpia el script y permite reintenta
 
     const retry = loadedModule.exports.loadRecaptcha("es");
     assert.equal(scripts.length, 2);
-    const api = { ready: (callback) => callback() };
+    const api = { ready: (callback) => callback(), render: () => 1, reset: () => {} };
     browserWindow.grecaptcha = api;
     scripts[1].listeners.load();
     assert.equal(await retry, api);

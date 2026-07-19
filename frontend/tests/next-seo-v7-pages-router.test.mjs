@@ -31,7 +31,7 @@ const findTags = (tags, type, attributeName, attributeValue) =>
       (attributeName === undefined || tag.props?.[attributeName] === attributeValue)
   );
 
-test("next-seo 7.2.0 queda fijado en el manifiesto y el lockfile", async () => {
+test("next-seo permite actualizaciones compatibles de la rama 7 en el manifiesto y el lockfile", async () => {
   const [packageJson, packageLock] = await Promise.all([
     readSource("package.json"),
     readSource("package-lock.json"),
@@ -39,10 +39,14 @@ test("next-seo 7.2.0 queda fijado en el manifiesto y el lockfile", async () => {
 
   const manifest = JSON.parse(packageJson);
   const lock = JSON.parse(packageLock);
+  const declaredRange = manifest.dependencies["next-seo"];
+  const installedVersion = lock.packages["node_modules/next-seo"].version;
+  const [major, minor, patchVersion] = installedVersion.split(".").map(Number);
 
-  assert.equal(manifest.dependencies["next-seo"], "7.2.0");
-  assert.equal(lock.packages[""].dependencies["next-seo"], "7.2.0");
-  assert.equal(lock.packages["node_modules/next-seo"].version, "7.2.0");
+  assert.match(declaredRange, /^\^7\./);
+  assert.equal(lock.packages[""].dependencies["next-seo"], declaredRange);
+  assert.equal(major, 7);
+  assert.ok(minor > 2 || (minor === 2 && patchVersion >= 0));
 });
 
 test("el Pages Router usa los generadores de next-seo 7 sin componentes retirados", async () => {

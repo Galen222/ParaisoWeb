@@ -9,14 +9,22 @@ import ts from "typescript";
 const readSource = (relativePath) =>
   readFile(new URL(relativePath, import.meta.url), "utf8");
 
-test("Google Maps usa la API funcional de js-api-loader 2.1.1", async () => {
-  const [packageJsonSource, loaderSource] = await Promise.all([
+test("Google Maps permite actualizaciones compatibles de js-api-loader 2 y usa su API funcional", async () => {
+  const [packageJsonSource, packageLockSource, loaderSource] = await Promise.all([
     readSource("../package.json"),
+    readSource("../package-lock.json"),
     readSource("../src/utils/GoogleMapsLoader.ts"),
   ]);
   const packageJson = JSON.parse(packageJsonSource);
+  const packageLock = JSON.parse(packageLockSource);
+  const declaredRange = packageJson.dependencies["@googlemaps/js-api-loader"];
+  const installedVersion = packageLock.packages["node_modules/@googlemaps/js-api-loader"].version;
+  const [major, minor, patchVersion] = installedVersion.split(".").map(Number);
 
-  assert.equal(packageJson.dependencies["@googlemaps/js-api-loader"], "2.1.1");
+  assert.match(declaredRange, /^\^2\./);
+  assert.equal(packageLock.packages[""].dependencies["@googlemaps/js-api-loader"], declaredRange);
+  assert.equal(major, 2);
+  assert.ok(minor > 1 || (minor === 1 && patchVersion >= 1));
   assert.match(
     loaderSource,
     /import\s*\{[\s\S]*?importLibrary,[\s\S]*?setOptions,[\s\S]*?\}\s*from "@googlemaps\/js-api-loader"/,
@@ -81,7 +89,7 @@ test("el cargador conserva la primera configuración y los tres reintentos de la
   }
 });
 
-test("js-api-loader 2.1.1 copia el nonce CSP y usa la primera clave e idioma", () => {
+test("js-api-loader copia el nonce CSP y usa la primera clave e idioma", () => {
   const frontendRoot = fileURLToPath(new URL("..", import.meta.url));
   const script = String.raw`
     const scripts = [];

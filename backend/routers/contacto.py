@@ -16,10 +16,12 @@ Dependencias:
 
 import logging
 
+from pydantic import ValidationError
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException, Depends, Request
 from ..dependencies import verify_token
 from ..services.contacto_service import ContactoService
 from ..services.captcha_service import CaptchaService
+from ..models.schemas import ContactForm
 from ..core.client_ip import resolve_client_host
 from ..core.config import settings
 
@@ -66,14 +68,44 @@ async def contacto(
         dict: Mensaje de confirmación indicando que el formulario fue enviado correctamente.
     """
     try:
+        # Los datos básicos y la presencia del adjunto obligatorio se validan antes
+        # de consumir un token CAPTCHA de un solo uso. La validación definitiva del
+        # contenido del archivo permanece después del CAPTCHA para no procesar bytes
+        # enviados por clientes automatizados sin verificar.
+        try:
+            contact_form = ContactForm(
+                name=name,
+                reason=reason,
+                email=email,
+                message=message,
+            )
+        except ValidationError as error:
+            invalid_fields = sorted(
+                {str(item["loc"][0]) for item in error.errors() if item.get("loc")}
+            )
+            logger.warning(
+                "Formulario de contacto rechazado antes de CAPTCHA | campos=%s",
+                ",".join(invalid_fields) or "desconocidos",
+            )
+            raise HTTPException(
+                status_code=400,
+                detail="Datos del formulario no válidos",
+            ) from None
+
+        if contact_form.reason in {"factura", "curriculum"} and file is None:
+            raise HTTPException(
+                status_code=400,
+                detail="Error: Se requiere adjuntar un archivo debido al motivo seleccionado",
+            )
+
         client_ip = resolve_client_host(request, settings.trusted_proxy_ips, logger)
         await CaptchaService().verify(captcha_token, client_ip)
         contacto_service = ContactoService()
         await contacto_service.process_contact_form(
-            name=name,
-            reason=reason,
-            email=email,
-            message=message,
+            name=contact_form.name,
+            reason=contact_form.reason,
+            email=contact_form.email,
+            message=contact_form.message,
             file=file
         )
         return {"message": "Formulario enviado correctamente"}
