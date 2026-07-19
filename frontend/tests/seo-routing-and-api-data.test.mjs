@@ -105,6 +105,39 @@ test("las URLs configuradas rechazan controles que el parser eliminaría", async
   );
 });
 
+test("las URLs configuradas rechazan caracteres Unicode que los parsers normalizan", async () => {
+  const [{ normalizePublicSiteUrl }, { requirePublicApiUrl }] = await Promise.all([
+    loadTypeScriptModule("../src/utils/publicSiteUrl.ts"),
+    loadTypeScriptModule("../src/config/api.config.ts"),
+  ]);
+
+  for (const value of [
+    "https://exa\u200Bmple.com",
+    "https://example.com\u2060",
+    "https://example.com\u00AD",
+  ]) {
+    assert.throws(() => normalizePublicSiteUrl(value));
+    assert.throws(() => requirePublicApiUrl(value, "API_URL"));
+  }
+});
+
+test("el cuadro informativo del mapa escapa texto y atributos antes de construir HTML", async () => {
+  const [{ escapeHtmlAttribute, escapeHtmlText }, mapSource] = await Promise.all([
+    loadTypeScriptModule("../src/utils/htmlEscape.ts"),
+    readFile(new URL("../src/components/Map.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.equal(
+    escapeHtmlText(`<script>alert("x")</script> & 'texto'`),
+    "&lt;script&gt;alert(&quot;x&quot;)&lt;/script&gt; &amp; &#39;texto&#39;"
+  );
+  assert.equal(escapeHtmlAttribute(`https://example.com/?q=\"<&`), "https://example.com/?q=&quot;&lt;&amp;");
+  assert.match(mapSource, /escapeHtmlText\(location\.name\)/);
+  assert.match(mapSource, /escapeHtmlText\(location\.address\)/);
+  assert.match(mapSource, /escapeHtmlAttribute\(location\.url\)/);
+  assert.match(mapSource, /escapeHtmlAttribute\(buildTelephoneHref\(location\.telephone\)\)/);
+});
+
 test("las redirecciones de slugs traducidos conservan la consulta original", async () => {
   const [page, loader] = await Promise.all([
     readFile(new URL("../src/pages/blog/[slug].tsx", import.meta.url), "utf8"),
@@ -201,11 +234,14 @@ test("los enlaces telefónicos usan un destino normalizado sin alterar el texto 
 
   assert.equal(buildTelephoneHref("+34 91 532 83 50"), "tel:+34915328350");
   assert.equal(buildTelephoneHref("(91) 532-83-50"), "tel:915328350");
-  assert.match(map, /href="\$\{buildTelephoneHref\(location\.telephone\)\}"/);
+  assert.match(
+    map,
+    /href="\$\{escapeHtmlAttribute\(buildTelephoneHref\(location\.telephone\)\)\}"/
+  );
   assert.doesNotMatch(map, /href="tel:\$\{location\.telephone\}"/);
   assert.doesNotMatch(
     map,
-    /buildTelephoneHref\(location\.telephone\)[\s\S]{0,80}target="_blank"/
+    /buildTelephoneHref\(location\.telephone\)[\s\S]{0,120}target="_blank"/
   );
   assert.match(localization, /href=\{buildTelephoneHref\(telephone\)\}/);
 });

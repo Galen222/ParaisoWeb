@@ -88,6 +88,23 @@ def _has_visible_public_character(value: str) -> bool:
     return any(unicodedata.category(character)[0] in {"L", "N", "P", "S"} for character in value)
 
 
+def _has_orphan_public_mark(value: str) -> bool:
+    """Detecta marcas combinantes sin una base visible anterior en la misma palabra."""
+    has_visible_base = False
+    for character in value:
+        category_group = unicodedata.category(character)[0]
+        if category_group == "M":
+            if not has_visible_base:
+                return True
+            continue
+        if category_group in {"L", "N", "P", "S"}:
+            has_visible_base = True
+            continue
+        if character not in {"\u200c", "\u200d"}:
+            has_visible_base = False
+    return False
+
+
 def _require_safe_public_text(
     value: object,
     field_name: str,
@@ -100,6 +117,8 @@ def _require_safe_public_text(
 
     if not value.strip() or not _has_visible_public_character(value):
         raise ValueError(f"{field_name} no puede estar vacío")
+    if _has_orphan_public_mark(value):
+        raise ValueError(f"{field_name} contiene una marca combinante sin base")
 
     allowed_controls = {"\t", "\n", "\r"} if multiline else set()
     for character in value:

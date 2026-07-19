@@ -37,6 +37,15 @@ EXAMPLE_SECRET_KEY = "cambiar_por_una_clave_aleatoria_de_32_caracteres_o_mas"
 MIN_CONTACT_REQUEST_BYTES = 11 * 1024 * 1024
 
 
+def _contains_unsupported_configuration_character(value: str) -> bool:
+    """Detecta controles que parsers de URL o IDNA pueden eliminar silenciosamente."""
+    return any(
+        unicodedata.category(character).startswith("C")
+        or unicodedata.category(character) in {"Zl", "Zp"}
+        for character in value
+    )
+
+
 class Settings(BaseSettings):
     """
     Clase de configuración que gestiona las variables de entorno de la aplicación.
@@ -153,7 +162,12 @@ class Settings(BaseSettings):
             host = raw_host.strip().rstrip(".")
             if not host:
                 continue
-            if "://" in host or "/" in host or any(character.isspace() for character in host):
+            if (
+                "://" in host
+                or "/" in host
+                or any(character.isspace() for character in host)
+                or _contains_unsupported_configuration_character(host)
+            ):
                 raise ValueError("RECAPTCHA_ALLOWED_HOSTNAMES solo admite nombres de host")
 
             try:
@@ -202,7 +216,11 @@ class Settings(BaseSettings):
     def validate_smtp_server(cls, value: str) -> str:
         """Normaliza el host SMTP y rechaza URLs, puertos y nombres inválidos."""
         normalized = value.strip()
-        if not normalized or any(character.isspace() for character in normalized):
+        if (
+            not normalized
+            or any(character.isspace() for character in normalized)
+            or _contains_unsupported_configuration_character(normalized)
+        ):
             raise ValueError("SMTP_SERVER debe contener un host sin espacios")
         if normalized.lower().rstrip(".") == EXAMPLE_SMTP_SERVER:
             raise ValueError("SMTP_SERVER debe sustituir el valor del archivo .env.example")
@@ -265,6 +283,8 @@ class Settings(BaseSettings):
         normalized = value.strip()
         if not normalized:
             raise ValueError("DATABASE_URL no puede estar vacía")
+        if _contains_unsupported_configuration_character(normalized):
+            raise ValueError("DATABASE_URL contiene caracteres de control no permitidos")
 
         try:
             parsed = make_url(normalized)

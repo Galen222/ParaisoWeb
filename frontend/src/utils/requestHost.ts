@@ -1,5 +1,7 @@
 import type { IncomingHttpHeaders } from "http";
 
+const RAW_URL_CONTROL_PATTERN = /[\p{C}\p{Zl}\p{Zp}]/u;
+
 interface CanonicalOriginResult {
   configured: boolean;
   origin: string | null;
@@ -10,6 +12,10 @@ const getCanonicalOrigin = (): CanonicalOriginResult => {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
   if (!siteUrl) {
     return { configured: false, origin: null };
+  }
+
+  if (RAW_URL_CONTROL_PATTERN.test(siteUrl)) {
+    return { configured: true, origin: null };
   }
 
   try {
@@ -36,7 +42,7 @@ const getCanonicalOrigin = (): CanonicalOriginResult => {
 /** Obtiene host y puerto de Host como alternativa segura únicamente para desarrollo local. */
 const getDirectRequestHost = (headers: IncomingHttpHeaders): string | null => {
   const rawHost = headers.host?.trim();
-  if (!rawHost) {
+  if (!rawHost || RAW_URL_CONTROL_PATTERN.test(rawHost)) {
     return null;
   }
 

@@ -5,6 +5,7 @@ import { getGoogleMapsLoader } from "../utils/GoogleMapsLoader"; // Cambio: Usam
 import { useIntl } from "react-intl";
 import styles from "../styles/components/Map.module.css";
 import { buildTelephoneHref } from "../utils/telephoneHref";
+import { escapeHtmlAttribute, escapeHtmlText } from "../utils/htmlEscape";
 
 /**
  * Tipo de dato para una ubicación específica.
@@ -146,21 +147,21 @@ const MapComponent: React.FC<MapProps> = ({ locationKey, mapLocale }: MapProps):
       });
       markerRef.current = marker;
 
-      // Contenido del InfoWindow en formato HTML
+      // InfoWindow interpreta una cadena HTML. Escapar cada valor evita que una traducción
+      // o un dato de ubicación con caracteres reservados altere la estructura del cuadro.
+      const countryText = escapeHtmlText(intl.formatMessage({ id: "Map_Marker_Pais" }));
+      const telephoneLabel = escapeHtmlText(intl.formatMessage({ id: "Map_Marker_Telefono" }));
+      const directionsText = escapeHtmlText(intl.formatMessage({ id: "Map_Marker_Texto1" }));
+      const viewMapText = escapeHtmlText(intl.formatMessage({ id: "Map_Marker_Texto2" }));
+      const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(location.address_url)}`;
       const contentString = `<div class="fw-bold">
-        <h5>${location.name}</h5>
-        <p>${location.address} ${intl.formatMessage({ id: "Map_Marker_Pais" })}</p>
-        <p>${intl.formatMessage({
-          id: "Map_Marker_Telefono",
-        })}<a class="text-decoration-none" href="${buildTelephoneHref(location.telephone)}">
-       ${location.telephone}
+        <h5>${escapeHtmlText(location.name)}</h5>
+        <p>${escapeHtmlText(location.address)} ${countryText}</p>
+        <p>${telephoneLabel}<a class="text-decoration-none" href="${escapeHtmlAttribute(buildTelephoneHref(location.telephone))}">
+       ${escapeHtmlText(location.telephone)}
       </a></p>
-        <p><a class="text-decoration-none" href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(
-          location.address_url,
-        )}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({ id: "Map_Marker_Texto1" })}</a></p>
-        <p><a class="text-decoration-none" href="${location.url}" target="_blank" rel="noopener noreferrer">${intl.formatMessage({
-          id: "Map_Marker_Texto2",
-        })}</a></p>
+        <p><a class="text-decoration-none" href="${escapeHtmlAttribute(directionsUrl)}" target="_blank" rel="noopener noreferrer">${directionsText}</a></p>
+        <p><a class="text-decoration-none" href="${escapeHtmlAttribute(location.url)}" target="_blank" rel="noopener noreferrer">${viewMapText}</a></p>
       </div>`;
 
       if (infoWindowRef.current) {

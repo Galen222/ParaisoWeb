@@ -4,7 +4,7 @@ export const READ_REQUEST_TIMEOUT_MS = 15000;
 export const CONTACT_REQUEST_TIMEOUT_MS = 120000;
 export const DOWNLOAD_REQUEST_TIMEOUT_MS = 30000;
 
-const RAW_URL_CONTROL_PATTERN = /[\u0000-\u001F\u007F]/u;
+const RAW_URL_CONTROL_PATTERN = /[\p{C}\p{Zl}\p{Zp}]/u;
 
 /**
  * Valida una URL pública usada también durante SSR y elimina barras finales.

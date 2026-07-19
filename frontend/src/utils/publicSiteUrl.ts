@@ -1,5 +1,5 @@
 const DEFAULT_PUBLIC_SITE_URL = "https://www.paraisodeljamon.com";
-const RAW_URL_CONTROL_PATTERN = /[\u0000-\u001F\u007F]/u;
+const RAW_URL_CONTROL_PATTERN = /[\p{C}\p{Zl}\p{Zp}]/u;
 
 /** Valida y normaliza el origen público usado en canonical, Open Graph y JSON-LD. */
 export const normalizePublicSiteUrl = (

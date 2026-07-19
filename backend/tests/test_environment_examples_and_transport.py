@@ -90,6 +90,27 @@ class EnvironmentExampleTests(unittest.TestCase):
         self.assertTrue(Settings(**common, DATABASE_ECHO_SQL=True).DATABASE_ECHO_SQL)
 
 
+    def test_hosts_configurados_rechazan_unicode_que_los_parsers_normalizan(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.test.local",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        invalid_configurations = (
+            {"SMTP_SERVER": "smtp.\u200btest.local"},
+            {"RECAPTCHA_ALLOWED_HOSTNAMES": "example.com\u2060"},
+            {"DATABASE_URL": "mysql+aiomysql://u:p@exa\u200bmple.com/db"},
+        )
+        for overrides in invalid_configurations:
+            with self.subTest(overrides=overrides), self.assertRaises(ValidationError):
+                Settings(**(common | overrides))
+
     def test_database_url_rechaza_valores_vacios_drivers_sincronos_y_base_ausente(self) -> None:
         common = {
             "_env_file": None,

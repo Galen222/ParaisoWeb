@@ -26,16 +26,42 @@ const hasUnsupportedControl = (value: string, multiline: boolean): boolean =>
     );
   });
 
+
+/** Rechaza marcas combinantes sin un carácter visible anterior en la misma palabra. */
+const hasOrphanCombiningMark = (value: string): boolean => {
+  let hasVisibleBase = false;
+
+  for (const character of value) {
+    if (/\p{M}/u.test(character)) {
+      if (!hasVisibleBase) return true;
+      continue;
+    }
+
+    if (/^[\p{L}\p{N}\p{P}\p{S}]$/u.test(character)) {
+      hasVisibleBase = true;
+      continue;
+    }
+
+    if (character !== "\u200C" && character !== "\u200D") {
+      hasVisibleBase = false;
+    }
+  }
+
+  return false;
+};
+
 /** Valida textos públicos de una sola línea, como títulos, autores o categorías. */
 export const isSafePublicSingleLineText = (value: unknown): value is string =>
   typeof value === "string" &&
   value.trim() !== "" &&
   hasVisibleCharacter(value) &&
-  !hasUnsupportedControl(value, false);
+  !hasUnsupportedControl(value, false) &&
+  !hasOrphanCombiningMark(value);
 
 /** Valida textos públicos multilínea, conservando los saltos de línea normales. */
 export const isSafePublicMultilineText = (value: unknown): value is string =>
   typeof value === "string" &&
   value.trim() !== "" &&
   hasVisibleCharacter(value) &&
-  !hasUnsupportedControl(value, true);
+  !hasUnsupportedControl(value, true) &&
+  !hasOrphanCombiningMark(value);

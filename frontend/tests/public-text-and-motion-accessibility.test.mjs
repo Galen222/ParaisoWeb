@@ -50,6 +50,17 @@ test("los textos públicos rechazan caracteres Unicode sin representación estab
   assert.equal(isSafePublicMultilineText("Familia 👨‍👩‍👧‍👦"), true);
 });
 
+test("los textos públicos rechazan marcas combinantes sin una base visible", async () => {
+  const { isSafePublicMultilineText, isSafePublicSingleLineText } =
+    await loadTypeScriptModule("../src/utils/publicText.ts");
+
+  assert.equal(isSafePublicSingleLineText("\u0301Título"), false);
+  assert.equal(isSafePublicSingleLineText("Título \u0301huérfano"), false);
+  assert.equal(isSafePublicMultilineText("Primera línea\n\u0301huérfana"), false);
+  assert.equal(isSafePublicSingleLineText("Cafe\u0301 válido"), true);
+  assert.equal(isSafePublicMultilineText("Familia 👨‍👩‍👧‍👦"), true);
+});
+
 test("blog y charcutería usan el mismo contrato de texto seguro", async () => {
   const [blogService, charcuteriaService] = await Promise.all([
     readFile(new URL("../src/services/blogService.ts", import.meta.url), "utf8"),

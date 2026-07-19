@@ -138,6 +138,25 @@ class PublicContentValidationTests(unittest.IsolatedAsyncioTestCase):
         )
         self.assertEqual(valid_post.titulo, "Idioma فارسی‌ معتبر")
 
+    def test_textos_publicos_rechazan_marcas_combinantes_sin_base_visible(self) -> None:
+        for field_name, unsafe_value in (
+            ("titulo", "\u0301Título"),
+            ("autor", "Autor \u0301huérfano"),
+            ("contenido", "Primera línea\n\u0301huérfana"),
+        ):
+            with self.subTest(blog_field=field_name), self.assertRaises(ValidationError):
+                BlogSchema.model_validate(_blog(1, **{field_name: unsafe_value}))
+
+        for field_name, unsafe_value in (
+            ("nombre", "\u0301Producto"),
+            ("descripcion", "Descripción \u0301huérfana"),
+        ):
+            with self.subTest(product_field=field_name), self.assertRaises(ValidationError):
+                CharcuteriaSchema.model_validate(_product(1, **{field_name: unsafe_value}))
+
+        valid_post = BlogSchema.model_validate(_blog(1, titulo="Cafe\u0301 válido"))
+        self.assertEqual(valid_post.titulo, "Cafe\u0301 válido")
+
     def test_blog_rechaza_controles_e_identificadores_bidi_en_textos_publicos(self) -> None:
         for field_name, unsafe_value in (
             ("titulo", "\u202eTítulo invertido"),
