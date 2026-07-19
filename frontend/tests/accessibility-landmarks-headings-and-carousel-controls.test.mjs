@@ -95,6 +95,17 @@ test("el carrusel automático permite pausar y reanudar el movimiento", async ()
   }
 });
 
+test("el control del carrusel sincroniza pulsaciones rápidas con el estado real", async () => {
+  const carousel = await readSource("../src/components/Carousel.tsx");
+
+  assert.match(carousel, /const isPausedRef = useRef\(false\)/);
+  assert.match(carousel, /const nextPaused = !isPausedRef\.current/);
+  assert.match(carousel, /isPausedRef\.current = nextPaused/);
+  assert.match(carousel, /if \(nextPaused\)[\s\S]*?slickPause\(\)[\s\S]*?slickPlay\(\)/);
+  assert.match(carousel, /setIsPaused\(nextPaused\)/);
+  assert.doesNotMatch(carousel, /if \(isPaused\)/);
+});
+
 test("los archivos de pruebas usan nombres descriptivos", async () => {
   const files = await readdir(new URL("./", import.meta.url));
 

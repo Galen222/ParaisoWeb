@@ -28,6 +28,52 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+PDF_SIGNATURE = b"%PDF-"
+PDF_HEADER_SEARCH_BYTES = 1024
+PDF_WHITESPACE_BYTES = frozenset({0x00, 0x09, 0x0A, 0x0C, 0x0D, 0x20})
+PDF_LINE_END_BYTES = frozenset({0x0A, 0x0D})
+
+
+def has_valid_pdf_signature(header: bytes) -> bool:
+    """Comprueba `%PDF-` tras espacios PDF o comentarios completos, sin falsos prefijos."""
+    marker_index = 0
+
+    while True:
+        marker_index = header.find(PDF_SIGNATURE, marker_index)
+        if marker_index < 0:
+            return False
+
+        in_comment = False
+        line_contains_only_whitespace = True
+        prefix_is_valid = True
+
+        for byte in header[:marker_index]:
+            if in_comment:
+                if byte in PDF_LINE_END_BYTES:
+                    in_comment = False
+                    line_contains_only_whitespace = True
+                continue
+
+            if byte in PDF_LINE_END_BYTES:
+                line_contains_only_whitespace = True
+                continue
+
+            if byte == ord("%") and line_contains_only_whitespace:
+                in_comment = True
+                continue
+
+            if byte in PDF_WHITESPACE_BYTES:
+                continue
+
+            prefix_is_valid = False
+            break
+
+        if prefix_is_valid and not in_comment:
+            return True
+
+        marker_index += 1
+
+
 def file_log_context(file: UploadFile) -> str:
     """Describe el adjunto para logs sin registrar su nombre original ni controles."""
     extension = os.path.splitext(file.filename or "")[1].lower()
@@ -100,34 +146,8 @@ class FileService:
             if kind is not None:
                 mime_type = kind.mime
             else:
-                header = first_chunk[:1024]
-                pdf_marker_index = 0
-                has_valid_pdf_header = False
-
-                while True:
-                    pdf_marker_index = header.find(b"%PDF-", pdf_marker_index)
-                    if pdf_marker_index < 0:
-                        break
-
-                    pdf_prefix = header[:pdf_marker_index]
-                    lines = pdf_prefix.splitlines(keepends=True)
-                    has_allowed_prefix_lines = all(
-                        not line.rstrip(b"\r\n").strip()
-                        or line.rstrip(b"\r\n").lstrip().startswith(b"%")
-                        for line in lines
-                    )
-                    last_line = pdf_prefix.splitlines()[-1] if pdf_prefix.splitlines() else b""
-                    marker_is_inside_comment = last_line.lstrip().startswith(b"%") and not (
-                        pdf_prefix.endswith(b"\n") or pdf_prefix.endswith(b"\r")
-                    )
-
-                    if has_allowed_prefix_lines and not marker_is_inside_comment:
-                        has_valid_pdf_header = True
-                        break
-
-                    pdf_marker_index += 1
-
-                if has_valid_pdf_header:
+                header = first_chunk[:PDF_HEADER_SEARCH_BYTES]
+                if has_valid_pdf_signature(header):
                     mime_type = "application/pdf"
                 else:
                     logger.error("No se pudo determinar el tipo de archivo | %s", file_log_context(file))

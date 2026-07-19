@@ -43,11 +43,22 @@ test("el formulario valida el nombre como el backend y usa el logger informativo
     "utf8"
   );
 
+  assert.match(source, /containsUnsupportedContactNameCharacter\(normalizedValue\)/);
   assert.match(source, /isValidNameInput\(normalizedValue\.trim\(\)\)/);
   assert.match(
     source,
     /clientLogger\.info\("📤 Enviando formulario:"/
   );
+});
+
+test("el nombre con marca BOM exterior se rechaza antes de enviarlo", async () => {
+  const { containsUnsupportedContactNameCharacter } = await loadTypeScriptModule(
+    "../src/utils/contactFormValidation.ts"
+  );
+
+  assert.equal(containsUnsupportedContactNameCharacter("Ana"), false);
+  assert.equal(containsUnsupportedContactNameCharacter("\uFEFFAna"), true);
+  assert.equal(containsUnsupportedContactNameCharacter("Ana\uFEFF"), true);
 });
 
 test("los slugs compartidos solo se resuelven si identifican la misma noticia", async () => {

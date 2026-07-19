@@ -46,6 +46,7 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
   const intl = useIntl();
   const prefersReducedMotion = usePrefersReducedMotion();
   const sliderRef = useRef<Slider | null>(null);
+  const isPausedRef = useRef(false);
   const [isPaused, setIsPaused] = useState(false);
 
   // Configuración del carrusel utilizando react-slick
@@ -80,12 +81,15 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
   }
 
   const handleAutoplayToggle = (): void => {
-    if (isPaused) {
-      sliderRef.current?.slickPlay();
-    } else {
+    const nextPaused = !isPausedRef.current;
+    isPausedRef.current = nextPaused;
+
+    if (nextPaused) {
       sliderRef.current?.slickPause();
+    } else {
+      sliderRef.current?.slickPlay();
     }
-    setIsPaused((currentValue) => !currentValue);
+    setIsPaused(nextPaused);
   };
 
   return (

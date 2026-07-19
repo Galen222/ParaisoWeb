@@ -33,6 +33,13 @@ export const truncateContactName = (value: string): string => {
 export const truncateContactMessage = (value: string): string =>
   truncateByUnicodeCharacters(value, MAX_CONTACT_MESSAGE_CHARACTERS);
 
+/**
+ * Detecta el BOM Unicode que JavaScript considera espacio exterior, pero el backend
+ * conserva y rechaza como carácter no permitido dentro del nombre.
+ */
+export const containsUnsupportedContactNameCharacter = (value: string): boolean =>
+  value.includes("\uFEFF");
+
 interface ContactFormCompletenessData {
   reason: string;
   email: string;

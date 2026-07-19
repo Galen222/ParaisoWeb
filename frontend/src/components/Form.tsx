@@ -12,6 +12,7 @@ import {
 } from "../services/formService";
 import styles from "../styles/components/Form.module.css";
 import {
+  containsUnsupportedContactNameCharacter,
   isContactFormComplete,
   truncateContactMessage,
   truncateContactName,
@@ -143,7 +144,10 @@ const Form: React.FC<FormProps> = ({ onSubmit }: FormProps): React.JSX.Element =
     // El backend elimina el espacio exterior antes de validar los caracteres del nombre.
     // Validar el mismo núcleo permite pegar nombres con espacios accidentales sin perder letras.
     setFormData((current) => ({ ...current, [name]: normalizedValue }));
-    setHasInvalidNameInput(!isValidNameInput(normalizedValue.trim()));
+    setHasInvalidNameInput(
+      containsUnsupportedContactNameCharacter(normalizedValue) ||
+        !isValidNameInput(normalizedValue.trim())
+    );
   };
 
   /**

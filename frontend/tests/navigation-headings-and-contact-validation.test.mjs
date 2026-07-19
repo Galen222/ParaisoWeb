@@ -53,7 +53,10 @@ test("el nombre rechazado informa del error y bloquea el envío", async () => {
 
   assert.match(source, /const \[hasInvalidNameInput, setHasInvalidNameInput\] = useState\(false\)/);
   assert.match(source, /setFormData\(\(current\) => \(\{ \.\.\.current, \[name\]: normalizedValue \}\)\)/);
-  assert.match(source, /setHasInvalidNameInput\(!isValidNameInput\(normalizedValue\.trim\(\)\)\)/);
+  assert.match(
+    source,
+    /setHasInvalidNameInput\([\s\S]*?containsUnsupportedContactNameCharacter\(normalizedValue\)[\s\S]*?!isValidNameInput\(normalizedValue\.trim\(\)\)[\s\S]*?\)/
+  );
   assert.match(source, /aria-invalid=\{hasNameValidationError\}/);
   assert.match(source, /id="nameValidationError" className=\{styles\.validationError\}[\s\S]*?contacto_NombreInvalido/);
   assert.match(source, /!hasNameValidationError &&[\s\S]*?isContactFormComplete/);
