@@ -17,6 +17,9 @@ export function useVisitedPageTrackingGA(currentPage: string) {
   // Analytics no registra el fragmento, por lo que un cambio exclusivo de ancla
   // representa la misma página y no debe disparar otra vista duplicada.
   const routeWithoutHash = router.asPath.split("#", 1)[0];
+  // En Pages Router, asPath no incluye el locale. Añadirlo a la clave permite
+  // registrar una vista cuando solo cambia el idioma de una misma ruta.
+  const localeAwareRoute = `${router.locale ?? ""}:${routeWithoutHash}`;
 
   useEffect(() => {
     if (cookieConsentAnalysisGoogle) {
@@ -26,7 +29,7 @@ export function useVisitedPageTrackingGA(currentPage: string) {
       sendGAPageView(page, currentPage);
       /* console.log("Página " + window.location.pathname + window.location.search + " añadida a log de GA4"); */
     }
-  }, [cookieConsentAnalysisGoogle, currentPage, routeWithoutHash]); // Ignora cambios exclusivos de ancla
+  }, [cookieConsentAnalysisGoogle, currentPage, localeAwareRoute]); // Ignora cambios exclusivos de ancla
 }
 
 /**

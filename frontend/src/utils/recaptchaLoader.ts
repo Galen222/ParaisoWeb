@@ -2,6 +2,7 @@ import { getDocumentCspNonce } from "./cspNonce";
 
 const RECAPTCHA_SCRIPT_ID = "google-recaptcha-v2-script";
 const RECAPTCHA_LOAD_TIMEOUT_MS = 15_000;
+const RECAPTCHA_SCRIPT_STATE_KEY = "recaptchaLoaderState";
 let recaptchaLoadPromise: Promise<ReCaptchaV2Api> | null = null;
 
 /** Comprueba que el objeto global expone la API completa necesaria para el widget v2. */
@@ -71,6 +72,10 @@ export const loadRecaptcha = (locale: string): Promise<ReCaptchaV2Api> => {
           }
           settled = true;
           cleanupListeners();
+          script.dataset[RECAPTCHA_SCRIPT_STATE_KEY] = "loaded";
+          // La promesa compartida solo representa una carga en curso. Si la API global
+          // se corrompe después, una llamada posterior debe poder reemplazar el script.
+          recaptchaLoadPromise = null;
           resolve(api);
         });
       } catch {
@@ -83,14 +88,24 @@ export const loadRecaptcha = (locale: string): Promise<ReCaptchaV2Api> => {
     }
 
     const existingScript = document.getElementById(RECAPTCHA_SCRIPT_ID) as HTMLScriptElement | null;
-    if (existingScript) {
-      script = existingScript;
+    const loadingScript =
+      existingScript?.dataset[RECAPTCHA_SCRIPT_STATE_KEY] === "loading" ? existingScript : null;
+
+    // Un script que ya terminó no volverá a emitir `load`. Si la API global dejó de ser
+    // utilizable, reutilizarlo obligaba a esperar el timeout en cada intento de recuperación.
+    if (existingScript && !loadingScript) {
+      existingScript.remove();
+    }
+
+    if (loadingScript) {
+      script = loadingScript;
     } else {
       script = document.createElement("script");
       script.id = RECAPTCHA_SCRIPT_ID;
       script.src = `https://www.google.com/recaptcha/api.js?render=explicit&hl=${encodeURIComponent(locale)}`;
       script.async = true;
       script.defer = true;
+      script.dataset[RECAPTCHA_SCRIPT_STATE_KEY] = "loading";
       const nonce = getDocumentCspNonce();
       if (nonce) {
         script.nonce = nonce;
@@ -104,7 +119,7 @@ export const loadRecaptcha = (locale: string): Promise<ReCaptchaV2Api> => {
       RECAPTCHA_LOAD_TIMEOUT_MS
     );
 
-    if (!existingScript) {
+    if (!loadingScript) {
       document.head.appendChild(script);
     }
   });

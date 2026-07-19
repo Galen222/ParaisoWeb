@@ -195,8 +195,12 @@ export function useLocaleChange(): LocaleChangeHandler {
           if (controller.signal.aborted || localeChangeSequence !== localeChangeSequenceRef.current) return;
 
           clientLogger.error("Error al obtener la traducción del artículo:", getErrorMessageForLog(error));
-          // En caso de error, podríamos redirigir al blog principal
-          newPath = `/blog${routeSuffix}`;
+          // Un fallo temporal no debe expulsar al usuario del artículo ni cambiar su
+          // preferencia de idioma. Conserva el contexto para que pueda volver a intentarlo.
+          if (activeRequestControllerRef.current === controller) {
+            activeRequestControllerRef.current = null;
+          }
+          return;
         }
       }
 

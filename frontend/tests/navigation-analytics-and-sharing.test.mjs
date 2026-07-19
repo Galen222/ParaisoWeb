@@ -29,12 +29,50 @@ test("Analytics no duplica una vista por cambios exclusivos de ancla", async () 
   assert.match(source, /const routeWithoutHash = router\.asPath\.split\("#", 1\)\[0\]/);
   assert.match(
     source,
-    /\[cookieConsentAnalysisGoogle, currentPage, routeWithoutHash\]/
+    /\[cookieConsentAnalysisGoogle, currentPage, localeAwareRoute\]/
   );
   assert.doesNotMatch(
     source,
     /\[cookieConsentAnalysisGoogle, currentPage, router\.asPath\]/
   );
+});
+
+
+test("Analytics registra los cambios de locale aunque asPath conserve la misma ruta", async () => {
+  const source = await readFile(
+    new URL("../src/hooks/useTrackingGA.ts", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(
+    source,
+    /const localeAwareRoute = `\$\{router\.locale \?\? ""\}:\$\{routeWithoutHash\}`/
+  );
+  assert.match(
+    source,
+    /\[cookieConsentAnalysisGoogle, currentPage, localeAwareRoute\]/
+  );
+});
+
+test("un fallo temporal al buscar una traducción conserva el artículo y la preferencia actual", async () => {
+  const source = await readFile(
+    new URL("../src/hooks/useLocaleChange.ts", import.meta.url),
+    "utf8"
+  );
+  const errorMarker = 'clientLogger.error("Error al obtener la traducción del artículo:"';
+  const catchStart = source.lastIndexOf("} catch (error: unknown) {", source.indexOf(errorMarker));
+  const catchEnd = source.indexOf("\n        }\n      }", source.indexOf(errorMarker));
+  const translationErrorHandler = source.slice(catchStart, catchEnd);
+
+  assert.ok(catchStart >= 0 && catchEnd > catchStart);
+  assert.match(
+    translationErrorHandler,
+    /activeRequestControllerRef\.current === controller[\s\S]*?activeRequestControllerRef\.current = null/
+  );
+  assert.match(translationErrorHandler, /return;/);
+  assert.doesNotMatch(translationErrorHandler, /newPath\s*=/);
+  assert.doesNotMatch(translationErrorHandler, /saveLocalePreference/);
+  assert.doesNotMatch(translationErrorHandler, /router\.(?:push|replace)/);
 });
 
 test("Telegram comparte también el título del artículo", async () => {
