@@ -55,12 +55,22 @@ class RecaptchaStartupConfigurationTests(unittest.TestCase):
         self.assertIn("https://galenn.asuscomm.com", configured.cors_allowed_origins)
         self.assertIn("galenn.asuscomm.com", configured.recaptcha_allowed_hostnames)
 
-        env_example = (PROJECT_ROOT / "backend" / ".env.example").read_text(encoding="utf-8")
-        self.assertIn("https://galenn.asuscomm.com", env_example)
-        self.assertIn(
-            "RECAPTCHA_ALLOWED_HOSTNAMES=galenn.asuscomm.com,",
-            env_example,
+        env_values: dict[str, str] = {}
+        for line in (PROJECT_ROOT / "backend" / ".env.example").read_text(encoding="utf-8").splitlines():
+            if not line or line.lstrip().startswith("#") or "=" not in line:
+                continue
+            key, value = line.split("=", 1)
+            env_values[key.strip()] = value.strip()
+
+        example_settings = Settings.model_validate(
+            valid_settings_values()
+            | {
+                "CORS_ALLOWED_ORIGINS": env_values["CORS_ALLOWED_ORIGINS"],
+                "RECAPTCHA_ALLOWED_HOSTNAMES": env_values["RECAPTCHA_ALLOWED_HOSTNAMES"],
+            }
         )
+        self.assertIn("https://galenn.asuscomm.com", example_settings.cors_allowed_origins)
+        self.assertIn("galenn.asuscomm.com", example_settings.recaptcha_allowed_hostnames)
 
 
 if __name__ == "__main__":

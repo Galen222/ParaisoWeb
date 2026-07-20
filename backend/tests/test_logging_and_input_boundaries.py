@@ -5,6 +5,7 @@ from backend.tests import _environment as _test_environment  # noqa: F401  # Imp
 import json
 import unittest
 from io import BytesIO
+from typing import cast
 from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI, HTTPException, UploadFile
@@ -42,6 +43,28 @@ class LoggingPrivacyTests(unittest.TestCase):
         self.assertIn("body.message (string_too_long)", log_message)
         self.assertNotIn("correo-personal@example.com", log_message)
         self.assertNotIn("mensaje privado", log_message)
+
+    def test_error_operativo_sin_detail_conserva_el_estado_de_la_base_de_datos(self) -> None:
+        response_body = json.dumps(
+            {"status": "degraded", "database": "unavailable"}
+        ).encode("utf-8")
+
+        log_message = get_error_message(
+            response_body,
+            truncated=False,
+            fallback_message="503 Service Unavailable",
+        )
+
+        self.assertEqual(log_message, "status=degraded, database=unavailable")
+
+    def test_error_sin_cuerpo_usa_el_estado_http_como_respaldo(self) -> None:
+        log_message = get_error_message(
+            b"",
+            truncated=False,
+            fallback_message="503 Service Unavailable",
+        )
+
+        self.assertEqual(log_message, "503 Service Unavailable")
 
 
 class ContactNameValidationTests(unittest.TestCase):
@@ -201,11 +224,16 @@ class AttachmentSizeStatusTests(unittest.IsolatedAsyncioTestCase):
         with patch("backend.services.file_service.logger.info") as log_info:
             file_hash = await service.scan_file_content(upload)
 
-        messages = " ".join(
-            str(call.args[0]) % tuple(call.args[1:]) if len(call.args) > 1 else str(call.args[0])
-            for call in log_info.call_args_list
-            if call.args
-        )
+        messages_parts: list[str] = []
+        for log_call in log_info.call_args_list:
+            arguments = cast(tuple[object, ...], log_call.args)
+            if not arguments:
+                continue
+            template = str(arguments[0])
+            messages_parts.append(
+                template % tuple(arguments[1:]) if len(arguments) > 1 else template
+            )
+        messages = " ".join(messages_parts)
         self.assertNotIn(file_hash, messages)
         self.assertIn("Archivo limpio", messages)
         self.assertIn("bytes=17", messages)

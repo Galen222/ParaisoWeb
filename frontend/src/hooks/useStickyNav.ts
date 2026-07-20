@@ -1,6 +1,7 @@
 // hooks/useStickynav.ts
 
 import { useState, useEffect } from "react";
+import { measureStaticDocumentTop } from "../utils/elementPosition";
 
 const useStickyNav = <T extends HTMLElement>(
   navbarRef: React.RefObject<T | null>,
@@ -19,35 +20,22 @@ const useStickyNav = <T extends HTMLElement>(
     let lastKnownPosition: number | null = null;
     let animationFrameId: number | null = null;
     let orientationTimeoutId: ReturnType<typeof setTimeout> | null = null;
-    let previousInlinePosition: string | null = null;
-
-    const restoreNavbarPosition = () => {
-      if (navbarRef.current && previousInlinePosition !== null) {
-        navbarRef.current.style.position = previousInlinePosition;
-      }
-      previousInlinePosition = null;
-    };
 
     const calculatePosition = () => {
       if (!navbarRef.current) return;
 
       if (animationFrameId !== null) {
         cancelAnimationFrame(animationFrameId);
-        restoreNavbarPosition();
       }
 
-      // Force reflow and restore position
-      previousInlinePosition = navbarRef.current.style.position;
-      navbarRef.current.style.position = "static";
+      // La medición se hace dentro del frame con `position: static`. Restaurar antes
+      // volvía a aplicar la clase sticky y convertía el umbral en la posición fija actual.
       animationFrameId = requestAnimationFrame(() => {
         animationFrameId = null;
-        if (!navbarRef.current) return;
+        const navbar = navbarRef.current;
+        if (!navbar) return;
 
-        restoreNavbarPosition();
-
-        // Calculate new position
-        const rect = navbarRef.current.getBoundingClientRect();
-        lastKnownPosition = rect.top + window.scrollY;
+        lastKnownPosition = measureStaticDocumentTop(navbar, window.scrollY);
 
         // Update sticky state
         setIsSticky(window.scrollY >= lastKnownPosition);
@@ -92,7 +80,6 @@ const useStickyNav = <T extends HTMLElement>(
       if (orientationTimeoutId !== null) {
         clearTimeout(orientationTimeoutId);
       }
-      restoreNavbarPosition();
     };
   }, [navbarRef, enabled]);
 

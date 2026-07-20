@@ -96,25 +96,40 @@ def _summarize_validation_detail(detail: list[object]) -> str:
     return f"Errores de validación: {', '.join(summaries[:10])}"
 
 
-def get_error_message(response_body: bytes, truncated: bool) -> str:
+def _summarize_operational_error(payload: dict[object, object]) -> str | None:
+    """Resume únicamente estados operativos conocidos sin registrar contenido arbitrario."""
+    status = payload.get("status")
+    database = payload.get("database")
+    if isinstance(status, str) and isinstance(database, str):
+        return f"status={status}, database={database}"
+    return None
+
+
+def get_error_message(
+    response_body: bytes,
+    truncated: bool,
+    fallback_message: str = "No detail provided",
+) -> str:
     """Obtiene un detalle seguro y acotado para el log sin alterar la respuesta."""
     decoded_body = response_body.decode("utf-8", errors="replace")
 
     try:
         parsed_body = json.loads(decoded_body)
     except json.JSONDecodeError:
-        error_message = decoded_body.strip() or "No detail provided"
+        error_message = decoded_body.strip() or fallback_message
     else:
         if isinstance(parsed_body, dict):
-            detail = parsed_body.get("detail", "No detail provided")
+            detail = parsed_body.get("detail")
             if isinstance(detail, str):
                 error_message = detail
             elif isinstance(detail, list):
                 # FastAPI incluye el valor recibido en los errores 422. Solo se registran
                 # ubicación y tipo para conservar diagnóstico sin filtrar nombre, correo o mensaje.
                 error_message = _summarize_validation_detail(detail)
-            else:
+            elif detail is not None:
                 error_message = "Detalle de error estructurado"
+            else:
+                error_message = _summarize_operational_error(parsed_body) or fallback_message
         elif isinstance(parsed_body, str):
             error_message = parsed_body
         else:
@@ -214,7 +229,11 @@ class LoggingMiddleware(BaseHTTPMiddleware):
                         yield chunk_bytes
                 finally:
                     process_time = time.time() - start_time
-                    error_message = get_error_message(bytes(response_preview), truncated)
+                    error_message = get_error_message(
+                        bytes(response_preview),
+                        truncated,
+                        fallback_message=status_text,
+                    )
                     logger.error(
                         f"HOST: {client_host} | "
                         f"METHOD: {request_method} | "
