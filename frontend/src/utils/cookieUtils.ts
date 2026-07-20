@@ -4,6 +4,7 @@ import { IntlShape } from "react-intl";
 import { disableGA } from "../utils/gaUtils";
 import { LOCALE_COOKIE_NAME } from "./localeCookie";
 import { getConfiguredCookieDeletionDomains } from "./cookieDeletionConfig";
+import { clientLogger } from "../logging/clientLogger";
 
 /** Nombre de la cookie necesaria que conserva la elección de consentimiento. */
 export const COOKIE_CONSENT_NAME = "_cookie_consent";
@@ -79,27 +80,38 @@ export const revokeCookieCategories = ({
   analysis = false,
   googleAnalytics = false,
   personalization = false,
-}: CookieCategoriesToRevoke): void => {
+}: CookieCategoriesToRevoke): boolean => {
   if (typeof document === "undefined") {
-    return;
+    return true;
   }
 
-  if (personalization) {
-    expireCookieAcrossConfiguredDomains(LOCALE_COOKIE_NAME);
-  }
-
-  if (analysis) {
-    expireCookieAcrossConfiguredDomains("_device");
-    expireCookieAcrossConfiguredDomains("_visited");
-  }
-
+  // La desactivación lógica no debe depender de que la configuración de dominios sea válida.
+  // Así GA deja de recibir eventos incluso ante una incidencia inesperada en el bundle.
   if (googleAnalytics) {
-    // Detiene primero el seguimiento para impedir que GA recree una cookie durante la revocación.
     void disableGA();
+  }
 
-    getVisibleCookieNames()
-      .filter(isGoogleAnalyticsCookie)
-      .forEach(expireCookieAcrossConfiguredDomains);
+  try {
+    if (personalization) {
+      expireCookieAcrossConfiguredDomains(LOCALE_COOKIE_NAME);
+    }
+
+    if (analysis) {
+      expireCookieAcrossConfiguredDomains("_device");
+      expireCookieAcrossConfiguredDomains("_visited");
+    }
+
+    if (googleAnalytics) {
+      getVisibleCookieNames()
+        .filter(isGoogleAnalyticsCookie)
+        .forEach(expireCookieAcrossConfiguredDomains);
+    }
+
+    return true;
+  } catch (error: unknown) {
+    const detail = error instanceof Error ? error.message : "error desconocido";
+    clientLogger.error("No se pudieron revocar físicamente todas las cookies:", detail);
+    return false;
   }
 };
 

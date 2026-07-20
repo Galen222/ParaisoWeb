@@ -1,4 +1,7 @@
-import { NextConfig } from "next";
+import type { NextConfig } from "next";
+import { validateFrontendBuildEnvironment } from "./src/config/environmentValidation";
+
+validateFrontendBuildEnvironment(process.env);
 
 const nextConfig: NextConfig = {
   i18n: {
