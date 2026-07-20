@@ -1,0 +1,198 @@
+// // El restaurante ha cerrado. Se conserva debajo todo el código original comentado.
+// import type { GetServerSideProps, NextPage } from "next";
+//
+// const BravoMurilloClosedPage: NextPage = () => null;
+//
+// export const getServerSideProps: GetServerSideProps = async () => ({
+//   notFound: true,
+// });
+//
+// export default BravoMurilloClosedPage;
+//
+// // // pages/bravo-murillo.tsx
+// //
+// // import React from "react";
+// // import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
+// // import Map from "../components/Map";
+// // import Carousel from "../components/Carousel";
+// // import Localization from "../components/Localization";
+// // import Transport from "../components/Transport";
+// // import ScrollToTopButton from "../components/ScrollToTopButton";
+// // import { useIntl } from "react-intl";
+// // import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
+// // import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
+// // import getSEOConfig from "../config/next-seo.config";
+// // import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
+// // import { useMapLocale } from "../hooks/useMapLocale"; // Hook para obtener el locale del mapa
+// // import useCurrentUrl from "../hooks/useCurrentUrl";
+// // import { getPublicSiteUrl } from "../utils/publicSiteUrl";
+// // // Importa los mensajes de traducción
+// // import esMessages from "../locales/es/common.json";
+// // import enMessages from "../locales/en/common.json";
+// // import deMessages from "../locales/de/common.json";
+// // import frMessages from "../locales/fr/common.json";
+// // import { LocalBusinessJsonLd, OrganizationJsonLd } from "../components/JsonLd";
+// // // Mapea los locales a sus respectivos mensajes
+// // const messages: Record<string, Record<string, string>> = {
+// //   es: esMessages,
+// //   en: enMessages,
+// //   de: deMessages,
+// //   fr: frMessages,
+// // };
+// // /**
+// //  * Tipo del componente que incluye `pageTitleText` como propiedad estática.
+// //  */
+// // export type BravoMurilloPageComponent = NextPage & { pageTitleText?: string };
+// //
+// // /**
+// //  * Componente que representa la página Bravo Murillo.
+// //  * Muestra información y elementos específicos de localización, como un mapa, carrusel y detalles de transporte.
+// //  *
+// //  * @returns {React.JSX.Element} El componente de la página Bravo Murillo.
+// //  */
+// // const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
+// //   /**
+// //    * Nombre del restaurante para su uso en tracking y otros componentes.
+// //    */
+// //   const restaurante = "bravo-murillo";
+// //
+// //   const intl = useIntl(); // Hook de internacionalización para acceder a las funciones de traducción
+// //   const currentUrl = useCurrentUrl(); // Hook para obtener la página web actual
+// //   const siteUrl = getPublicSiteUrl();
+// //   const organizationId = `${siteUrl}/#organization`;
+// //   const restaurantId = `${siteUrl}/#restaurant-bravo-murillo`;
+// //   const currentLocale = intl.locale || "es"; // Fallback a 'es' si no está definido
+// //   const currentMessages = messages[currentLocale] || messages["es"];
+// //
+// //   const mapLocale = useMapLocale(); // Obtiene el locale para el mapa
+// //
+// //   // Seguimiento de la visita a la página "bravo-murillo".
+// //   useVisitedPageTracking(restaurante);
+// //
+// //   /**
+// //    * Clave de localización para el componente de mapa.
+// //    */
+// //   const locationKey = restaurante;
+// //
+// //   // Renderiza el componente con la estructura de la página Bravo Murillo.
+// //   return (
+// //     <div className="pageContainer">
+// //       {/* Configuración de SEO específica de la página */}
+// //       <SeoHead
+// //         {...getSEOConfig(currentLocale, currentMessages)}
+// //         title={intl.formatMessage({ id: "bravo-murillo_SEO_Titulo" })}
+// //         description={intl.formatMessage({ id: "bravo-murillo_SEO_Descripcion" })}
+// //         openGraph={{
+// //           title: intl.formatMessage({ id: "bravo-murillo_SEO_Titulo" }),
+// //           description: intl.formatMessage({ id: "bravo-murillo_SEO_Descripcion" }),
+// //           images: [
+// //             {
+// //               url: `${siteUrl.replace(/\/+$/, "")}/images/carousel/bm/carousel-bm-1.png`,
+// //               alt: intl.formatMessage({ id: "bravo-murillo_Carousel_Alt1" }),
+// //             },
+// //           ],
+// //           url: currentUrl,
+// //         }}
+// //       />
+// //       {/* JSON-LD para Organización */}
+// //       <OrganizationJsonLd
+// //         type="Organization"
+// //         id={organizationId}
+// //         name="El Paraíso Del Jamón"
+// //         url={siteUrl.replace(/\/+$/, "")}
+// //         logo={`${siteUrl.replace(/\/+$/, "")}/images/navbar/imagenLogo.png`}
+// //         contactPoint={[
+// //           {
+// //             telephone: "+34 91 532 83 50",
+// //             email: "info@paraisodeljamon.com",
+// //           },
+// //         ]}
+// //       />
+// //       {/* JSON-LD para LocalBusiness */}
+// //       <LocalBusinessJsonLd
+// //         type="Restaurant"
+// //         id={restaurantId}
+// //         name="Paraíso Del Jamón II"
+// //         description={intl.formatMessage({ id: "bravo-murillo_SEO_Descripcion" })}
+// //         url={currentUrl}
+// //         branchCode="II"
+// //         parentOrganization={{
+// //           "@type": "Organization",
+// //           "@id": organizationId,
+// //           name: "El Paraíso Del Jamón",
+// //         }}
+// //         telephone="+34 91 553 97 83"
+// //         address={{
+// //           streetAddress: "Bravo Murillo, 124",
+// //           addressLocality: "Madrid",
+// //           addressRegion: "Madrid",
+// //           postalCode: "28020",
+// //           addressCountry: "ES",
+// //         }}
+// //         geo={{
+// //           latitude: 40.449348434670554,
+// //           longitude: -3.7033976601087657,
+// //         }}
+// //         priceRange="$€"
+// //         servesCuisine={[intl.formatMessage({ id: "bravo-murillo_SEO_Cocina" })]}
+// //         images={[`${siteUrl}/images/carousel/bm/carousel-bm-1.png`]}
+// //         openingHours={[
+// //           {
+// //             dayOfWeek: ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+// //             opens: "07:00",
+// //             closes: "24:00",
+// //           },
+// //         ]}
+// //       />
+// //       {/* Texto principal de la página */}
+// //       <div>
+// //         <h1>{intl.formatMessage({ id: "bravo-murillo_Titulo" })}</h1>
+// //       </div>
+// //       {/* Texto descriptivo */}
+// //       <div className="mt-25p">
+// //         <p className="ti-20p">{intl.formatMessage({ id: "bravo-murillo_Texto" })}</p>
+// //       </div>
+// //       {/* Sección de localización del restaurante */}
+// //       <div className="mt-25p">
+// //         <Localization localizationName="bravo-murillo" />
+// //       </div>
+// //       {/* Carrusel de imágenes del restaurante */}
+// //       <div className="mt-25p">
+// //         <Carousel carouselType="bravo-murillo" />
+// //       </div>
+// //       {/* Sección de transporte cercano al restaurante */}
+// //       <div className="mt-25p">
+// //         <Transport transportName="bravo-murillo" />
+// //       </div>
+// //       {/* Mapa de ubicación del restaurante */}
+// //       <div className="mt-25p">
+// //         <Map locationKey={locationKey} mapLocale={mapLocale} />
+// //       </div>
+// //       {/* Botón para desplazarse hacia arriba */}
+// //       <ScrollToTopButton />
+// //     </div>
+// //   );
+// // };
+// //
+// // // Define `pageTitleText` como una propiedad estática del componente `BravoMurilloPage`
+// // BravoMurilloPage.pageTitleText = "bravo-murillo";
+// //
+// // /**
+// //  * Función `getServerSideProps` para manejar la redirección basada en cookies.
+// //  *
+// //  * @param {GetServerSidePropsContext} context - Contexto de Next.js que contiene información de la solicitud.
+// //  * @returns {Promise<GetServerSidePropsResult<Record<string, never>>>} Redirección o props vacíos.
+// //  */
+// // export const getServerSideProps: GetServerSideProps<Record<string, never>> = async (context: GetServerSidePropsContext): Promise<GetServerSidePropsResult<Record<string, never>>> => {
+// //   // Aplicar redirección basada en cookies
+// //   const redirectResponse = redirectByCookie(context, "/bravo-murillo");
+// //   if (redirectResponse.redirect) {
+// //     return redirectResponse;
+// //   }
+// //
+// //   return {
+// //     props: {},
+// //   };
+// // };
+// //
+// // export default BravoMurilloPage; // Exporta el componente para su uso en la aplicación

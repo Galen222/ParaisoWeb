@@ -59,7 +59,7 @@ test("el Pages Router usa los generadores de next-seo 7 sin componentes retirado
   const sources = await Promise.all(pageFiles.map((pageFile) => readFile(pageFile, "utf8")));
   const migratedPages = sources.filter((source) => source.includes("<SeoHead"));
 
-  assert.equal(migratedPages.length, 17);
+  assert.equal(migratedPages.length, 16);
   assert.match(seoHead, /import \{ generateNextSeo, type NextSeoProps \} from "next-seo\/pages"/);
   assert.match(seoHead, /<Head>\{generateNextSeo\(props\)\}<\/Head>/);
   assert.match(app, /import \{ generateDefaultSeo \} from "next-seo\/pages"/);

@@ -38,7 +38,6 @@ test("Analytics no mezcla vistas automáticas y manuales", async () => {
     "aviso-legal.tsx",
     "blog.tsx",
     "blog/[slug].tsx",
-    "bravo-murillo.tsx",
     "charcuteria.tsx",
     "contacto.tsx",
     "gastronomia.tsx",
