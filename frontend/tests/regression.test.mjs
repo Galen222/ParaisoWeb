@@ -361,7 +361,7 @@ test("borrar o invalidar el consentimiento vuelve a solicitar una decisión expl
 
   assert.match(cookieUtils, /export const COOKIE_CONSENT_CLEARED_EVENT/);
   assert.match(cookieUtils, /window\.dispatchEvent\(new Event\(COOKIE_CONSENT_CLEARED_EVENT\)\)/);
-  assert.match(cookieUtils, /setAcceptCookiePersonalization\(false\);[\s\S]*setCookieConsentAnalysisGoogle\(false\);[\s\S]*await disableGA\(\)/);
+  assert.match(cookieUtils, /await disableGA\(\);[\s\S]*setAcceptCookiePersonalization\(false\);[\s\S]*setCookieConsentAnalysisGoogle\(false\);/);
 
   assert.match(cookieLogic, /window\.addEventListener\(COOKIE_CONSENT_CLEARED_EVENT, handleConsentCleared\)/);
   assert.match(cookieLogic, /revokeCookieCategories\(\{ analysis: true, googleAnalytics: true, personalization: true \}\);[\s\S]*setShowCookieModal\(true\);/);

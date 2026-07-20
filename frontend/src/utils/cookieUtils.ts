@@ -3,6 +3,7 @@
 import { IntlShape } from "react-intl";
 import { disableGA } from "../utils/gaUtils";
 import { LOCALE_COOKIE_NAME } from "./localeCookie";
+import { getConfiguredCookieDeletionDomains } from "./cookieDeletionConfig";
 
 /** Nombre de la cookie necesaria que conserva la elección de consentimiento. */
 export const COOKIE_CONSENT_NAME = "_cookie_consent";
@@ -19,9 +20,6 @@ export interface CookieCategoriesToRevoke {
   googleAnalytics?: boolean;
   personalization?: boolean;
 }
-
-// Dominios en los que pueden haberse creado cookies de Google Analytics.
-const GOOGLE_ANALYTICS_COOKIE_DOMAINS = [".asuscomm.com", "paraisodeljamon.com", ".paraisodeljamon.com"];
 
 /** Reconoce las cookies habituales creadas por Google Analytics y sus contenedores. */
 export const isGoogleAnalyticsCookie = (cookieName: string): boolean =>
@@ -49,6 +47,30 @@ const expireCookie = (cookieName: string, domain?: string): void => {
   document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; ${buildCookieAttributes(domain)}`;
 };
 
+/** Caduca una cookie como host-only y en todos los dominios configurados para el entorno. */
+const expireCookieAcrossConfiguredDomains = (cookieName: string): void => {
+  expireCookie(cookieName);
+  getConfiguredCookieDeletionDomains().forEach((domain) => {
+    expireCookie(cookieName, domain);
+  });
+};
+
+/** Devuelve los nombres de cookies visibles en la ruta actual. */
+const getVisibleCookieNames = (): string[] =>
+  document.cookie
+    .split(";")
+    .map((cookie) => cookie.trim())
+    .filter(Boolean)
+    .map((cookie) => cookie.split("=", 1)[0]);
+
+/** Avisa a la interfaz de que la elección se ha revocado sin asumir un nombre de cookie. */
+const notifyCookieConsentCleared = (): void => {
+  notifyCookieConsentChanged();
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event(COOKIE_CONSENT_CLEARED_EVENT));
+  }
+};
+
 /**
  * Retira las cookies de las categorías cuyo consentimiento se ha revocado.
  * También desactiva Google Analytics aunque sus cookies ya no sean visibles para JavaScript.
@@ -63,28 +85,21 @@ export const revokeCookieCategories = ({
   }
 
   if (personalization) {
-    expireCookie(LOCALE_COOKIE_NAME);
+    expireCookieAcrossConfiguredDomains(LOCALE_COOKIE_NAME);
   }
 
   if (analysis) {
-    expireCookie("_device");
-    expireCookie("_visited");
+    expireCookieAcrossConfiguredDomains("_device");
+    expireCookieAcrossConfiguredDomains("_visited");
   }
 
   if (googleAnalytics) {
-    const googleCookieNames = document.cookie
-      .split(";")
-      .map((cookie) => cookie.trim())
-      .filter(Boolean)
-      .map((cookie) => cookie.split("=", 1)[0])
-      .filter(isGoogleAnalyticsCookie);
-
-    googleCookieNames.forEach((cookieName) => {
-      expireCookie(cookieName);
-      GOOGLE_ANALYTICS_COOKIE_DOMAINS.forEach((domain) => expireCookie(cookieName, domain));
-    });
-
+    // Detiene primero el seguimiento para impedir que GA recree una cookie durante la revocación.
     void disableGA();
+
+    getVisibleCookieNames()
+      .filter(isGoogleAnalyticsCookie)
+      .forEach(expireCookieAcrossConfiguredDomains);
   }
 };
 
@@ -117,10 +132,7 @@ export const saveCookieConsentPreference = (preference: string): void => {
 /** Elimina la elección guardada para que el modal pueda volver a solicitarla. */
 export const clearCookieConsentPreference = (): void => {
   expireCookie(COOKIE_CONSENT_NAME);
-  notifyCookieConsentChanged();
-  if (typeof window !== "undefined") {
-    window.dispatchEvent(new Event(COOKIE_CONSENT_CLEARED_EVENT));
-  }
+  notifyCookieConsentCleared();
 };
 
 /** Guarda el idioma elegido durante un año. */
@@ -193,53 +205,34 @@ export const deleteCookies = async (
   cookieConsentPersonalization: boolean,
   setCookieConsentPersonalization: (value: boolean) => void
 ): Promise<boolean> => {
+  let deletionSucceeded = false;
+
   try {
-    const cookies = document.cookie
-      .split(";")
-      .map((cookie) => cookie.trim())
-      .filter(Boolean);
-    // const domains = ["paraisodeljamon.com", ".paraisodeljamon.com"]; // Producción
-    // const domains = [".asuscomm.com"]; // Desarrollo
-    const domains = [".asuscomm.com", "paraisodeljamon.com", ".paraisodeljamon.com"]; // En Servidor
+    // La revocación debe detener el seguimiento antes del borrado para que GA no recree cookies.
+    await disableGA();
 
-    for (const cookie of cookies) {
-      const [cookieName] = cookie.split("=");
+    // El botón elimina todas las cookies visibles; la variable de entorno configura únicamente
+    // los dominios en los que se repite la caducidad para casar con el atributo Domain original.
+    getVisibleCookieNames().forEach(expireCookieAcrossConfiguredDomains);
 
-      // Borra la cookie de personalización aunque el estado de React se haya quedado desincronizado.
-      if (cookieName === LOCALE_COOKIE_NAME) {
-        expireCookie(cookieName);
-      }
+    // Borra también la cookie necesaria aunque ya no fuese visible al construir la lista anterior.
+    expireCookieAcrossConfiguredDomains(COOKIE_CONSENT_NAME);
 
-      // Borra las cookies de análisis que existan realmente, con independencia del estado en memoria.
-      if (cookieName === "_device" || cookieName === "_visited") {
-        expireCookie(cookieName);
-      }
-
-      // Las cookies de Google pueden ser host-only o pertenecer al dominio raíz. Se intentan ambas variantes.
-      if (isGoogleAnalyticsCookie(cookieName)) {
-        expireCookie(cookieName);
-        domains.forEach((domain) => {
-          expireCookie(cookieName, domain);
-          /* console.log(`Borrada cookie Google: ${cookieName} del dominio: ${domain}`); */
-        });
-      }
-    }
-
-    // Sincroniza siempre el contexto aunque las cookies ya hubieran desaparecido por caducidad,
-    // por otra pestaña o antes de que se confirmara una selección del modal.
+    // No se confirma el borrado mientras quede alguna cookie accesible desde esta ruta.
+    deletionSucceeded = getVisibleCookieNames().length === 0;
+  } catch {
+    deletionSucceeded = false;
+  } finally {
+    // Sincroniza siempre el contexto: retirar el consentimiento es independiente de que
+    // el navegador permita o no eliminar físicamente todas las cookies.
     setAcceptCookiePersonalization(false);
     setCookieConsentPersonalization(false);
     setAcceptCookieAnalysis(false);
     setCookieConsentAnalysis(false);
     setAcceptCookieAnalysisGoogle(false);
     setCookieConsentAnalysisGoogle(false);
-    await disableGA();
-
-    // Borra también la cookie necesaria que conserva la elección del usuario.
-    clearCookieConsentPreference();
-
-    return true; // Indica que las cookies se borraron correctamente
-  } catch {
-    return false; // Indica que hubo un error al borrar las cookies
+    notifyCookieConsentCleared();
   }
+
+  return deletionSucceeded;
 };

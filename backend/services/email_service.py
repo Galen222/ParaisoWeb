@@ -100,6 +100,8 @@ class EmailService:
         self.smtp_password = settings.SMTP_PASSWORD
         self.smtp_timeout = settings.SMTP_TIMEOUT_SECONDS
         self.smtp_tls_mode = settings.SMTP_TLS_MODE
+        self.contact_email_recipients = settings.contact_email_recipients
+        self.contact_error_email_recipients = settings.contact_error_email_recipients
         self.file_service = FileService()
 
     async def send_contact_email(
@@ -134,17 +136,14 @@ class EmailService:
         msg['From'] = self.smtp_username
         msg['Reply-To'] = email
         
-        # Todos los correos solo a galendos@gmail.com
-        #msg['To'] = 'galendos@gmail.com'
-        
-        # Solo correo de error a galendos@gmail.com
-        #msg['To'] = 'galendos@gmail.com' if reason == "error" else 'info@paraisodeljamon.com'
-        
-        # Correo de error a galendos@gmail.com y el resto a los dos correos
-        if reason == "error":
-            msg['To'] = 'galendos@gmail.com'
-        else:
-            msg['To'] = 'info@paraisodeljamon.com, galendos@gmail.com'   
+        # Los destinatarios se configuran por entorno y conservan la separación
+        # entre avisos de error y el resto de motivos del formulario.
+        recipients = (
+            self.contact_error_email_recipients
+            if reason == "error"
+            else self.contact_email_recipients
+        )
+        msg['To'] = ", ".join(recipients)
         
         # Contenido en texto plano
         contenido = (

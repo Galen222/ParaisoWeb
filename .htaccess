@@ -2,8 +2,8 @@
 Options -Indexes
 
 # Bloquear acceso a archivos sensibles
-<FilesMatch "^(?:\.htaccess|\.htpasswd|\.env(?:\.._)?|._\.(?:log|ini))$">
-	Require all denied
+<FilesMatch "^(?:\.htaccess|\.htpasswd|\.env(?:\..*)?|.*\.(?:log|ini))$">
+Require all denied
 </FilesMatch>
 
 # Ocultar la versión de Apache y Next.js

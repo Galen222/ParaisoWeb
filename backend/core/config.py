@@ -22,7 +22,7 @@ from pathlib import Path
 from typing import Literal
 from urllib.parse import urlsplit
 
-from pydantic import EmailStr, Field, field_validator
+from pydantic import EmailStr, Field, TypeAdapter, field_validator
 from pydantic_settings import BaseSettings
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import ArgumentError
@@ -35,6 +35,7 @@ EXAMPLE_DATABASE_USERNAME = "usuario"
 EXAMPLE_DATABASE_PASSWORD = "contrasena"
 EXAMPLE_SECRET_KEY = "cambiar_por_una_clave_aleatoria_de_32_caracteres_o_mas"
 MIN_CONTACT_REQUEST_BYTES = 11 * 1024 * 1024
+EMAIL_ADDRESS_ADAPTER = TypeAdapter(EmailStr)
 
 
 def _contains_unsupported_configuration_character(value: str) -> bool:
@@ -59,6 +60,8 @@ class Settings(BaseSettings):
         SMTP_PORT (int): Puerto del servidor SMTP.
         SMTP_USERNAME (str): Nombre de usuario para autenticación SMTP.
         SMTP_PASSWORD (str): Contraseña para autenticación SMTP.
+        CONTACT_EMAIL_RECIPIENTS (str): Destinatarios generales del formulario, separados por comas.
+        CONTACT_ERROR_EMAIL_RECIPIENTS (str): Destinatarios de incidencias, separados por comas.
         DATABASE_URL (str): URL de conexión a la base de datos.
         DATABASE_ECHO_SQL (bool): Activa el log detallado de consultas SQL solo para diagnóstico.
         secret_key (str): Clave secreta para operaciones de autenticación y tokens.
@@ -98,6 +101,8 @@ class Settings(BaseSettings):
     SMTP_PORT: int = Field(ge=1, le=65535)
     SMTP_USERNAME: EmailStr
     SMTP_PASSWORD: str
+    CONTACT_EMAIL_RECIPIENTS: str
+    CONTACT_ERROR_EMAIL_RECIPIENTS: str
     DATABASE_URL: str
     DATABASE_ECHO_SQL: bool = False
     secret_key: str
@@ -277,6 +282,34 @@ class Settings(BaseSettings):
         if normalized == EXAMPLE_SMTP_PASSWORD:
             raise ValueError("SMTP_PASSWORD debe sustituir el valor del archivo .env.example")
         return value
+
+
+    @field_validator("CONTACT_EMAIL_RECIPIENTS", "CONTACT_ERROR_EMAIL_RECIPIENTS")
+    @classmethod
+    def validate_contact_email_recipients(cls, value: str) -> str:
+        """Valida, normaliza y elimina duplicados de los destinatarios configurados."""
+        if _contains_unsupported_configuration_character(value):
+            raise ValueError("Los destinatarios del formulario contienen caracteres no permitidos")
+
+        normalized_recipients: list[str] = []
+        for raw_recipient in value.split(","):
+            recipient = raw_recipient.strip(" ")
+            if not recipient or any(character.isspace() for character in recipient):
+                raise ValueError("Los destinatarios del formulario deben ser correos separados por comas")
+
+            try:
+                normalized_recipient = str(EMAIL_ADDRESS_ADAPTER.validate_python(recipient))
+            except ValueError as error:
+                raise ValueError(
+                    f"Destinatario del formulario no válido: {recipient}"
+                ) from error
+
+            if normalized_recipient not in normalized_recipients:
+                normalized_recipients.append(normalized_recipient)
+
+        if not normalized_recipients:
+            raise ValueError("Debe configurarse al menos un destinatario del formulario")
+        return ",".join(normalized_recipients)
 
 
     @field_validator("DATABASE_URL")
@@ -470,6 +503,20 @@ class Settings(BaseSettings):
         if self.BACKEND_LOG_HEALTHCHECKS is not None:
             return self.BACKEND_LOG_HEALTHCHECKS
         return self.APP_ENV != "production"
+
+    @property
+    def contact_email_recipients(self) -> list[str]:
+        """Devuelve los destinatarios generales del formulario ya validados."""
+        return [recipient for recipient in self.CONTACT_EMAIL_RECIPIENTS.split(",") if recipient]
+
+    @property
+    def contact_error_email_recipients(self) -> list[str]:
+        """Devuelve los destinatarios configurados para incidencias del formulario."""
+        return [
+            recipient
+            for recipient in self.CONTACT_ERROR_EMAIL_RECIPIENTS.split(",")
+            if recipient
+        ]
 
     @property
     def recaptcha_allowed_hostnames(self) -> set[str]:

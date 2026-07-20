@@ -10,6 +10,8 @@ def configure_test_environment() -> None:
         "SMTP_PORT": "587",
         "SMTP_USERNAME": "tests@example.com",
         "SMTP_PASSWORD": "test-password",
+        "CONTACT_EMAIL_RECIPIENTS": "general@example.com,operations@example.com",
+        "CONTACT_ERROR_EMAIL_RECIPIENTS": "errors@example.com",
         # El motor se crea al importar el backend, pero estas pruebas sustituyen las conexiones
         # antes de usarlas y no necesitan una base de datos real disponible.
         "DATABASE_URL": "mysql+aiomysql://tests:tests@127.0.0.1:3306/paraisoweb_tests",

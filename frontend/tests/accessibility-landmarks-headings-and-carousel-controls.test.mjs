@@ -144,3 +144,12 @@ test("los archivos de pruebas usan nombres descriptivos", async () => {
 
   assert.equal(files.some((file) => /(?:phase|fase)\d*/i.test(file)), false);
 });
+
+test("los controles del carrusel usan fondos translúcidos y refuerzan el contraste al interactuar", async () => {
+  const carouselCss = await readSource("../src/styles/components/Carousel.module.css");
+
+  assert.match(carouselCss, /background-color: rgba\(74, 64, 58, 0\.4\);/);
+  assert.match(carouselCss, /border: 1px solid rgba\(255, 255, 255, 0\.65\);/);
+  assert.match(carouselCss, /\.controlButton:hover,[\s\S]*?\.controlButton:focus-visible[\s\S]*?background-color: rgba\(74, 64, 58, 0\.58\);/);
+  assert.doesNotMatch(carouselCss, /background-color: rgba\(74, 64, 58, 0\.85\);/);
+});
