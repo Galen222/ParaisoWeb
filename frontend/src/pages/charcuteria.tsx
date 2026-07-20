@@ -6,7 +6,6 @@ import { useIntl } from "react-intl";
 import Loader from "../components/Loader";
 import { useFetchCharcuteria } from "../hooks/useFetchCharcuteria";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/charcuteria.module.css";
@@ -136,7 +135,6 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
 
   // Seguimiento de la visita a la página "charcuteria" para análisis interno y Google Analytics
   useVisitedPageTracking("charcuteria");
-  useVisitedPageTrackingGA("charcuteria");
 
   return (
     <>

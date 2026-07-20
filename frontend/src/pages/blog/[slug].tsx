@@ -8,7 +8,6 @@ import ScrollToTopButton from "../../components/ScrollToTopButton";
 import ReactMarkdown from "react-markdown";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../../hooks/useTrackingGA";
 import { useHandleLanguageChange } from "../../hooks/useHandleLanguageChange";
 import errorStyles from "../../styles/pages/error.module.css";
 import styles from "../../styles/pages/slug.module.css";
@@ -106,7 +105,6 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
 
   // Rastreo de visitas a la página
   useVisitedPageTracking("articulo");
-  useVisitedPageTrackingGA("articulo");
 
   // Maneja cambios de idioma basados en los detalles del blog
   useHandleLanguageChange(blogDetails);

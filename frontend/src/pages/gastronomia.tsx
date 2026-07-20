@@ -6,7 +6,7 @@ import { useIntl } from "react-intl";
 import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
 import Carousel from "../components/Carousel";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
+import { useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import { useDownloadFile } from "../hooks/useDownloadFile";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import getSEOConfig from "../config/next-seo.config"; // Importa la configuración de SEO
@@ -52,7 +52,6 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
 
   // Realiza el seguimiento de la visita a la página y de los click en botón de descarga
   useVisitedPageTracking("gastronomia");
-  useVisitedPageTrackingGA("gastronomia");
   const trackButtonClick = useButtonClickTrackingGA();
 
   /**

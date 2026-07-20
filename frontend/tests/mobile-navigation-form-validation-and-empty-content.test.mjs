@@ -34,9 +34,29 @@ test("la navegación móvil se cierra con Escape y devuelve el foco al botón", 
 test("los menús persistentes se cierran también ante navegaciones externas a la barra", async () => {
   const navbar = await readSource("../src/components/Navbar.tsx");
 
-  assert.match(navbar, /router\.events\.on\("routeChangeStart", handleRouteChangeStart\)/);
-  assert.match(navbar, /handleRouteChangeStart[\s\S]*?closeMobileMenu\(\);[\s\S]*?closeRestaurantsMenu\(\)/);
-  assert.match(navbar, /router\.events\.off\("routeChangeStart", handleRouteChangeStart\)/);
+  assert.match(navbar, /router\.events\.on\("routeChangeStart", handleLinkClick\)/);
+  assert.match(navbar, /handleLinkClick[\s\S]*?closeMobileMenu\(\);[\s\S]*?closeRestaurantsMenu\(\)/);
+  assert.match(navbar, /router\.events\.off\("routeChangeStart", handleLinkClick\)/);
+});
+
+test("el foco sale del menú antes de ocultar sus enlaces", async () => {
+  const navbar = await readSource("../src/components/Navbar.tsx");
+
+  assert.match(navbar, /const moveFocusOutsideClosingMenus = useCallback/);
+  assert.match(
+    navbar,
+    /restaurantsMenuElement\?\.contains\(activeElement\)[\s\S]*?restaurantsButtonRef\.current\?\.focus\(\)/,
+  );
+  assert.match(
+    navbar,
+    /mobileMenuElement\?\.contains\(activeElement\)[\s\S]*?mobileMenuButtonRef\.current\?\.focus\(\)/,
+  );
+  assert.match(
+    navbar,
+    /const handleLinkClick = useCallback[\s\S]*?moveFocusOutsideClosingMenus\(\);[\s\S]*?closeMobileMenu\(\);[\s\S]*?closeRestaurantsMenu\(\)/,
+  );
+  assert.doesNotMatch(navbar, /aria-hidden=\{!mobileMenu\}/);
+  assert.doesNotMatch(navbar, /aria-hidden=\{!restaurantsMenu\}/);
 });
 
 test("el correo se valida localmente y expone también los valores compuestos solo por espacios", async () => {

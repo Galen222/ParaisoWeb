@@ -5,7 +5,6 @@ import type { NextPage, NextPageContext } from "next";
 import SeoHead from "../components/SeoHead";
 import { useIntl } from "react-intl"; // Hook para internacionalización
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking"; // Hook personalizado para seguimiento de visitas
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA"; // Hook personalizado para seguimiento con Google Analytics
 import styles from "../styles/pages/error.module.css"; // Importa los estilos específicos para la página de error
 
 /**
@@ -28,7 +27,6 @@ const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }: ErrorPageProps): Re
 
   // Realiza el seguimiento de visitas a la página de error para análisis interno y Google Analytics
   useVisitedPageTracking(`error_${statusCode}`);
-  useVisitedPageTrackingGA(`error_${statusCode}`);
 
   // Determina el mensaje de error basado en el código de estado HTTP
   let message;

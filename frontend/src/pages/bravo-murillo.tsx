@@ -9,7 +9,6 @@ import Transport from "../components/Transport";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
@@ -58,7 +57,6 @@ const BravoMurilloPage: NextPage & { pageTitleText?: string } = (): React.JSX.El
 
   // Seguimiento de la visita a la página "bravo-murillo".
   useVisitedPageTracking(restaurante);
-  useVisitedPageTrackingGA(restaurante);
 
   /**
    * Clave de localización para el componente de mapa.

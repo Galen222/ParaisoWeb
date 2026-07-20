@@ -71,17 +71,6 @@ export const initGA = (): boolean => {
 /** Indica si GA puede recibir eventos sin arriesgar errores en la interfaz. */
 export const isGAReady = (): boolean => initializedAnalyticsId !== null && !gaDisabled;
 
-/** Registra una vista de página únicamente después de inicializar correctamente GA. */
-export const sendGAPageView = (page: string, title: string): void => {
-  if (!isGAReady()) return;
-
-  try {
-    ReactGA.send({ hitType: "pageview", page, title });
-  } catch (error: unknown) {
-    const errorMessage = error instanceof Error && error.message.trim() ? error.message : "Error desconocido";
-    clientLogger.error("Google Analytics no pudo registrar la vista de página:", errorMessage);
-  }
-};
 
 /** Registra un clic de botón únicamente después de inicializar correctamente GA. */
 export const sendGAButtonClick = (usedButton: string): void => {

@@ -7,7 +7,7 @@ import { useCookieConsent } from "../contexts/CookieContext";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA, useButtonClickTrackingGA } from "../hooks/useTrackingGA";
+import { useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import useScreenSize from "../hooks/useScreenSize";
 import { useToastMessage } from "../hooks/useToast";
 import { deleteCookies } from "../utils/cookieUtils";
@@ -82,7 +82,6 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
 
   // Hooks para el seguimiento de la página visitada.
   useVisitedPageTracking("politica-cookies");
-  useVisitedPageTrackingGA("politica-cookies");
 
   // Hook para el seguimiento de clics en botones a través de Google Analytics.
   const trackButtonClick = useButtonClickTrackingGA();

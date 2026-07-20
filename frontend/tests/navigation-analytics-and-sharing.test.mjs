@@ -20,38 +20,44 @@ test("volver al locale actual cancela un cambio de idioma pendiente", async () =
   assert.match(source, /activeNavigationLocaleRef\.current = newLocale;[\s\S]*?router\.push/);
 });
 
-test("Analytics no duplica una vista por cambios exclusivos de ancla", async () => {
-  const source = await readFile(
-    new URL("../src/hooks/useTrackingGA.ts", import.meta.url),
-    "utf8"
-  );
+test("Analytics no mezcla vistas automáticas y manuales", async () => {
+  const [trackingSource, gaSource] = await Promise.all([
+    readFile(new URL("../src/hooks/useTrackingGA.ts", import.meta.url), "utf8"),
+    readFile(new URL("../src/utils/gaUtils.ts", import.meta.url), "utf8"),
+  ]);
 
-  assert.match(source, /const routeWithoutHash = router\.asPath\.split\("#", 1\)\[0\]/);
-  assert.match(
-    source,
-    /\[cookieConsentAnalysisGoogle, currentPage, localeAwareRoute\]/
-  );
-  assert.doesNotMatch(
-    source,
-    /\[cookieConsentAnalysisGoogle, currentPage, router\.asPath\]/
-  );
-});
+  assert.doesNotMatch(trackingSource, /useVisitedPageTrackingGA/);
+  assert.doesNotMatch(trackingSource, /sendGAPageView/);
+  assert.doesNotMatch(gaSource, /sendGAPageView/);
+  assert.doesNotMatch(gaSource, /hitType:\s*["']pageview["']/);
 
+  const pages = [
+    "404.tsx",
+    "_error.tsx",
+    "arenal.tsx",
+    "aviso-legal.tsx",
+    "blog.tsx",
+    "blog/[slug].tsx",
+    "bravo-murillo.tsx",
+    "charcuteria.tsx",
+    "contacto.tsx",
+    "gastronomia.tsx",
+    "index.tsx",
+    "nosotros.tsx",
+    "politica-cookies.tsx",
+    "politica-privacidad.tsx",
+    "reina-victoria.tsx",
+    "reservas.tsx",
+    "san-bernardo.tsx",
+  ];
 
-test("Analytics registra los cambios de locale aunque asPath conserve la misma ruta", async () => {
-  const source = await readFile(
-    new URL("../src/hooks/useTrackingGA.ts", import.meta.url),
-    "utf8"
-  );
-
-  assert.match(
-    source,
-    /const localeAwareRoute = `\$\{router\.locale \?\? ""\}:\$\{routeWithoutHash\}`/
-  );
-  assert.match(
-    source,
-    /\[cookieConsentAnalysisGoogle, currentPage, localeAwareRoute\]/
-  );
+  for (const page of pages) {
+    const pageSource = await readFile(
+      new URL(`../src/pages/${page}`, import.meta.url),
+      "utf8"
+    );
+    assert.doesNotMatch(pageSource, /useVisitedPageTrackingGA/);
+  }
 });
 
 test("un fallo temporal al buscar una traducción conserva el artículo y la preferencia actual", async () => {

@@ -6,7 +6,6 @@ import Link from "next/link";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Función de redirección basada en cookies
 import styles from "../styles/pages/politica-privacidad.module.css";
 import SeoHead from "../components/SeoHead";
@@ -53,7 +52,6 @@ const PoliticaPrivacidadPage: NextPage & { pageTitleText?: string } = (): React.
 
   // Hooks para el seguimiento de la página visitada.
   useVisitedPageTracking("politica-privacidad");
-  useVisitedPageTrackingGA("politica-privacidad");
 
   return (
     <div className="pageContainer">

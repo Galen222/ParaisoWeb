@@ -6,7 +6,6 @@ import Carousel from "../components/Carousel";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import styles from "../styles/pages/nosotros.module.css"; // Importa los estilos específicos para la página nosotros
 import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
 import getSEOConfig from "../config/next-seo.config";
@@ -48,7 +47,6 @@ const NosotrosPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elemen
 
   // Realiza el seguimiento de la visita a la página "nosotros"
   useVisitedPageTracking("nosotros");
-  useVisitedPageTrackingGA("nosotros");
 
   // Constantes para las imágenes y los textos alternativos internacionalizados
   const images = [

@@ -7,7 +7,6 @@ import LegalInfo from "../components/LegalInfo";
 import Form from "../components/Form";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import SeoHead from "../components/SeoHead";
@@ -49,7 +48,6 @@ const ContactoPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elemen
 
   // Seguimiento de la visita a la página "Contacto" para análisis interno y Google Analytics
   useVisitedPageTracking("contacto");
-  useVisitedPageTrackingGA("contacto");
 
   /**
    * Función para manejar el envío del formulario de contacto.

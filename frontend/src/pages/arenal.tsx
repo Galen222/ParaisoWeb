@@ -9,7 +9,6 @@ import Transport from "../components/Transport";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
@@ -59,7 +58,6 @@ const ArenalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element 
 
   // Seguimiento de la visita a la página "arenal".
   useVisitedPageTracking(restaurante);
-  useVisitedPageTrackingGA(restaurante);
 
   /**
    * Clave de localización para el componente de mapa.

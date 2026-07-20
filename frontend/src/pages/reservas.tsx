@@ -6,7 +6,6 @@ import Localization from "../components/Localization"; // Componente de localiza
 import ScrollToTopButton from "../components/ScrollToTopButton"; // Botón para volver al inicio de la página
 import { useIntl } from "react-intl"; // Hook de internacionalización
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking"; // Hook de seguimiento de visitas
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA"; // Hook de seguimiento de visitas para Google Analytics
 import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
 import getSEOConfig from "../config/next-seo.config";
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
@@ -47,7 +46,6 @@ const ReservasPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elemen
 
   // Invoca el seguimiento de la visita a la página "Reservas" para analítica
   useVisitedPageTracking("reservas");
-  useVisitedPageTrackingGA("reservas");
 
   return (
     <div className="pageContainer">

@@ -6,7 +6,6 @@ import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServer
 import Loader from "../components/Loader";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import { useFetchBlog } from "../hooks/useFetchBlog";
 import errorStyles from "../styles/pages/error.module.css";
 import styles from "../styles/pages/blog.module.css";
@@ -84,7 +83,6 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
 
   // Seguimiento de la visita a la página "blog" para análisis interno y Google Analytics
   useVisitedPageTracking("blog");
-  useVisitedPageTrackingGA("blog");
 
   return (
     <>

@@ -1,36 +1,10 @@
 // hooks/useTrackingGA.ts
 
-import { useEffect } from "react";
-import { useRouter } from "next/router";
 import { useCookieConsent } from "../contexts/CookieContext";
-import { sendGAButtonClick, sendGAPageView } from "../utils/gaUtils";
+import { sendGAButtonClick } from "../utils/gaUtils";
 
-/**
- * Hook para registrar una vista de página en Google Analytics.
- * Se envía un evento de "pageview" solo si el usuario ha dado consentimiento para las cookies de análisis de Google.
- *
- * @param {string} currentPage - Nombre o ruta de la página actual para registrar en Google Analytics.
- */
-export function useVisitedPageTrackingGA(currentPage: string) {
-  const { cookieConsentAnalysisGoogle } = useCookieConsent(); // Verifica el consentimiento de cookies
-  const router = useRouter();
-  // Analytics no registra el fragmento, por lo que un cambio exclusivo de ancla
-  // representa la misma página y no debe disparar otra vista duplicada.
-  const routeWithoutHash = router.asPath.split("#", 1)[0];
-  // En Pages Router, asPath no incluye el locale. Añadirlo a la clave permite
-  // registrar una vista cuando solo cambia el idioma de una misma ruta.
-  const localeAwareRoute = `${router.locale ?? ""}:${routeWithoutHash}`;
-
-  useEffect(() => {
-    if (cookieConsentAnalysisGoogle) {
-      // Registra la ruta real. Usar solo el alias de la página agrupaba todos los artículos
-      // del blog bajo `/articulo` y perdía slug, locale y parámetros de consulta.
-      const page = `${window.location.pathname}${window.location.search}`;
-      sendGAPageView(page, currentPage);
-      /* console.log("Página " + window.location.pathname + window.location.search + " añadida a log de GA4"); */
-    }
-  }, [cookieConsentAnalysisGoogle, currentPage, localeAwareRoute]); // Ignora cambios exclusivos de ancla
-}
+// Las vistas de página las registra GA4 mediante la medición automática de cambios
+// del historial. Enviarlas también desde React duplicaba cada navegación de Next.js.
 
 /**
  * Hook para hacer seguimiento de clics en botones en Google Analytics.

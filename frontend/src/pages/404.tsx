@@ -5,7 +5,6 @@ import type { NextPage } from "next";
 import SeoHead from "../components/SeoHead";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import styles from "../styles/pages/error.module.css";
 
 const Custom404Page: NextPage = () => {
@@ -14,7 +13,6 @@ const Custom404Page: NextPage = () => {
 
   // Realiza el seguimiento de visitas a la página de error 404 para análisis interno y Google Analytics
   useVisitedPageTracking(`error_${statusCode}`);
-  useVisitedPageTrackingGA(`error_${statusCode}`);
 
   const message = intl.formatMessage({ id: "error_Error404" });
   const seoTitle = `${statusCode} - ${message}`;

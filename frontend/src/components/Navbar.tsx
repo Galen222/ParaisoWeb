@@ -1,6 +1,6 @@
 // components/Navbar.tsx
 
-import React, { useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import type { FocusEvent, KeyboardEvent } from "react";
 import Link from "next/link";
 import { useIntl } from "react-intl";
@@ -90,24 +90,44 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
     return isCurrentPage ? "page" : undefined;
   };
 
-  const handleLinkClick = () => {
+  /**
+   * Devuelve el foco al control que abrió el menú antes de ocultar sus enlaces.
+   * Así ningún elemento enfocado queda dentro de un contenedor con `hidden`.
+   */
+  const moveFocusOutsideClosingMenus = useCallback((): void => {
+    const activeElement = document.activeElement;
+
+    if (!(activeElement instanceof HTMLElement)) {
+      return;
+    }
+
+    const restaurantsMenuElement = document.getElementById("navbar-restaurants-menu");
+    if (restaurantsMenuElement?.contains(activeElement)) {
+      restaurantsButtonRef.current?.focus();
+      return;
+    }
+
+    const mobileMenuElement = document.getElementById("navbar-mobile-menu");
+    if (mobileMenuElement?.contains(activeElement)) {
+      mobileMenuButtonRef.current?.focus();
+    }
+  }, []);
+
+  /** Cierra los menús después de sacar el foco de cualquier enlace que vaya a ocultarse. */
+  const handleLinkClick = useCallback((): void => {
+    moveFocusOutsideClosingMenus();
     closeMobileMenu();
     closeRestaurantsMenu();
-  };
+  }, [closeMobileMenu, closeRestaurantsMenu, moveFocusOutsideClosingMenus]);
 
   // Una navegación iniciada por el historial, código externo o cualquier enlace que no
   // pertenezca a esta barra también debe cerrar los menús persistentes del contexto.
   useEffect(() => {
-    const handleRouteChangeStart = (): void => {
-      closeMobileMenu();
-      closeRestaurantsMenu();
-    };
-
-    router.events.on("routeChangeStart", handleRouteChangeStart);
+    router.events.on("routeChangeStart", handleLinkClick);
     return () => {
-      router.events.off("routeChangeStart", handleRouteChangeStart);
+      router.events.off("routeChangeStart", handleLinkClick);
     };
-  }, [router.events, closeMobileMenu, closeRestaurantsMenu]);
+  }, [router.events, handleLinkClick]);
 
   // Al pasar de móvil a escritorio, cierra los menús para que no reaparezcan
   // con un estado antiguo al volver a reducir el ancho de la ventana.
@@ -213,7 +233,6 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
           id="navbar-mobile-menu"
           className={`${styles.navbarMenu} ${mobileMenu ? styles.showMenu : ""}`}
           hidden={!mobileMenu}
-          aria-hidden={!mobileMenu}
           aria-label={intl.formatMessage({ id: "navbar_menu" })}
         >
           <div className={styles.links}>
@@ -293,7 +312,6 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
               id="navbar-restaurants-menu"
               className={`${styles.dropdown} ${restaurantsMenu ? styles.show : styles.hide}`}
               hidden={!restaurantsMenu}
-              aria-hidden={!restaurantsMenu}
             >
               <Link href="/san-bernardo" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/san-bernardo")}>
                 San Bernardo

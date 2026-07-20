@@ -98,11 +98,20 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
     <>
       <Head>
         <title>El Paraíso Del Jamón</title>
-        <meta name="description" content="El Paraíso Del Jamón" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="description"
+          content="El Paraíso Del Jamón"
+        />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1"
+        />
         {generateDefaultSeo(getSEOConfig(appLocale, currentMessages, seoPath, includeLanguageAlternates))}
       </Head>
-      <IntlProvider locale={appLocale} messages={currentMessages}>
+      <IntlProvider
+        locale={appLocale}
+        messages={currentMessages}
+      >
         <MenuProvider>
           <React.StrictMode>
             {showCookieModal && (
@@ -114,14 +123,24 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
                 onPrivacyPolicyLinkClick={handlePrivacyPolicyLinkClick}
               />
             )}
-            <div aria-hidden={showCookieModal ? true : undefined} inert={showCookieModal}>
-              <Navbar cookiesModalClosed={cookiesModalClosed} pageTitleText={pageTitleText} />
+            <div
+              aria-hidden={showCookieModal ? true : undefined}
+              inert={showCookieModal}
+            >
+              <Navbar
+                cookiesModalClosed={cookiesModalClosed}
+                pageTitleText={pageTitleText}
+              />
               <main>
-                <Component {...pageProps} cookiesModalClosed={cookiesModalClosed} mapLocale={mapLocale} />
+                <Component
+                  {...pageProps}
+                  cookiesModalClosed={cookiesModalClosed}
+                  mapLocale={mapLocale}
+                />
               </main>
               <Footer />
             </div>
-            <ToastContainer />
+            <ToastContainer nonce={pageProps.nonce} />
           </React.StrictMode>
         </MenuProvider>
       </IntlProvider>

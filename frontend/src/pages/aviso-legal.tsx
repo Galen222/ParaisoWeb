@@ -7,7 +7,6 @@ import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServer
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
 import { redirectByCookie } from "../utils/redirectByCookie"; // Importa la función de redirección
 import styles from "../styles/pages/aviso-legal.module.css";
@@ -50,7 +49,6 @@ const AvisoLegalPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elem
 
   // Seguimiento de la visita a la página "Aviso Legal" para análisis interno y Google Analytics
   useVisitedPageTracking("aviso-legal");
-  useVisitedPageTrackingGA("aviso-legal");
 
   return (
     <div className="pageContainer">

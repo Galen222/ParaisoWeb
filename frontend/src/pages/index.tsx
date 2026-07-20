@@ -6,7 +6,6 @@ import Carousel from "../components/Carousel";
 import Banner from "../components/Banner";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
-import { useVisitedPageTrackingGA } from "../hooks/useTrackingGA";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import SeoHead from "../components/SeoHead";
 import getSEOConfig from "../config/next-seo.config";
@@ -45,7 +44,6 @@ const Home: NextPage & { pageTitleText?: string } = (): React.JSX.Element => {
 
   // Realiza el seguimiento de la visita a la página de inicio
   useVisitedPageTracking("inicio");
-  useVisitedPageTrackingGA("inicio");
 
   return (
     <div className="pageContainer">
