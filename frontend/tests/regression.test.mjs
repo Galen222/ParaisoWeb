@@ -260,7 +260,6 @@ test("los menús, tarjetas y paginador son utilizables con teclado", async () =>
 test("las imágenes Open Graph específicas usan URLs absolutas", async () => {
   const pages = [
     "san-bernardo.tsx",
-    "bravo-murillo.tsx",
     "reina-victoria.tsx",
     "arenal.tsx",
     "gastronomia.tsx",

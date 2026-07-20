@@ -8,7 +8,7 @@ const readSource = (relativePath) =>
 test("el menú de restaurantes concede tiempo para alcanzar el desplegable", async () => {
   const source = await readSource("../src/components/Navbar.tsx");
 
-  assert.match(source, /const RESTAURANTS_MENU_CLOSE_DELAY_MS = 300;/);
+  assert.match(source, /const RESTAURANTS_MENU_CLOSE_DELAY_MS = 200;/);
   assert.match(
     source,
     /scheduleRestaurantsMenuClose[\s\S]*?setTimeout\([\s\S]*?closeRestaurantsMenu\(\)[\s\S]*?RESTAURANTS_MENU_CLOSE_DELAY_MS/,

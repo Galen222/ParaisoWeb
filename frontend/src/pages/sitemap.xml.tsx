@@ -17,7 +17,7 @@ const SUPPORTED_LOCALES: readonly SitemapLocale[] = ["es", "en", "de", "fr"];
 const STATIC_ROUTES = [
   "/",
   "/san-bernardo",
-  "/bravo-murillo",
+  // Restaurante cerrado: "/bravo-murillo",
   "/reina-victoria",
   "/arenal",
   "/nosotros",

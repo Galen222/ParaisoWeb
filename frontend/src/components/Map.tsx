@@ -45,6 +45,7 @@ const locations: Locations = {
     url: "https://www.google.com/maps?ll=40.421868,-3.707702&z=20&t=m&gl=US&mapclient=apiv3&cid=16475304548653478685",
     telephone: "+34 91 532 83 50",
   },
+  /* Restaurante cerrado: se conserva su configuración sin exponerla en la interfaz.
   "bravo-murillo": {
     name: "Paraíso Del Jamón II",
     lat: 40.449348434670554,
@@ -54,6 +55,7 @@ const locations: Locations = {
     url: "https://www.google.com/maps?ll=40.449348,-3.703398&z=20&t=m&gl=US&mapclient=apiv3&cid=17291774062565476387",
     telephone: "+34 91 553 97 83",
   },
+  */
   "reina-victoria": {
     name: "Paraíso Del Jamón III",
     lat: 40.44667864352768,

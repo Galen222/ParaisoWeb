@@ -296,7 +296,6 @@ test("los enlaces telefónicos usan un destino normalizado sin alterar el texto 
 test("cada restaurante tiene una identidad estable y está vinculado con la marca", async () => {
   const restaurants = [
     { file: "san-bernardo.tsx", slug: "san-bernardo", name: "Paraíso Del Jamón I", branchCode: "I" },
-    { file: "bravo-murillo.tsx", slug: "bravo-murillo", name: "Paraíso Del Jamón II", branchCode: "II" },
     { file: "reina-victoria.tsx", slug: "reina-victoria", name: "Paraíso Del Jamón III", branchCode: "III" },
     { file: "arenal.tsx", slug: "arenal", name: "Paraíso Del Jamón IV", branchCode: "IV" },
   ];

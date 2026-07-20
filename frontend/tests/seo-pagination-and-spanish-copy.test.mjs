@@ -61,7 +61,11 @@ test("los textos visibles y alternativos de restaurantes conservan las tildes", 
   const locale = await readJson("../src/locales/es/common.json");
 
   assert.match(locale.seo_keywords, /menú/);
-  assert.equal(locale["bravo-murillo_Carousel_Alt10"], "Menú");
+  const disabledBravoMurillo = await readFile(
+    new URL("../src/locales-disabled/es/bravo-murillo.common.jsonc.disabled", import.meta.url),
+    "utf8",
+  );
+  assert.match(disabledBravoMurillo, /"bravo-murillo_Carousel_Alt10": "Menú"/);
   assert.match(locale["reina-victoria_Texto"], /charcutería/);
   assert.equal(locale["arenal_Carousel_Alt10"], "Plato del menú");
   assert.equal(locale.Map_Marker_Texto1, "Cómo llegar");

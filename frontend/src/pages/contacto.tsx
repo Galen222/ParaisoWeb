@@ -123,7 +123,7 @@ const ContactoPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elemen
       {/* Localizaciones de las sedes del negocio */}
       <div>
         <Localization localizationName="san-bernardo" />
-        <Localization localizationName="bravo-murillo" />
+        {/* Restaurante cerrado: <Localization localizationName="bravo-murillo" /> */}
         <Localization localizationName="reina-victoria" />
         <Localization localizationName="arenal" />
       </div>

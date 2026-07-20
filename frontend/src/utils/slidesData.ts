@@ -110,6 +110,7 @@ export const slidesData = (intl: IntlShape): { [key: string]: Slide[] } => ({
       alt: intl.formatMessage({ id: "san-bernardo_Carousel_Alt10" }),
     },
   ],
+  /* Restaurante cerrado: se conserva el carrusel comentado.
   "bravo-murillo": [
     {
       type: "image",
@@ -162,6 +163,7 @@ export const slidesData = (intl: IntlShape): { [key: string]: Slide[] } => ({
       alt: intl.formatMessage({ id: "bravo-murillo_Carousel_Alt10" }),
     },
   ],
+  */
   "reina-victoria": [
     {
       type: "image",

@@ -87,7 +87,7 @@ const ReservasPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elemen
       {/* Sección de localización para mostrar las distintas ubicaciones */}
       <div className="mt-25p">
         <Localization localizationName="san-bernardo" />
-        <Localization localizationName="bravo-murillo" />
+        {/* Restaurante cerrado: <Localization localizationName="bravo-murillo" /> */}
         <Localization localizationName="reina-victoria" />
         <Localization localizationName="arenal" />
       </div>

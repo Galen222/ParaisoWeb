@@ -8,7 +8,7 @@ export const getBannerContent = (intl: IntlShape) => ({
     highlightText: intl.formatMessage({ id: "banner_Restaurantes_Texto2" }),
     links: [
       { href: "/san-bernardo", text: "San Bernardo" },
-      { href: "/bravo-murillo", text: "Bravo Murillo" },
+      // Restaurante cerrado: { href: "/bravo-murillo", text: "Bravo Murillo" },
       { href: "/reina-victoria", text: "Reina Victoria" },
       { href: "/arenal", text: "Arenal" },
     ],

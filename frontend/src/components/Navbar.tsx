@@ -31,7 +31,7 @@ export interface NavbarProps {
 /**
  * Constantes para las rutas y textos alternativos de las imágenes.
  */
-const RESTAURANTS_MENU_CLOSE_DELAY_MS = 300;
+const RESTAURANTS_MENU_CLOSE_DELAY_MS = 200;
 
 const IMAGE_CONSTANTS = {
   /**
@@ -294,9 +294,11 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
               <Link href="/san-bernardo" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/san-bernardo")}>
                 San Bernardo
               </Link>
+              {/* Restaurante cerrado: se conserva el enlace comentado para poder recuperarlo si fuera necesario.
               <Link href="/bravo-murillo" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/bravo-murillo")}>
                 Bravo Murillo
               </Link>
+              */}
               <Link href="/reina-victoria" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/reina-victoria")}>
                 Reina Victoria
               </Link>
@@ -368,9 +370,11 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
               <Link href="/san-bernardo" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/san-bernardo")}>
                 San Bernardo
               </Link>
+              {/* Restaurante cerrado: se conserva el enlace comentado para poder recuperarlo si fuera necesario.
               <Link href="/bravo-murillo" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/bravo-murillo")}>
                 Bravo Murillo
               </Link>
+              */}
               <Link href="/reina-victoria" locale={router.locale} onClick={handleLinkClick} aria-current={getCurrentPageAria("/reina-victoria")}>
                 Reina Victoria
               </Link>
