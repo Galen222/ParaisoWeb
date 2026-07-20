@@ -105,6 +105,53 @@ test("las URLs configuradas rechazan controles que el parser eliminaría", async
   );
 });
 
+test("las URLs configuradas rechazan controles y separadores invisibles en sus extremos", async () => {
+  const [{ normalizePublicSiteUrl }, { requirePublicApiUrl }] = await Promise.all([
+    loadTypeScriptModule("../src/utils/publicSiteUrl.ts"),
+    loadTypeScriptModule("../src/config/api.config.ts"),
+  ]);
+
+  for (const value of [
+    "\nhttps://example.com",
+    "https://example.com\t",
+    "\u00a0https://example.com",
+    "https://example.com\u202f",
+  ]) {
+    assert.throws(() => normalizePublicSiteUrl(value));
+    assert.throws(() => requirePublicApiUrl(value, "API_URL"));
+  }
+
+  assert.equal(
+    normalizePublicSiteUrl("  https://www.paraisodeljamon.com  "),
+    "https://www.paraisodeljamon.com"
+  );
+});
+
+test("las URLs públicas rechazan sintaxis que el parser convertiría en otra ruta u origen", async () => {
+  const [{ normalizePublicSiteUrl }, { requirePublicApiUrl }] = await Promise.all([
+    loadTypeScriptModule("../src/utils/publicSiteUrl.ts"),
+    loadTypeScriptModule("../src/config/api.config.ts"),
+  ]);
+
+  for (const value of [
+    "https://exa%6dple.com",
+    "https://example.com/%2e",
+  ]) {
+    assert.throws(() => normalizePublicSiteUrl(value));
+  }
+
+  for (const value of [
+    "https://exa%6dple.com/api",
+    "https://api.example.com/base/../contacto",
+    "https://api.example.com/base/%2e%2e/contacto",
+    "https://api.example.com/base/%25252525252e%25252525252e/contacto",
+    "https://api.example.com/base/%0Aoculta",
+    "https://api.example.com\\contacto",
+  ]) {
+    assert.throws(() => requirePublicApiUrl(value, "API_URL"));
+  }
+});
+
 test("las URLs configuradas rechazan caracteres Unicode que los parsers normalizan", async () => {
   const [{ normalizePublicSiteUrl }, { requirePublicApiUrl }] = await Promise.all([
     loadTypeScriptModule("../src/utils/publicSiteUrl.ts"),

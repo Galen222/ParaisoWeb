@@ -39,23 +39,10 @@ next-env.d.ts
 # .bat for quick launch
 frontdev.bat
 frontlocal.bat
-frontlocalweb.bat
-frontprod2.bat
-frontprod.bat
 frontdocs.bat
 
 # docs
 docs
 
-# PM2 launch
-# pm2 start ecosystem.config.js
-ecosystem.config.js
-/logs
-frontprod2.bat
-
 # typedoc config
 typedoc.json
-
-# sitemap dinámico: src/pages/sitemap.xml.tsx
-# frontsite.bat era un lanzador local del generador antiguo.
-frontsite.bat

@@ -393,6 +393,48 @@ class EnvironmentExampleTests(unittest.TestCase):
         )
         self.assertEqual(settings.cors_allowed_origins, ["https://example.com"])
 
+    def test_configuracion_rechaza_controles_y_separadores_invisibles_en_los_extremos(self) -> None:
+        common = {
+            "_env_file": None,
+            "SMTP_SERVER": "smtp.test.local",
+            "SMTP_PORT": 587,
+            "SMTP_USERNAME": "tests@example.com",
+            "SMTP_PASSWORD": "secret",
+            "DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db",
+            "secret_key": "test-secret-key-with-at-least-32-characters",
+            "token_interval_seconds": 60,
+        }
+
+        invalid_overrides = (
+            {"SMTP_SERVER": "\nsmtp.test.local"},
+            {"SMTP_SERVER": "smtp.test.local\u00a0"},
+            {"DATABASE_URL": "mysql+aiomysql://u:p@127.0.0.1/db\t"},
+            {"CORS_ALLOWED_ORIGINS": "\nhttps://example.com"},
+            {"RECAPTCHA_ALLOWED_HOSTNAMES": "\tlocalhost"},
+            {"TRUSTED_PROXY_IPS": "127.0.0.1\u202f"},
+        )
+        for overrides in invalid_overrides:
+            with self.subTest(overrides=overrides), self.assertRaises(ValidationError):
+                Settings(**(common | overrides))
+
+        configured = Settings(
+            **(
+                common
+                | {
+                    "SMTP_SERVER": "  smtp.test.local  ",
+                    "DATABASE_URL": "  mysql+aiomysql://u:p@127.0.0.1/db  ",
+                    "CORS_ALLOWED_ORIGINS": "  https://example.com  ",
+                    "RECAPTCHA_ALLOWED_HOSTNAMES": "  localhost  ",
+                    "TRUSTED_PROXY_IPS": "  127.0.0.1  ",
+                }
+            )
+        )
+        self.assertEqual(configured.SMTP_SERVER, "smtp.test.local")
+        self.assertEqual(configured.DATABASE_URL, "mysql+aiomysql://u:p@127.0.0.1/db")
+        self.assertEqual(configured.CORS_ALLOWED_ORIGINS, "https://example.com")
+        self.assertEqual(configured.RECAPTCHA_ALLOWED_HOSTNAMES, "localhost")
+        self.assertEqual(configured.TRUSTED_PROXY_IPS, "127.0.0.1")
+
     def test_trusted_proxy_ips_rechaza_hosts_y_normaliza_ipv4_mapeada(self) -> None:
         common = {
             "_env_file": None,

@@ -143,6 +143,14 @@ test("el referer interno debe coincidir también en protocolo y puerto", async (
       false
     );
 
+    process.env.NEXT_PUBLIC_SITE_URL = "\nhttps://www.paraisodeljamon.com";
+    assert.equal(
+      isSameRequestHost(new URL("https://www.paraisodeljamon.com/blog"), {
+        host: "www.paraisodeljamon.com",
+      }),
+      false
+    );
+
     delete process.env.NEXT_PUBLIC_SITE_URL;
     assert.equal(
       isSameRequestHost(new URL("http://localhost:3000/blog"), {
@@ -165,6 +173,12 @@ test("el referer interno debe coincidir también en protocolo y puerto", async (
     assert.equal(
       isSameRequestHost(new URL("http://localhost:3000/blog"), {
         host: "local\u2060host:3000",
+      }),
+      false
+    );
+    assert.equal(
+      isSameRequestHost(new URL("http://localhost:3000/blog"), {
+        host: "\tlocalhost:3000",
       }),
       false
     );

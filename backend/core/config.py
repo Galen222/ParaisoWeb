@@ -41,7 +41,7 @@ def _contains_unsupported_configuration_character(value: str) -> bool:
     """Detecta controles que parsers de URL o IDNA pueden eliminar silenciosamente."""
     return any(
         unicodedata.category(character).startswith("C")
-        or unicodedata.category(character) in {"Zl", "Zp"}
+        or (unicodedata.category(character).startswith("Z") and character != " ")
         for character in value
     )
 
@@ -159,7 +159,9 @@ class Settings(BaseSettings):
         """Normaliza IP y DNS de reCAPTCHA y rechaza puertos, rutas o hosts inválidos."""
         normalized_hosts: list[str] = []
         for raw_host in value.split(","):
-            host = raw_host.strip().rstrip(".")
+            if _contains_unsupported_configuration_character(raw_host):
+                raise ValueError("RECAPTCHA_ALLOWED_HOSTNAMES solo admite nombres de host")
+            host = raw_host.strip(" ").rstrip(".")
             if not host:
                 continue
             if (
@@ -215,11 +217,12 @@ class Settings(BaseSettings):
     @classmethod
     def validate_smtp_server(cls, value: str) -> str:
         """Normaliza el host SMTP y rechaza URLs, puertos y nombres inválidos."""
-        normalized = value.strip()
+        if _contains_unsupported_configuration_character(value):
+            raise ValueError("SMTP_SERVER debe contener un host sin espacios")
+        normalized = value.strip(" ")
         if (
             not normalized
             or any(character.isspace() for character in normalized)
-            or _contains_unsupported_configuration_character(normalized)
         ):
             raise ValueError("SMTP_SERVER debe contener un host sin espacios")
         if normalized.lower().rstrip(".") == EXAMPLE_SMTP_SERVER:
@@ -280,11 +283,11 @@ class Settings(BaseSettings):
     @classmethod
     def validate_database_url(cls, value: str) -> str:
         """Exige la URL asíncrona que utiliza el motor y una base de datos concreta."""
-        normalized = value.strip()
+        if _contains_unsupported_configuration_character(value):
+            raise ValueError("DATABASE_URL contiene caracteres de control no permitidos")
+        normalized = value.strip(" ")
         if not normalized:
             raise ValueError("DATABASE_URL no puede estar vacía")
-        if _contains_unsupported_configuration_character(normalized):
-            raise ValueError("DATABASE_URL contiene caracteres de control no permitidos")
 
         try:
             parsed = make_url(normalized)
@@ -350,16 +353,19 @@ class Settings(BaseSettings):
     @classmethod
     def validate_cors_allowed_origins(cls, value: str) -> str:
         """Valida y normaliza orígenes CORS para que coincidan con el formato del navegador."""
-        raw_origins = [origin.strip() for origin in value.split(",") if origin.strip()]
+        raw_origins: list[str] = []
+        for raw_origin in value.split(","):
+            if _contains_unsupported_configuration_character(raw_origin):
+                raise ValueError("CORS_ALLOWED_ORIGINS contiene caracteres no permitidos")
+            origin = raw_origin.strip(" ")
+            if origin:
+                raw_origins.append(origin)
         if not raw_origins:
             raise ValueError("CORS_ALLOWED_ORIGINS debe contener al menos un origen")
 
         normalized_origins: list[str] = []
         for origin in raw_origins:
-            if any(
-                character.isspace() or unicodedata.category(character).startswith("C")
-                for character in origin
-            ):
+            if any(character.isspace() for character in origin):
                 raise ValueError(f"Origen CORS no válido: {origin}")
             if origin == "*":
                 raise ValueError("CORS_ALLOWED_ORIGINS no puede usar '*' con credenciales")
@@ -428,7 +434,9 @@ class Settings(BaseSettings):
         """Acepta únicamente direcciones IP literales y normaliza duplicados."""
         normalized_values: list[str] = []
         for raw_value in value.split(","):
-            candidate = raw_value.strip()
+            if _contains_unsupported_configuration_character(raw_value):
+                raise ValueError("TRUSTED_PROXY_IPS contiene caracteres no permitidos")
+            candidate = raw_value.strip(" ")
             if not candidate:
                 continue
 
