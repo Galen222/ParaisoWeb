@@ -92,12 +92,42 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
     setIsPaused(nextPaused);
   };
 
+  const handlePreviousSlide = (): void => {
+    sliderRef.current?.slickPrev();
+  };
+
+  const handleNextSlide = (): void => {
+    sliderRef.current?.slickNext();
+  };
+
   return (
     <div className={styles.carouselContainer}>
+      <button
+        type="button"
+        className={`${styles.controlButton} ${styles.previousButton}`}
+        onClick={handlePreviousSlide}
+        aria-label={intl.formatMessage({ id: "carousel_Anterior" })}
+        title={intl.formatMessage({ id: "carousel_Anterior" })}
+      >
+        <svg aria-hidden="true" viewBox="0 0 16 16" focusable="false">
+          <path d="m10.5 2.5-5 5.5 5 5.5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+        </svg>
+      </button>
+      <button
+        type="button"
+        className={`${styles.controlButton} ${styles.nextButton}`}
+        onClick={handleNextSlide}
+        aria-label={intl.formatMessage({ id: "carousel_Siguiente" })}
+        title={intl.formatMessage({ id: "carousel_Siguiente" })}
+      >
+        <svg aria-hidden="true" viewBox="0 0 16 16" focusable="false">
+          <path d="m5.5 2.5 5 5.5-5 5.5" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" />
+        </svg>
+      </button>
       {!prefersReducedMotion && (
         <button
           type="button"
-          className={styles.autoplayButton}
+          className={`${styles.controlButton} ${styles.autoplayButton}`}
           onClick={handleAutoplayToggle}
           aria-label={intl.formatMessage({ id: isPaused ? "carousel_Reanudar" : "carousel_Pausar" })}
           title={intl.formatMessage({ id: isPaused ? "carousel_Reanudar" : "carousel_Pausar" })}

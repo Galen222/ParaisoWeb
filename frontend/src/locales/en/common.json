@@ -14,6 +14,8 @@
   "navbar_menu": "Navigation menu",
   "carousel_Pausar": "Pause carousel",
   "carousel_Reanudar": "Resume carousel",
+  "carousel_Anterior": "Previous slide",
+  "carousel_Siguiente": "Next slide",
   "carousel_IrDiapositiva": "Go to slide {slide}",
   "app_CookieAcceptAll": "Cookies successfully accepted",
   "app_CookieAccept": "Custom cookies successfully accepted",

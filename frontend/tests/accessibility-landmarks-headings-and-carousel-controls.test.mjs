@@ -106,6 +106,39 @@ test("el control del carrusel sincroniza pulsaciones rápidas con el estado real
   assert.doesNotMatch(carousel, /if \(isPaused\)/);
 });
 
+test("las flechas del carrusel son accesibles y los controles se adaptan al tipo de puntero", async () => {
+  const [carousel, carouselCss, ...localeFiles] = await Promise.all([
+    readSource("../src/components/Carousel.tsx"),
+    readSource("../src/styles/components/Carousel.module.css"),
+    ...["es", "en", "de", "fr"].map((locale) =>
+      readSource(`../src/locales/${locale}/common.json`)
+    ),
+  ]);
+
+  assert.match(carousel, /sliderRef\.current\?\.slickPrev\(\)/);
+  assert.match(carousel, /sliderRef\.current\?\.slickNext\(\)/);
+  assert.match(carousel, /id: "carousel_Anterior"/);
+  assert.match(carousel, /id: "carousel_Siguiente"/);
+  assert.match(carouselCss, /@media \(hover: hover\)[\s\S]*?\.carouselContainer:hover \.controlButton/);
+  assert.match(carouselCss, /\.carouselContainer:focus-within \.controlButton/);
+  assert.match(carouselCss, /@media \(hover: none\)[\s\S]*?\.controlButton[\s\S]*?opacity: 1/);
+  assert.doesNotMatch(carouselCss, /\.controlButton[\s\S]*?visibility: hidden/);
+
+  for (const localeFile of localeFiles) {
+    assert.match(localeFile, /"carousel_Anterior":/);
+    assert.match(localeFile, /"carousel_Siguiente":/);
+  }
+});
+
+test("la apertura del menú móvil no recalcula el tamaño de la imagen de cabecera", async () => {
+  const navbarCss = await readSource("../src/styles/components/Navbar.module.css");
+
+  assert.match(
+    navbarCss,
+    /@media \(max-width: 768px\)[\s\S]*?\.navbar \{[\s\S]*?background-size: 100% 100%, auto 550px;/
+  );
+});
+
 test("los archivos de pruebas usan nombres descriptivos", async () => {
   const files = await readdir(new URL("./", import.meta.url));
 

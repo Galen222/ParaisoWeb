@@ -463,6 +463,8 @@
   .navbar {
     position: relative; /* Cambia a posicionamiento relativo */
     background-position: center 20px; /* Ajusta la posición del fondo */
+    /* Mantiene fija la escala del fondo cuando el menú añade altura al contenedor. */
+    background-size: 100% 100%, auto 550px;
     height: auto; /* Ajusta la altura en móvil */
   }
 

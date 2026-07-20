@@ -14,6 +14,8 @@
   "navbar_menu": "Navigationsmenü",
   "carousel_Pausar": "Karussell pausieren",
   "carousel_Reanudar": "Karussell fortsetzen",
+  "carousel_Anterior": "Vorherige Folie",
+  "carousel_Siguiente": "Nächste Folie",
   "carousel_IrDiapositiva": "Zu Folie {slide} wechseln",
   "app_CookieAcceptAll": "Cookies erfolgreich akzeptiert",
   "app_CookieAccept": "Benutzerdefinierte Cookies erfolgreich akzeptiert",

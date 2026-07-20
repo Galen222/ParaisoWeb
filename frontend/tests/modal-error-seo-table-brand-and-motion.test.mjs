@@ -8,7 +8,7 @@ const readSource = (relativePath) =>
 test("el modal de cookies oculta e inutiliza el contenido de fondo", async () => {
   const source = await readSource("../src/pages/_app.tsx");
 
-  assert.match(source, /<Cookie[\s\S]*?<div aria-hidden=\{showCookieModal \? true : undefined\} inert=\{showCookieModal\}>/);
+  assert.match(source, /<Cookie[\s\S]*?<div\s+aria-hidden=\{showCookieModal \? true : undefined\}\s+inert=\{showCookieModal\}\s*>/);
   assert.match(source, /inert=\{showCookieModal\}[\s\S]*?<Navbar[\s\S]*?<main>[\s\S]*?<Footer \/>[\s\S]*?<\/div>/);
 });
 

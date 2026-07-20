@@ -10,17 +10,15 @@
   position: relative; /* Permite colocar el control de reproducción sobre el carrusel */
 }
 
-/* Control visible para detener o reanudar el movimiento automático */
-.autoplayButton {
+/* Controles superpuestos de navegación y reproducción */
+.controlButton {
   position: absolute;
-  top: 6px;
-  right: 6px;
   z-index: 2;
-  width: 28px;
-  height: 28px;
+  width: 36px;
+  height: 36px;
   border: 1px solid white;
   border-radius: 4px;
-  padding: 6px;
+  padding: 8px;
   background-color: rgba(74, 64, 58, 0.85);
   color: white;
   line-height: 1;
@@ -28,17 +26,63 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
 }
 
-.autoplayButton svg {
+.controlButton svg {
   width: 100%;
   height: 100%;
   display: block;
 }
 
-.autoplayButton:focus-visible {
+.controlButton:focus-visible {
   outline: 2px solid #000;
   outline-offset: 2px;
+}
+
+.previousButton {
+  top: 50%;
+  left: 8px;
+  transform: translateY(-50%);
+}
+
+.nextButton {
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+}
+
+.autoplayButton {
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  padding: 6px;
+}
+
+/* En equipos con ratón los controles aparecen al interactuar con el carrusel. */
+@media (hover: hover) {
+  .carouselContainer:hover .controlButton,
+  .carouselContainer:focus-within .controlButton {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+/* En pantallas táctiles no existe hover, por lo que los controles deben permanecer visibles. */
+@media (hover: none) {
+  .controlButton {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .controlButton {
+    transition: none;
+  }
 }
 
 /* Estilo para las imágenes dentro del carrusel */
