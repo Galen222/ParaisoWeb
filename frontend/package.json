@@ -11,7 +11,7 @@
     "check": "npm run lint && npm run typecheck && npm run test && npm run build",
     "test": "npm run test:frontend && npm run test:backend",
     "test:frontend": "node --test tests/*.test.mjs",
-    "test:backend": "cd .. && python -m backend.tests.run_all_tests"
+    "test:backend": "node scripts/run-backend-tests.mjs"
   },
   "dependencies": {
     "@googlemaps/js-api-loader": "^2.1.1",
