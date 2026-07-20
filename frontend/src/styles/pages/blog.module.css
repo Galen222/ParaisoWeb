@@ -45,6 +45,7 @@
   width: 100%; /* Ancho completo del contenedor padre */
   height: 60%; /* La imagen ocupa el 60% de la altura de la tarjeta */
   overflow: hidden; /* Oculta cualquier parte de la imagen que exceda el contenedor */
+  position: relative; /* Proporciona el contexto necesario para next/image con fill */
 }
 
 /* Estilo para la imagen del blog */

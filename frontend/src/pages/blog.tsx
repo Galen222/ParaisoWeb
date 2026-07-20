@@ -1,6 +1,7 @@
 // pages/blog.tsx
 
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import Loader from "../components/Loader";
@@ -120,7 +121,7 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
         <div className={errorStyles.errorContainer} role="alert">
           <h1>{intl.formatMessage({ id: "blog_Error" })}</h1>
           <div className={errorStyles.imageContainer}>
-            <img src={imageError} alt="" />
+            <Image src={imageError} alt="" width={400} height={400} sizes="(max-width: 768px) 90vw, 400px" />
           </div>
         </div>
       )}
@@ -155,7 +156,13 @@ const BlogPage: NextPage & { pageTitleText?: string } = (): React.JSX.Element =>
                 <Link className={styles.blogLink} href={buildBlogPath(blog.slug)} key={blog.id_noticia} passHref>
                   <div className={styles.blogCard}>
                     <div className={styles.imageContainer}>
-                      <img src={`${IMAGE_BASE_URL}${blog.imagen_url}`} alt={blog.titulo} className={styles.blogImage} />
+                      <Image
+                        src={`${IMAGE_BASE_URL}${blog.imagen_url}`}
+                        alt={blog.titulo}
+                        fill
+                        sizes="(max-width: 768px) 90vw, 350px"
+                        className={styles.blogImage}
+                      />
                     </div>
                     <div className={styles.blogText}>
                       <h3 aria-level={2}>{blog.titulo}</h3>

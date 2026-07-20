@@ -115,7 +115,7 @@ test("las ilustraciones de error no repiten mensajes ya visibles", async () => {
   for (const path of paths) {
     const source = await readFile(new URL(path, import.meta.url), "utf8");
     assert.doesNotMatch(source, /error\.png[^\n]*alt=(?:"Error|\{`Error)/i);
-    assert.match(source, /<img[^>]+alt=""/);
+    assert.match(source, /<Image[^>]+alt=""/);
   }
 });
 

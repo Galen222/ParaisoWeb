@@ -29,10 +29,20 @@
   font-size: 14px; /* Tamaño de fuente de 14 píxeles para información secundaria */
 }
 
+/* Reserva el espacio de la imagen para evitar saltos durante la carga. */
+.blogImageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  max-height: 400px;
+  overflow: hidden;
+  border-radius: 10px;
+}
+
 /* Estilo para la imagen del blog */
 .blogImage {
   width: 100%; /* Ancho completo del contenedor padre */
-  max-height: 400px; /* Altura máxima de 400 píxeles para mantener la proporcionalidad */
+  height: 100%; /* Ocupa el espacio reservado por el contenedor */
   object-fit: cover; /* Ajusta la imagen para cubrir todo el contenedor sin distorsionar */
   border-radius: 10px; /* Bordes redondeados de 10 píxeles para suavizar la apariencia */
 }

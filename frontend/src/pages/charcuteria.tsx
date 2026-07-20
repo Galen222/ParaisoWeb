@@ -1,6 +1,7 @@
 // pages/charcuteria.tsx
 
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { useIntl } from "react-intl";
 import Loader from "../components/Loader";
@@ -172,7 +173,7 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
         <div className={errorStyles.errorContainer} role="alert">
           <h1>{error}</h1>
           <div className={errorStyles.imageContainer}>
-            <img src={errorImage} alt="" />
+            <Image src={errorImage} alt="" width={400} height={400} sizes="(max-width: 768px) 90vw, 400px" />
           </div>
         </div>
       )}
@@ -240,7 +241,13 @@ const CharcuteriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
                         className={styles.front}
                         aria-hidden={isCardFlipped}
                       >
-                        <img src={`${IMAGE_BASE_URL}${product.imagen_url}`} alt={product.nombre} className={styles.productImage} />
+                        <Image
+                          src={`${IMAGE_BASE_URL}${product.imagen_url}`}
+                          alt={product.nombre}
+                          fill
+                          sizes="(max-width: 768px) 270px, 300px"
+                          className={styles.productImage}
+                        />
                         <div className={styles.textOverlay}>
                           <h3 aria-level={2} className={styles.frontProductName}>{product.nombre}</h3>
                           {product.categoria && <p className={styles.frontCategory}>{product.categoria}</p>}

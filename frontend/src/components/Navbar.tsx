@@ -2,6 +2,7 @@
 
 import React, { useCallback, useEffect, useRef } from "react";
 import type { FocusEvent, KeyboardEvent } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useIntl } from "react-intl";
 import { useRouter } from "next/router";
@@ -184,7 +185,15 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
         <div className={styles.navbarTop}>
           <div className={styles.imgLogoContainer}>
             <Link href="/" locale={router.locale} onClick={handleLinkClick}>
-              <img src={IMAGE_CONSTANTS.logo} alt={IMAGE_CONSTANTS.logoAlt} className={styles.imgLogo} />
+              <Image
+                src={IMAGE_CONSTANTS.logo}
+                alt={IMAGE_CONSTANTS.logoAlt}
+                width={2150}
+                height={1275}
+                sizes="220px"
+                priority
+                className={styles.imgLogo}
+              />
             </Link>
           </div>
           <div className={styles.textLogoContainer}>
@@ -219,9 +228,13 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
                     void handleLocaleChange(lng);
                   }}
                 >
-                  <img
+                  <Image
                     src={IMAGE_CONSTANTS.flags[lng as keyof typeof IMAGE_CONSTANTS.flags]}
                     alt=""
+                    width={150}
+                    height={150}
+                    sizes="40px"
+                    loading="eager"
                     className={`${styles.flag} ${router.locale === lng ? styles.activeFlag : ""}`}
                   />
                 </button>
@@ -351,7 +364,15 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
         <div className={styles.navbarTop}>
           <div className={styles.imgLogoContainer}>
             <Link href="/" locale={router.locale} onClick={handleLinkClick}>
-              <img src={IMAGE_CONSTANTS.logo} alt={IMAGE_CONSTANTS.logoAlt} className={styles.imgLogo} />
+              <Image
+                src={IMAGE_CONSTANTS.logo}
+                alt={IMAGE_CONSTANTS.logoAlt}
+                width={2150}
+                height={1275}
+                sizes="220px"
+                priority
+                className={styles.imgLogo}
+              />
             </Link>
           </div>
           <div className={styles.textLogoContainer}>
@@ -371,9 +392,13 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
                     void handleLocaleChange(lng);
                   }}
                 >
-                  <img
+                  <Image
                     src={IMAGE_CONSTANTS.flags[lng as keyof typeof IMAGE_CONSTANTS.flags]}
                     alt=""
+                    width={150}
+                    height={150}
+                    sizes="40px"
+                    loading="eager"
                     className={`${styles.flag} ${router.locale === lng ? styles.activeFlag : ""}`}
                   />
                 </button>

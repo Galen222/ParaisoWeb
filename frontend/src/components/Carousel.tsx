@@ -1,6 +1,7 @@
 // components/Carousel.tsx
 
 import React, { useRef, useState } from "react";
+import Image from "next/image";
 import Slider from "react-slick";
 import { useIntl } from "react-intl";
 import { slidesData } from "../utils/slidesData";
@@ -21,6 +22,19 @@ interface Slide {
   alt?: string;
   content?: string;
 }
+
+/** Devuelve las dimensiones intrínsecas de los grupos de imágenes del carrusel. */
+const getSlideImageDimensions = (src: string): { width: number; height: number } => {
+  if (src.startsWith("/images/gastronomia/")) {
+    return { width: 400, height: 300 };
+  }
+
+  if (src.startsWith("/images/carousel/inicio/") || src.startsWith("/images/nosotros/")) {
+    return { width: 720, height: 510 };
+  }
+
+  return { width: 740, height: 510 };
+};
 
 /**
  * Propiedades para el componente Carousel.
@@ -145,19 +159,29 @@ const Carousel = ({ carouselType }: CarouselProps): React.JSX.Element => {
       )}
       <Slider ref={sliderRef} {...settings}>
         {/* Mapea cada diapositiva y la renderiza según su tipo */}
-        {slides.map((slide, index) => (
-          <div key={index}>
-            {slide.type === "image" ? (
-              // Si la diapositiva es una imagen, muestra una etiqueta <img>
-              <img src={slide.src} alt={slide.alt} className={styles.image} />
-            ) : (
-              // Si la diapositiva es texto, muestra el contenido en un contenedor de texto
-              <div className={styles.text}>
-                <h3 aria-level={2}>{slide.content}</h3>
-              </div>
-            )}
-          </div>
-        ))}
+        {slides.map((slide, index) => {
+          const imageDimensions = slide.src ? getSlideImageDimensions(slide.src) : null;
+
+          return (
+            <div key={index}>
+              {slide.type === "image" && slide.src && imageDimensions ? (
+                <Image
+                  src={slide.src}
+                  alt={slide.alt ?? ""}
+                  width={imageDimensions.width}
+                  height={imageDimensions.height}
+                  sizes="(max-width: 768px) 90vw, 80vw"
+                  className={styles.image}
+                />
+              ) : (
+                // Si la diapositiva es texto, muestra el contenido en un contenedor de texto
+                <div className={styles.text}>
+                  <h3 aria-level={2}>{slide.content}</h3>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </Slider>
     </div>
   );

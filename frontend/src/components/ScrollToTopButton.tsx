@@ -1,6 +1,7 @@
 // components/ScrollToTopButton.tsx
 
 import React from "react";
+import Image from "next/image";
 import { useIntl } from "react-intl";
 import useScrollToTop from "../hooks/useScrollToTop"; // Importa el hook personalizado
 import styles from "../styles/components/ScrollToTopButton.module.css";
@@ -38,7 +39,13 @@ const ScrollToTopButton: React.FC = (): React.JSX.Element | null => {
           ${isScrollButtonVisible ? styles.visible : styles.hidden}
         `}
       >
-        <img src={scrollButtonImage.src} alt={scrollButtonImage.alt} /> {/* Botón para desplazarse hacia arriba */}
+        <Image
+          src={scrollButtonImage.src}
+          alt={scrollButtonImage.alt}
+          width={32}
+          height={32}
+          sizes="20px"
+        /> {/* Botón para desplazarse hacia arriba */}
       </button>
     </div>
   );

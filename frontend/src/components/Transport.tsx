@@ -1,6 +1,7 @@
 // components/Transport.tsx
 
 import React from "react";
+import Image from "next/image";
 import { useIntl } from "react-intl";
 import styles from "../styles/components/Transport.module.css"; // Crea un archivo CSS o reutiliza uno existente
 
@@ -39,28 +40,28 @@ const Transport: React.FC<TransportProps> = ({ transportName }: TransportProps):
     <div className={styles.transportContainer}>
       {/* Información del transporte en metro */}
       <div className={styles.transportItem}>
-        <img src={imageMetro} alt="" />
+        <Image src={imageMetro} alt="" width={800} height={499} sizes="70px" />
         <h4 aria-level={2}>{intl.formatMessage({ id: `${transportName}_Metro_Titulo` })}</h4>
         <p>{intl.formatMessage({ id: `${transportName}_Metro_Lineas` })}</p>
       </div>
 
       {/* Información del transporte en autobús */}
       <div className={styles.transportItem}>
-        <img src={imageBus} alt="" />
+        <Image src={imageBus} alt="" width={880} height={495} sizes="70px" />
         <h4 aria-level={2}>{intl.formatMessage({ id: `${transportName}_Bus_Titulo` })}</h4>
         <p>{intl.formatMessage({ id: `${transportName}_Bus_Lineas` })}</p>
       </div>
 
       {/* Información del servicio de taxi */}
       <div className={styles.transportItem}>
-        <img src={imageTaxi} alt="" />
+        <Image src={imageTaxi} alt="" width={800} height={500} sizes="70px" />
         <h4 aria-level={2}>{intl.formatMessage({ id: `${transportName}_Taxi_Titulo` })}</h4>
         <p>{intl.formatMessage({ id: `${transportName}_Taxi_Descripcion` })}</p>
       </div>
 
       {/* Información sobre aparcamiento cercano */}
       <div className={styles.transportItem}>
-        <img src={imageParking} alt="" />
+        <Image src={imageParking} alt="" width={632} height={395} sizes="70px" />
         <h4 aria-level={2}>{intl.formatMessage({ id: `${transportName}_Aparcamiento_Titulo` })}</h4>
         <p>{intl.formatMessage({ id: `${transportName}_Aparcamiento_Descripcion` })}</p>
       </div>

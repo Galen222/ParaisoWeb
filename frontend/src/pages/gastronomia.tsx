@@ -1,6 +1,7 @@
 // pages/gastronomia.tsx
 
 import React, { useState } from "react";
+import Image from "next/image";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next"; // Importa GetServerSidePropsResult
 import { useIntl } from "react-intl";
 import SeoHead from "../components/SeoHead"; // Componente para generar los metadatos SEO de la página
@@ -153,7 +154,15 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto2" })}</p>
         <div className={`${styles.imageContainer}`}>
           {images.raciones.map((image, index) => (
-            <img key={index} src={image.src} alt={image.alt} className={styles.responsiveImage} />
+            <Image
+              key={index}
+              src={image.src}
+              alt={image.alt}
+              width={400}
+              height={300}
+              sizes="(max-width: 768px) 90vw, (max-width: 1280px) 30vw, 400px"
+              className={styles.responsiveImage}
+            />
           ))}
         </div>
         <div className={styles.mobileCarousel}>
@@ -166,7 +175,15 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto4" })}</p>
         <div className={`${styles.imageContainer}`}>
           {images.combinados.map((image, index) => (
-            <img key={index} src={image.src} alt={image.alt} className={styles.responsiveImage} />
+            <Image
+              key={index}
+              src={image.src}
+              alt={image.alt}
+              width={400}
+              height={300}
+              sizes="(max-width: 768px) 90vw, (max-width: 1280px) 30vw, 400px"
+              className={styles.responsiveImage}
+            />
           ))}
         </div>
         <div className={styles.mobileCarousel}>
@@ -179,7 +196,15 @@ const GastronomiaPage: NextPage & { pageTitleText?: string } = (): React.JSX.Ele
         <p className="ti-20p">{intl.formatMessage({ id: "gastronomia_Texto5" })}</p>
         <div className={`${styles.imageContainer}`}>
           {images.bocadillos.map((image, index) => (
-            <img key={index} src={image.src} alt={image.alt} className={styles.responsiveImage} />
+            <Image
+              key={index}
+              src={image.src}
+              alt={image.alt}
+              width={400}
+              height={300}
+              sizes="(max-width: 768px) 90vw, (max-width: 1280px) 30vw, 400px"
+              className={styles.responsiveImage}
+            />
           ))}
         </div>
         <div className={styles.mobileCarousel}>

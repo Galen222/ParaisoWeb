@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { NextPage } from "next";
+import Image from "next/image";
 import SeoHead from "../components/SeoHead";
 import { useIntl } from "react-intl";
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
@@ -33,7 +34,7 @@ const Custom404Page: NextPage = () => {
       <h1 className="text-center">{message}</h1> {/* Muestra el mensaje de error */}
       {/* Imagen ilustrativa del error 404 */}
       <div className={styles.imageContainer}>
-        <img src={imageError} alt="" /> {/* Muestra la imagen de error 404 */}
+        <Image src={imageError} alt="" width={400} height={400} sizes="(max-width: 768px) 90vw, 400px" /> {/* Muestra la imagen de error 404 */}
       </div>
       </div>
     </>

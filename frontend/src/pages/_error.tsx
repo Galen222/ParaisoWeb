@@ -2,6 +2,7 @@
 
 import React from "react";
 import type { NextPage, NextPageContext } from "next";
+import Image from "next/image";
 import SeoHead from "../components/SeoHead";
 import { useIntl } from "react-intl"; // Hook para internacionalización
 import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking"; // Hook personalizado para seguimiento de visitas
@@ -82,7 +83,7 @@ const ErrorPage: NextPage<ErrorPageProps> = ({ statusCode }: ErrorPageProps): Re
       <p className="text-center">{message}</p>
       {/* Imagen ilustrativa del error */}
       <div className={styles.imageContainer}>
-        <img src={imageError} alt="" />
+        <Image src={imageError} alt="" width={400} height={400} sizes="(max-width: 768px) 90vw, 400px" />
       </div>
       </div>
     </>

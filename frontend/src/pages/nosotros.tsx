@@ -1,6 +1,7 @@
 // pages/nosotros.tsx
 
 import React from "react";
+import Image from "next/image";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import Carousel from "../components/Carousel";
 import ScrollToTopButton from "../components/ScrollToTopButton";
@@ -102,7 +103,15 @@ const NosotrosPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elemen
         <p className="ti-20p">{intl.formatMessage({ id: "nosotros_Texto2b" })}</p>
         <div className={`${styles.imageContainer}`}>
           {images.slice(0, 3).map((image, index) => (
-            <img key={index} src={image.src} alt={image.alt} className={styles.responsiveImage} />
+            <Image
+              key={index}
+              src={image.src}
+              alt={image.alt}
+              width={720}
+              height={510}
+              sizes="300px"
+              className={styles.responsiveImage}
+            />
           ))}
         </div>
         <p className="ti-20p">{intl.formatMessage({ id: "nosotros_Texto2c" })}</p>
@@ -127,7 +136,15 @@ const NosotrosPage: NextPage & { pageTitleText?: string } = (): React.JSX.Elemen
         <p className="ti-20p">{intl.formatMessage({ id: "nosotros_Texto5" })}</p>
         <div className={`${styles.imageContainer}`}>
           {images.slice(3).map((image, index) => (
-            <img key={index} src={image.src} alt={image.alt} className={styles.responsiveImage} />
+            <Image
+              key={index}
+              src={image.src}
+              alt={image.alt}
+              width={720}
+              height={510}
+              sizes="300px"
+              className={styles.responsiveImage}
+            />
           ))}
         </div>
         <div className={styles.mobileCarousel}>

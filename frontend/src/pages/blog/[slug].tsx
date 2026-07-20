@@ -1,6 +1,7 @@
 // pages/blog/[slug].tsx
 
 import React, { useRef, useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/router";
 import type { NextPage, GetServerSideProps, GetServerSidePropsResult } from "next";
 import ShareLink from "../../components/ShareLink";
@@ -222,8 +223,15 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
               </div>
               {/* Imagen principal */}
               {blogDetails.imagen_url && (
-                <div className="mt-25p">
-                  <img src={`${IMAGE_BASE_URL}${blogDetails.imagen_url}`} alt={blogDetails.titulo} className={styles.blogImage} />
+                <div className={`mt-25p ${styles.blogImageContainer}`}>
+                  <Image
+                    src={`${IMAGE_BASE_URL}${blogDetails.imagen_url}`}
+                    alt={blogDetails.titulo}
+                    fill
+                    sizes="(max-width: 768px) 90vw, 80vw"
+                    priority
+                    className={styles.blogImage}
+                  />
                 </div>
               )}
               {/* Contenido del blog */}
@@ -243,8 +251,14 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
               </div>
               {/* Imagen secundaria */}
               {blogDetails.imagen_url_2 && (
-                <div className="mt-25p">
-                  <img src={`${IMAGE_BASE_URL}${blogDetails.imagen_url_2}`} alt={blogDetails.titulo} className={styles.blogImage} />
+                <div className={`mt-25p ${styles.blogImageContainer}`}>
+                  <Image
+                    src={`${IMAGE_BASE_URL}${blogDetails.imagen_url_2}`}
+                    alt={blogDetails.titulo}
+                    fill
+                    sizes="(max-width: 768px) 90vw, 80vw"
+                    className={styles.blogImage}
+                  />
                 </div>
               )}
               <div>
@@ -272,7 +286,7 @@ const BlogDetailsPage: NextPage<BlogDetailsPageProps> & { pageTitleText?: string
           {/* Mensaje de error obtenido desde la internacionalización */}
           <h1>{intl.formatMessage({ id: "blog_Details_Error" })}</h1>
           <div className={errorStyles.imageContainer}>
-            <img src={imageError} alt="" />
+            <Image src={imageError} alt="" width={400} height={400} sizes="(max-width: 768px) 90vw, 400px" />
           </div>
         </div>
       )}

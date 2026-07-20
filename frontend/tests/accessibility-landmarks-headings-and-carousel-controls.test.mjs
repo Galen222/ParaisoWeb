@@ -54,7 +54,7 @@ test("los subtítulos mantienen su aspecto y exponen nivel semántico dos", asyn
 test("los iconos de transporte son decorativos y no repiten el título", async () => {
   const transport = await readSource("../src/components/Transport.tsx");
 
-  assert.equal((transport.match(/<img src=\{image\w+\} alt="" \/>/g) || []).length, 4);
+  assert.equal((transport.match(/<Image src=\{image\w+\} alt=""[^>]*\/>/g) || []).length, 4);
   assert.doesNotMatch(transport, /image(?:Metro|Bus|Taxi|Parking)Alt/);
 });
 
