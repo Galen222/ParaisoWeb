@@ -33,3 +33,11 @@ test("producción arranca mediante el servidor que inspecciona la URL original",
 
   assert.equal(packageJson.scripts.start, "node server.cjs");
 });
+
+test("PM2 arranca mediante el mismo servidor personalizado que npm start", () => {
+  const ecosystem = require("../ecosystem.config.js");
+  const [application] = ecosystem.apps;
+
+  assert.equal(application.script, "server.cjs");
+  assert.equal(application.args, undefined);
+});

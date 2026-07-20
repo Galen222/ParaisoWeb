@@ -2,8 +2,7 @@ module.exports = {
   apps: [
     {
       name: "ParaisoWeb",
-      script: "node_modules/next/dist/bin/next",
-      args: "start",
+      script: "server.cjs",
       instances: 1,
       exec_mode: "fork",
       env: {
