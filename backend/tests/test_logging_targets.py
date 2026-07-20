@@ -4,13 +4,22 @@ from backend.tests import _environment as _test_environment  # noqa: F401
 
 import logging
 from logging.handlers import RotatingFileHandler
+from dataclasses import dataclass
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from types import SimpleNamespace
 import unittest
 
 from backend.core.config import settings
 from backend.core.logging_config import configure_logging
+
+
+@dataclass(frozen=True)
+class _LoggingSettings:
+    BACKEND_LOG_TARGET: str
+    BACKEND_LOG_DIR: str
+    BACKEND_LOG_MAX_BYTES: int
+    BACKEND_LOG_BACKUP_COUNT: int
+    backend_log_level: str
 
 
 class LoggingTargetTests(unittest.TestCase):
@@ -20,8 +29,7 @@ class LoggingTargetTests(unittest.TestCase):
 
     def test_archivo_escribe_backend_log_rotado_aunque_el_entorno_sea_desarrollo(self) -> None:
         with TemporaryDirectory() as directory:
-            file_settings = SimpleNamespace(
-                APP_ENV="development",
+            file_settings = _LoggingSettings(
                 BACKEND_LOG_TARGET="archivo",
                 BACKEND_LOG_DIR=directory,
                 BACKEND_LOG_MAX_BYTES=180,
@@ -34,6 +42,7 @@ class LoggingTargetTests(unittest.TestCase):
             self.assertEqual(len(root_logger.handlers), 1)
             handler = root_logger.handlers[0]
             self.assertIsInstance(handler, RotatingFileHandler)
+            assert isinstance(handler, RotatingFileHandler)
             self.assertEqual(Path(handler.baseFilename).name, "backend.log")
 
             for index in range(8):
@@ -51,8 +60,7 @@ class LoggingTargetTests(unittest.TestCase):
     def test_una_entrada_sobredimensionada_respeta_el_limite_del_archivo(self) -> None:
         with TemporaryDirectory() as directory:
             max_bytes = 180
-            file_settings = SimpleNamespace(
-                APP_ENV="production",
+            file_settings = _LoggingSettings(
                 BACKEND_LOG_TARGET="archivo",
                 BACKEND_LOG_DIR=directory,
                 BACKEND_LOG_MAX_BYTES=max_bytes,
@@ -73,8 +81,7 @@ class LoggingTargetTests(unittest.TestCase):
             self.assertTrue(contents.endswith("\n"))
 
     def test_consola_no_crea_filehandler_aunque_el_entorno_sea_produccion(self) -> None:
-        console_settings = SimpleNamespace(
-            APP_ENV="production",
+        console_settings = _LoggingSettings(
             BACKEND_LOG_TARGET="consola",
             BACKEND_LOG_DIR="logs",
             BACKEND_LOG_MAX_BYTES=1024,

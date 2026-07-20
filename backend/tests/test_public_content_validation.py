@@ -3,8 +3,10 @@
 from datetime import datetime, timezone
 from urllib.parse import quote
 import unittest
+from typing import cast
 
 from pydantic import ValidationError
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.models import models
 from backend.models.schemas import (
@@ -47,6 +49,11 @@ class _Session:
     async def execute(self, statement):
         self.statement = statement
         return _Result(self._rows)
+
+
+def _as_async_session(session: "_Session") -> AsyncSession:
+    """Expone el doble mínimo con el contrato esperado por los servicios."""
+    return cast(AsyncSession, session)
 
 
 def _blog(post_id: int, **overrides):
@@ -191,7 +198,9 @@ class PublicContentValidationTests(unittest.IsolatedAsyncioTestCase):
         invalid_post = _blog(2, titulo="   ")
 
         with self.assertLogs("backend.services.blog_service", level="WARNING"):
-            posts = await BlogService(_Session([valid_post, invalid_post])).get_all_posts("es")
+            posts = await BlogService(
+                _as_async_session(_Session([valid_post, invalid_post]))
+            ).get_all_posts("es")
 
         self.assertEqual([post.id_noticia for post in posts], [1])
 
@@ -201,7 +210,7 @@ class PublicContentValidationTests(unittest.IsolatedAsyncioTestCase):
 
         with self.assertLogs("backend.services.charcuteria_service", level="WARNING"):
             products = await CharcuteriaService(
-                _Session([valid_product, invalid_product])
+                _as_async_session(_Session([valid_product, invalid_product]))
             ).get_all_products("es")
 
         self.assertEqual([product.id_producto for product in products], [1])
@@ -211,19 +220,24 @@ class PublicContentValidationTests(unittest.IsolatedAsyncioTestCase):
         valid_post = _blog(2, slug="articulo")
 
         with self.assertLogs("backend.services.blog_service", level="WARNING"):
-            post = await BlogService(_Session([invalid_post, valid_post])).get_post_by_slug(
+            post = await BlogService(
+                _as_async_session(_Session([invalid_post, valid_post]))
+            ).get_post_by_slug(
                 "articulo",
                 "es",
             )
 
         self.assertIsNotNone(post)
+        assert post is not None
         self.assertEqual(post.id_noticia, 2)
 
     async def test_busqueda_por_id_no_propaga_una_fila_publica_danada(self) -> None:
         invalid_post = _blog(1, imagen_url="../fuera.jpg")
 
         with self.assertLogs("backend.services.blog_service", level="WARNING"):
-            post = await BlogService(_Session([invalid_post])).get_post_by_id(1, "es")
+            post = await BlogService(
+                _as_async_session(_Session([invalid_post]))
+            ).get_post_by_id(1, "es")
 
         self.assertIsNone(post)
 

@@ -5,17 +5,25 @@ from __future__ import annotations
 import logging
 import logging.config
 import os
+from collections.abc import Mapping
 from pathlib import Path
-from typing import Protocol
+from typing import Any, Literal, Protocol
 
 
 class LoggingSettings(Protocol):
-    """Atributos de configuración necesarios para inicializar logging."""
+    """Valores de solo lectura necesarios para inicializar logging."""
 
-    BACKEND_LOG_TARGET: str
-    BACKEND_LOG_DIR: str
-    BACKEND_LOG_MAX_BYTES: int
-    BACKEND_LOG_BACKUP_COUNT: int
+    @property
+    def BACKEND_LOG_TARGET(self) -> str: ...
+
+    @property
+    def BACKEND_LOG_DIR(self) -> str: ...
+
+    @property
+    def BACKEND_LOG_MAX_BYTES(self) -> int: ...
+
+    @property
+    def BACKEND_LOG_BACKUP_COUNT(self) -> int: ...
 
     @property
     def backend_log_level(self) -> str: ...
@@ -49,8 +57,23 @@ def _truncate_utf8(value: str, max_bytes: int) -> str:
 class BoundedFileFormatter(logging.Formatter):
     """Impide que una sola entrada supere el tamaño máximo del archivo."""
 
-    def __init__(self, *args: object, max_bytes: int, **kwargs: object) -> None:
-        super().__init__(*args, **kwargs)
+    def __init__(
+        self,
+        fmt: str | None = None,
+        datefmt: str | None = None,
+        style: Literal["%", "{", "$"] = "%",
+        validate: bool = True,
+        *,
+        defaults: Mapping[str, Any] | None = None,
+        max_bytes: int,
+    ) -> None:
+        super().__init__(
+            fmt=fmt,
+            datefmt=datefmt,
+            style=style,
+            validate=validate,
+            defaults=defaults,
+        )
         self.max_bytes = max_bytes
 
     def format(self, record: logging.LogRecord) -> str:

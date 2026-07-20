@@ -10,6 +10,7 @@ from unittest.mock import AsyncMock, patch
 from pydantic import ValidationError
 
 from backend.core.config import Settings
+from backend.tests._settings import build_test_settings
 from backend.services.email_service import EmailService
 
 
@@ -86,8 +87,8 @@ class EnvironmentExampleTests(unittest.TestCase):
             "token_interval_seconds": 60,
         }
 
-        self.assertFalse(Settings(**common).DATABASE_ECHO_SQL)
-        self.assertTrue(Settings(**common, DATABASE_ECHO_SQL=True).DATABASE_ECHO_SQL)
+        self.assertFalse(build_test_settings(**common).DATABASE_ECHO_SQL)
+        self.assertTrue(build_test_settings(**common, DATABASE_ECHO_SQL=True).DATABASE_ECHO_SQL)
 
 
     def test_hosts_configurados_rechazan_unicode_que_los_parsers_normalizan(self) -> None:
@@ -109,7 +110,7 @@ class EnvironmentExampleTests(unittest.TestCase):
         )
         for overrides in invalid_configurations:
             with self.subTest(overrides=overrides), self.assertRaises(ValidationError):
-                Settings(**(common | overrides))
+                build_test_settings(**(common | overrides))
 
     def test_database_url_rechaza_valores_vacios_drivers_sincronos_y_base_ausente(self) -> None:
         common = {
@@ -131,9 +132,9 @@ class EnvironmentExampleTests(unittest.TestCase):
         )
         for invalid_url in invalid_urls:
             with self.subTest(database_url=repr(invalid_url)), self.assertRaises(ValidationError):
-                Settings(**common, DATABASE_URL=invalid_url)
+                build_test_settings(**common, DATABASE_URL=invalid_url)
 
-        configured = Settings(
+        configured = build_test_settings(
             **common,
             DATABASE_URL="  mysql+aiomysql://u:p@127.0.0.1/db  ",
         )
@@ -156,7 +157,7 @@ class EnvironmentExampleTests(unittest.TestCase):
             "mysql+aiomysql://@127.0.0.1/db",
         ):
             with self.subTest(database_url=invalid_url), self.assertRaises(ValidationError):
-                Settings(**common, DATABASE_URL=invalid_url)
+                build_test_settings(**common, DATABASE_URL=invalid_url)
 
     def test_database_url_rechaza_servidor_y_puerto_no_validos(self) -> None:
         common = {
@@ -176,9 +177,9 @@ class EnvironmentExampleTests(unittest.TestCase):
             "mysql+aiomysql://tests:secret@127.0.0.1:abc/db",
         ):
             with self.subTest(database_url=invalid_url), self.assertRaises(ValidationError):
-                Settings(**common, DATABASE_URL=invalid_url)
+                build_test_settings(**common, DATABASE_URL=invalid_url)
 
-        configured = Settings(
+        configured = build_test_settings(
             **common,
             DATABASE_URL="mysql+aiomysql://tests:secret@[::1]:3306/db",
         )
@@ -196,15 +197,15 @@ class EnvironmentExampleTests(unittest.TestCase):
         }
 
         with self.assertRaises(ValidationError):
-            Settings(**common, secret_key="demasiado-corta")
+            build_test_settings(**common, secret_key="demasiado-corta")
         with self.assertRaises(ValidationError):
-            Settings(
+            build_test_settings(
                 **common,
                 secret_key="cambiar_por_una_clave_aleatoria_de_32_caracteres_o_mas",
             )
 
         expected = "a" * 32
-        configured = Settings(**common, secret_key=f"  {expected}  ")
+        configured = build_test_settings(**common, secret_key=f"  {expected}  ")
         self.assertEqual(configured.secret_key, expected)
 
     def test_smtp_rechaza_puertos_fuera_del_rango_tcp(self) -> None:
@@ -220,7 +221,7 @@ class EnvironmentExampleTests(unittest.TestCase):
 
         for invalid_port in (0, 65536):
             with self.subTest(port=invalid_port), self.assertRaises(ValidationError):
-                Settings(**common, SMTP_PORT=invalid_port)
+                build_test_settings(**common, SMTP_PORT=invalid_port)
 
     def test_smtp_rechaza_host_o_remitente_no_validos(self) -> None:
         common = {
@@ -233,11 +234,11 @@ class EnvironmentExampleTests(unittest.TestCase):
         }
 
         with self.assertRaises(ValidationError):
-            Settings(**common, SMTP_SERVER="smtp.test.local\nmalicioso", SMTP_USERNAME="tests@example.com")
+            build_test_settings(**common, SMTP_SERVER="smtp.test.local\nmalicioso", SMTP_USERNAME="tests@example.com")
         with self.assertRaises(ValidationError):
-            Settings(**common, SMTP_SERVER="smtp.test.local", SMTP_USERNAME="no-es-un-correo")
+            build_test_settings(**common, SMTP_SERVER="smtp.test.local", SMTP_USERNAME="no-es-un-correo")
 
-        configured = Settings(
+        configured = build_test_settings(
             **common,
             SMTP_SERVER="  smtp.test.local  ",
             SMTP_USERNAME="tests@example.com",
@@ -257,7 +258,7 @@ class EnvironmentExampleTests(unittest.TestCase):
 
         for invalid_host in ("https://smtp.test.local", "smtp.test.local:587"):
             with self.subTest(host=invalid_host), self.assertRaises(ValidationError):
-                Settings(
+                build_test_settings(
                     **common,
                     SMTP_SERVER=invalid_host,
                     SMTP_PASSWORD="secret",
@@ -265,13 +266,13 @@ class EnvironmentExampleTests(unittest.TestCase):
 
         for invalid_password in ("", "   ", "\t\n", "cambiar_por_secreto"):
             with self.subTest(password=repr(invalid_password)), self.assertRaises(ValidationError):
-                Settings(
+                build_test_settings(
                     **common,
                     SMTP_SERVER="smtp.test.local",
                     SMTP_PASSWORD=invalid_password,
                 )
 
-        configured = Settings(
+        configured = build_test_settings(
             **common,
             SMTP_SERVER="2001:db8::1",
             SMTP_PASSWORD=" secret con espacios ",
@@ -299,7 +300,7 @@ class EnvironmentExampleTests(unittest.TestCase):
         )
         for overrides in invalid_overrides:
             with self.subTest(overrides=overrides), self.assertRaises(ValidationError):
-                Settings(**(common | overrides))
+                build_test_settings(**(common | overrides))
 
     def test_tamano_multipart_no_puede_ser_inferior_al_adjunto_permitido(self) -> None:
         common = {
@@ -314,13 +315,13 @@ class EnvironmentExampleTests(unittest.TestCase):
         }
 
         with self.assertRaises(ValidationError):
-            Settings(**common, CONTACT_MAX_REQUEST_BYTES=10 * 1024 * 1024)
+            build_test_settings(**common, CONTACT_MAX_REQUEST_BYTES=10 * 1024 * 1024)
 
-        configured = Settings(**common, CONTACT_MAX_REQUEST_BYTES=11 * 1024 * 1024)
+        configured = build_test_settings(**common, CONTACT_MAX_REQUEST_BYTES=11 * 1024 * 1024)
         self.assertEqual(configured.CONTACT_MAX_REQUEST_BYTES, 11 * 1024 * 1024)
 
     def test_cors_normaliza_barras_finales_y_elimina_duplicados(self) -> None:
-        settings = Settings(
+        settings = build_test_settings(
             _env_file=None,
             SMTP_SERVER="smtp.test.local",
             SMTP_PORT=587,
@@ -352,9 +353,9 @@ class EnvironmentExampleTests(unittest.TestCase):
         }
 
         with self.assertRaises(ValidationError):
-            Settings(**common, CORS_ALLOWED_ORIGINS="*")
+            build_test_settings(**common, CORS_ALLOWED_ORIGINS="*")
         with self.assertRaises(ValidationError):
-            Settings(**common, CORS_ALLOWED_ORIGINS="https://example.com/api")
+            build_test_settings(**common, CORS_ALLOWED_ORIGINS="https://example.com/api")
 
         for invalid_origin in (
             "https://example.com:abc",
@@ -363,7 +364,7 @@ class EnvironmentExampleTests(unittest.TestCase):
             "https://exa_mple.com",
         ):
             with self.subTest(origin=invalid_origin), self.assertRaises(ValidationError):
-                Settings(**common, CORS_ALLOWED_ORIGINS=invalid_origin)
+                build_test_settings(**common, CORS_ALLOWED_ORIGINS=invalid_origin)
 
 
     def test_cors_rechaza_controles_que_el_parser_eliminaria(self) -> None:
@@ -386,9 +387,9 @@ class EnvironmentExampleTests(unittest.TestCase):
             with self.subTest(origin=repr(invalid_origin)), self.assertRaises(
                 ValidationError
             ):
-                Settings(**common, CORS_ALLOWED_ORIGINS=invalid_origin)
+                build_test_settings(**common, CORS_ALLOWED_ORIGINS=invalid_origin)
 
-        settings = Settings(
+        settings = build_test_settings(
             **common, CORS_ALLOWED_ORIGINS="  https://example.com/  "
         )
         self.assertEqual(settings.cors_allowed_origins, ["https://example.com"])
@@ -415,9 +416,9 @@ class EnvironmentExampleTests(unittest.TestCase):
         )
         for overrides in invalid_overrides:
             with self.subTest(overrides=overrides), self.assertRaises(ValidationError):
-                Settings(**(common | overrides))
+                build_test_settings(**(common | overrides))
 
-        configured = Settings(
+        configured = build_test_settings(
             **(
                 common
                 | {
@@ -448,9 +449,9 @@ class EnvironmentExampleTests(unittest.TestCase):
         }
 
         with self.assertRaises(ValidationError):
-            Settings(**common, TRUSTED_PROXY_IPS="localhost")
+            build_test_settings(**common, TRUSTED_PROXY_IPS="localhost")
 
-        settings = Settings(
+        settings = build_test_settings(
             **common,
             TRUSTED_PROXY_IPS="::ffff:127.0.0.1, 127.0.0.1, ::1",
         )
@@ -476,9 +477,9 @@ class EnvironmentExampleTests(unittest.TestCase):
             "exa_mple.com",
         ):
             with self.subTest(hosts=invalid_hosts), self.assertRaises(ValidationError):
-                Settings(**common, RECAPTCHA_ALLOWED_HOSTNAMES=invalid_hosts)
+                build_test_settings(**common, RECAPTCHA_ALLOWED_HOSTNAMES=invalid_hosts)
 
-        configured = Settings(
+        configured = build_test_settings(
             **common,
             RECAPTCHA_ALLOWED_HOSTNAMES="BÜCHER.EXAMPLE.,::ffff:127.0.0.1,127.0.0.1",
         )

@@ -102,7 +102,7 @@ def create_app() -> FastAPI:
             "API para gestionar formularios de contacto, productos de charcutería, "
             "publicaciones de blog y autenticación mediante tokens temporales."
         ),
-        version="2.0.0",
+        version="2.0.1",
         lifespan=lifespan,
         docs_url="/docs" if settings.ENABLE_API_DOCS else None,
         redoc_url="/redoc" if settings.ENABLE_API_DOCS else None,
@@ -146,7 +146,9 @@ def create_app() -> FastAPI:
         if database_available and not previous_database_available:
             logger.info("La conexión con la base de datos se ha recuperado.")
         elif previous_database_available and not database_available:
-            logger.warning("Se ha perdido la conexión con la base de datos; la API continúa en modo degradado.")
+            logger.warning(
+                "Se ha perdido la conexión con la base de datos; la API continúa en modo degradado."
+            )
 
         if not database_available:
             # /livez indica que el proceso está vivo; /health actúa como readiness y

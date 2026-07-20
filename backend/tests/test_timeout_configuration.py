@@ -6,7 +6,7 @@ import unittest
 
 from pydantic import ValidationError
 
-from backend.core.config import Settings
+from backend.tests._settings import build_test_settings
 
 
 class TimeoutConfigurationTests(unittest.TestCase):
@@ -33,10 +33,10 @@ class TimeoutConfigurationTests(unittest.TestCase):
             "RECAPTCHA_TIMEOUT_SECONDS",
         ):
             with self.subTest(field=field_name), self.assertRaises(ValidationError):
-                Settings(**self.common_settings(), **{field_name: float("inf")})
+                build_test_settings(**self.common_settings(), **{field_name: float("inf")})
 
     def test_los_timeouts_finitos_positivos_se_conservan(self) -> None:
-        configured = Settings(
+        configured = build_test_settings(
             **self.common_settings(),
             DATABASE_STARTUP_TIMEOUT_SECONDS=3.5,
             SMTP_TIMEOUT_SECONDS=7.25,

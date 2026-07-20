@@ -3,6 +3,7 @@
 from backend.tests import _environment as _test_environment  # noqa: F401
 
 import unittest
+from typing import cast
 from unittest.mock import patch
 
 from fastapi import HTTPException, Request
@@ -10,7 +11,7 @@ from fastapi.testclient import TestClient
 
 from backend import main
 from backend.dependencies import verify_local_request
-from backend.middleware.rate_limit import RateLimitMiddleware
+from backend.middleware.rate_limit import RateLimitMiddleware, RateLimitRule
 
 
 class EndpointAccessTests(unittest.IsolatedAsyncioTestCase):
@@ -98,7 +99,7 @@ class LivenessAndRulesTests(unittest.TestCase):
         middleware = next(
             item for item in app.user_middleware if item.cls is RateLimitMiddleware
         )
-        rules = middleware.kwargs["rules"]
+        rules = cast(list[RateLimitRule], middleware.kwargs["rules"])
         configured = {(rule.method, rule.path) for rule in rules}
 
         expected = {

@@ -8,6 +8,7 @@ from unittest.mock import AsyncMock, patch
 
 from fastapi import FastAPI, HTTPException, Request, Response
 from fastapi.testclient import TestClient
+from fastapi.routing import APIRoute
 from sqlalchemy.exc import OperationalError
 
 from backend.middleware.request_size import RequestSizeLimitMiddleware, RequestSizeRule
@@ -126,7 +127,11 @@ class TimeoutAndDatabaseErrorTests(unittest.IsolatedAsyncioTestCase):
         from backend import main
 
         app = main.create_app()
-        health_route = next(route for route in app.routes if getattr(route, "path", None) == "/health")
+        health_route = next(
+            route
+            for route in app.routes
+            if isinstance(route, APIRoute) and route.path == "/health"
+        )
         captured_timeouts: list[float] = []
 
         async def fake_wait_for(awaitable, timeout):

@@ -39,7 +39,7 @@ async def contacto(
     email: str = Form(...),
     message: str = Form(...),
     captcha_token: str = Form(...),
-    file: UploadFile = File(None)
+    file: UploadFile | None = File(None)
 ):
     """
     Endpoint para enviar el formulario de contacto.

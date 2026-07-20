@@ -35,7 +35,7 @@ class ApiDocumentationTests(unittest.TestCase):
         with patch.object(main.settings, "ENABLE_API_DOCS", False):
             app = main.create_app()
 
-        paths = {route.path for route in app.routes if hasattr(route, "path")}
+        paths = {getattr(route, "path", None) for route in app.routes}
         self.assertNotIn("/docs", paths)
         self.assertNotIn("/redoc", paths)
         self.assertNotIn("/openapi.json", paths)
@@ -44,7 +44,7 @@ class ApiDocumentationTests(unittest.TestCase):
         with patch.object(main.settings, "ENABLE_API_DOCS", True):
             app = main.create_app()
 
-        paths = {route.path for route in app.routes if hasattr(route, "path")}
+        paths = {getattr(route, "path", None) for route in app.routes}
         self.assertTrue({"/docs", "/redoc", "/openapi.json"}.issubset(paths))
 
 
