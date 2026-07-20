@@ -6,6 +6,7 @@ import { createRequire } from "node:module";
 
 const require = createRequire(import.meta.url);
 const { createRequestListener, listenServer, resolvePort } = require("../server.cjs");
+const { validateFrontendServerEnvironment } = require("../serverLogger.cjs");
 
 const closeServer = (server) =>
   new Promise((resolve, reject) => {
@@ -119,4 +120,52 @@ test("un fallo después de enviar cabeceras corta la respuesta sin corromper su 
   assert.equal(response.destroyedWith, expectedError);
   assert.equal(response.writableEnded, true);
   assert.deepEqual(loggedErrors, [expectedError]);
+});
+
+
+test("el servidor rechaza una configuración de logs inválida antes de escuchar peticiones", async () => {
+  const validFileEnvironment = {
+    FRONTEND_LOG_TARGET: "archivo",
+    FRONTEND_LOG_LEVEL: "info",
+    FRONTEND_LOG_DIR: "/var/log/paraisoweb",
+    FRONTEND_LOG_MAX_BYTES: "10485760",
+    FRONTEND_LOG_BACKUP_COUNT: "10",
+  };
+
+  assert.doesNotThrow(() => validateFrontendServerEnvironment(validFileEnvironment));
+  assert.doesNotThrow(() =>
+    validateFrontendServerEnvironment({
+      FRONTEND_LOG_TARGET: "consola",
+      FRONTEND_LOG_LEVEL: "warn",
+    }),
+  );
+
+  assert.throws(
+    () => validateFrontendServerEnvironment({ ...validFileEnvironment, FRONTEND_LOG_TARGET: "archvio" }),
+    /FRONTEND_LOG_TARGET/,
+  );
+  assert.throws(
+    () => validateFrontendServerEnvironment({ ...validFileEnvironment, FRONTEND_LOG_LEVEL: "verbose" }),
+    /FRONTEND_LOG_LEVEL/,
+  );
+  assert.throws(
+    () => validateFrontendServerEnvironment({ ...validFileEnvironment, FRONTEND_LOG_DIR: "logs" }),
+    /ruta absoluta/,
+  );
+  assert.throws(
+    () => validateFrontendServerEnvironment({ ...validFileEnvironment, FRONTEND_LOG_MAX_BYTES: "180bytes" }),
+    /FRONTEND_LOG_MAX_BYTES/,
+  );
+  assert.throws(
+    () => validateFrontendServerEnvironment({ ...validFileEnvironment, FRONTEND_LOG_BACKUP_COUNT: "1001" }),
+    /FRONTEND_LOG_BACKUP_COUNT/,
+  );
+
+  const source = await readFile(new URL("../server.cjs", import.meta.url), "utf8");
+  const prepareIndex = source.indexOf("await app.prepare()");
+  const validationIndex = source.indexOf("validateFrontendServerEnvironment(process.env)");
+  const listenIndex = source.indexOf("await listenServer");
+  assert.ok(prepareIndex >= 0);
+  assert.ok(validationIndex > prepareIndex);
+  assert.ok(listenIndex > validationIndex);
 });

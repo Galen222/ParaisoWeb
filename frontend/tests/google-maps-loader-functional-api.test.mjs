@@ -34,10 +34,15 @@ test("Google Maps permite actualizaciones compatibles de js-api-loader 2 y usa s
 });
 
 test("el cargador conserva la primera configuración y los tres reintentos de la versión anterior", async () => {
-  const source = (await readSource("../src/utils/GoogleMapsLoader.ts")).replace(
-    /import\s*\{[\s\S]*?\}\s*from "@googlemaps\/js-api-loader";/,
-    `const { setOptions, importLibrary } = globalThis.__googleMapsLoaderTest;`,
-  );
+  const source = (await readSource("../src/utils/GoogleMapsLoader.ts"))
+    .replace(
+      /import\s*\{[\s\S]*?\}\s*from "@googlemaps\/js-api-loader";/,
+      `const { setOptions, importLibrary } = globalThis.__googleMapsLoaderTest;`,
+    )
+    .replace(
+      "setTimeout(resolve, milliseconds);",
+      "globalThis.__googleMapsLoaderTest.wait(milliseconds, resolve);",
+    );
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: {
       module: ts.ModuleKind.CommonJS,
@@ -51,10 +56,15 @@ test("el cargador conserva la primera configuración y los tres reintentos de la
 
   const configurations = [];
   const attempts = new Map();
+  const retryDelays = [];
   const previousTestApi = globalThis.__googleMapsLoaderTest;
   globalThis.__googleMapsLoaderTest = {
     setOptions(options) {
       configurations.push(options);
+    },
+    wait(milliseconds, resolve) {
+      retryDelays.push(milliseconds);
+      resolve();
     },
     async importLibrary(libraryName) {
       const attempt = (attempts.get(libraryName) ?? 0) + 1;
@@ -79,6 +89,7 @@ test("el cargador conserva la primera configuración y los tres reintentos de la
       libraryName: "maps",
     });
     assert.equal(attempts.get("maps"), 4);
+    assert.deepEqual(retryDelays, [1_000, 2_000, 4_000]);
     assert.deepEqual(await firstLoader.importLibrary("marker"), {
       libraryName: "marker",
     });

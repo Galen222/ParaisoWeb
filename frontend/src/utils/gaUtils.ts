@@ -33,7 +33,7 @@ const setGADisabled = (analyticsId: string, disabled: boolean): void => {
 
 /**
  * Inicializa Google Analytics 4 (GA4) usando el ID proporcionado en las variables de entorno.
- * Si la configuración no está disponible, registra el problema sin interrumpir la aplicación.
+ * Si la configuración está vacía, mantiene Analytics desactivado sin tratarlo como un error.
  */
 export const initGA = (): boolean => {
   const analyticsId = normalizeGoogleAnalyticsId(
@@ -42,7 +42,7 @@ export const initGA = (): boolean => {
   if (!analyticsId) {
     initializedAnalyticsId = null;
     gaDisabled = true;
-    clientLogger.error("Google Analytics no se ha iniciado: NEXT_PUBLIC_GOOGLE_ANALYTICS_ID no está definida.");
+    clientLogger.debug("Google Analytics permanece desactivado por configuración.");
     return false;
   }
 

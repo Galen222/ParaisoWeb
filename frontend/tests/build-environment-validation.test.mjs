@@ -77,3 +77,15 @@ test("la revocación captura una configuración inesperada después de desactiva
   assert.match(revokeFunction, /clientLogger\.error/);
   assert.match(revokeFunction, /return false/);
 });
+
+
+test("Analytics desactivado por configuración no genera un falso error operativo", async () => {
+  const gaUtils = await readSource("../src/utils/gaUtils.ts");
+  const disabledBranch = gaUtils.slice(
+    gaUtils.indexOf("if (!analyticsId)"),
+    gaUtils.indexOf("try {", gaUtils.indexOf("if (!analyticsId)")),
+  );
+
+  assert.match(disabledBranch, /clientLogger\.debug/);
+  assert.doesNotMatch(disabledBranch, /clientLogger\.error/);
+});

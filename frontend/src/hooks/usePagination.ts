@@ -115,6 +115,9 @@ export function usePagination<T>({
 
   // Conserva la página anterior para distinguir una navegación real del montaje inicial.
   const previousPageRef = useRef(currentPage);
+  // Solo una navegación solicitada por el usuario debe desplazar el contenido. Los cambios
+  // derivados al reducir datos o modificar itemsPerPage no deben mover la vista.
+  const pendingScrollPageRef = useRef<number | null>(null);
 
   /**
    * Efecto para hacer scroll suave al principio del contenido principal
@@ -123,10 +126,19 @@ export function usePagination<T>({
    */
   useEffect(() => {
     if (previousPageRef.current === currentPage) {
+      if (pendingScrollPageRef.current !== null && pendingScrollPageRef.current !== currentPage) {
+        pendingScrollPageRef.current = null;
+      }
       return;
     }
 
     previousPageRef.current = currentPage;
+    if (pendingScrollPageRef.current !== currentPage) {
+      pendingScrollPageRef.current = null;
+      return;
+    }
+
+    pendingScrollPageRef.current = null;
     document.getElementById("principal")?.scrollIntoView({
       behavior: getMotionSafeScrollBehavior(),
     });
@@ -136,7 +148,9 @@ export function usePagination<T>({
    * Funciones de navegación
    */
   const goToPage = (page: number) => {
-    setRequestedPage(clampPage(page, totalPages));
+    const targetPage = clampPage(page, totalPages);
+    pendingScrollPageRef.current = targetPage === currentPage ? null : targetPage;
+    setRequestedPage(targetPage);
   };
 
   const goToFirstPage = () => goToPage(1);

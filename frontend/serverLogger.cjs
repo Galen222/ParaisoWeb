@@ -19,6 +19,8 @@ const LEVEL_PRIORITY = {
 };
 const DEFAULT_MAX_BYTES = 10 * 1024 * 1024;
 const DEFAULT_BACKUP_COUNT = 10;
+const MIN_LOG_MAX_BYTES = 128;
+const MAX_BACKUP_COUNT = 1_000;
 const LOG_FILENAME = "frontend.log";
 const LOG_CONTROL_CHARACTERS = /[\u0000-\u001f\u007f-\u009f\u2028\u2029]+/g;
 let reportedWriteFailure = false;
@@ -29,6 +31,64 @@ function parsePositiveInteger(value, fallback) {
 
   const parsed = Number(normalized);
   return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+
+/** Valida la configuración operativa antes de que el servidor empiece a escuchar. */
+function validateFrontendServerEnvironment(environment = process.env) {
+  const target = environment.FRONTEND_LOG_TARGET?.trim().toLowerCase();
+  if (target !== "consola" && target !== "archivo") {
+    throw new Error(
+      "FRONTEND_LOG_TARGET debe estar definida como 'consola' o 'archivo'.",
+    );
+  }
+
+  const level = environment.FRONTEND_LOG_LEVEL?.trim().toLowerCase();
+  if (!level || !Object.hasOwn(LEVEL_PRIORITY, level)) {
+    throw new Error(
+      "FRONTEND_LOG_LEVEL debe ser debug, info, warn o error.",
+    );
+  }
+
+  const validateInteger = (variableName, minimum, maximum) => {
+    const rawValue = environment[variableName]?.trim();
+    if (!rawValue || !/^\d+$/.test(rawValue)) {
+      throw new Error(`${variableName} debe ser un número entero.`);
+    }
+
+    const parsed = Number(rawValue);
+    if (!Number.isSafeInteger(parsed) || parsed < minimum || parsed > maximum) {
+      throw new Error(
+        `${variableName} debe estar entre ${minimum} y ${maximum}.`,
+      );
+    }
+  };
+
+  const maxBytesConfigured = environment.FRONTEND_LOG_MAX_BYTES !== undefined;
+  const backupCountConfigured = environment.FRONTEND_LOG_BACKUP_COUNT !== undefined;
+  if (target === "archivo" || maxBytesConfigured) {
+    validateInteger(
+      "FRONTEND_LOG_MAX_BYTES",
+      MIN_LOG_MAX_BYTES,
+      Number.MAX_SAFE_INTEGER,
+    );
+  }
+  if (target === "archivo" || backupCountConfigured) {
+    validateInteger("FRONTEND_LOG_BACKUP_COUNT", 1, MAX_BACKUP_COUNT);
+  }
+
+  if (target === "archivo") {
+    const configuredDirectory = environment.FRONTEND_LOG_DIR?.trim();
+    if (!configuredDirectory) {
+      throw new Error("FRONTEND_LOG_DIR debe estar definido para el destino archivo.");
+    }
+    if (/[\u0000-\u001f\u007f]/.test(configuredDirectory)) {
+      throw new Error("FRONTEND_LOG_DIR contiene caracteres de control no permitidos.");
+    }
+    if (!path.isAbsolute(configuredDirectory)) {
+      throw new Error("FRONTEND_LOG_DIR debe ser una ruta absoluta.");
+    }
+  }
 }
 
 function configuredTarget() {
@@ -170,4 +230,5 @@ const frontendServerLogger = {
 module.exports = {
   frontendServerLogger,
   parsePositiveInteger,
+  validateFrontendServerEnvironment,
 };

@@ -12,6 +12,7 @@ def configure_test_environment() -> None:
         "SMTP_PASSWORD": "test-password",
         "CONTACT_EMAIL_RECIPIENTS": "general@example.com,operations@example.com",
         "CONTACT_ERROR_EMAIL_RECIPIENTS": "errors@example.com",
+        "RECAPTCHA_SECRET_KEY": "test-recaptcha-secret-key",
         # El motor se crea al importar el backend, pero estas pruebas sustituyen las conexiones
         # antes de usarlas y no necesitan una base de datos real disponible.
         "DATABASE_URL": "mysql+aiomysql://tests:tests@127.0.0.1:3306/paraisoweb_tests",

@@ -34,6 +34,7 @@ EXAMPLE_SMTP_PASSWORD = "cambiar_por_secreto"
 EXAMPLE_DATABASE_USERNAME = "usuario"
 EXAMPLE_DATABASE_PASSWORD = "contrasena"
 EXAMPLE_SECRET_KEY = "cambiar_por_una_clave_aleatoria_de_32_caracteres_o_mas"
+EXAMPLE_RECAPTCHA_SECRET_KEY = "cambiar_por_clave_secreta_de_recaptcha"
 MIN_CONTACT_REQUEST_BYTES = 11 * 1024 * 1024
 EMAIL_ADDRESS_ADAPTER = TypeAdapter(EmailStr)
 
@@ -141,8 +142,11 @@ class Settings(BaseSettings):
     BACKEND_LOG_MAX_BYTES: int = Field(default=10 * 1024 * 1024, gt=0)
     BACKEND_LOG_BACKUP_COUNT: int = Field(default=10, gt=0)
     BACKEND_LOG_HEALTHCHECKS: bool | None = None
-    RECAPTCHA_SECRET_KEY: str = ""
-    RECAPTCHA_ALLOWED_HOSTNAMES: str = "localhost,127.0.0.1,paraisodeljamon.com,www.paraisodeljamon.com"
+    RECAPTCHA_SECRET_KEY: str
+    RECAPTCHA_ALLOWED_HOSTNAMES: str = (
+        "localhost,127.0.0.1,galenn.asuscomm.com,"
+        "paraisodeljamon.com,www.paraisodeljamon.com"
+    )
     RECAPTCHA_TIMEOUT_SECONDS: float = Field(default=5.0, gt=0)
 
     @field_validator(
@@ -157,6 +161,21 @@ class Settings(BaseSettings):
         if not math.isfinite(value):
             raise ValueError("Los tiempos máximos deben ser números finitos")
         return value
+
+    @field_validator("RECAPTCHA_SECRET_KEY")
+    @classmethod
+    def validate_recaptcha_secret_key(cls, value: str) -> str:
+        """Impide arrancar sin la clave privada real de reCAPTCHA."""
+        normalized = value.strip()
+        if not normalized:
+            raise ValueError("RECAPTCHA_SECRET_KEY no puede estar vacía")
+        if normalized == EXAMPLE_RECAPTCHA_SECRET_KEY:
+            raise ValueError(
+                "RECAPTCHA_SECRET_KEY debe sustituir el valor del archivo .env.example"
+            )
+        if _contains_unsupported_configuration_character(value):
+            raise ValueError("RECAPTCHA_SECRET_KEY contiene caracteres no permitidos")
+        return normalized
 
     @field_validator("RECAPTCHA_ALLOWED_HOSTNAMES")
     @classmethod

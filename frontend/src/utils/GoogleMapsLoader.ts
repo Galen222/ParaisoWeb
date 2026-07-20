@@ -15,6 +15,7 @@ type GoogleMapsLoader = {
 };
 
 const GOOGLE_MAPS_LOAD_RETRIES = 3;
+const GOOGLE_MAPS_INITIAL_RETRY_DELAY_MS = 1_000;
 
 let googleMapsLoader: GoogleMapsLoader | null = null;
 
@@ -41,7 +42,7 @@ const importLibraryWithRetries = async <TLibraryName extends LibraryName>(
       }
 
       failedAttempts += 1;
-      const retryDelay = failedAttempts * 2 ** failedAttempts;
+      const retryDelay = GOOGLE_MAPS_INITIAL_RETRY_DELAY_MS * 2 ** (failedAttempts - 1);
       await wait(retryDelay);
     }
   }

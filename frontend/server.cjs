@@ -1,7 +1,10 @@
 "use strict";
 
 const { createServer } = require("node:http");
-const { frontendServerLogger } = require("./serverLogger.cjs");
+const {
+  frontendServerLogger,
+  validateFrontendServerEnvironment,
+} = require("./serverLogger.cjs");
 
 /**
  * Devuelve la URL española canónica solo cuando la petición original contiene
@@ -109,6 +112,7 @@ async function startServer(logger = frontendServerLogger) {
   const handle = app.getRequestHandler();
 
   await app.prepare();
+  validateFrontendServerEnvironment(process.env);
 
   const server = createServer(createRequestListener(handle, logger));
   await listenServer(server, port, hostname);
