@@ -128,9 +128,9 @@ const ReinaVictoriaPage: NextPage & { pageTitleText?: string } = (): React.JSX.E
         images={[`${siteUrl}/images/carousel/rv/carousel-rv-1.png`]}
         openingHours={[
           {
-            dayOfWeek: ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+            dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Sunday"],
             opens: "07:00",
-            closes: "24:00",
+            closes: "02:00",
           },
         ]}
       />

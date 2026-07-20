@@ -306,7 +306,7 @@ test("los menús ocultos se retiran del foco y limpian su estado", async () => {
   assert.match(navbar, /hidden=\{!mobileMenu\}/);
   assert.match(navbar, /hidden=\{!restaurantsMenu\}/);
   assert.match(navbar, /previousIsMobileRef/);
-  assert.match(navbar, /closeMobileMenu\(\);[\s\S]*closeRestaurantsMenu\(\);/);
+  assert.match(navbar, /closeMobileMenu\(\);[\s\S]*closeRestaurantsMenuImmediately\(\);/);
   assert.match(navbarStyles, /\.navbarMenu\[hidden\],[\s\S]*\.dropdown\[hidden\][\s\S]*display: none !important/);
   assert.match(menuContext, /const closeMobileMenu = useCallback/);
   assert.match(menuContext, /const closeRestaurantsMenu = useCallback/);

@@ -35,7 +35,7 @@ test("los menús persistentes se cierran también ante navegaciones externas a l
   const navbar = await readSource("../src/components/Navbar.tsx");
 
   assert.match(navbar, /router\.events\.on\("routeChangeStart", handleLinkClick\)/);
-  assert.match(navbar, /handleLinkClick[\s\S]*?closeMobileMenu\(\);[\s\S]*?closeRestaurantsMenu\(\)/);
+  assert.match(navbar, /handleLinkClick[\s\S]*?closeMobileMenu\(\);[\s\S]*?closeRestaurantsMenuImmediately\(\)/);
   assert.match(navbar, /router\.events\.off\("routeChangeStart", handleLinkClick\)/);
 });
 
@@ -53,7 +53,7 @@ test("el foco sale del menú antes de ocultar sus enlaces", async () => {
   );
   assert.match(
     navbar,
-    /const handleLinkClick = useCallback[\s\S]*?moveFocusOutsideClosingMenus\(\);[\s\S]*?closeMobileMenu\(\);[\s\S]*?closeRestaurantsMenu\(\)/,
+    /const handleLinkClick = useCallback[\s\S]*?moveFocusOutsideClosingMenus\(\);[\s\S]*?closeMobileMenu\(\);[\s\S]*?closeRestaurantsMenuImmediately\(\)/,
   );
   assert.doesNotMatch(navbar, /aria-hidden=\{!mobileMenu\}/);
   assert.doesNotMatch(navbar, /aria-hidden=\{!restaurantsMenu\}/);

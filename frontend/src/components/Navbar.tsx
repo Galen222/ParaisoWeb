@@ -31,6 +31,8 @@ export interface NavbarProps {
 /**
  * Constantes para las rutas y textos alternativos de las imágenes.
  */
+const RESTAURANTS_MENU_CLOSE_DELAY_MS = 300;
+
 const IMAGE_CONSTANTS = {
   /**
    * Ruta de la imagen del logo.
@@ -79,6 +81,7 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
   const navbarMenuRef = useRef<HTMLElement>(null);
   const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
   const restaurantsButtonRef = useRef<HTMLButtonElement>(null);
+  const restaurantsCloseTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const { isMobile } = useScreenSize();
   const { isSticky } = useStickyNav(navbarMenuRef, !isMobile);
   const previousIsMobileRef = useRef(isMobile);
@@ -114,12 +117,38 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
     }
   }, []);
 
+  /** Cancela un cierre pendiente cuando el puntero vuelve al botón o al desplegable. */
+  const cancelScheduledRestaurantsClose = useCallback((): void => {
+    if (restaurantsCloseTimeoutRef.current !== null) {
+      clearTimeout(restaurantsCloseTimeoutRef.current);
+      restaurantsCloseTimeoutRef.current = null;
+    }
+  }, []);
+
+  /** Cierra inmediatamente el submenú en acciones explícitas como navegar o pulsar Escape. */
+  const closeRestaurantsMenuImmediately = useCallback((): void => {
+    cancelScheduledRestaurantsClose();
+    closeRestaurantsMenu();
+  }, [cancelScheduledRestaurantsClose, closeRestaurantsMenu]);
+
+  /**
+   * Retrasa ligeramente el cierre al abandonar el grupo con el ratón. De este modo,
+   * el pequeño espacio visual entre el botón y el desplegable no impide alcanzarlo.
+   */
+  const scheduleRestaurantsMenuClose = useCallback((): void => {
+    cancelScheduledRestaurantsClose();
+    restaurantsCloseTimeoutRef.current = setTimeout(() => {
+      restaurantsCloseTimeoutRef.current = null;
+      closeRestaurantsMenu();
+    }, RESTAURANTS_MENU_CLOSE_DELAY_MS);
+  }, [cancelScheduledRestaurantsClose, closeRestaurantsMenu]);
+
   /** Cierra los menús después de sacar el foco de cualquier enlace que vaya a ocultarse. */
   const handleLinkClick = useCallback((): void => {
     moveFocusOutsideClosingMenus();
     closeMobileMenu();
-    closeRestaurantsMenu();
-  }, [closeMobileMenu, closeRestaurantsMenu, moveFocusOutsideClosingMenus]);
+    closeRestaurantsMenuImmediately();
+  }, [closeMobileMenu, closeRestaurantsMenuImmediately, moveFocusOutsideClosingMenus]);
 
   // Una navegación iniciada por el historial, código externo o cualquier enlace que no
   // pertenezca a esta barra también debe cerrar los menús persistentes del contexto.
@@ -130,43 +159,52 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
     };
   }, [router.events, handleLinkClick]);
 
+  // Evita que un temporizador pendiente intente actualizar el contexto tras desmontar la barra.
+  useEffect(() => cancelScheduledRestaurantsClose, [cancelScheduledRestaurantsClose]);
+
   // Al pasar de móvil a escritorio, cierra los menús para que no reaparezcan
   // con un estado antiguo al volver a reducir el ancho de la ventana.
   useEffect(() => {
     if (previousIsMobileRef.current && !isMobile) {
       closeMobileMenu();
-      closeRestaurantsMenu();
+      closeRestaurantsMenuImmediately();
     }
     previousIsMobileRef.current = isMobile;
-  }, [isMobile, closeMobileMenu, closeRestaurantsMenu]);
+  }, [isMobile, closeMobileMenu, closeRestaurantsMenuImmediately]);
 
   const handleDropdownClick = () => {
+    cancelScheduledRestaurantsClose();
     if (restaurantsMenu) {
-      closeRestaurantsMenu();
+      closeRestaurantsMenuImmediately();
     } else {
       openRestaurantsMenu();
     }
   };
 
+  const handleRestaurantsMouseEnter = () => {
+    cancelScheduledRestaurantsClose();
+    openRestaurantsMenu();
+  };
+
   const handleRestaurantsMouseLeave = (event: React.MouseEvent<HTMLDivElement>) => {
-    // No oculta enlaces que todavía contienen el foco del teclado. El cierre se
-    // completa mediante `onBlur` cuando el usuario abandona realmente el grupo.
+    // No oculta enlaces que todavía contienen el foco del teclado. Si no hay foco
+    // dentro, concede tiempo para atravesar el espacio hasta el desplegable.
     if (!event.currentTarget.contains(document.activeElement)) {
-      closeRestaurantsMenu();
+      scheduleRestaurantsMenuClose();
     }
   };
 
   const handleRestaurantsBlur = (event: FocusEvent<HTMLDivElement>) => {
     // Mantiene el menú abierto al mover el foco entre el botón y sus enlaces.
     if (!event.currentTarget.contains(event.relatedTarget)) {
-      closeRestaurantsMenu();
+      closeRestaurantsMenuImmediately();
     }
   };
 
   const handleRestaurantsKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "Escape" && restaurantsMenu) {
       event.preventDefault();
-      closeRestaurantsMenu();
+      closeRestaurantsMenuImmediately();
       restaurantsButtonRef.current?.focus();
     }
   };
@@ -306,7 +344,8 @@ const Navbar: React.FC<NavbarProps> = ({ cookiesModalClosed, pageTitleText }: Na
           </Link>
           <div
             className={styles.linksDropdown}
-            onMouseEnter={openRestaurantsMenu}
+            onMouseEnter={handleRestaurantsMouseEnter}
+            onFocus={cancelScheduledRestaurantsClose}
             onMouseLeave={handleRestaurantsMouseLeave}
             onBlur={handleRestaurantsBlur}
             onKeyDown={handleRestaurantsKeyDown}
