@@ -43,6 +43,93 @@ test("reCAPTCHA se carga una sola vez con nonce CSP y conserva el idioma inicial
   assert.match(proxy, /frame-src[^;]*https:\/\/\*\.google\.com/);
 });
 
+test("la carga inicial espera a que la API reCAPTCHA termine de inicializarse", async () => {
+  const source = (await readSource("../src/utils/recaptchaLoader.ts"))
+    .replace(
+      'import { getDocumentCspNonce } from "./cspNonce";',
+      'const getDocumentCspNonce = () => "nonce-de-prueba";',
+    )
+    .replace(
+      "const RECAPTCHA_API_POLL_INTERVAL_MS = 25;",
+      "const RECAPTCHA_API_POLL_INTERVAL_MS = 1;",
+    );
+  const { outputText } = ts.transpileModule(source, {
+    compilerOptions: {
+      module: ts.ModuleKind.CommonJS,
+      target: ts.ScriptTarget.ES2022,
+    },
+  });
+  const loadedModule = { exports: {} };
+  const wrapper = vm.runInThisContext(
+    `(function (module, exports) { ${outputText}\n })`,
+  );
+  wrapper(loadedModule, loadedModule.exports);
+
+  const scripts = [];
+  const previousWindow = globalThis.window;
+  const previousDocument = globalThis.document;
+  const browserWindow = {};
+  const browserDocument = {
+    getElementById(id) {
+      return scripts.find((script) => script.id === id && script.parentNode) ?? null;
+    },
+    createElement() {
+      const listeners = {};
+      return {
+        id: "",
+        src: "",
+        async: false,
+        defer: false,
+        nonce: "",
+        dataset: {},
+        parentNode: null,
+        listeners,
+        addEventListener(name, callback) {
+          listeners[name] = callback;
+        },
+        removeEventListener(name, callback) {
+          if (listeners[name] === callback) delete listeners[name];
+        },
+        remove() {
+          this.parentNode = null;
+        },
+      };
+    },
+    head: {
+      appendChild(script) {
+        script.parentNode = this;
+        scripts.push(script);
+      },
+    },
+  };
+
+  globalThis.window = browserWindow;
+  globalThis.document = browserDocument;
+  try {
+    const loading = loadedModule.exports.loadRecaptcha("es");
+
+    // El recurso termina de descargar antes de que Google publique la API completa.
+    scripts[0].listeners.load();
+
+    const api = {
+      ready: (callback) => callback(),
+      render: () => 1,
+      reset: () => {},
+    };
+    setTimeout(() => {
+      browserWindow.grecaptcha = api;
+    }, 2);
+
+    assert.equal(await loading, api);
+    assert.equal(scripts[0].dataset.recaptchaLoaderState, "loaded");
+  } finally {
+    if (previousWindow === undefined) delete globalThis.window;
+    else globalThis.window = previousWindow;
+    if (previousDocument === undefined) delete globalThis.document;
+    else globalThis.document = previousDocument;
+  }
+});
+
 test("un script reCAPTCHA fallido se elimina y permite volver a cargarlo", async () => {
   const source = (await readSource("../src/utils/recaptchaLoader.ts")).replace(
     'import { getDocumentCspNonce } from "./cspNonce";',

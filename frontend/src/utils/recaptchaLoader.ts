@@ -2,6 +2,7 @@ import { getDocumentCspNonce } from "./cspNonce";
 
 const RECAPTCHA_SCRIPT_ID = "google-recaptcha-v2-script";
 const RECAPTCHA_LOAD_TIMEOUT_MS = 15_000;
+const RECAPTCHA_API_POLL_INTERVAL_MS = 25;
 const RECAPTCHA_SCRIPT_STATE_KEY = "recaptchaLoaderState";
 let recaptchaLoadPromise: Promise<ReCaptchaV2Api> | null = null;
 
@@ -28,12 +29,17 @@ export const loadRecaptcha = (locale: string): Promise<ReCaptchaV2Api> => {
   recaptchaLoadPromise = new Promise<ReCaptchaV2Api>((resolve, reject) => {
     let settled = false;
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let pollId: ReturnType<typeof setTimeout> | null = null;
     let script: HTMLScriptElement;
 
     const cleanupListeners = (): void => {
       if (timeoutId !== null) {
         clearTimeout(timeoutId);
         timeoutId = null;
+      }
+      if (pollId !== null) {
+        clearTimeout(pollId);
+        pollId = null;
       }
       script.removeEventListener("load", finishLoading);
       script.removeEventListener("error", failLoading);
@@ -56,15 +62,25 @@ export const loadRecaptcha = (locale: string): Promise<ReCaptchaV2Api> => {
       reject(new Error(message));
     };
 
-    function finishLoading(): void {
+    const waitForUsableApi = (): void => {
       if (settled) {
         return;
       }
+
       const api = window.grecaptcha;
       if (!isUsableRecaptchaApi(api)) {
-        rejectLoading("La API de reCAPTCHA no quedó disponible");
+        // Al cargar el script de forma dinámica durante una navegación SPA, el evento
+        // `load` puede adelantarse unos milisegundos a la inicialización completa de
+        // `window.grecaptcha`. No se considera un fallo: se espera hasta el timeout.
+        if (pollId === null) {
+          pollId = setTimeout(() => {
+            pollId = null;
+            waitForUsableApi();
+          }, RECAPTCHA_API_POLL_INTERVAL_MS);
+        }
         return;
       }
+
       try {
         api.ready(() => {
           if (settled) {
@@ -81,6 +97,10 @@ export const loadRecaptcha = (locale: string): Promise<ReCaptchaV2Api> => {
       } catch {
         rejectLoading("La API de reCAPTCHA no pudo inicializarse");
       }
+    };
+
+    function finishLoading(): void {
+      waitForUsableApi();
     }
 
     function failLoading(): void {
@@ -118,6 +138,7 @@ export const loadRecaptcha = (locale: string): Promise<ReCaptchaV2Api> => {
       () => rejectLoading("La carga de reCAPTCHA agotó el tiempo de espera"),
       RECAPTCHA_LOAD_TIMEOUT_MS
     );
+    waitForUsableApi();
 
     if (!loadingScript) {
       document.head.appendChild(script);
