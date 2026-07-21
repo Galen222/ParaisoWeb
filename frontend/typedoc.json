@@ -1,0 +1,15 @@
+{
+  "entryPoints": ["src/"],
+  "out": "docs",
+  "exclude": ["**/__tests__/**/*", "**/*.spec.ts"],
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeExternals": true,
+  "tsconfig": "tsconfig.json",
+  "theme": "default",
+  "readme": "README.md",
+  "hideGenerator": true,
+  "gitRevision": "main",
+  "entryPointStrategy": "expand"
+}

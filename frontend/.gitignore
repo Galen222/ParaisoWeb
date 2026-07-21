@@ -43,6 +43,3 @@ frontdocs.bat
 
 # docs
 docs
-
-# typedoc config
-typedoc.json
