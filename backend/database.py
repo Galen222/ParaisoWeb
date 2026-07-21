@@ -40,8 +40,14 @@ engine = create_async_engine(
     echo=settings.DATABASE_ECHO_SQL,  # Solo registra SQL cuando se activa de forma explícita
     future=True,       # Activa características futuras de SQLAlchemy
     pool_pre_ping=True,  # Verifica la conexión antes de usarla (manejo de conexiones caídas)
-    pool_recycle=3600,    # Recicla conexiones cada hora (3600 segundos)
-    pool_reset_on_return='rollback'  # Limpia el estado de la conexión
+    # Cada worker de Uvicorn crea su propio pool. Estos límites evitan multiplicar
+    # sin control las conexiones cuando el backend se ejecuta con cuatro procesos.
+    pool_size=settings.DATABASE_POOL_SIZE,
+    max_overflow=settings.DATABASE_MAX_OVERFLOW,
+    pool_timeout=settings.DATABASE_POOL_TIMEOUT_SECONDS,
+    pool_recycle=settings.DATABASE_POOL_RECYCLE_SECONDS,  # Recicla conexiones antiguas
+    pool_reset_on_return='rollback',  # Limpia el estado de la conexión
+    pool_use_lifo=True  # Reutiliza primero las conexiones más recientes del pool
 )
 
 # Configuración de la Fábrica de Sesiones

@@ -118,7 +118,7 @@ def configure_logging(settings: LoggingSettings) -> None:
         log_directory.mkdir(parents=True, exist_ok=True)
         handlers = {
             "application": {
-                "class": "logging.handlers.RotatingFileHandler",
+                "class": "concurrent_log_handler.ConcurrentRotatingFileHandler",
                 "formatter": "file",
                 "filename": str(log_directory / "backend.log"),
                 "maxBytes": settings.BACKEND_LOG_MAX_BYTES,

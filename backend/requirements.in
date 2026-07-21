@@ -4,6 +4,10 @@ uvicorn[standard]
 python-multipart    # Necesario para subida de archivos
 python-dotenv       # Para leer .env
 
+# --- Estado compartido y logging multiproceso ---
+redis              # Rate limit distribuido entre workers
+concurrent-log-handler  # Rotación segura del mismo log desde varios procesos
+
 # --- Base de Datos ---
 sqlalchemy
 aiomysql            # Driver asíncrono

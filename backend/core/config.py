@@ -16,6 +16,7 @@ Dependencias:
 """
 
 import math
+import re
 import unicodedata
 from ipaddress import IPv6Address, ip_address
 from pathlib import Path
@@ -65,6 +66,10 @@ class Settings(BaseSettings):
         CONTACT_ERROR_EMAIL_RECIPIENTS (str): Destinatarios de incidencias, separados por comas.
         DATABASE_URL (str): URL de conexión a la base de datos.
         DATABASE_ECHO_SQL (bool): Activa el log detallado de consultas SQL solo para diagnóstico.
+        DATABASE_POOL_SIZE (int): Conexiones persistentes de MySQL por worker.
+        DATABASE_MAX_OVERFLOW (int): Conexiones adicionales temporales por worker.
+        DATABASE_POOL_TIMEOUT_SECONDS (float): Espera máxima para obtener conexión del pool.
+        DATABASE_POOL_RECYCLE_SECONDS (int): Antigüedad máxima de una conexión MySQL.
         secret_key (str): Clave secreta para operaciones de autenticación y tokens.
         token_interval_seconds (int): Intervalo de tiempo para la validez de los tokens.
         GLOBAL_RATE_LIMIT_REQUESTS (int): Solicitudes totales permitidas por cliente y ventana.
@@ -84,6 +89,14 @@ class Settings(BaseSettings):
         SMTP_TIMEOUT_SECONDS (float): Tiempo máximo de conexión y envío SMTP.
         SMTP_TLS_MODE (str): Modo TLS SMTP: starttls, tls o none.
         HEALTHCHECK_DATABASE_TIMEOUT_SECONDS (float): Tiempo máximo de comprobación de MySQL.
+        REDIS_URL (str): URL de Redis compartida por todos los workers.
+        REDIS_CONNECT_TIMEOUT_SECONDS (float): Tiempo máximo al abrir conexión Redis.
+        REDIS_SOCKET_TIMEOUT_SECONDS (float): Tiempo máximo de una operación Redis.
+        REDIS_STARTUP_TIMEOUT_SECONDS (float): Tiempo máximo de Redis durante el arranque.
+        HEALTHCHECK_REDIS_TIMEOUT_SECONDS (float): Tiempo máximo de Redis en /health.
+        REDIS_HEALTHCHECK_INTERVAL_SECONDS (int): Intervalo de comprobación del pool Redis.
+        REDIS_MAX_CONNECTIONS (int): Conexiones Redis máximas por worker.
+        REDIS_RATE_LIMIT_PREFIX (str): Prefijo aislado para las claves del rate limit.
         CORS_ALLOWED_ORIGINS (str): Orígenes frontend autorizados, separados por comas.
         TRUSTED_PROXY_IPS (str): Proxies autorizados para aportar X-Forwarded-For.
         ENABLE_API_DOCS (bool): Habilita OpenAPI, Swagger UI y ReDoc de forma explícita.
@@ -106,6 +119,10 @@ class Settings(BaseSettings):
     CONTACT_ERROR_EMAIL_RECIPIENTS: str
     DATABASE_URL: str
     DATABASE_ECHO_SQL: bool = False
+    DATABASE_POOL_SIZE: int = Field(default=3, ge=1, le=100)
+    DATABASE_MAX_OVERFLOW: int = Field(default=2, ge=0, le=100)
+    DATABASE_POOL_TIMEOUT_SECONDS: float = Field(default=5.0, gt=0)
+    DATABASE_POOL_RECYCLE_SECONDS: int = Field(default=1800, ge=30)
     secret_key: str
     token_interval_seconds: int = Field(gt=0)
     GLOBAL_RATE_LIMIT_REQUESTS: int = Field(default=300, gt=0)
@@ -128,6 +145,14 @@ class Settings(BaseSettings):
     SMTP_TIMEOUT_SECONDS: float = Field(default=15.0, gt=0)
     SMTP_TLS_MODE: Literal["starttls", "tls", "none"] = "starttls"
     HEALTHCHECK_DATABASE_TIMEOUT_SECONDS: float = Field(default=2.0, gt=0)
+    REDIS_URL: str = "redis://127.0.0.1:6379/0"
+    REDIS_CONNECT_TIMEOUT_SECONDS: float = Field(default=2.0, gt=0)
+    REDIS_SOCKET_TIMEOUT_SECONDS: float = Field(default=2.0, gt=0)
+    REDIS_STARTUP_TIMEOUT_SECONDS: float = Field(default=3.0, gt=0)
+    HEALTHCHECK_REDIS_TIMEOUT_SECONDS: float = Field(default=1.0, gt=0)
+    REDIS_HEALTHCHECK_INTERVAL_SECONDS: int = Field(default=30, ge=0)
+    REDIS_MAX_CONNECTIONS: int = Field(default=10, ge=1, le=1000)
+    REDIS_RATE_LIMIT_PREFIX: str = "paraisoweb:rate-limit"
     CORS_ALLOWED_ORIGINS: str = (
         "http://localhost:3000,https://galenn.asuscomm.com,"
         "http://paraisodeljamon.com,https://paraisodeljamon.com,"
@@ -151,8 +176,13 @@ class Settings(BaseSettings):
 
     @field_validator(
         "DATABASE_STARTUP_TIMEOUT_SECONDS",
+        "DATABASE_POOL_TIMEOUT_SECONDS",
         "SMTP_TIMEOUT_SECONDS",
         "HEALTHCHECK_DATABASE_TIMEOUT_SECONDS",
+        "REDIS_CONNECT_TIMEOUT_SECONDS",
+        "REDIS_SOCKET_TIMEOUT_SECONDS",
+        "REDIS_STARTUP_TIMEOUT_SECONDS",
+        "HEALTHCHECK_REDIS_TIMEOUT_SECONDS",
         "RECAPTCHA_TIMEOUT_SECONDS",
     )
     @classmethod
@@ -388,6 +418,66 @@ class Settings(BaseSettings):
         if parsed.username == EXAMPLE_DATABASE_USERNAME or parsed.password == EXAMPLE_DATABASE_PASSWORD:
             raise ValueError("DATABASE_URL debe sustituir las credenciales del archivo .env.example")
 
+        return normalized
+
+    @field_validator("REDIS_URL")
+    @classmethod
+    def validate_redis_url(cls, value: str) -> str:
+        """Exige una URL Redis TCP completa y evita configuraciones ambiguas."""
+        if _contains_unsupported_configuration_character(value):
+            raise ValueError("REDIS_URL contiene caracteres no permitidos")
+        normalized = value.strip(" ")
+        if not normalized or any(character.isspace() for character in normalized):
+            raise ValueError("REDIS_URL no puede estar vacía ni contener espacios")
+
+        try:
+            parsed = urlsplit(normalized)
+            port = parsed.port
+        except ValueError as error:
+            raise ValueError("REDIS_URL no contiene una URL válida") from error
+
+        if (
+            parsed.scheme.lower() not in {"redis", "rediss"}
+            or parsed.hostname is None
+            or port == 0
+            or parsed.fragment
+        ):
+            raise ValueError("REDIS_URL debe usar redis:// o rediss:// e incluir servidor")
+
+        try:
+            ip_address(parsed.hostname)
+        except ValueError:
+            candidate = parsed.hostname[:-1] if parsed.hostname.endswith(".") else parsed.hostname
+            try:
+                ascii_host = candidate.encode("idna").decode("ascii")
+            except UnicodeError as error:
+                raise ValueError("REDIS_URL no contiene un servidor válido") from error
+            labels = ascii_host.split(".")
+            if (
+                len(ascii_host) > 253
+                or not labels
+                or any(
+                    not label
+                    or len(label) > 63
+                    or label.startswith("-")
+                    or label.endswith("-")
+                    or any(not (character.isalnum() or character == "-") for character in label)
+                    for label in labels
+                )
+            ):
+                raise ValueError("REDIS_URL no contiene un servidor válido")
+
+        return normalized
+
+    @field_validator("REDIS_RATE_LIMIT_PREFIX")
+    @classmethod
+    def validate_redis_rate_limit_prefix(cls, value: str) -> str:
+        """Normaliza el espacio de claves y evita caracteres difíciles de operar."""
+        normalized = value.strip().strip(":")
+        if not re.fullmatch(r"[A-Za-z0-9:_-]+", normalized):
+            raise ValueError(
+                "REDIS_RATE_LIMIT_PREFIX solo puede contener letras, números, dos puntos y guiones"
+            )
         return normalized
 
     @field_validator("secret_key")
