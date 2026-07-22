@@ -1,6 +1,6 @@
 // pages/politica-cookies.tsx
 
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { useCookieConsent } from "../contexts/CookieContext";
@@ -10,7 +10,7 @@ import { useVisitedPageTracking } from "../hooks/useVisitedPageTracking";
 import { useButtonClickTrackingGA } from "../hooks/useTrackingGA";
 import useScreenSize from "../hooks/useScreenSize";
 import { useToastMessage } from "../hooks/useToast";
-import { deleteCookies } from "../utils/cookieUtils";
+import { deleteCookies, hasDeletableCookies } from "../utils/cookieUtils";
 import SeoHead from "../components/SeoHead";
 import { redirectByCookie } from "../utils/redirectByCookie";
 import styles from "../styles/pages/politica-cookies.module.css";
@@ -32,6 +32,9 @@ const messages: Record<string, Record<string, string>> = {
   de: deMessages,
   fr: frMessages,
 };
+
+// Orden de las cookies en la declaración: la cookie necesaria de consentimiento aparece primero.
+const COOKIE_DECLARATION_ORDER = [5, 1, 2, 3, 4] as const;
 
 /**
  * Interfaz para las propiedades de la página de Política de Cookies.
@@ -80,6 +83,16 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
     setCookieConsentPersonalization,
   } = useCookieConsent();
 
+  // Mantiene el botón disponible si queda alguna cookie opcional aunque el consentimiento esté rechazado.
+  const [hasVisibleCookiesToDelete, setHasVisibleCookiesToDelete] = useState(false);
+  const hasOptionalCookieConsent =
+    cookieConsentAnalysis || cookieConsentAnalysisGoogle || cookieConsentPersonalization;
+  const canDeleteCookies = hasOptionalCookieConsent || hasVisibleCookiesToDelete;
+
+  useEffect(() => {
+    setHasVisibleCookiesToDelete(hasDeletableCookies());
+  }, [cookieConsentAnalysis, cookieConsentAnalysisGoogle, cookieConsentPersonalization]);
+
   // Hooks para el seguimiento de la página visitada.
   useVisitedPageTracking("politica-cookies");
 
@@ -119,6 +132,7 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
         showToast("cookie_Borrado_Error", 4000, "error"); // Muestra el toast utilizando el hook
       }
     } finally {
+      setHasVisibleCookiesToDelete(hasDeletableCookies());
       isDeletingCookiesRef.current = false;
       setIsPushingDelCookies(false);
     }
@@ -133,33 +147,33 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
       aria-labelledby="cookies-used-table-title"
     >
       <tbody>
-        {Array.from({ length: 4 }, (_, i) => (
-          <React.Fragment key={i}>
+        {COOKIE_DECLARATION_ORDER.map((index, position) => (
+          <React.Fragment key={index}>
             <tr>
               <th scope="row">
                 {intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraNombre" })}
               </th>
-              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Nombre${i + 1}` })}</td>
+              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Nombre${index}` })}</td>
             </tr>
             <tr>
               <th scope="row">
                 {intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraTitular" })}
               </th>
-              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Titular${i + 1}` })}</td>
+              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Titular${index}` })}</td>
             </tr>
             <tr>
               <th scope="row">
                 {intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraFinalidad" })}
               </th>
-              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Finalidad${i + 1}` })}</td>
+              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Finalidad${index}` })}</td>
             </tr>
             <tr>
               <th scope="row">
                 {intl.formatMessage({ id: "politicaCookies_Utilizadas_CabeceraDuracion" })}
               </th>
-              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Duracion${i + 1}` })}</td>
+              <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Duracion${index}` })}</td>
             </tr>
-            {i < 3 && ( // Condición para no mostrar el separador en el último grupo
+            {position < COOKIE_DECLARATION_ORDER.length - 1 && (
               <tr className={styles.tableSeparator} aria-hidden="true">
                 <td colSpan={2}></td>
               </tr>
@@ -187,7 +201,7 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
         </tr>
       </thead>
       <tbody className="table-group-divider">
-        {Array.from({ length: 4 }, (_, i) => i + 1).map((index) => (
+        {COOKIE_DECLARATION_ORDER.map((index) => (
           <tr key={index}>
             <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Nombre${index}` })}</td>
             <td>{intl.formatMessage({ id: `politicaCookies_Utilizadas_Titular${index}` })}</td>
@@ -403,7 +417,7 @@ const PoliticaCookiesPage: NextPage & { pageTitleText?: string } = (): React.JSX
         <button
           type="button"
           className={`btn btn-primary mx-auto ${styles.deleteButton} ${!prefersReducedMotion && isPushingDelCookies ? "animate-push" : ""} `}
-          disabled={isPushingDelCookies}
+          disabled={isPushingDelCookies || !canDeleteCookies}
           aria-busy={isPushingDelCookies}
           onClick={handleDeleteCookies}
         >

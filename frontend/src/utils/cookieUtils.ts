@@ -7,7 +7,7 @@ import { getConfiguredCookieDeletionDomains } from "./cookieDeletionConfig";
 import { clientLogger } from "../logging/clientLogger";
 
 /** Nombre de la cookie necesaria que conserva la elección de consentimiento. */
-export const COOKIE_CONSENT_NAME = "_cookie_consent";
+export const COOKIE_CONSENT_NAME = "_consent";
 
 /** Evento emitido al borrar la elección para volver a solicitar el consentimiento sin recargar. */
 export const COOKIE_CONSENT_CLEARED_EVENT = "paraisoweb:cookie-consent-cleared";
@@ -48,12 +48,61 @@ const expireCookie = (cookieName: string, domain?: string): void => {
   document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; ${buildCookieAttributes(domain)}`;
 };
 
-/** Caduca una cookie como host-only y en todos los dominios configurados para el entorno. */
-const expireCookieAcrossConfiguredDomains = (cookieName: string): void => {
+/**
+ * Devuelve los dominios donde conviene repetir la caducidad de una cookie.
+ * El host actual se añade siempre para cubrir desarrollo local y cookies creadas con Domain explícito.
+ * Una configuración ausente o inválida no debe impedir el borrado host-only.
+ */
+const getRuntimeCookieDeletionDomains = (): string[] => {
+  const domains = new Set<string>();
+
+  if (typeof window !== "undefined") {
+    const currentHostname = window.location.hostname.trim().toLowerCase();
+    if (currentHostname) {
+      domains.add(currentHostname);
+    }
+  }
+
+  try {
+    getConfiguredCookieDeletionDomains().forEach((domain) => domains.add(domain));
+  } catch (error: unknown) {
+    const detail = error instanceof Error ? error.message : "error desconocido";
+    clientLogger.debug(
+      "No se pudieron leer los dominios adicionales para borrar cookies; se usará el host actual:",
+      detail
+    );
+  }
+
+  return Array.from(domains);
+};
+
+/** Caduca una cookie como host-only y en todos los dominios de borrado disponibles. */
+const expireCookieAcrossDomains = (cookieName: string, domains: string[]): void => {
   expireCookie(cookieName);
-  getConfiguredCookieDeletionDomains().forEach((domain) => {
+  domains.forEach((domain) => {
     expireCookie(cookieName, domain);
   });
+};
+
+/** Caduca una cookie usando los dominios disponibles en el navegador actual. */
+const expireCookieAcrossConfiguredDomains = (cookieName: string): void => {
+  expireCookieAcrossDomains(cookieName, getRuntimeCookieDeletionDomains());
+};
+
+/**
+ * En el entorno de desarrollo, Google Analytics crea sus cookies para el dominio padre
+ * asuscomm.com. El resto de cookies conserva los dominios configurados habituales.
+ */
+const expireGoogleAnalyticsCookie = (cookieName: string): void => {
+  if (
+    typeof window !== "undefined" &&
+    window.location.hostname.trim().toLowerCase() === "galenn.asuscomm.com"
+  ) {
+    expireCookie(cookieName, "asuscomm.com");
+    return;
+  }
+
+  expireCookieAcrossConfiguredDomains(cookieName);
 };
 
 /** Devuelve los nombres de cookies visibles en la ruta actual. */
@@ -63,6 +112,11 @@ const getVisibleCookieNames = (): string[] =>
     .map((cookie) => cookie.trim())
     .filter(Boolean)
     .map((cookie) => cookie.split("=", 1)[0]);
+
+/** Indica si existe alguna cookie visible distinta de la necesaria para recordar el consentimiento. */
+export const hasDeletableCookies = (): boolean =>
+  typeof document !== "undefined" &&
+  getVisibleCookieNames().some((cookieName) => cookieName !== COOKIE_CONSENT_NAME);
 
 /** Avisa a la interfaz de que la elección se ha revocado sin asumir un nombre de cookie. */
 const notifyCookieConsentCleared = (): void => {
@@ -104,7 +158,7 @@ export const revokeCookieCategories = ({
     if (googleAnalytics) {
       getVisibleCookieNames()
         .filter(isGoogleAnalyticsCookie)
-        .forEach(expireCookieAcrossConfiguredDomains);
+        .forEach(expireGoogleAnalyticsCookie);
     }
 
     return true;
@@ -223,12 +277,20 @@ export const deleteCookies = async (
     // La revocación debe detener el seguimiento antes del borrado para que GA no recree cookies.
     await disableGA();
 
-    // El botón elimina todas las cookies visibles; la variable de entorno configura únicamente
-    // los dominios en los que se repite la caducidad para casar con el atributo Domain original.
-    getVisibleCookieNames().forEach(expireCookieAcrossConfiguredDomains);
+    // El botón elimina todas las cookies visibles. El host actual se usa siempre y los dominios
+    // configurados se añaden cuando están disponibles, sin romper el borrado en desarrollo local.
+    const deletionDomains = getRuntimeCookieDeletionDomains();
+    getVisibleCookieNames().forEach((cookieName) => {
+      if (isGoogleAnalyticsCookie(cookieName)) {
+        expireGoogleAnalyticsCookie(cookieName);
+        return;
+      }
+
+      expireCookieAcrossDomains(cookieName, deletionDomains);
+    });
 
     // Borra también la cookie necesaria aunque ya no fuese visible al construir la lista anterior.
-    expireCookieAcrossConfiguredDomains(COOKIE_CONSENT_NAME);
+    expireCookieAcrossDomains(COOKIE_CONSENT_NAME, deletionDomains);
 
     // No se confirma el borrado mientras quede alguna cookie accesible desde esta ruta.
     deletionSucceeded = getVisibleCookieNames().length === 0;

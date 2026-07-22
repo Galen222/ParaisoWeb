@@ -140,7 +140,11 @@ function MainComponent({ Component, pageProps, router }: CustomAppProps): React.
               </main>
               <Footer />
             </div>
-            <ToastContainer nonce={pageProps.nonce} />
+            <ToastContainer
+              nonce={pageProps.nonce}
+              className="appToastContainer"
+              toastClassName="appToast"
+            />
           </React.StrictMode>
         </MenuProvider>
       </IntlProvider>

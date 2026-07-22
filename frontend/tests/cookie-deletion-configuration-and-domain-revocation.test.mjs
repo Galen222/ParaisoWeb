@@ -43,17 +43,34 @@ test("la configuración incluye los dominios exactos de desarrollo y producción
   assert.doesNotMatch(envExample, /NEXT_PUBLIC_COOKIES_TO_DELETE/);
 });
 
-test("el botón borra todas las cookies visibles en cada dominio configurado", async () => {
+test("el botón borra todas las cookies visibles en el host actual y los dominios configurados", async () => {
   const cookieUtils = await readFile(
     new URL("../src/utils/cookieUtils.ts", import.meta.url),
     "utf8"
   );
   const deleteFunction = cookieUtils.slice(cookieUtils.indexOf("export const deleteCookies"));
 
-  assert.match(deleteFunction, /getVisibleCookieNames\(\)\.forEach\(expireCookieAcrossConfiguredDomains\)/);
-  assert.match(deleteFunction, /expireCookieAcrossConfiguredDomains\(COOKIE_CONSENT_NAME\)/);
+  assert.match(deleteFunction, /const deletionDomains = getRuntimeCookieDeletionDomains\(\)/);
+  assert.match(deleteFunction, /getVisibleCookieNames\(\)\.forEach\(\(cookieName\) =>/);
+  assert.match(
+    deleteFunction,
+    /if \(isGoogleAnalyticsCookie\(cookieName\)\) \{[\s\S]*expireGoogleAnalyticsCookie\(cookieName\)/
+  );
+  assert.match(deleteFunction, /expireCookieAcrossDomains\(COOKIE_CONSENT_NAME, deletionDomains\)/);
   assert.match(deleteFunction, /deletionSucceeded = getVisibleCookieNames\(\)\.length === 0/);
   assert.doesNotMatch(deleteFunction, /matchesCookieDeletionPattern|COOKIES_TO_DELETE/);
+});
+
+test("la cookie necesaria de rechazo no habilita por sí sola el botón de borrado", async () => {
+  const cookieUtils = await readFile(
+    new URL("../src/utils/cookieUtils.ts", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(
+    cookieUtils,
+    /export const hasDeletableCookies[\s\S]*cookieName !== COOKIE_CONSENT_NAME/
+  );
 });
 
 test("revocar Analytics desactiva el seguimiento antes de borrar sus cookies en los dominios de entorno", async () => {
@@ -63,9 +80,15 @@ test("revocar Analytics desactiva el seguimiento antes de borrar sus cookies en 
   );
 
   assert.doesNotMatch(cookieUtils, /GOOGLE_ANALYTICS_COOKIE_DOMAINS/);
+  assert.match(cookieUtils, /window\.location\.hostname/);
   assert.match(cookieUtils, /getConfiguredCookieDeletionDomains\(\)\.forEach/);
+  assert.match(cookieUtils, /clientLogger\.debug/);
   assert.match(
     cookieUtils,
-    /if \(googleAnalytics\) \{[\s\S]*?void disableGA\(\);[\s\S]*?\.forEach\(expireCookieAcrossConfiguredDomains\);/
+    /window\.location\.hostname\.trim\(\)\.toLowerCase\(\) === "galenn\.asuscomm\.com"[\s\S]*expireCookie\(cookieName, "asuscomm\.com"\);[\s\S]*return;/
+  );
+  assert.match(
+    cookieUtils,
+    /if \(googleAnalytics\) \{[\s\S]*?void disableGA\(\);[\s\S]*?\.forEach\(expireGoogleAnalyticsCookie\);/
   );
 });

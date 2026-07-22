@@ -5,9 +5,17 @@ import test from "node:test";
 const readSource = (relativePath) =>
   readFile(new URL(relativePath, import.meta.url), "utf8");
 
-test("las notificaciones ocupan el ancho personalizado del contenedor tras actualizar React-Toastify", async () => {
-  const source = await readSource("../src/styles/toastify.css");
+test("las notificaciones usan 450 px aunque React-Toastify inyecte sus estilos", async () => {
+  const [styles, app] = await Promise.all([
+    readSource("../src/styles/toastify.css"),
+    readSource("../src/pages/_app.tsx"),
+  ]);
 
-  assert.match(source, /\.Toastify__toast-container\s*\{[\s\S]*?width:\s*420px;/);
-  assert.match(source, /\.Toastify__toast\s*\{[\s\S]*?width:\s*100%;/);
+  assert.match(app, /className="appToastContainer"/);
+  assert.match(app, /toastClassName="appToast"/);
+  assert.match(styles, /\.Toastify__toast-container\.appToastContainer\s*\{/);
+  assert.match(styles, /--toastify-container-width:\s*450px;/);
+  assert.match(styles, /--toastify-toast-width:\s*450px;/);
+  assert.match(styles, /width:\s*450px;/);
+  assert.match(styles, /\.Toastify__toast\.appToast\s*\{[\s\S]*?width:\s*100%;/);
 });

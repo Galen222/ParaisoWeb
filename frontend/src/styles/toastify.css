@@ -1,21 +1,27 @@
 /* toastify.css */
 
-/* Contenedor de notificaciones Toastify */
-.Toastify__toast-container {
-  font-family: Arial, Helvetica, sans-serif; /* Fuente para las notificaciones */
-  width: 420px; /* Ancho fijo de 420 píxeles */
+/*
+ * React-Toastify 11 inyecta sus estilos en ejecución. La clase propia aumenta la
+ * especificidad y las variables en el propio contenedor gobiernan el ancho real.
+ */
+.Toastify__toast-container.appToastContainer {
+  --toastify-container-width: 420px;
+  --toastify-toast-width: 420px;
+  width: 420px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Estilos para las notificaciones Toastify */
-.Toastify__toast {
-  width: 100%; /* React-Toastify 11 fija el toast en 320 píxeles; se recupera el ancho personalizado del contenedor */
-  background-color: var(--text_color); /* Fondo marrón oscuro para las notificaciones */
+.Toastify__toast-container.appToastContainer .Toastify__toast,
+.Toastify__toast.appToast {
+  width: 100%;
+  background-color: var(--text_color);
 }
 
-/* Estilos para dispositivos tipo tablet */
+/* En tablet y móvil la notificación no debe desbordar la pantalla. */
 @media (max-width: 1024px) {
-  /* Ajustes del contenedor de notificaciones Toastify en tablet */
-  .Toastify__toast-container {
-    width: 100%; /* Ancho completo del contenedor padre */
+  .Toastify__toast-container.appToastContainer {
+    --toastify-container-width: 100%;
+    --toastify-toast-width: 100%;
+    width: 100%;
   }
 }

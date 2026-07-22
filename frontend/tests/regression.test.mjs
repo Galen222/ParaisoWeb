@@ -619,3 +619,19 @@ test("la barra fija recalcula su posición al aparecer en escritorio", async () 
   assert.match(stickyHook, /\[navbarRef, enabled\]/);
   assert.match(navbar, /useStickyNav\(navbarMenuRef, !isMobile\)/);
 });
+
+
+test("el botón de borrar cookies se deshabilita sin consentimiento ni cookies opcionales", async () => {
+  const policy = await readFile(
+    new URL("../src/pages/politica-cookies.tsx", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(policy, /const \[hasVisibleCookiesToDelete, setHasVisibleCookiesToDelete\] = useState\(false\)/);
+  assert.match(
+    policy,
+    /const canDeleteCookies = hasOptionalCookieConsent \|\| hasVisibleCookiesToDelete/
+  );
+  assert.match(policy, /setHasVisibleCookiesToDelete\(hasDeletableCookies\(\)\)/);
+  assert.match(policy, /disabled=\{isPushingDelCookies \|\| !canDeleteCookies\}/);
+});
