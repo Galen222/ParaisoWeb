@@ -1,13 +1,6 @@
 "use strict";
 
-const {
-  appendFileSync,
-  existsSync,
-  mkdirSync,
-  renameSync,
-  statSync,
-  unlinkSync,
-} = require("node:fs");
+const { appendFileSync, existsSync, mkdirSync, renameSync, statSync, unlinkSync } = require("node:fs");
 const path = require("node:path");
 const { inspect } = require("node:util");
 
@@ -33,21 +26,16 @@ function parsePositiveInteger(value, fallback) {
   return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : fallback;
 }
 
-
 /** Valida la configuración operativa antes de que el servidor empiece a escuchar. */
 function validateFrontendServerEnvironment(environment = process.env) {
   const target = environment.FRONTEND_LOG_TARGET?.trim().toLowerCase();
   if (target !== "consola" && target !== "archivo") {
-    throw new Error(
-      "FRONTEND_LOG_TARGET debe estar definida como 'consola' o 'archivo'.",
-    );
+    throw new Error("FRONTEND_LOG_TARGET debe estar definida como 'consola' o 'archivo'.");
   }
 
   const level = environment.FRONTEND_LOG_LEVEL?.trim().toLowerCase();
   if (!level || !Object.hasOwn(LEVEL_PRIORITY, level)) {
-    throw new Error(
-      "FRONTEND_LOG_LEVEL debe ser debug, info, warn o error.",
-    );
+    throw new Error("FRONTEND_LOG_LEVEL debe ser debug, info, warn o error.");
   }
 
   const validateInteger = (variableName, minimum, maximum) => {
@@ -58,20 +46,14 @@ function validateFrontendServerEnvironment(environment = process.env) {
 
     const parsed = Number(rawValue);
     if (!Number.isSafeInteger(parsed) || parsed < minimum || parsed > maximum) {
-      throw new Error(
-        `${variableName} debe estar entre ${minimum} y ${maximum}.`,
-      );
+      throw new Error(`${variableName} debe estar entre ${minimum} y ${maximum}.`);
     }
   };
 
   const maxBytesConfigured = environment.FRONTEND_LOG_MAX_BYTES !== undefined;
   const backupCountConfigured = environment.FRONTEND_LOG_BACKUP_COUNT !== undefined;
   if (target === "archivo" || maxBytesConfigured) {
-    validateInteger(
-      "FRONTEND_LOG_MAX_BYTES",
-      MIN_LOG_MAX_BYTES,
-      Number.MAX_SAFE_INTEGER,
-    );
+    validateInteger("FRONTEND_LOG_MAX_BYTES", MIN_LOG_MAX_BYTES, Number.MAX_SAFE_INTEGER);
   }
   if (target === "archivo" || backupCountConfigured) {
     validateInteger("FRONTEND_LOG_BACKUP_COUNT", 1, MAX_BACKUP_COUNT);
@@ -103,9 +85,7 @@ function configuredLevel() {
 
 function configuredLogPath() {
   const configuredDirectory = process.env.FRONTEND_LOG_DIR?.trim();
-  const directory = configuredDirectory
-    ? path.resolve(configuredDirectory)
-    : path.resolve(process.cwd(), "..", "logs");
+  const directory = configuredDirectory ? path.resolve(configuredDirectory) : path.resolve(process.cwd(), "..", "logs");
   return { directory, logPath: path.join(directory, LOG_FILENAME) };
 }
 
@@ -174,14 +154,8 @@ function rotateLogFile(logPath, maxBytes, backupCount, incomingBytes) {
 }
 
 function writeFileLog(level, values) {
-  const maxBytes = parsePositiveInteger(
-    process.env.FRONTEND_LOG_MAX_BYTES,
-    DEFAULT_MAX_BYTES,
-  );
-  const backupCount = parsePositiveInteger(
-    process.env.FRONTEND_LOG_BACKUP_COUNT,
-    DEFAULT_BACKUP_COUNT,
-  );
+  const maxBytes = parsePositiveInteger(process.env.FRONTEND_LOG_MAX_BYTES, DEFAULT_MAX_BYTES);
+  const backupCount = parsePositiveInteger(process.env.FRONTEND_LOG_BACKUP_COUNT, DEFAULT_BACKUP_COUNT);
   const line = buildBoundedLogLine(level, values, maxBytes);
   const { directory, logPath } = configuredLogPath();
 
@@ -205,13 +179,7 @@ function writeLog(level, values) {
   if (LEVEL_PRIORITY[level] < LEVEL_PRIORITY[configuredLevel()]) return;
 
   if (configuredTarget() === "consola") {
-    const method = level === "warn"
-      ? console.warn
-      : level === "error"
-        ? console.error
-        : level === "debug"
-          ? console.debug
-          : console.info;
+    const method = level === "warn" ? console.warn : level === "error" ? console.error : level === "debug" ? console.debug : console.info;
     method(...values);
     return;
   }

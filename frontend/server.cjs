@@ -1,10 +1,7 @@
 "use strict";
 
 const { createServer } = require("node:http");
-const {
-  frontendServerLogger,
-  validateFrontendServerEnvironment,
-} = require("./serverLogger.cjs");
+const { frontendServerLogger, validateFrontendServerEnvironment } = require("./serverLogger.cjs");
 
 /**
  * Devuelve la URL española canónica solo cuando la petición original contiene
@@ -40,9 +37,7 @@ function resolvePort(value) {
   if (!/^\d+$/.test(normalizedValue)) return 3000;
 
   const parsedPort = Number(normalizedValue);
-  return Number.isSafeInteger(parsedPort) && parsedPort >= 1 && parsedPort <= 65535
-    ? parsedPort
-    : 3000;
+  return Number.isSafeInteger(parsedPort) && parsedPort >= 1 && parsedPort <= 65535 ? parsedPort : 3000;
 }
 
 /**
