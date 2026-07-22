@@ -184,7 +184,7 @@ def create_app(
             "API para gestionar formularios de contacto, productos de charcutería, "
             "publicaciones de blog y autenticación mediante tokens temporales."
         ),
-        version="2.1.0",
+        version="2.1.1",
         lifespan=lifespan,
         docs_url="/docs" if settings.ENABLE_API_DOCS else None,
         redoc_url="/redoc" if settings.ENABLE_API_DOCS else None,
